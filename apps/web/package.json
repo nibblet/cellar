@@ -17,7 +17,8 @@
     "seed:bourbons": "tsx --env-file=.env.local scripts/seed/seed-bourbons.ts",
     "seed:cigars": "tsx --env-file=.env.local scripts/seed/seed-cigars.ts",
     "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
-    "seed:all": "pnpm seed:wheels && pnpm seed:bourbons"
+    "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
+    "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
