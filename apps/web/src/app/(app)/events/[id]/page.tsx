@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TastingCard } from "@/components/feed";
-import { Card, Divider, Voice } from "@/components/primitives";
+import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -67,6 +68,14 @@ export default async function EventDetailPage({ params }: { params: Params }) {
         </p>
         {eventRow.notes ? <Voice className="block mt-4">"{eventRow.notes}"</Voice> : null}
       </header>
+
+      {entries.length > 0 ? (
+        <Link href={`/events/${eventRow.id}/recap`} className="block mb-2">
+          <Button variant="ghost" className="w-full">
+            View the night's recap →
+          </Button>
+        </Link>
+      ) : null}
 
       <Divider label="That night's archive" />
 
