@@ -12,6 +12,7 @@ type SaveTastingArgs = {
   recommend: boolean;
   chips: string[];
   note: string | null;
+  eventId?: string | null;
 };
 
 /**
@@ -23,7 +24,7 @@ type SaveTastingArgs = {
  * still has a usable wheel vector from the chip synonyms.
  */
 export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: string }> {
-  const { supabase, userId, productId, productType, recommend, chips, note } = args;
+  const { supabase, userId, productId, productType, recommend, chips, note, eventId } = args;
 
   // Fast path: synonym-mapped vector lets us redirect immediately.
   const seedVector = fallbackMapFromChips(productType, chips);
@@ -34,6 +35,7 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
       {
         user_id: userId,
         product_id: productId,
+        event_id: eventId ?? null,
         recommend,
         chips,
         note: note?.trim() || null,

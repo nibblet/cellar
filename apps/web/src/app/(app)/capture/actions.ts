@@ -24,6 +24,8 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
     return { status: "error", message: "Photo too large (10 MB max)." };
   }
 
+  const eventId = (formData.get("event_id") as string | null)?.trim() || null;
+
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
@@ -65,7 +67,9 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
     return { status: "error", message };
   }
 
-  redirect(`/products/${outcome.productId}?just_captured=1`);
+  const params = new URLSearchParams({ just_captured: "1" });
+  if (eventId) params.set("event", eventId);
+  redirect(`/products/${outcome.productId}?${params.toString()}`);
 }
 
 function guessExtension(mime: string): string | null {

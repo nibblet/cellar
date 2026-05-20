@@ -8,7 +8,11 @@ import type { ProductType } from "@/lib/wheel";
 import { PhotoFrame } from "./photo-frame";
 
 type Params = Promise<{ id: string }>;
-type SearchParams = Promise<{ just_captured?: string; just_saved?: string }>;
+type SearchParams = Promise<{
+  just_captured?: string;
+  just_saved?: string;
+  event?: string;
+}>;
 
 export default async function ProductDetailPage({
   params,
@@ -18,7 +22,7 @@ export default async function ProductDetailPage({
   searchParams: SearchParams;
 }) {
   const { id } = await params;
-  const { just_captured, just_saved } = await searchParams;
+  const { just_captured, just_saved, event } = await searchParams;
 
   const supabase = await createSupabaseServerClient();
 
@@ -125,7 +129,9 @@ export default async function ProductDetailPage({
       ) : null}
 
       <div className="mt-6 flex flex-col gap-3">
-        <Link href={`/products/${product.id}/recommend`}>
+        <Link
+          href={`/products/${product.id}/recommend${event ? `?event=${encodeURIComponent(event)}` : ""}`}
+        >
           <Button size="large" className="w-full">
             {myTake ? "Edit your tasting" : "Recommend to NCCC"}
           </Button>

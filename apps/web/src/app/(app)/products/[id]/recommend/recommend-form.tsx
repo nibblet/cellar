@@ -11,6 +11,7 @@ type RecommendFormProps = {
   productType: ProductType;
   leafLabels: string[];
   initial: { recommend: boolean; chips: string[]; note: string | null } | null;
+  eventId: string | null;
 };
 
 type State = { status: "idle" | "error"; message?: string };
@@ -21,6 +22,7 @@ export function RecommendForm({
   productType,
   leafLabels,
   initial: prior,
+  eventId,
 }: RecommendFormProps) {
   const [state, action, pending] = useActionState(submitRecommend, initial);
 
@@ -30,6 +32,7 @@ export function RecommendForm({
   return (
     <form action={action} className="flex flex-col gap-5">
       <input type="hidden" name="product_id" value={productId} />
+      {eventId ? <input type="hidden" name="event_id" value={eventId} /> : null}
 
       <ChipInput
         name="chips"

@@ -10,7 +10,11 @@ const initial: State = { status: "idle" };
 
 type ProductType = "cigar" | "bourbon";
 
-export function CaptureForm() {
+type CaptureFormProps = {
+  recentEvents: Array<{ id: string; name: string; date: string }>;
+};
+
+export function CaptureForm({ recentEvents }: CaptureFormProps) {
   const [state, action, pending] = useActionState(submitCapture, initial);
   const [type, setType] = useState<ProductType>("cigar");
   const [preview, setPreview] = useState<string | null>(null);
@@ -78,6 +82,25 @@ export function CaptureForm() {
           }}
         />
       </label>
+
+      {recentEvents.length > 0 ? (
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm text-foreground-muted">Tag a meetup? (optional)</span>
+          <select
+            name="event_id"
+            defaultValue=""
+            className="h-11 rounded-[10px] bg-surface border border-border px-3 text-base text-foreground focus:border-accent outline-none"
+          >
+            <option value="">— none —</option>
+            {recentEvents.map((ev) => (
+              <option key={ev.id} value={ev.id}>
+                {ev.name} ·{" "}
+                {new Date(ev.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
 
       {state.status === "error" && (
         <Card className="border-ember-500">

@@ -6,9 +6,17 @@ import { getWheel, type ProductType } from "@/lib/wheel";
 import { RecommendForm } from "./recommend-form";
 
 type Params = Promise<{ id: string }>;
+type SearchParams = Promise<{ event?: string }>;
 
-export default async function RecommendPage({ params }: { params: Params }) {
+export default async function RecommendPage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
   const { id } = await params;
+  const { event } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: product } = await supabase
@@ -23,7 +31,7 @@ export default async function RecommendPage({ params }: { params: Params }) {
 
   const { data: existing } = await supabase
     .from("tastings")
-    .select("recommend, chips, note")
+    .select("recommend, chips, note, event_id")
     .eq("user_id", auth.user.id)
     .eq("product_id", product.id)
     .maybeSingle();
@@ -61,6 +69,7 @@ export default async function RecommendPage({ params }: { params: Params }) {
         productType={product.type as ProductType}
         leafLabels={leafLabels}
         initial={existing ?? null}
+        eventId={existing?.event_id ?? event ?? null}
       />
 
       <Divider label="That's all" />

@@ -31,6 +31,7 @@ export async function submitRecommend(_prev: State, formData: FormData): Promise
     .map((c) => String(c).trim())
     .filter(Boolean);
   const note = (formData.get("note") as string | null)?.trim() || null;
+  const eventId = (formData.get("event_id") as string | null)?.trim() || null;
 
   try {
     await saveTasting({
@@ -41,6 +42,7 @@ export async function submitRecommend(_prev: State, formData: FormData): Promise
       recommend: recommendRaw === "yes",
       chips,
       note,
+      eventId,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Couldn't save your tasting.";
