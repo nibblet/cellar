@@ -17,8 +17,8 @@
       "!!**/public",
       "!!**/next-env.d.ts",
       "!!**/*.css",
-      "!!**/lib/wheel/data/**",
-      "!!**/scripts/seed/data/**"
+      "!!**/lib/wheel/data",
+      "!!**/scripts/seed/data"
     ]
   },
   "formatter": {
