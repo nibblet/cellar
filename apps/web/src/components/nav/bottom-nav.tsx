@@ -15,11 +15,16 @@ const ITEMS: NavItem[] = [
   { href: "/capture", label: "Capture", match: (p) => p.startsWith("/capture") },
   { href: "/members", label: "Members", match: (p) => p.startsWith("/members") },
   { href: "/events", label: "Meetups", match: (p) => p.startsWith("/events") },
+  {
+    href: "/settings",
+    label: "You",
+    match: (p) => p.startsWith("/settings") || p.startsWith("/admin"),
+  },
 ];
 
 /**
  * Fixed-bottom nav for the authenticated shell. Five tabs is the upper
- * limit before thumbs start missing; four leaves comfortable room.
+ * limit before thumbs start missing; we sit right at that ceiling.
  *
  * Active state uses brass underline rather than a fill, to keep brass
  * reserved for primary actions per the design system.
@@ -29,7 +34,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 bg-surface/95 backdrop-blur border-t border-border pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto max-w-md grid grid-cols-4">
+      <ul className="mx-auto max-w-md grid grid-cols-5">
         {ITEMS.map((item) => {
           const active = item.match(pathname);
           return (
