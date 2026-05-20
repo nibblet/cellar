@@ -1,34 +1,34 @@
 "use server";
 
-import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-type State = { status: "idle" | "sent" | "error"; message?: string };
+export type LoginState = { status: "idle" | "error"; message?: string };
 
-export async function requestMagicLink(_prev: State, formData: FormData): Promise<State> {
+export async function signInWithPassword(
+  _prev: LoginState,
+  formData: FormData,
+): Promise<LoginState> {
   const email = String(formData.get("email") ?? "")
     .trim()
     .toLowerCase();
+  const password = String(formData.get("password") ?? "");
 
   if (!email?.includes("@")) {
     return { status: "error", message: "Enter a valid email address." };
   }
-
-  const supabase = await createSupabaseServerClient();
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? "";
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      // Magic-link flow — no account creation here. Acceptance happens at /accept-invite.
-      shouldCreateUser: false,
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
-  });
-
-  if (error) {
-    return { status: "error", message: error.message };
+  if (!password) {
+    return { status: "error", message: "Enter your password." };
   }
 
-  return { status: "sent" };
+  const supabase = await createSupabaseServerClient();
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    // Don't leak which field is wrong — generic message is friendlier and safer.
+    return { status: "error", message: "Email or password is incorrect." };
+  }
+
+  redirect("/");
 }

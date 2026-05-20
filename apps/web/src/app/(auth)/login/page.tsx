@@ -10,7 +10,7 @@ export default function LoginPage() {
       </header>
 
       <Voice className="text-center mb-8">
-        “State your name at the door. I'll have your usual ready.”
+        "State your name at the door. I'll have your usual ready."
       </Voice>
 
       <LoginForm />

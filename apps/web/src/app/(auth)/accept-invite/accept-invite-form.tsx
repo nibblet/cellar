@@ -2,11 +2,9 @@
 
 import { useActionState } from "react";
 import { Button, Card } from "@/components/primitives";
-import { acceptInvite } from "./actions";
+import { type AcceptInviteState, acceptInvite } from "./actions";
 
-type State = { status: "idle" | "sent" | "error"; message?: string };
-
-const initial: State = { status: "idle" };
+const initial: AcceptInviteState = { status: "idle" };
 
 export function AcceptInviteForm({ token }: { token: string }) {
   const [state, action, pending] = useActionState(acceptInvite, initial);
@@ -16,7 +14,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
       <Card>
         <h2 className="text-xl mb-3">Check your email</h2>
         <p className="text-foreground-muted">
-          We've sent your sign-in link. Tap it from the same device to finish joining.
+          A confirmation link is on its way. Tap it from the same device to finish joining.
         </p>
       </Card>
     );
@@ -68,6 +66,35 @@ export function AcceptInviteForm({ token }: { token: string }) {
         />
       </label>
 
+      <label htmlFor="password" className="flex flex-col gap-2">
+        <span className="text-sm tracking-wider uppercase text-foreground-subtle">Password</span>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          placeholder="At least 8 characters"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+        />
+      </label>
+
+      <label htmlFor="password_confirm" className="flex flex-col gap-2">
+        <span className="text-sm tracking-wider uppercase text-foreground-subtle">
+          Confirm password
+        </span>
+        <input
+          id="password_confirm"
+          name="password_confirm"
+          type="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+        />
+      </label>
+
       {state.status === "error" && (
         <p className="text-sm text-ember-500" role="alert">
           {state.message}
@@ -75,7 +102,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
       )}
 
       <Button type="submit" size="large" disabled={pending}>
-        {pending ? "Sending…" : "Join NCCC"}
+        {pending ? "Joining…" : "Join NCCC"}
       </Button>
     </form>
   );
