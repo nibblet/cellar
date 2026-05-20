@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+/* ============================================================
+   NCCC Design Tokens
+   Source: /docs/design-system.md v0.2
+   ============================================================ */
+
+:root {
+  /* Ink (text) */
+  --ink-900: #1a1613;
+  --ink-700: #3a3128;
+  --ink-500: #6b5d52;
+
+  /* Paper (surfaces) */
+  --paper-50: #f7f1e6;
+  --paper-100: #efe7d6;
+  --paper-200: #e4d8c0;
+
+  /* Brass (primary action) */
+  --brass-500: #b08a4a;
+  --brass-600: #8e6e38;
+  --brass-100: #e8dcc0;
+
+  /* Reserved accents — one job each */
+  --ember-500: #c2410c; /* lit recommend icons only */
+  --moss-600: #4a5d3a; /* club-validated pairings only */
+
+  /* Semantic mappings (light mode) */
+  --background: var(--paper-50);
+  --surface: var(--paper-100);
+  --surface-2: var(--paper-200);
+  --foreground: var(--ink-900);
+  --foreground-muted: var(--ink-700);
+  --foreground-subtle: var(--ink-500);
+  --border: var(--paper-200);
+  --accent: var(--brass-500);
+  --accent-hover: var(--brass-600);
+  --accent-tint: var(--brass-100);
+
+  /* Photo treatment (toggleable per-context) */
+  --photo-sepia-amount: 0.35;
+  --photo-saturation: 0.85;
+  --photo-contrast: 1.02;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #15110c;
+    --surface: #1f1912;
+    --surface-2: #2a2218;
+    --foreground: #f0e6d2;
+    --foreground-muted: #c4b89e;
+    --foreground-subtle: #8e826e;
+    --border: #2a2218;
+    --accent: #d4a862;
+    --accent-hover: #e8be7a;
+    --accent-tint: #3a2f1e;
+  }
+}
+
+/* Explicit dark mode class (overrides preference when set on <html>) */
+html.dark {
+  --background: #15110c;
+  --surface: #1f1912;
+  --surface-2: #2a2218;
+  --foreground: #f0e6d2;
+  --foreground-muted: #c4b89e;
+  --foreground-subtle: #8e826e;
+  --border: #2a2218;
+  --accent: #d4a862;
+  --accent-hover: #e8be7a;
+  --accent-tint: #3a2f1e;
+}
+
+html.light {
+  --background: var(--paper-50);
+  --surface: var(--paper-100);
+  --surface-2: var(--paper-200);
+  --foreground: var(--ink-900);
+  --foreground-muted: var(--ink-700);
+  --foreground-subtle: var(--ink-500);
+  --border: var(--paper-200);
+  --accent: var(--brass-500);
+  --accent-hover: var(--brass-600);
+  --accent-tint: var(--brass-100);
+}
+
+/* ============================================================
+   Tailwind v4 @theme — maps tokens into utility classes
+   ============================================================ */
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-tint: var(--accent-tint);
+
+  --color-ink-900: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-ink-500: var(--ink-500);
+  --color-paper-50: var(--paper-50);
+  --color-paper-100: var(--paper-100);
+  --color-paper-200: var(--paper-200);
+  --color-brass-500: var(--brass-500);
+  --color-brass-600: var(--brass-600);
+  --color-brass-100: var(--brass-100);
+  --color-ember-500: var(--ember-500);
+  --color-moss-600: var(--moss-600);
+
+  /* Fonts */
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-voice: var(--font-playfair), Georgia, "Times New Roman", serif;
+
+  /* Radii */
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-chip: 9999px;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+html {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+}
+
+/* Headings default to display face; per-element classes can override */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Signature: etched section divider
+   Usage: <Divider label="THE CLUB SAYS" />
+   ============================================================ */
+
+.nccc-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0;
+  color: var(--foreground-subtle);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nccc-divider::before,
+.nccc-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ============================================================
+   Photo frame: toggleable sepia overlay
+   Originals are always full color in storage; this is presentation only.
+   ============================================================ */
+
+.nccc-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nccc-photo--sepia {
+  filter: sepia(var(--photo-sepia-amount)) saturate(var(--photo-saturation))
+    contrast(var(--photo-contrast));
+}
+
+.nccc-photo-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.nccc-photo-frame--sepia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--paper-100);
+  mix-blend-mode: multiply;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Voice: The Bartender's italic serif
+   ============================================================ */
+
+.nccc-voice {
+  font-family: var(--font-voice);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--foreground-muted);
+}
+
+/* ============================================================
+   Restrained motion preference
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

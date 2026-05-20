@@ -1,0 +1,59 @@
+{
+  "version": "0.1",
+  "type": "bourbon",
+  "updated": "2026-05-20",
+  "categories": [
+    { "id": "grain",          "label": "Grain",          "order": 1, "description": "Corn, rye, malt — the mash bill speaking through the glass." },
+    { "id": "sweet",          "label": "Sweet",          "order": 2, "description": "Vanilla, caramel, honey — the heart of bourbon's character." },
+    { "id": "fruit-floral",   "label": "Fruit & Floral", "order": 3, "description": "Apple, cherry, citrus, dried fruit, floral lift." },
+    { "id": "wood-spice",     "label": "Wood & Spice",   "order": 4, "description": "Oak, char, leather, pepper, baking spice — barrel and rye influence." },
+    { "id": "nutty",          "label": "Nutty",          "order": 5, "description": "Almond, pecan, walnut — common in older or wheated bourbons." },
+    { "id": "other",          "label": "Other",          "order": 6, "description": "Coffee, smoke, mineral, funk — the anomalies and the bold." }
+  ],
+  "leaves": [
+    { "id": "corn",          "label": "corn",          "category_id": "grain",        "synonyms": ["sweet corn", "fresh corn", "corn syrup", "corn bread"], "common_in_reviews": true,  "pairing_traits": ["sweet"] },
+    { "id": "rye",           "label": "rye",           "category_id": "grain",        "synonyms": ["rye spice", "rye bread", "rye grain"],                  "common_in_reviews": true,  "pairing_traits": ["sharp", "dry"] },
+    { "id": "malt",          "label": "malt",          "category_id": "grain",        "synonyms": ["malted barley", "malted grain", "biscuit malt"],        "common_in_reviews": false, "pairing_traits": ["dry"] },
+    { "id": "bread",         "label": "bread",         "category_id": "grain",        "synonyms": ["fresh bread", "baked bread", "yeasty"],                 "common_in_reviews": false, "pairing_traits": ["creamy"] },
+    { "id": "graham",        "label": "graham",        "category_id": "grain",        "synonyms": ["graham cracker", "honey graham", "biscuit"],            "common_in_reviews": true,  "pairing_traits": ["sweet", "creamy"] },
+
+    { "id": "vanilla",       "label": "vanilla",       "category_id": "sweet",        "synonyms": ["vanilla bean", "vanilla cream", "vanilla custard"],     "common_in_reviews": true,  "pairing_traits": ["sweet", "creamy"] },
+    { "id": "caramel",       "label": "caramel",       "category_id": "sweet",        "synonyms": ["caramelized sugar", "burnt sugar", "caramel sauce"],    "common_in_reviews": true,  "pairing_traits": ["sweet", "creamy"] },
+    { "id": "honey",         "label": "honey",         "category_id": "sweet",        "synonyms": ["clover honey", "wildflower honey", "honeycomb"],        "common_in_reviews": true,  "pairing_traits": ["sweet"] },
+    { "id": "maple",         "label": "maple",         "category_id": "sweet",        "synonyms": ["maple syrup", "maple sugar"],                            "common_in_reviews": true,  "pairing_traits": ["sweet"] },
+    { "id": "butterscotch",  "label": "butterscotch",  "category_id": "sweet",        "synonyms": ["butter caramel", "buttery sweet"],                       "common_in_reviews": true,  "pairing_traits": ["sweet", "creamy"] },
+    { "id": "brown-sugar",   "label": "brown sugar",   "category_id": "sweet",        "synonyms": ["demerara", "muscovado", "raw sugar"],                    "common_in_reviews": true,  "pairing_traits": ["sweet"] },
+    { "id": "molasses",      "label": "molasses",      "category_id": "sweet",        "synonyms": ["dark molasses", "blackstrap", "treacle"],                "common_in_reviews": false, "pairing_traits": ["sweet"] },
+    { "id": "toffee",        "label": "toffee",        "category_id": "sweet",        "synonyms": ["english toffee", "sticky toffee"],                       "common_in_reviews": true,  "pairing_traits": ["sweet", "creamy"] },
+    { "id": "chocolate",     "label": "chocolate",     "category_id": "sweet",        "synonyms": ["dark chocolate", "milk chocolate", "cocoa", "mocha"],    "common_in_reviews": true,  "pairing_traits": ["sweet", "roasted"] },
+
+    { "id": "apple",         "label": "apple",         "category_id": "fruit-floral", "synonyms": ["green apple", "red apple", "baked apple", "apple skin"], "common_in_reviews": true,  "pairing_traits": ["fruity", "bright"] },
+    { "id": "pear",          "label": "pear",          "category_id": "fruit-floral", "synonyms": ["ripe pear", "asian pear"],                              "common_in_reviews": false, "pairing_traits": ["fruity", "bright"] },
+    { "id": "cherry",        "label": "cherry",        "category_id": "fruit-floral", "synonyms": ["black cherry", "sweet cherry", "cherry cordial"],       "common_in_reviews": true,  "pairing_traits": ["fruity", "sweet"] },
+    { "id": "stone-fruit",   "label": "stone fruit",   "category_id": "fruit-floral", "synonyms": ["peach", "apricot", "nectarine", "plum"],                "common_in_reviews": true,  "pairing_traits": ["fruity", "bright"] },
+    { "id": "dried-fruit",   "label": "dried fruit",   "category_id": "fruit-floral", "synonyms": ["raisin", "fig", "date", "prune", "fruitcake"],          "common_in_reviews": true,  "pairing_traits": ["fruity", "sweet"] },
+    { "id": "citrus",        "label": "citrus",        "category_id": "fruit-floral", "synonyms": ["orange peel", "lemon zest", "grapefruit", "candied orange"], "common_in_reviews": true, "pairing_traits": ["bright", "fruity"] },
+    { "id": "berry",         "label": "berry",         "category_id": "fruit-floral", "synonyms": ["blackberry", "blueberry", "berry jam"],                 "common_in_reviews": false, "pairing_traits": ["fruity"] },
+    { "id": "floral",        "label": "floral",        "category_id": "fruit-floral", "synonyms": ["flowers", "honeysuckle", "rose", "lavender", "perfumed"], "common_in_reviews": false, "pairing_traits": ["bright"] },
+
+    { "id": "oak",           "label": "oak",           "category_id": "wood-spice",   "synonyms": ["fresh oak", "polished oak", "white oak"],                "common_in_reviews": true,  "pairing_traits": ["woody"] },
+    { "id": "charred-oak",   "label": "charred oak",   "category_id": "wood-spice",   "synonyms": ["char", "burnt oak", "toasted oak", "barrel char"],      "common_in_reviews": true,  "pairing_traits": ["woody", "roasted"] },
+    { "id": "cedar",         "label": "cedar",         "category_id": "wood-spice",   "synonyms": ["cedarwood", "aromatic cedar"],                          "common_in_reviews": false, "pairing_traits": ["woody", "bright"] },
+    { "id": "tobacco",       "label": "tobacco",       "category_id": "wood-spice",   "synonyms": ["pipe tobacco", "cigar leaf", "cured tobacco"],          "common_in_reviews": true,  "pairing_traits": ["earthy", "dry"] },
+    { "id": "leather",       "label": "leather",       "category_id": "wood-spice",   "synonyms": ["saddle leather", "old leather", "worn leather"],        "common_in_reviews": true,  "pairing_traits": ["earthy", "dry"] },
+    { "id": "cinnamon",      "label": "cinnamon",      "category_id": "wood-spice",   "synonyms": ["red hots", "cinnamon stick", "cassia"],                 "common_in_reviews": true,  "pairing_traits": ["warm"] },
+    { "id": "clove",         "label": "clove",         "category_id": "wood-spice",   "synonyms": ["clove spice", "whole clove"],                            "common_in_reviews": true,  "pairing_traits": ["warm"] },
+    { "id": "black-pepper",  "label": "black pepper",  "category_id": "wood-spice",   "synonyms": ["peppercorn", "cracked pepper", "rye pepper"],            "common_in_reviews": true,  "pairing_traits": ["sharp"] },
+    { "id": "baking-spice",  "label": "baking spice",  "category_id": "wood-spice",   "synonyms": ["allspice", "nutmeg", "mixed spice", "pumpkin spice"],   "common_in_reviews": true,  "pairing_traits": ["warm"] },
+    { "id": "mint",          "label": "mint",          "category_id": "wood-spice",   "synonyms": ["fresh mint", "spearmint", "eucalyptus", "menthol"],     "common_in_reviews": false, "pairing_traits": ["bright"] },
+
+    { "id": "almond",        "label": "almond",        "category_id": "nutty",        "synonyms": ["roasted almond", "marzipan", "amaretto"],                "common_in_reviews": true,  "pairing_traits": ["roasted"] },
+    { "id": "pecan",         "label": "pecan",         "category_id": "nutty",        "synonyms": ["pecan pie", "buttered pecan"],                           "common_in_reviews": true,  "pairing_traits": ["roasted", "sweet"] },
+    { "id": "walnut",        "label": "walnut",        "category_id": "nutty",        "synonyms": ["walnut shell", "candied walnut"],                        "common_in_reviews": false, "pairing_traits": ["roasted", "dry"] },
+
+    { "id": "coffee",        "label": "coffee",        "category_id": "other",        "synonyms": ["espresso", "dark roast", "roasted coffee"],              "common_in_reviews": true,  "pairing_traits": ["roasted"] },
+    { "id": "smoke",         "label": "smoke",         "category_id": "other",        "synonyms": ["campfire", "smoky", "ash", "wood smoke"],                "common_in_reviews": true,  "pairing_traits": ["roasted"] },
+    { "id": "mineral",       "label": "mineral",       "category_id": "other",        "synonyms": ["stone", "flint", "wet stone", "slate"],                  "common_in_reviews": false, "pairing_traits": ["dry"] },
+    { "id": "funk",          "label": "funk",          "category_id": "other",        "synonyms": ["sulphur", "rubber", "petrol", "musty", "earthy funk"],   "common_in_reviews": false, "pairing_traits": ["earthy"] }
+  ]
+}

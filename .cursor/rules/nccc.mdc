@@ -1,0 +1,25 @@
+---
+description: NCCC project conventions — read on every task in this repo.
+alwaysApply: true
+---
+
+This is the NCCC app. Read `CLAUDE.md` at the repo root for full conventions. The summary:
+
+- Private PWA for the Norton Commons Cigar Club (12 members). Not a public app.
+- Stack: Next.js 16 (App Router, RSC, Server Actions), Supabase, Tailwind v4, TypeScript.
+- Models: `gpt-5-mini` for vision + pairing prose, `gpt-5-nano` for chip→wheel mapping.
+
+Honor the design system in `docs/design-system.md`:
+- Brass is the ONE primary-action color per screen.
+- Ember is for lit recommend icons only.
+- Moss is for club-validated pairing markers only.
+- Etched section dividers (`<Divider label="..." />`) at every major break.
+- The Bartender (italic Playfair, `<Voice />`) appears at empty states + recommendations only.
+
+Identity convention: member display ALWAYS uses `formatMemberName(user)` → `"First L"`. Two Pauls in the club.
+
+The flavor wheel is silent infrastructure. Never render sliders. Only aggregated tag clouds.
+
+Prefer Server Components + Server Actions. Default to `import type` for types. Self-documenting names over comments.
+
+Phase status lives in `planning/nccc-implementation-plan.md` — read before adding features outside the current phase.
