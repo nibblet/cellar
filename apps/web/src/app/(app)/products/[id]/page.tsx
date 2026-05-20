@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
+import { PairsWith } from "@/components/pairing";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
+import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
 import { PhotoFrame } from "./photo-frame";
@@ -42,6 +45,21 @@ export default async function ProductDetailPage({
   const groupVoice = await loadGroupVoice(supabase, id, productType);
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
+
+  // Top pairings + per-candidate club-validated status. We resolve in
+  // parallel; both are cheap.
+  const pairings = await loadOrComputeTopPairings(supabase, id, { limit: 3 });
+  const validatedFlags = await Promise.all(
+    pairings.map(async (c) => {
+      const validated = await checkGroupValidation(
+        supabase,
+        productType === "cigar" ? id : c.product_id,
+        productType === "cigar" ? c.product_id : id,
+      );
+      return validated ? c.product_id : null;
+    }),
+  );
+  const validatedPairs = new Set(validatedFlags.filter((x): x is string => x !== null));
 
   const { data: images } = await supabase
     .from("product_images")
@@ -151,9 +169,12 @@ export default async function ProductDetailPage({
 
       <Divider label="Pairs with" />
 
-      <Card>
-        <p className="text-sm text-foreground-subtle">Pairing suggestions arrive in Phase 6.</p>
-      </Card>
+      <PairsWith
+        sourceType={productType}
+        sourceId={id}
+        candidates={pairings}
+        validatedPairs={validatedPairs}
+      />
 
       <Divider label="The facts" />
 
