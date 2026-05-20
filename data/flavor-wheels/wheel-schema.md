@@ -119,3 +119,18 @@ Process:
 1. Collect 30+ days of unmapped chip text from production
 2. Cluster, propose leaf additions or synonym expansions
 3. Bump the wheel version, publish, run a re-mapping job over historical tastings
+
+### Known unmapped descriptors from seed pass (2026-05-20)
+
+Running the bourbon parser against the 1,350-row bourbonExplorer dataset surfaced
+these high-frequency unmapped terms — strong candidates for synonym expansion in v0.2:
+
+| Count | Term | Likely mapping |
+|---|---|---|
+| 940+ | "spice" / "spicy" | → `baking-spice` (or split: needs review) |
+| ~190 | "fruit" / "fruity" / "dark fruit" | → `dried-fruit` |
+| ~70 | "toasted nuts" | → `walnut` |
+| ~70 | "rich" / "smooth" | (no flavor mapping — body descriptors) |
+
+Defer until real NCCC member-typed chips give a parallel signal. External-review
+language and member-spoken language can diverge.

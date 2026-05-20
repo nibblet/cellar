@@ -1,9 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import {
-  PENDING_SIGNUP_COOKIE,
-  type PendingSignup,
-} from "@/app/(auth)/accept-invite/constants";
+import { PENDING_SIGNUP_COOKIE, type PendingSignup } from "@/app/(auth)/accept-invite/constants";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {

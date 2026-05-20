@@ -12,7 +12,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:wheels": "tsx --env-file=.env.local scripts/seed/seed-wheels.ts",
+    "seed:bourbons": "tsx --env-file=.env.local scripts/seed/seed-bourbons.ts",
+    "seed:cigars": "tsx --env-file=.env.local scripts/seed/seed-cigars.ts",
+    "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
+    "seed:all": "pnpm seed:wheels && pnpm seed:bourbons"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -34,8 +39,10 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/ui": "^4.1.7",
+    "csv-parse": "^6.2.1",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
+    "tsx": "^4.22.3",
     "typescript": "^5",
     "vitest": "^4.1.7"
   }
