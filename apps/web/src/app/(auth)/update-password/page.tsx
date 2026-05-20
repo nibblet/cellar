@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { NCCCLogo } from "@/components/brand";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { UpdateForm } from "./update-form";
@@ -15,7 +16,8 @@ export default async function UpdatePasswordPage() {
 
   return (
     <main className="mx-auto max-w-md px-5 py-10 flex-1">
-      <header className="text-center mb-8">
+      <header className="text-center mb-8 flex flex-col items-center">
+        <NCCCLogo size={100} className="mb-4" decorative />
         <h1 className="text-4xl mb-2">NCCC</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">New passphrase</p>
       </header>

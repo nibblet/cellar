@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { NCCCLogo } from "@/components/brand";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AcceptInviteForm } from "./accept-invite-form";
@@ -20,11 +21,12 @@ export default async function AcceptInvitePage({ searchParams }: { searchParams:
   if (error || !inviteId) {
     return (
       <main className="mx-auto max-w-md px-5 py-10 flex-1">
-        <header className="text-center mb-8">
+        <header className="text-center mb-8 flex flex-col items-center">
+          <NCCCLogo size={120} className="mb-4" decorative />
           <h1 className="text-4xl mb-2">NCCC</h1>
         </header>
         <Voice className="text-center">
-          “This invitation isn't valid, sir. Perhaps a member can send you a fresh one.”
+          "This invitation isn't valid, sir. Perhaps a member can send you a fresh one."
         </Voice>
       </main>
     );
@@ -32,7 +34,8 @@ export default async function AcceptInvitePage({ searchParams }: { searchParams:
 
   return (
     <main className="mx-auto max-w-md px-5 py-10 flex-1">
-      <header className="text-center mb-8">
+      <header className="text-center mb-8 flex flex-col items-center">
+        <NCCCLogo size={120} className="mb-4" decorative />
         <h1 className="text-4xl mb-2">NCCC</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">
           Welcome to the club
@@ -40,7 +43,7 @@ export default async function AcceptInvitePage({ searchParams }: { searchParams:
       </header>
 
       <Voice className="text-center mb-8">
-        “A pleasure to have you. Sign in below and your seat will be ready.”
+        "A pleasure to have you. Sign in below and your seat will be ready."
       </Voice>
 
       <AcceptInviteForm token={token} />

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NCCCLogo } from "@/components/brand";
 import { TastingCard } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
@@ -14,15 +15,17 @@ export default async function FeedPage() {
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
-      <header className="text-center mb-6">
+      <header className="text-center mb-6 flex flex-col items-center">
+        <NCCCLogo size={56} className="mb-2" decorative />
         <h1 className="text-3xl">NCCC</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Recent tastings</p>
       </header>
 
       {entries.length === 0 ? (
-        <Card>
-          <Voice className="block mb-3">"Nothing logged yet, sir. The night is young."</Voice>
-          <Link href="/capture" className="block">
+        <Card className="flex flex-col items-center text-center">
+          <NCCCLogo size={96} className="mb-4" decorative />
+          <Voice className="block mb-4">"Nothing logged yet, sir. The night is young."</Voice>
+          <Link href="/capture" className="block w-full">
             <Button size="large" className="w-full">
               Open the humidor
             </Button>

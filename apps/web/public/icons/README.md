@@ -1,6 +1,20 @@
 # NCCC Icon Set
 
-Drop the following files here once we render them from the NCCC logo:
+## The one file that matters right now
+
+Drop the source NCCC logo at:
+
+```
+apps/web/public/icons/nccc-logo.png
+```
+
+This is the single file the `<NCCCLogo />` React component reads from. Once it's in place, the logo shows up on login, reset-password, accept-invite, feed empty state, pairing intros, and anywhere else we call the component.
+
+A square, transparent-background PNG at 512×512 is the right shape. Higher is fine — the component sizes down as needed.
+
+## PWA-specific icon set (defer until launch prep)
+
+Drop the following files here when we're ready to ship PWA-install polish:
 
 | File | Size | Purpose |
 |---|---|---|

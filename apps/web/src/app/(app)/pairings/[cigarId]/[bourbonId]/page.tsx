@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { NCCCLogo } from "@/components/brand";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { fallbackProse, generatePairingProse } from "@/lib/openai/pairing-prose";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -74,7 +75,8 @@ export default async function PairingPage({ params }: { params: Params }) {
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
-      <header className="mb-6">
+      <header className="mb-6 flex flex-col items-center text-center">
+        <NCCCLogo variant="bust" size={64} className="mb-3" decorative />
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">
           The Bartender suggests
         </p>

@@ -26,6 +26,14 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   manifest: "/manifest.webmanifest",
+  icons: {
+    // Point both icon slots at the single logo file. Once the source PNG is
+    // dropped at /icons/nccc-logo.png, the 404 stops and iOS home-screen
+    // shortcuts pick up a real icon. A dedicated apple-touch-icon at the
+    // proper 180x180 ships in a future polish pass.
+    icon: "/icons/nccc-logo.png",
+    apple: "/icons/nccc-logo.png",
+  },
 };
 
 export const viewport: Viewport = {
