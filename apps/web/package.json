@@ -18,6 +18,7 @@
     "seed:cigars": "tsx --env-file=.env.local scripts/seed/seed-cigars.ts",
     "seed:cigars-api": "tsx --env-file=.env.local scripts/seed/seed-cigars-api.ts",
     "seed:cigars-json": "tsx --env-file=.env.local scripts/seed/seed-cigars-json.ts",
+    "seed:cigars-cigarbase": "tsx --env-file=.env.local scripts/seed/seed-cigars-cigarbase.ts",
     "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
     "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
     "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
