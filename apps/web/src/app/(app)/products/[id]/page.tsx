@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PhotoFrame } from "./photo-frame";
 
 type Params = Promise<{ id: string }>;
-type SearchParams = Promise<{ just_captured?: string }>;
+type SearchParams = Promise<{ just_captured?: string; just_saved?: string }>;
 
 export default async function ProductDetailPage({
   params,
@@ -15,7 +15,7 @@ export default async function ProductDetailPage({
   searchParams: SearchParams;
 }) {
   const { id } = await params;
-  const { just_captured } = await searchParams;
+  const { just_captured, just_saved } = await searchParams;
 
   const supabase = await createSupabaseServerClient();
 
@@ -26,6 +26,18 @@ export default async function ProductDetailPage({
     .maybeSingle();
 
   if (error || !product) notFound();
+
+  const { data: auth } = await supabase.auth.getUser();
+  const userId = auth.user?.id ?? null;
+
+  const { data: myTasting } = userId
+    ? await supabase
+        .from("tastings")
+        .select("recommend, chips, note, created_at")
+        .eq("user_id", userId)
+        .eq("product_id", id)
+        .maybeSingle()
+    : { data: null };
 
   const { data: images } = await supabase
     .from("product_images")
@@ -42,7 +54,9 @@ export default async function ProductDetailPage({
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 flex-1">
-      {just_captured ? (
+      {just_saved ? (
+        <Voice className="text-center mb-4">“Noted. Thank you, sir.”</Voice>
+      ) : just_captured ? (
         <Voice className="text-center mb-4">“Here we are. A fine choice.”</Voice>
       ) : null}
 
@@ -77,10 +91,39 @@ export default async function ProductDetailPage({
         </p>
       </Card>
 
+      {myTasting ? (
+        <Card className="mt-4">
+          <p className="text-sm text-foreground-subtle uppercase tracking-widest mb-2">
+            Your tasting
+          </p>
+          <p className="text-base mb-2">
+            <span className={myTasting.recommend ? "text-ember-500" : "text-foreground-subtle"}>
+              ●
+            </span>{" "}
+            {myTasting.recommend ? "You recommend this." : "You passed on this."}
+          </p>
+          {myTasting.chips.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {myTasting.chips.map((c: string) => (
+                <span
+                  key={c}
+                  className="px-2 py-0.5 rounded-full bg-accent-tint text-xs text-foreground border border-accent"
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          {myTasting.note ? (
+            <p className="text-sm text-foreground italic">"{myTasting.note}"</p>
+          ) : null}
+        </Card>
+      ) : null}
+
       <div className="mt-6 flex flex-col gap-3">
         <Link href={`/products/${product.id}/recommend`}>
           <Button size="large" className="w-full">
-            Recommend to NCCC
+            {myTasting ? "Edit your tasting" : "Recommend to NCCC"}
           </Button>
         </Link>
         <Link href={`/products/${product.id}/edit`}>
