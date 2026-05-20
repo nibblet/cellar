@@ -29,11 +29,23 @@ async function main() {
 
   let inserted = 0;
   let updated = 0;
+  let processed = 0;
   const unmappedCounts = new Map<string, number>();
+
+  console.log(
+    `[seed-bourbons] syncing up to ${rows.length} rows (one HTTP round-trip per row — expect several minutes)…`,
+  );
 
   for (const row of rows) {
     const parsed = parseBourbonRow(row);
     if (!parsed) continue;
+
+    processed += 1;
+    if (processed % 50 === 0) {
+      console.log(
+        `[seed-bourbons] ${processed} rows… (inserted ${inserted}, updated ${updated})`,
+      );
+    }
 
     for (const u of parsed.unmapped_descriptors) {
       unmappedCounts.set(u, (unmappedCounts.get(u) ?? 0) + 1);

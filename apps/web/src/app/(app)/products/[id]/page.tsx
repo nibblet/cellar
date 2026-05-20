@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
+import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { ProductType } from "@/lib/wheel";
 import { PhotoFrame } from "./photo-frame";
 
 type Params = Promise<{ id: string }>;
@@ -27,17 +30,14 @@ export default async function ProductDetailPage({
 
   if (error || !product) notFound();
 
+  const productType = product.type as ProductType;
+
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
-  const { data: myTasting } = userId
-    ? await supabase
-        .from("tastings")
-        .select("recommend, chips, note, created_at")
-        .eq("user_id", userId)
-        .eq("product_id", id)
-        .maybeSingle()
-    : { data: null };
+  const groupVoice = await loadGroupVoice(supabase, id, productType);
+  const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
+  const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
 
   const { data: images } = await supabase
     .from("product_images")
@@ -55,9 +55,9 @@ export default async function ProductDetailPage({
   return (
     <main className="mx-auto max-w-md px-5 py-6 flex-1">
       {just_saved ? (
-        <Voice className="text-center mb-4">“Noted. Thank you, sir.”</Voice>
+        <Voice className="text-center mb-4">"Noted. Thank you, sir."</Voice>
       ) : just_captured ? (
-        <Voice className="text-center mb-4">“Here we are. A fine choice.”</Voice>
+        <Voice className="text-center mb-4">"Here we are. A fine choice."</Voice>
       ) : null}
 
       {heroSignedUrl ? (
@@ -70,9 +70,7 @@ export default async function ProductDetailPage({
 
       <h1 className="text-3xl mb-1">{product.name}</h1>
       {product.brand ? <p className="text-base text-foreground-muted">{product.brand}</p> : null}
-      <p className="text-sm uppercase tracking-widest text-foreground-subtle mt-1">
-        {product.type}
-      </p>
+      <p className="text-sm uppercase tracking-widest text-foreground-subtle mt-1">{productType}</p>
 
       {isDraft ? (
         <Card className="mt-6 border border-ember-500">
@@ -86,25 +84,33 @@ export default async function ProductDetailPage({
       <Divider label="The club says" />
 
       <Card>
-        <p className="text-sm text-foreground-subtle">
-          Group voice is empty so far. Be the first to recommend it.
-        </p>
+        <RecommendBar
+          productType={productType}
+          recommendCount={groupVoice.recommend_count}
+          memberCount={groupVoice.member_count}
+        />
       </Card>
 
-      {myTasting ? (
+      {otherTakes.length > 0 ? (
+        <Card className="mt-4">
+          <MemberTakes takes={otherTakes} />
+        </Card>
+      ) : null}
+
+      {myTake ? (
         <Card className="mt-4">
           <p className="text-sm text-foreground-subtle uppercase tracking-widest mb-2">
             Your tasting
           </p>
           <p className="text-base mb-2">
-            <span className={myTasting.recommend ? "text-ember-500" : "text-foreground-subtle"}>
+            <span className={myTake.recommend ? "text-ember-500" : "text-foreground-subtle"}>
               ●
             </span>{" "}
-            {myTasting.recommend ? "You recommend this." : "You passed on this."}
+            {myTake.recommend ? "You recommend this." : "You passed on this."}
           </p>
-          {myTasting.chips.length > 0 ? (
+          {myTake.chips.length > 0 ? (
             <div className="flex flex-wrap gap-1.5 mb-2">
-              {myTasting.chips.map((c: string) => (
+              {myTake.chips.map((c: string) => (
                 <span
                   key={c}
                   className="px-2 py-0.5 rounded-full bg-accent-tint text-xs text-foreground border border-accent"
@@ -114,16 +120,14 @@ export default async function ProductDetailPage({
               ))}
             </div>
           ) : null}
-          {myTasting.note ? (
-            <p className="text-sm text-foreground italic">"{myTasting.note}"</p>
-          ) : null}
+          {myTake.note ? <p className="text-sm text-foreground italic">"{myTake.note}"</p> : null}
         </Card>
       ) : null}
 
       <div className="mt-6 flex flex-col gap-3">
         <Link href={`/products/${product.id}/recommend`}>
           <Button size="large" className="w-full">
-            {myTasting ? "Edit your tasting" : "Recommend to NCCC"}
+            {myTake ? "Edit your tasting" : "Recommend to NCCC"}
           </Button>
         </Link>
         <Link href={`/products/${product.id}/edit`}>
@@ -132,6 +136,18 @@ export default async function ProductDetailPage({
           </Button>
         </Link>
       </div>
+
+      <Divider label="How it tastes" />
+
+      <Card>
+        <TagCloud entries={groupVoice.tag_cloud} />
+      </Card>
+
+      <Divider label="Pairs with" />
+
+      <Card>
+        <p className="text-sm text-foreground-subtle">Pairing suggestions arrive in Phase 6.</p>
+      </Card>
 
       <Divider label="The facts" />
 
