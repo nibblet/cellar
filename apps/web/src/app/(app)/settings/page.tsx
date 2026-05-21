@@ -2,8 +2,10 @@ import Link from "next/link";
 import { Button, Card, Divider } from "@/components/primitives";
 import { ThemeToggle } from "@/components/theme";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
+import { loadMemberPreferences } from "@/lib/preferences/load";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
+import { PreferencesForm } from "./preferences-form";
 
 export default async function SettingsPage() {
   const supabase = await createSupabaseServerClient();
@@ -17,6 +19,8 @@ export default async function SettingsPage() {
   const isAdmin = profile?.role === "admin";
   const displayName = profile ? formatMemberName(profile as MemberNameFields) : "Member";
   const initial = profile?.name_first?.charAt(0).toUpperCase() ?? "?";
+
+  const preferences = auth.user ? await loadMemberPreferences(supabase, auth.user.id) : null;
 
   // Member-since label (e.g. "Member since May 2026")
   const joinedLabel = profile?.joined_at
@@ -65,6 +69,15 @@ export default async function SettingsPage() {
 
       <Divider label="Appearance" />
       <ThemeToggle />
+
+      {preferences ? (
+        <>
+          <Divider label="Preferences" />
+          <Card className="mb-3">
+            <PreferencesForm initial={preferences} />
+          </Card>
+        </>
+      ) : null}
 
       {isAdmin ? (
         <>
