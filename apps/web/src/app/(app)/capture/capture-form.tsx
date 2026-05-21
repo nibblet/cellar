@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button, Card } from "@/components/primitives";
+import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
 import { submitCapture } from "./actions";
 
@@ -18,6 +19,8 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
   const [state, action, pending] = useActionState(submitCapture, initial);
   const [type, setType] = useState<ProductType>("cigar");
   const [preview, setPreview] = useState<string | null>(null);
+  const [preparingPhoto, setPreparingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -70,14 +73,33 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
           capture="environment"
           required
           className="sr-only"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
+          onChange={async (e) => {
+            const input = e.target;
+            const file = input.files?.[0];
+            if (!file) {
+              setPreview(null);
+              setPhotoError(null);
+              return;
+            }
+
+            setPreparingPhoto(true);
+            setPhotoError(null);
+
+            try {
+              const compressed = await compressPhotoForUpload(file);
+              const transfer = new DataTransfer();
+              transfer.items.add(compressed);
+              input.files = transfer.files;
+
               const reader = new FileReader();
               reader.onload = (ev) => setPreview(ev.target?.result as string);
-              reader.readAsDataURL(file);
-            } else {
+              reader.readAsDataURL(compressed);
+            } catch {
               setPreview(null);
+              input.value = "";
+              setPhotoError("Couldn't prepare that photo. Try again.");
+            } finally {
+              setPreparingPhoto(false);
             }
           }}
         />
@@ -102,6 +124,14 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
         </label>
       ) : null}
 
+      {photoError ? (
+        <Card className="border-ember-500">
+          <p className="text-sm text-ember-500" role="alert">
+            {photoError}
+          </p>
+        </Card>
+      ) : null}
+
       {state.status === "error" && (
         <Card className="border-ember-500">
           <p className="text-sm text-ember-500" role="alert">
@@ -110,8 +140,8 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
         </Card>
       )}
 
-      <Button type="submit" size="large" disabled={pending || !preview}>
-        {pending ? "Identifying…" : "Identify"}
+      <Button type="submit" size="large" disabled={pending || preparingPhoto || !preview}>
+        {pending ? "Identifying…" : preparingPhoto ? "Preparing photo…" : "Identify"}
       </Button>
     </form>
   );

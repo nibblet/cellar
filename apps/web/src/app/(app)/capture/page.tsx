@@ -2,6 +2,9 @@ import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { CaptureForm } from "./capture-form";
 
+// Vision ID + storage upload can run 15–30s on a full-res phone photo.
+export const maxDuration = 60;
+
 export default async function CapturePage() {
   const supabase = await createSupabaseServerClient();
 

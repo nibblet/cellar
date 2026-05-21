@@ -20,8 +20,8 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
   if (!(photo instanceof File) || photo.size === 0) {
     return { status: "error", message: "Add a photo before submitting." };
   }
-  if (photo.size > 10 * 1024 * 1024) {
-    return { status: "error", message: "Photo too large (10 MB max)." };
+  if (photo.size > 4 * 1024 * 1024) {
+    return { status: "error", message: "Photo too large (4 MB max)." };
   }
 
   const eventId = (formData.get("event_id") as string | null)?.trim() || null;
