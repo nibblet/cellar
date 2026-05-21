@@ -56,15 +56,25 @@ async function main() {
     .filter("specs->>in_cobb_collection", "eq", "true");
 
   // Every other bourbon row — candidates for merging into a Cobb row.
-  const { data: otherRaw } = await supabase
-    .from("products")
-    .select("id, name, brand, wheel_vector, specs")
-    .eq("type", "bourbon");
+  // Supabase clamps un-ranged selects to 1000 rows; the bourbon catalog is
+  // larger than that, so paginate explicitly. Without this, half the
+  // candidates were silently skipped.
+  const otherRaw: ProductRow[] = [];
+  const pageSize = 1000;
+  for (let from = 0; ; from += pageSize) {
+    const { data: page, error } = await supabase
+      .from("products")
+      .select("id, name, brand, wheel_vector, specs")
+      .eq("type", "bourbon")
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    if (!page || page.length === 0) break;
+    otherRaw.push(...(page as ProductRow[]));
+    if (page.length < pageSize) break;
+  }
 
   const cobbRows = (cobbRaw ?? []) as ProductRow[];
-  const otherRows = ((otherRaw ?? []) as ProductRow[]).filter(
-    (p) => !cobbRows.some((c) => c.id === p.id),
-  );
+  const otherRows = otherRaw.filter((p) => !cobbRows.some((c) => c.id === p.id));
 
   console.log(
     `[dedupe-bourbons] cobb rows: ${cobbRows.length}, other bourbon rows: ${otherRows.length}`,
