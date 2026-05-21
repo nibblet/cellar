@@ -401,6 +401,20 @@ Splash, header bust, small-glass-only variants. Currently using one logo image f
 #### 12. Hand-curated cigar editorial baseline (~100–150)
 Pair with the Halfwheel RSS path: pull editorial reference data for the brands NCCC actually smokes. Generate baseline radar profiles via gpt-5-mini, Paul approves.
 
+**Smoke-test 2026-05-21 audit — known gaps in the current ~2,020-row StickPicks seed.** Of 24 spot-checked staples, 13 returned zero matches; another 3 returned one. Confirmed-missing club staples to add first:
+- **Padron 1964 / 1926 / Family Reserve** (entire flagship line absent)
+- **Liga Privada No. 9 and T52** (only sub-line `H99 Churrasco` is present)
+- **My Father Le Bijou 1922**
+- **Davidoff Nicaragua**
+- **Tatuaje Black**
+- **Oliva Melanio** (Serie V present, single SKU only)
+- **La Aroma de Cuba Mi Amor**
+- **Aging Room Quattro**
+- **Diesel Whiskey Row**
+- **Ashton VSG**
+- **Nica Rustica** — promoted from a draft via in-session backfill; needs a real seed entry so future re-seeds don't drift.
+The audit also found Fuente Opus X, Hemingway Short Story, and Oliva Serie V at one SKU each — likely a single representative vitola rather than the full line.
+
 #### 13. Schema first-class fields
 Promote `style_family`, `tier_seed`, `dsp_code`, `mash_bill` from inside `products.specs` (jsonb) to dedicated columns. Enables better indexing + filter UIs.
 
