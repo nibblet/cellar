@@ -23,6 +23,19 @@ export default async function SettingsPage() {
         <p className="text-sm text-foreground-muted mt-1">{auth.user?.email}</p>
       </header>
 
+      <Divider label="Club" />
+      <Card className="mb-3">
+        <Link
+          href="/events"
+          className="block text-base text-foreground hover:text-foreground-muted"
+        >
+          Meetups →
+        </Link>
+        <p className="text-sm text-foreground-subtle mt-1">
+          The calendar of NCCC nights, past and upcoming.
+        </p>
+      </Card>
+
       {isAdmin ? (
         <>
           <Divider label="Admin" />

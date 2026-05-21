@@ -1,9 +1,16 @@
 import Link from "next/link";
 import { NCCCLogo } from "@/components/brand";
-import { TastingCard } from "@/components/feed";
+import { TastingCard, UpcomingMeetupCard } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+type UpcomingEvent = {
+  id: string;
+  name: string;
+  date: string;
+  notes: string | null;
+};
 
 export default async function FeedPage() {
   const supabase = await createSupabaseServerClient();
@@ -13,6 +20,21 @@ export default async function FeedPage() {
     entries.map((e) => e.hero_image_path),
   );
 
+  // Look forward 48h for any scheduled meetup; promote it above the feed.
+  // Meetups left primary nav in UX-2, so this surface is how members
+  // discover one is coming up.
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const horizon = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const { data: upcomingRaw } = await supabase
+    .from("events")
+    .select("id, name, date, notes")
+    .gte("date", today)
+    .lte("date", horizon)
+    .order("date", { ascending: true })
+    .limit(1);
+  const upcoming = (upcomingRaw as UpcomingEvent[] | null)?.[0] ?? null;
+
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="text-center mb-6 flex flex-col items-center">
@@ -20,6 +42,12 @@ export default async function FeedPage() {
         <h1 className="text-3xl">NCCC</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Recent tastings</p>
       </header>
+
+      {upcoming ? (
+        <div className="mb-4">
+          <UpcomingMeetupCard event={upcoming} />
+        </div>
+      ) : null}
 
       {entries.length === 0 ? (
         <Card className="flex flex-col items-center text-center">
