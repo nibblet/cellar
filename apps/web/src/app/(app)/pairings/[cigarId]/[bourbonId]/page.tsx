@@ -2,9 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NCCCLogo } from "@/components/brand";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
-import { fallbackProse, generatePairingProse } from "@/lib/openai/pairing-prose";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
-import { scorePair } from "@/lib/pairing/score";
+import { ensurePairingProse } from "@/lib/pairing/prose-cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TraitVector } from "@/lib/wheel";
 
@@ -33,45 +32,9 @@ export default async function PairingPage({ params }: { params: Params }) {
   if (cigar.type !== "cigar" || bourbon.type !== "bourbon") notFound();
   if (!cigar.trait_vector || !bourbon.trait_vector) notFound();
 
-  const { score, reasons } = scorePair(cigar.trait_vector, bourbon.trait_vector);
-
   const validated = await checkGroupValidation(supabase, cigarId, bourbonId);
 
-  // Load cached prose; generate if missing. LLM failures fall back to a
-  // deterministic Bartender line composed from the rule reasons.
-  const { data: cached } = await supabase
-    .from("pairings_cache")
-    .select("rationale_text")
-    .eq("cigar_id", cigarId)
-    .eq("bourbon_id", bourbonId)
-    .maybeSingle();
-
-  let prose: string;
-  if (cached?.rationale_text) {
-    prose = cached.rationale_text;
-  } else {
-    try {
-      const { data: auth } = await supabase.auth.getUser();
-      prose = await generatePairingProse({
-        cigar: { name: cigar.name, brand: cigar.brand },
-        bourbon: { name: bourbon.name, brand: bourbon.brand },
-        reasons,
-        score,
-        supabase,
-        userId: auth.user?.id ?? null,
-      });
-      // Best-effort cache. Don't block the response on the write.
-      void supabase
-        .from("pairings_cache")
-        .upsert(
-          { cigar_id: cigarId, bourbon_id: bourbonId, score, rationale_text: prose },
-          { onConflict: "cigar_id,bourbon_id" },
-        );
-    } catch (err) {
-      console.warn("[pairings] prose generation failed:", err);
-      prose = fallbackProse({ reasons, score });
-    }
-  }
+  const prose = await ensurePairingProse(supabase, cigarId, bourbonId);
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">

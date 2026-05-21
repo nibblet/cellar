@@ -13,6 +13,7 @@ import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { loadCatalogBrowse } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
+import { ensurePairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import { hasAnyPreferences } from "@/lib/preferences/types";
@@ -94,6 +95,17 @@ async function ForYouBody({
         await loadDailyPourCandidates(supabase, preferences),
       )
     : null;
+
+  // One LLM call per day-member at most: ensure the picked pair has a real
+  // Bartender line. Cached read on subsequent renders. The engine's
+  // single-rule fallback gets used only when generation errors.
+  if (dailyPour) {
+    dailyPour.rationale = await ensurePairingProse(
+      supabase,
+      dailyPour.cigar_id,
+      dailyPour.bourbon_id,
+    );
+  }
 
   const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
   const forYouByEntry = new Map<string, boolean>();

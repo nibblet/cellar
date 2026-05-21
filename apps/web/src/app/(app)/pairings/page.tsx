@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NCCCLogo } from "@/components/brand";
 import { Card, Divider, Voice } from "@/components/primitives";
 import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
+import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
 
@@ -27,6 +28,7 @@ type ValidatedCacheRow = {
 type RecommendationEntry = {
   source: { id: string; name: string; brand: string | null; type: ProductType };
   candidate: PairingCandidate;
+  cached_prose: string | null;
 };
 
 export default async function PairingsIndexPage() {
@@ -161,7 +163,11 @@ async function loadRecommendations(
     if (!t.product) continue;
     const candidates = await loadOrComputeTopPairings(supabase, t.product_id, { limit: 1 });
     const top = candidates[0];
-    if (top) results.push({ source: t.product, candidate: top });
+    if (!top) continue;
+    const cigarId = t.product.type === "cigar" ? t.product.id : top.product_id;
+    const bourbonId = t.product.type === "bourbon" ? t.product.id : top.product_id;
+    const cached_prose = await loadCachedPairingProse(supabase, cigarId, bourbonId);
+    results.push({ source: t.product, candidate: top, cached_prose });
   }
   return results;
 }
@@ -220,9 +226,9 @@ function RecommendationCard({ entry }: { entry: RecommendationEntry }) {
               {Math.round(candidate.score)}/100
             </p>
           </div>
-          {candidate.reasons[0] ? (
+          {(entry.cached_prose ?? candidate.reasons[0]?.reason) ? (
             <p className="text-sm text-foreground-muted italic mt-2 line-clamp-2">
-              "{candidate.reasons[0].reason}"
+              "{entry.cached_prose ?? candidate.reasons[0]?.reason}"
             </p>
           ) : null}
         </Card>

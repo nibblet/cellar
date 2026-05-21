@@ -23,6 +23,7 @@ Rules of voice:
 - Address the reader directly when natural; "sir" used sparingly.
 - Never recommend trying it as a question; just describe the pairing.
 - If the score is below 55, be honest about why the pair is uncertain — do not oversell.
+- Plain prose. Never use markdown emphasis (no asterisks, underscores, or backticks). The italic styling is applied by the renderer.
 `;
 
 /**
@@ -63,9 +64,31 @@ export async function generatePairingProse(args: ProseArgs): Promise<string> {
     metadata: { score, rule_count: reasons.length },
   });
 
-  const text = completion.choices[0]?.message.content?.trim();
-  if (!text) throw new Error("Pairing prose generator returned no content");
-  return text;
+  const raw = completion.choices[0]?.message.content?.trim();
+  if (!raw) throw new Error("Pairing prose generator returned no content");
+  return stripMarkdownEmphasis(raw);
+}
+
+/**
+ * Strip the common markdown emphasis characters the model sometimes wraps
+ * around its prose even when the prompt forbids them. Conservative — only
+ * leading/trailing asterisks/underscores, plus matched pairs surrounding
+ * the whole string. Inline emphasis inside the line is left alone (the
+ * model rarely produces it, and a stray asterisk inside is less harmful
+ * than an aggressive global strip that could damage punctuation).
+ */
+function stripMarkdownEmphasis(input: string): string {
+  let text = input.trim();
+  // Remove a leading run of * or _ (commonly the model opens with **...** or *...*).
+  text = text.replace(/^[*_]+/, "").replace(/[*_]+$/, "");
+  // Drop any stray quote characters the model wrapped around the whole line.
+  if (
+    (text.startsWith('"') && text.endsWith('"')) ||
+    (text.startsWith("“") && text.endsWith("”"))
+  ) {
+    text = text.slice(1, -1);
+  }
+  return text.trim();
 }
 
 /**
