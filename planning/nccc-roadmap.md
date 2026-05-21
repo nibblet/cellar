@@ -195,17 +195,21 @@ These are the post-launch features most likely to surface in member feedback wit
 
 ---
 
-#### 3. The Daily Pour (Phase 8 — NEW)
-**Why third:** A reason to open the app on non-meetup nights. Currently there's no daily hook — the feed is empty if nobody logged anything yesterday.
+#### 3. The Daily Pour (Phase 8 — NEW) — **✅ shipped 2026-05-21**
+**As built (commit 321ad0e):**
+- Home-page hero card sits above the For You feed body only (catalog tabs stay catalog-pure).
+- Deterministic per-member-per-day pick via FNV-1a hash of `<memberId>|<UTC date>` modulo the candidate pool; rotates at UTC midnight.
+- Candidate pool: preference-biased — match cigars against the member's prefs, take up to 5, run the pairing engine in parallel. Falls back to top 20 club-validated rows from `pairings_cache` when prefs are empty or yield no cigar matches.
+- Bartender voice line in italic Playfair (uses the engine's single-rule fallback for now; see prose-cache note below). Brass "Open the pairing →" link drops into the existing `/pairings/[cigar]/[bourbon]` route.
+- Moss border + "● club tried" eyebrow when the picked pair is club-validated.
+- 11 new unit tests on the deterministic selector (162 total).
 
-**Scope:**
-- Home-page hero card: a single rotating cigar + bourbon pairing for tonight, Bartender-narrated.
-- Source signal blend:
-  - Recent member activity (someone Recommended this in the last 24h).
-  - Pairing-engine top result that's also club-validated.
-  - Paul's tier signal (weight Tier 1–2 on weekends, workhorses weeknights).
-- Moss accent when the suggestion is club-validated.
-- Tap-through opens the pairing screen.
+**Deferred from original scope:**
+- Recent-activity weighting + Paul's tier signal aren't wired in v1 — pure preference-bias + club-validated fallback was the v1 cut.
+- LLM-generated Bartender prose: we still fall back to the engine's `reasons[0].reason` text on the hero (same generic line on the Pairings index too). Resolved by the new "pairing-prose cache" follow-up logged below.
+
+**Followups (logged 2026-05-21):**
+- **Pairing-prose cache.** Persist one LLM-generated Bartender line per `(cigar_id, bourbon_id)` pair so the Daily Pour hero and the Pairings index can render real prose without burning an OpenAI call per page render. The `pairings_cache` table already has a `rationale_text` column — wire it. Generate on-demand the first time the pair is surfaced; subsequent renders read the cached line.
 
 **Stickiness signal:** Daily opens. The marketing-style hook for a private app.
 
