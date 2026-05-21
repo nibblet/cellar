@@ -1,6 +1,6 @@
 # NCCC — Resume Prompt (Genesis)
 
-Paste this as your first message in a new Claude session to pick up where we left off. Last updated **2026-05-21**.
+Paste this as your first message in a new Claude session to pick up where we left off. Last updated **2026-05-21** (after the #5 trilogy + smoke-test fixes shipped).
 
 ---
 
@@ -49,45 +49,48 @@ When in doubt, **the design system overrides everything else.** Brass is the sin
 | UX-5 (partial) — Settings hero-first + theme toggle + Meetups placement | ✅ |
 | Wheel v0.1-syn1 + v0.1-syn2 synonym expansion | ✅ |
 | Dedupe + repair (bourbons cross-source) | ✅ |
+| Smoke-test fixes — pairings empty state, product-vector aggregation, dedupe pagination | ✅ |
+| Tier 2 #5 — Tasting + Pairing Preferences (member_preferences + Settings UI + derive/match lib) | ✅ |
+| Tier 2 #5a — FOR YOU match badge on Feed cards | ✅ |
+| Tier 2 #5b — Tabbed Feed (For You / Cigars / Bourbons; Favorites deferred) | ✅ |
 
-**120/120 unit tests passing on main.** Typecheck + lint + build all green.
+**151/151 unit tests passing on main.** Typecheck + lint + build all green.
 
 ---
 
 ## What's left (in priority order)
 
 ### Pre-launch
-- [ ] Smoke-test the post-fix feed/pairings/settings in browser
+- [x] Smoke-test the post-fix feed/pairings/settings in browser — completed 2026-05-21
 - [ ] Send first invite to a real member, verify the onboarding round-trip
 
-### Next build target — the #5 trilogy
-Decided 2026-05-21. These three roadmap items are tightly coupled and best built as one block:
+### Now-shipped (was the planned #5 trilogy)
+The trilogy landed in three commits on 2026-05-21: `c6a5dcc` (#5), `84bf5f5`
+(#5a), `91e67f9` (#5b). Decisions that locked along the way:
+- Bourbon styles derived from `whiskey_type` + `mash_bill` (covers the full ~2,000 catalog, not just the 101-row Cobb subset that has `style_family`).
+- Cigar wrappers grouped into 8 buckets (collapsed from ~20 raw values).
+- Proof band as 3 multi-select chips (≤90 / 90–110 / ≥110), not a slider.
+- Match semantic: binary OR across all four axes. Self-skip on Feed.
+- Favorites tab deferred to land alongside Tier 3 #9.
 
-1. **Tier 2 #5 — Tasting + Pairing Preferences**
-   - `member_preferences` table
-   - Settings UI to edit (bourbon styles + proof band; cigar strengths + wrappers)
-   - **Positives only — no "avoids."** Defaults all-unselected (Bartender stays neutral until member opts in)
+### Next build target
+With the #5 trilogy shipped, the natural next move is one of:
+- **Tier 1 #1 — The Cellar** on `/members/[id]` profile as a tab. Big surface, blocks #5b Favorites + #9 You-page expansion.
+- **Tier 1 #2 — The Session** (restructure tasting flow into First/Second/Final Third for cigars, Nose/Palate/Finish for bourbons). Touches capture + product-detail.
+- **Tier 1 #3 — Daily Pour** (home hero with rotating Bartender suggestion). Smaller, would surface preferences immediately.
 
-2. **Tier 2 #5a — Match badge on Feed cards**
-   - Subtle "FOR YOU" pill, top-right of feed cards, when product matches viewer's prefs
-   - Binary match (one trait suffices)
-   - Skip the badge on viewer's own tastings
-   - Empty prefs → badge never lights
+Ask Paul which one to tackle first.
 
-3. **Tier 2 #5b — Tabbed Feed (For You / Cigars / Bourbons / Favorites)**
-   - Segmented selector under the Feed header
-   - Catalog browse tabs ranked by preferences when present, randomized otherwise
-   - Reuses photo-as-card primitive; PhotoPlaceholder for catalog rows without member photos
-
-### Other Tier 1 / 2 items, in roughly this order
-- **Tier 1 #1 — The Cellar** (placement decided: lives on `/members/[id]` profile as a tab, not a bottom-nav slot)
-- **Tier 1 #2 — The Session** (restructure tasting flow into First/Second/Final Third for cigars, Nose/Palate/Finish for bourbons)
-- **Tier 1 #3 — Daily Pour** (home hero with rotating Bartender suggestion)
+### Other Tier 1 / 2 items, in roughly this order after the above
 - **Tier 2 #4 — Depth view with radar chart** (the "open the depth" affordance already scaffolded in UX-3)
 - **Tier 3 #15 — Member achievement badges** (First Light, First Pour, etc. — derived from existing tastings/events data)
+- **Tier 3 #12 — Hand-curated cigar editorial baseline.** Smoke-test audit found 13 missing club staples (Padron 1964/1926/Family Reserve, Liga Privada No. 9/T52, Le Bijou 1922, Davidoff Nicaragua, Tatuaje Black, Oliva Melanio, La Aroma de Cuba Mi Amor, Aging Room Quattro, Diesel Whiskey Row, Ashton VSG) — concrete starting list logged inline in the roadmap.
 
 ### Remaining UX pass
 - **UX-4 — Capture flow wow factor** (animated sepia develop transition, tactile press-and-hold chips, optional haptic). Last UX item.
+
+### Open chips (separate sessions)
+- **Jefferson's apostrophe damage in catalog.** Spawned as its own task before the #5 trilogy started. Likely lives in a bourbon-parser or seed normalization step; check whether it has been picked up before chasing it again.
 
 See `planning/nccc-roadmap.md` for full scope on each.
 
@@ -98,7 +101,11 @@ See `planning/nccc-roadmap.md` for full scope on each.
 - **Wheel version stays at 0.1.** Synonyms are additive metadata; freshness stamped via `updated` field (`2026-05-20-syn2` is current). Bump to `0.2` only when leaves change meaning or new leaves are added.
 - **"Line-level is fine" for batch collapsing.** Elijah Craig Barrel Proof batches merge into one product. Same for Larceny BP batches, Bardstown Fusion #s, Maker's Mark FAE variants.
 - **Cross-line stays distinct.** Rye expressions vs. bourbon expressions of the same brand are separate products. Sub-line projects (Maltster, Single Oak Project, etc.) are separate.
-- **Preferences are positive-only.** No "things to avoid" — the Bartender suggests *toward* taste.
+- **Preferences are positive-only.** No "things to avoid" — the Bartender suggests *toward* taste. (Locked in #5 schema; the `member_preferences` table has no avoid columns.)
+- **FOR YOU pill is top-LEFT on photo-as-card surfaces** (#5a). The ember dot owns top-right; the two never collide.
+- **Tabbed Feed is URL-driven** (`?tab=cigars` etc.), not client-state. Lets bookmarks and back/forward work.
+- **Product-level trait_vector aggregation only fills products that lack a trait_vector.** Curated seed signal is never overwritten by one or two member tastings. Drafts + seed gaps auto-fill from chip-mapped tasting vectors; seeded products stay as-is.
+- **Bourbon dedupe paginates explicitly.** Supabase's silent 1000-row clamp was masking half the catalog from comparison. Don't remove the pagination loop.
 - **Cellar lives on member profiles, not its own nav tab.** Inventory is identity; nav stays at 4 + FAB.
 - **Theme toggle persists to localStorage.** "Auto" leaves both `html.dark` / `html.light` off, lets `@media (prefers-color-scheme)` decide.
 - **Logo on dark mode** uses `filter: invert(1); mix-blend-mode: screen` via `.nccc-logo-mark` class. White-bg PNG renders as white-ink-on-transparent in dark mode.

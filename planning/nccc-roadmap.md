@@ -10,7 +10,7 @@ A living catalog of ideas inspired by other apps, translated into NCCC's voice, 
 
 ---
 
-## Current status — 2026-05-20
+## Current status — 2026-05-21
 
 What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / base ships but enhancements pending, ❌ = not shipped.
 
@@ -21,13 +21,13 @@ What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / 
 | 2 — Capture & identify | 🟡 | Camera + GPT-5 mini vision + fuzzy-match working end-to-end. UPC barcode scanner deferred. |
 | 3 — Tasting flow | 🟡 | One-tap "Recommend to NCCC" with optional chips + note + silent wheel mapping. **"The Session" (thirds / nose-palate-finish) NOT shipped.** |
 | 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts. **Depth view (radar + per-member adjustments + moss consensus) NOT shipped.** |
-| 5 — Feed/Members/Events | 🟡 | All three pages + bottom nav. Still called "Feed" (not "Lounge"). Member profile lacks Pairing Preferences / Favorites / History / Education. |
+| 5 — Feed/Members/Events | 🟡 | All three pages + bottom nav. Feed now tabbed (For You / Cigars / Bourbons; Favorites still pending). Member profile still lacks Favorites / History / Education. Tasting + Pairing Preferences shipped in Settings (#5 ✅). |
 | 5.5 — The Cellar | ❌ | Not started. |
 | 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Bartender prose, cache, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail. **Two-card stacked layout + "Try this tonight" + "Suggest another" rotation NOT shipped.** |
 | 7 — Polish / admin | 🟡 | Settings + sign-out, admin invites, product edit, logo reuse, end-of-night recap card. Bartender illustration variants + Education library NOT shipped. |
 | 8 — Daily Pour | ❌ | Not started. |
 
-**Tests:** 87 unit tests passing on `main` (wheel math, pairing rules, scoring, name normalization, fallback mappers, group voice aggregation, identity).
+**Tests:** 151 unit tests passing on `main` (wheel math, pairing rules, scoring, name normalization, fallback mappers, group voice aggregation, identity, preference derivation + matching).
 
 **Catalog state:**
 - Bourbons: ~1,350 from bourbonExplorer (rated)
@@ -232,7 +232,23 @@ For members who want to nerd out beyond the chip-cloud face.
 
 ---
 
-#### 5b. Tabbed Feed — For You / Cigars / Bourbons / Favorites (NEW, 2026-05-21)
+#### 5b. Tabbed Feed — For You / Cigars / Bourbons / Favorites (NEW, 2026-05-21) — **✅ partial 2026-05-21**
+
+**As built (commit 91e67f9):** three tabs ship — For You / Cigars /
+Bourbons. URL-driven (`?tab=cigars`) so bookmarks and back/forward work.
+Active tab gets a brass underline (matches the bottom-nav vocabulary).
+Catalog tabs reuse a new `CatalogCard` over the photo-as-card primitive
+with PhotoPlaceholder for catalog rows lacking member photos. Matches
+float to the top of the catalog list (stable sort, preserves alpha order
+within each bucket); empty preferences fall back to pure alpha. The page
+subtitle adapts to the active tab ("Recent tastings", "The cigar shelf",
+"The bourbon shelf"). Catalog limit: 100 rows per tab (paginator
+deferred). FOR YOU pill from #5a lights identically on catalog cards.
+
+**Deferred:** Favorites tab — the `favorites` table is still in Tier 3 #9
+scope. Add the fourth tab when that lands.
+
+Below preserved for historical scope reference:
 
 The current Feed home is a single chronological list of member tastings.
 Lovely when the club is active, sparse when it isn't. Inspired by
@@ -305,7 +321,18 @@ ranking has something to rank against.
 
 ---
 
-#### 5a. Match badge on Feed cards (NEW, 2026-05-21)
+#### 5a. Match badge on Feed cards (NEW, 2026-05-21) — **✅ shipped 2026-05-21**
+
+**As built (commit 84bf5f5):** the FOR YOU pill lights at the top-LEFT
+of feed cards (top-right was already claimed by the ember dot) when a
+product matches the viewer's preferences. Etched-glass treatment
+(low-opacity ink scrim, paper-50 border, 10px tracked-widest uppercase
+"For you"). The badge gates on three conditions: viewer has at least
+one preference set, the tasting belongs to someone else, and the
+matcher fires on at least one axis. Match is computed server-side per
+feed card (no client-side recomputation).
+
+Below preserved for historical scope reference:
 
 Direct partner to #5. Once a member has stored preferences, every feed
 surface checks: does this product match what you tend toward? If yes,
@@ -343,18 +370,28 @@ get better matches → I see more 'for you' tags".
 
 ---
 
-#### 5. Tasting + Pairing Preferences (Phase 5 enhancement → Profile)
-**Scope (expanded 2026-05-21 from smoke-test feedback):**
-- Settings page entry: "What you tend toward." Lives in the You section.
-- **Bourbon preferences:** style families (wheated, high-rye, standard, single malt, Irish whiskey, rye), proof bands (≤100 / 100–115 / ≥115), things to avoid.
-- **Cigar preferences:** strength (mild, medium, medium-full, full), wrapper-color leanings (claro / colorado / maduro / oscuro), size/format inclinations, things to avoid.
-- Feeds the pairing engine as personalization weights — biases the top-N
-  candidates toward profiles the member actually likes.
-- Also drives commentary: Bartender intro lines on product detail and the
-  Daily Pour can reference the member's stated preferences ("Knowing you
-  lean wheated, sir, this one might surprise you").
-- Member can update anytime; no defaults baked in (avoid mis-signaling for
-  members who haven't filled it out yet).
+#### 5. Tasting + Pairing Preferences (Phase 5 enhancement → Profile) — **✅ shipped 2026-05-21**
+**As built (commit c6a5dcc):**
+- `member_preferences` table (one row per member, four `text[]` columns, RLS scoped to `auth.uid()`).
+- `lib/preferences/` module: vocabularies, display labels, derive helpers
+  (mash_bill → style, proof → band, wrapper → bucket), and a binary OR
+  matcher. 31 unit tests cover the catalog's real-world messiness.
+- **Cigar strength:** 5 buckets (mild / mild-medium / medium / medium-full / full).
+- **Cigar wrapper:** 8 grouped buckets (Connecticut, Habano, Maduro/Broadleaf, San Andrés, Corojo, Sumatra, Cameroon, Oscuro) collapsing 20+ raw catalog values.
+- **Bourbon style:** 6 derived tags (bourbon, rye, wheated, high-rye, bottled-in-bond, single-barrel). Derived from `whiskey_type` + `mash_bill` rather than the sparse `style_family` column — covers the full ~2,000-row catalog.
+- **Bourbon proof:** 3 multi-select chip bands (≤90 / 90–110 / ≥110).
+- Settings UI: a Preferences card sits between Appearance and Admin,
+  opening with a Bartender intro line. Single Save button + inline
+  "Saved." confirmation. Server action whitelists each axis against its
+  vocabulary before upsert.
+- Positives-only: there is no avoid list. Empty preferences mean the
+  Bartender stays neutral — the #5a badge and #5b ranking both light up
+  only when the member has opted in.
+
+**Followups consumed elsewhere:** the planned "things to avoid" axis was
+dropped per the 2026-05-21 lock. Pairing-engine personalization weights
+mentioned in the original scope are not yet wired — the engine still
+scores universally; preferences only drive #5a + #5b ranking today.
 
 ---
 
