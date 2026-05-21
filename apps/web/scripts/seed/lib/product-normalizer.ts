@@ -84,10 +84,57 @@ export function canonicalIdentity(brand: string | null, name: string): string {
 }
 
 /**
+ * Tokens that signal an expression style (rye recipe vs. bourbon recipe).
+ * If one side has any of these as a standalone token and the other side
+ * lacks them entirely, the two products are distinct expressions even if
+ * their other tokens overlap by subset.
+ *
+ * Calibrated from real false-positive cases in the first dedupe pass:
+ *   - Woodford Reserve Distiller's Select Rye  vs.  Woodford Reserve Distiller's Select (bourbon)
+ *
+ * "malt"/"wheat" are deliberately omitted — "malted barley" appears in
+ * almost every bourbon mash bill and would produce noisy matches.
+ */
+const EXPRESSION_TOKENS = new Set(["rye"]);
+
+/**
+ * Multi-word phrases that mark a distinct sub-line (not a batch). If one
+ * side mentions one of these and the other doesn't, the products are NOT
+ * the same line even if their other tokens overlap.
+ *
+ * Calibrated from real false-positive cases:
+ *   - New Riff Kentucky Straight Rye  vs.  New Riff Maltster BiB (Rye Recipe)
+ *   - Buffalo Trace Single Oak Project Barrel #80  vs.  plain Buffalo Trace
+ *
+ * Phrases are checked by joining the normalized token sequence into a
+ * single string and doing substring containment.
+ */
+const SUBLINE_PHRASES = [
+  "single oak project",
+  "maltster",
+  "experimental",
+  "prototype",
+];
+
+function hasSubLineMarker(joined: string): string | null {
+  for (const phrase of SUBLINE_PHRASES) {
+    if (joined.includes(phrase)) return phrase;
+  }
+  return null;
+}
+
+/**
  * Decide whether two products represent the same bottle. Conservative:
  * requires the smaller token set to be fully contained in the larger one,
- * AND at least 2 tokens in common (so single-token matches like "Pappy"
- * don't false-positive across "Pappy Van Winkle 12" and "Pappy 23").
+ * AND at least 2 tokens in common, AND no expression / sub-line mismatch.
+ *
+ * Calibration notes:
+ *   - First-pass matcher (subset + ≥2 tokens) produced 3 false positives in
+ *     a 1,098-row run. All three involved either an expression marker (`rye`
+ *     vs. no rye) or a sub-line phrase (`single oak project`, `maltster`).
+ *   - Rules R1 + R2 below catch those without rejecting clean batch-level
+ *     merges (Elijah Craig batches, Larceny batches, Bardstown Fusion #s,
+ *     Maker's Mark FAE codes) which the catalog treats as line-level.
  */
 export type ProductIdentity = {
   brand: string | null;
@@ -98,8 +145,10 @@ export function looksLikeSameProduct(
   a: ProductIdentity,
   b: ProductIdentity,
 ): boolean {
-  const aTokens = new Set(normalizeTokens(`${a.brand ?? ""} ${a.name}`));
-  const bTokens = new Set(normalizeTokens(`${b.brand ?? ""} ${b.name}`));
+  const aTokenList = normalizeTokens(`${a.brand ?? ""} ${a.name}`);
+  const bTokenList = normalizeTokens(`${b.brand ?? ""} ${b.name}`);
+  const aTokens = new Set(aTokenList);
+  const bTokens = new Set(bTokenList);
 
   if (aTokens.size === 0 || bTokens.size === 0) return false;
 
@@ -107,9 +156,26 @@ export function looksLikeSameProduct(
 
   if (smaller.size < 2) return false;
 
+  // R0: subset containment (existing rule).
   for (const t of smaller) {
     if (!larger.has(t)) return false;
   }
+
+  // R1: expression token asymmetry. If exactly one side has "rye" (or future
+  // markers in EXPRESSION_TOKENS), the products are different expressions.
+  for (const tok of EXPRESSION_TOKENS) {
+    if (aTokens.has(tok) !== bTokens.has(tok)) return false;
+  }
+
+  // R2: sub-line phrase asymmetry. If one side names a sub-line and the
+  // other doesn't, they're different products.
+  const aJoined = aTokenList.join(" ");
+  const bJoined = bTokenList.join(" ");
+  const aSub = hasSubLineMarker(aJoined);
+  const bSub = hasSubLineMarker(bJoined);
+  if ((aSub && !bSub) || (!aSub && bSub)) return false;
+  if (aSub && bSub && aSub !== bSub) return false;
+
   return true;
 }
 

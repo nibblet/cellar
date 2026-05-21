@@ -125,6 +125,99 @@ describe("looksLikeSameProduct", () => {
     const b = { brand: "Pappy Van Winkle", name: "Pappy Van Winkle 23 Year" };
     expect(looksLikeSameProduct(a, b)).toBe(false);
   });
+
+  // R1: expression-marker asymmetry (rye vs. bourbon recipe).
+  describe("R1: expression-marker mismatch", () => {
+    it("rejects Woodford Reserve Distiller's Select Rye vs. Woodford Reserve Distiller's Select (bourbon)", () => {
+      const rye = {
+        brand: "Woodford Reserve",
+        name: "Woodford Reserve Distiller's Select Rye, Single Barrel / Barrel Strength",
+      };
+      const bourbon = {
+        brand: "Woodford Reserve",
+        name: "Woodford Reserve Distiller's Select, 45.2%",
+      };
+      expect(looksLikeSameProduct(rye, bourbon)).toBe(false);
+    });
+
+    it("still accepts two rye products with overlapping identity tokens", () => {
+      const a = {
+        brand: "Castle & Key",
+        name: "Castle & Key Restoration Rye, Single Barrel",
+      };
+      const b = {
+        brand: "Castle & Key",
+        name: "Castle & Key Restoration Rye Single Barrel",
+      };
+      expect(looksLikeSameProduct(a, b)).toBe(true);
+    });
+  });
+
+  // R2: sub-line phrase asymmetry.
+  describe("R2: sub-line phrase mismatch", () => {
+    it("rejects New Riff Rye vs. New Riff Maltster Rye Recipe", () => {
+      const cobb = {
+        brand: "New Riff",
+        name: "New Riff Kentucky Straight Rye",
+      };
+      const bex = {
+        brand: "New Riff Distilling",
+        name: "New Riff Maltster Bottled in Bond Kentucky Straight (Rye Recipe), 50%",
+      };
+      expect(looksLikeSameProduct(cobb, bex)).toBe(false);
+    });
+
+    it("rejects Buffalo Trace Single Oak Project vs. plain Buffalo Trace", () => {
+      const cobb = {
+        brand: "Buffalo Trace Single Oak Project",
+        name: "Buffalo Trace Single Oak Project Rye Bourbon, Barrel #80",
+      };
+      const bex = {
+        brand: "Buffalo Trace",
+        name: "Buffalo Trace, 45%",
+      };
+      expect(looksLikeSameProduct(cobb, bex)).toBe(false);
+    });
+
+    it("still accepts two Single Oak Project bottles against each other", () => {
+      const a = {
+        brand: "Buffalo Trace Single Oak Project",
+        name: "Single Oak Project Barrel #80",
+      };
+      const b = {
+        brand: "Buffalo Trace Single Oak Project",
+        name: "Single Oak Project Barrel #80, 45%",
+      };
+      expect(looksLikeSameProduct(a, b)).toBe(true);
+    });
+  });
+
+  // Still accepts batch-level collapses (per "line-level is fine" policy).
+  describe("line-level batch collapse remains permitted", () => {
+    it("accepts Elijah Craig Barrel Proof Batch A125 vs. another batch", () => {
+      const a = {
+        brand: "Elijah Craig",
+        name: "Elijah Craig Barrel Proof, Batch A125",
+      };
+      const b = {
+        brand: "Heaven Hill",
+        name: "Elijah Craig Barrel Proof (Batch A117), 63.5%",
+      };
+      expect(looksLikeSameProduct(a, b)).toBe(true);
+    });
+
+    it("accepts Maker's Mark FAE-02 vs. FAE-01", () => {
+      const a = {
+        brand: "Maker's Mark",
+        name: "Maker's Mark Wood Finishing Series 2021 FAE-02",
+      };
+      const b = {
+        brand: "Maker's Mark",
+        name: "Maker s Mark Wood Finishing Series 2021 Release: FAE-01, 55.15%",
+      };
+      expect(looksLikeSameProduct(a, b)).toBe(true);
+    });
+  });
 });
 
 describe("matchConfidence", () => {
