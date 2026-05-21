@@ -42,6 +42,19 @@ export default async function PairingsIndexPage() {
     ? await loadRecommendations(supabase, userId)
     : [];
 
+  // Knowing whether the member has *any* recommends lets us distinguish
+  // "nothing on your shelf yet" from "you have a shelf but the Bartender
+  // can't pair these products yet" (typically: source missing trait_vector).
+  const recommendCount = userId
+    ? ((
+        await supabase
+          .from("tastings")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("recommend", true)
+      ).count ?? 0)
+    : 0;
+
   // Club-validated pairings from cache. These show up regardless of whose
   // tastings drove them — moss-marked, top of page when present.
   const { data: validatedRaw } = await supabase
@@ -55,6 +68,7 @@ export default async function PairingsIndexPage() {
   const validated = (validatedRaw as unknown as ValidatedCacheRow[] | null) ?? [];
 
   const hasContent = recommendations.length > 0 || validated.length > 0;
+  const recommendedButNoPairs = !hasContent && recommendCount > 0;
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
@@ -68,12 +82,29 @@ export default async function PairingsIndexPage() {
 
       {!hasContent ? (
         <Card className="text-center">
-          <Voice className="block mb-3">
-            "Recommend a cigar or pour first, sir. The Bartender works from your shelf."
-          </Voice>
-          <Link href="/capture" className="text-sm text-accent hover:text-accent-hover underline">
-            Open the humidor →
-          </Link>
+          {recommendedButNoPairs ? (
+            <>
+              <Voice className="block mb-3">
+                "Your shelf is set, sir, but the Bartender hasn't taken the measure of these yet. A
+                few more notes and the matches will come."
+              </Voice>
+              <Link href="/" className="text-sm text-accent hover:text-accent-hover underline">
+                Back to the feed →
+              </Link>
+            </>
+          ) : (
+            <>
+              <Voice className="block mb-3">
+                "Recommend a cigar or pour first, sir. The Bartender works from your shelf."
+              </Voice>
+              <Link
+                href="/capture"
+                className="text-sm text-accent hover:text-accent-hover underline"
+              >
+                Open the humidor →
+              </Link>
+            </>
+          )}
         </Card>
       ) : (
         <>

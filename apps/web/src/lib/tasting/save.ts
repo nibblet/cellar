@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackMapFromChips, mapChipsAndNoteToWheel } from "@/lib/openai/map-wheel";
 import type { ProductType } from "@/lib/wheel";
+import { backfillProductVectorIfMissing } from "./aggregate";
 
 const WHEEL_VERSION = "0.1";
 
@@ -51,10 +52,16 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
     throw new Error(`Failed to save tasting: ${insertError?.message ?? "no row"}`);
   }
 
+  // Immediately give vectorless products (drafts, seed gaps) a usable
+  // trait_vector from this first tasting so the pairing engine can place
+  // them. The LLM refine below repeats this with a better wheel vector.
+  void backfillProductVectorIfMissing(supabase, productId);
+
   // Fire-and-forget LLM refinement. Caller doesn't await this.
   void refineTastingVector({
     supabase,
     userId,
+    productId,
     tastingId: created.id,
     productType,
     chips,
@@ -67,6 +74,7 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
 async function refineTastingVector(args: {
   supabase: SupabaseClient;
   userId: string;
+  productId: string;
   tastingId: string;
   productType: ProductType;
   chips: string[];
@@ -88,10 +96,10 @@ async function refineTastingVector(args: {
 
     await args.supabase.from("tastings").update({ wheel_vector: vector }).eq("id", args.tastingId);
 
-    // Note: product-level aggregate wheel/trait vectors stay catalog-seeded
-    // in Phase 3. Aggregation across member tastings lands in Phase 4 along
-    // with the group-voice view — we want it computed against confirmed group
-    // signal, not the first member's first tasting.
+    // Re-run the product-level backfill with the refined vector. Still gated
+    // on the product currently lacking a trait_vector, so seeded products
+    // remain untouched.
+    await backfillProductVectorIfMissing(args.supabase, args.productId);
   } catch (err) {
     console.warn("[refineTastingVector] LLM mapper failed:", err);
   }
