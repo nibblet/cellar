@@ -120,17 +120,51 @@ Process:
 2. Cluster, propose leaf additions or synonym expansions
 3. Bump the wheel version, publish, run a re-mapping job over historical tastings
 
-### Known unmapped descriptors from seed pass (2026-05-20)
+### Evolution log
 
-Running the bourbon parser against the 1,350-row bourbonExplorer dataset surfaced
-these high-frequency unmapped terms — strong candidates for synonym expansion in v0.2:
+The wheel JSON file's `updated` field carries a freshness stamp (e.g.
+`2026-05-20-syn2`) for each in-place synonym pass. The `version` stays at
+`0.1` while we're only adding synonyms — bump to `0.2` only when leaves
+change meaning or new leaves are added.
 
-| Count | Term | Likely mapping |
-|---|---|---|
-| 940+ | "spice" / "spicy" | → `baking-spice` (or split: needs review) |
-| ~190 | "fruit" / "fruity" / "dark fruit" | → `dried-fruit` |
-| ~70 | "toasted nuts" | → `walnut` |
-| ~70 | "rich" / "smooth" | (no flavor mapping — body descriptors) |
+**v0.1-syn1 (2026-05-20)** — first calibration pass against seeded review data.
 
-Defer until real NCCC member-typed chips give a parallel signal. External-review
-language and member-spoken language can diverge.
+Cigar wheel additions:
+- `soil` ← "earth" (925 hits in seed pass)
+- `vanilla` ← "cream", "creamy" (824)
+- `almond` ← "nuts", "nutty", "almonds" (370)
+- `black-pepper` ← "spice", "red pepper" (233)
+- `cinnamon` ← "sweet spice", "baking spice" (191)
+- `char` ← "smoke", "smoky", "charcoal", "mesquite" (92)
+
+Bourbon wheel additions:
+- `baking-spice` ← "spice", "sweet spice", "warm spice" (940+ from bourbonExplorer)
+- `dried-fruit` ← "fruit", "fruity", "dark fruit" (~190)
+- `walnut` ← "toasted nuts", "nuts", "nutty" (~70)
+- `black-pepper` ← "pepper", "peppery", "spicy"
+- `charred-oak` ← "smoked oak"
+- `almond` ← "almonds"
+
+**v0.1-syn2 (2026-05-20)** — second pass driven by Paul's whiskey collection xlsx + re-tally of bourbonExplorer after syn1.
+
+Bourbon wheel additions:
+- `bread` ← "wheat", "wheated", "toasted grain" (wheated bourbons + bread-ish notes)
+- `dried-fruit` ← "wine-influenced", "sherry", "port", "cognac", "cognac-influenced" (cask-finish vocabulary)
+- `charred-oak` ← "toasted", "deep oak", "oak-driven", "soft oak"
+- `baking-spice` ← "baking spices" (plural), "light spice"
+
+Matcher enhancement (lib/wheel/synonyms.ts):
+- `matchChip` now does a two-pass lookup: exact match first (preserves
+  multi-word synonyms like "dark fruit", "burnt sugar"), then strips
+  intensity / hedge modifiers (`rich`, `deep`, `light`, `soft`, `bold`,
+  `subtle`, `hint`, `touch`, `notes`, `note`, `of`, `a`, `some`, `lots`)
+  and retries. Catches "rich oak" → oak, "Rich caramel" → caramel,
+  "hint of mint" → mint, "rich fruit" → dried-fruit (via the synonym).
+- "dark" is NOT a modifier — exact-match wins for the meaningful synonyms.
+
+Body / mouthfeel descriptors that correctly stay unmapped (no flavor mapping):
+- "rich" / "Rich" — most frequent
+- "smooth" / "Smooth"
+- "bold" / "Bold"
+- "soft" — when standalone
+- "robust", "mellow", "light", "complex", "layered"
