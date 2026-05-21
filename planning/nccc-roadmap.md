@@ -219,20 +219,41 @@ These are the post-launch features most likely to surface in member feedback wit
 
 For members who want to nerd out beyond the chip-cloud face.
 
-#### 4. Depth view with radar chart (Phase 4 enhancement)
-**Scope:**
-- Tap-through from product detail into a deeper layer.
-- 8-axis radar: Strength, Body, Sweetness, Spice, Finish, Earthiness, Creaminess, Complexity (cigars); equivalents for bourbon.
-- Three overlaid layers:
-  - Editorial baseline shape (curated 0–10 reference).
-  - Each member's adjustments as outlined dots, attributable.
-  - Club consensus shape as soft moss fill.
-- Per-axis drag-to-adjust UI for the viewer's own dots.
-- Chip add/remove per member.
-- Free-text Session notes by member, per phase.
-- **No 0–100 aggregate score, ever.**
+#### 4. Depth view with radar chart (Phase 4 enhancement) — **✅ partial 2026-05-21**
 
-**Schema:** `products.editorial_baseline_profile jsonb`, new `product_adjustments` table.
+**As built (commit 3567227):**
+- New `/products/[id]/depth` route showing a pure-SVG radar over the
+  10 PAIRING_TRAITS (sweet, creamy, warm, sharp, woody, earthy,
+  roasted, bright, dry, fruity). Reusing the existing axes — instead
+  of the originally planned 8-axis cigar / bourbon-specific set —
+  saved a derive layer and means every product with a `trait_vector`
+  already has a shape to draw, with no new aggregation.
+- `DepthAffordance` (previously a scaffold) now renders as a real
+  brass Link when the product has a vector, and as a disabled
+  Bartender card when it doesn't.
+- Header + back link + Bartender voice line + footnote setting
+  expectations for the layered passes.
+
+**Followups (deliberate v1 cuts):**
+- **Member adjustments.** Outlined attributable dots over the
+  baseline shape. Needs the `product_adjustments` table (per-member,
+  per-axis offset). Per-axis drag-to-adjust UI on top.
+- **Club consensus shape.** Soft moss fill that's the average of all
+  members' adjusted vectors. Only surfaces when N members have
+  contributed.
+- **Chip add/remove per member.** Part of "The Session" (Tier 1 #2)
+  more than this surface — defer alignment with that work.
+- **Free-text Session notes per phase.** Also Tier 1 #2 territory.
+- **Custom 8-axis vocabulary** (Strength/Body/Spice/Finish/etc.). The
+  10-trait axes hold up well for v1; revisit if members find the
+  pairing-trait names too abstract on the radar face.
+
+**Schema (deferred):** `products.editorial_baseline_profile jsonb`
+isn't necessary while we're using `trait_vector` as the baseline.
+`product_adjustments` lands with the member-adjustments followup.
+
+**Locked invariant:** No 0–100 aggregate score, ever — even on the
+deeper face.
 
 ---
 
