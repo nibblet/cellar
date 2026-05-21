@@ -5,6 +5,7 @@ import { PhotoFrame, PhotoPlaceholder } from "./photo-frame";
 type TastingCardProps = {
   entry: FeedEntry;
   signedHero: string | null;
+  forYou?: boolean;
 };
 
 /**
@@ -25,13 +26,24 @@ type TastingCardProps = {
  * sepia-gradient card with an etched cigar/glencairn glyph and NCCC
  * watermark — overlays compose identically.
  */
-export function TastingCard({ entry, signedHero }: TastingCardProps) {
+export function TastingCard({ entry, signedHero, forYou = false }: TastingCardProps) {
   const Overlays = (
     <>
       {/* Ember dot — top-right, only when this member recommended */}
       {entry.recommend ? (
         <div className="absolute top-3 right-3 z-10" role="img" aria-label="Recommended">
           <span className="block w-3 h-3 rounded-full bg-ember-500 shadow-[0_0_10px_var(--ember-500)] ring-2 ring-paper-50/50" />
+        </div>
+      ) : null}
+
+      {/* FOR YOU pill — top-left, only when this product matches the viewer's
+          preferences and the tasting is someone else's. Etched-glass style,
+          intentionally subtle (positives-only: doesn't shout). */}
+      {forYou ? (
+        <div className="absolute top-3 left-3 z-10">
+          <span className="px-2 py-0.5 rounded-full text-[10px] tracking-widest uppercase text-paper-50 bg-ink-900/40 border border-paper-50/40 backdrop-blur-[2px]">
+            For you
+          </span>
         </div>
       ) : null}
 

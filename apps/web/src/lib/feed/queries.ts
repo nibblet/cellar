@@ -10,6 +10,7 @@ export type FeedEntry = {
   product_name: string;
   product_brand: string | null;
   product_type: ProductType;
+  product_specs: Record<string, unknown> | null;
   hero_image_path: string | null;
   recommend: boolean;
   chips: string[];
@@ -43,7 +44,7 @@ export async function loadFeed(
       `
       id, user_id, recommend, chips, note, created_at, event_id,
       user:users(name_first, name_last_initial),
-      product:products(id, name, brand, type),
+      product:products(id, name, brand, type, specs),
       event:events(name)
     `,
     )
@@ -64,7 +65,13 @@ export async function loadFeed(
     created_at: string;
     event_id: string | null;
     user: MemberNameFields | null;
-    product: { id: string; name: string; brand: string | null; type: ProductType } | null;
+    product: {
+      id: string;
+      name: string;
+      brand: string | null;
+      type: ProductType;
+      specs: Record<string, unknown> | null;
+    } | null;
     event: { name: string } | null;
   };
 
@@ -98,6 +105,7 @@ export async function loadFeed(
     product_name: r.product?.name ?? "",
     product_brand: r.product?.brand ?? null,
     product_type: (r.product?.type ?? "cigar") as ProductType,
+    product_specs: r.product?.specs ?? null,
     hero_image_path: heroByProduct.get(r.product?.id ?? "") ?? null,
     recommend: r.recommend,
     chips: r.chips ?? [],

@@ -3,6 +3,9 @@ import { NCCCLogo } from "@/components/brand";
 import { TastingCard, UpcomingMeetupCard } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
+import { loadMemberPreferences } from "@/lib/preferences/load";
+import { productMatchesPreferences } from "@/lib/preferences/match";
+import { hasAnyPreferences } from "@/lib/preferences/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type UpcomingEvent = {
@@ -14,11 +17,33 @@ type UpcomingEvent = {
 
 export default async function FeedPage() {
   const supabase = await createSupabaseServerClient();
-  const entries = await loadFeed(supabase, { limit: 50 });
+  const { data: auth } = await supabase.auth.getUser();
+  const viewerId = auth.user?.id ?? null;
+
+  const [entries, preferences] = await Promise.all([
+    loadFeed(supabase, { limit: 50 }),
+    viewerId ? loadMemberPreferences(supabase, viewerId) : Promise.resolve(null),
+  ]);
   const signed = await signImagePaths(
     supabase,
     entries.map((e) => e.hero_image_path),
   );
+
+  // Pre-compute the FOR YOU flag per entry. The badge only lights when the
+  // viewer has opted into at least one trait AND the tasting belongs to
+  // someone else AND the product matches at least one axis.
+  const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
+  const forYouByEntry = new Map<string, boolean>();
+  if (matchesEnabled && preferences) {
+    for (const e of entries) {
+      if (e.user_id === viewerId) continue;
+      const matches = productMatchesPreferences(
+        { type: e.product_type, specs: e.product_specs },
+        preferences,
+      );
+      if (matches) forYouByEntry.set(e.tasting_id, true);
+    }
+  }
 
   // Look forward 48h for any scheduled meetup; promote it above the feed.
   // Meetups left primary nav in UX-2, so this surface is how members
@@ -69,6 +94,7 @@ export default async function FeedPage() {
                 signedHero={
                   entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
                 }
+                forYou={forYouByEntry.get(entry.tasting_id) ?? false}
               />
             ))}
           </div>
