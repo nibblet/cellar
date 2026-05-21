@@ -9,7 +9,9 @@ const sampleRow: BourbonCsvRow = {
   Year_Made: "2022",
   Distillery: "Jack Daniel Distillery",
   Mash_Bill: "80% corn, 12% malted barley, 8% rye",
-  Flavor_Profile: "caramel, oak, vanilla, spice",
+  // 'spice' maps to baking-spice (wheel v0.1-syn1). 'smooth' is a mouthfeel
+  // descriptor, not a flavor — kept here as a stable unmapped canary.
+  Flavor_Profile: "caramel, oak, vanilla, spice, smooth",
   "Aging Period": "4",
 };
 
@@ -43,10 +45,16 @@ describe("parseBourbonRow", () => {
     expect(parsed?.wheel_vector.vanilla).toBe(3);
   });
 
-  it("captures unmapped descriptors for later review", () => {
-    // 'spice' isn't a canonical bourbon wheel leaf (it's covered by black-pepper / cinnamon / etc.)
+  it("maps 'spice' onto baking-spice via the v0.1-syn1 synonym expansion", () => {
     const parsed = parseBourbonRow(sampleRow);
-    expect(parsed?.unmapped_descriptors).toContain("spice");
+    expect(parsed?.wheel_vector["baking-spice"]).toBe(3);
+  });
+
+  it("captures genuinely unmapped descriptors (mouthfeel terms) for later review", () => {
+    // 'smooth' is mouthfeel, not flavor — it correctly stays unmapped even
+    // after wheel evolution.
+    const parsed = parseBourbonRow(sampleRow);
+    expect(parsed?.unmapped_descriptors).toContain("smooth");
   });
 
   it("strips parenthetical owners from distillery", () => {

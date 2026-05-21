@@ -1,0 +1,7 @@
+# Personal/private seed inputs — never committed.
+# This directory holds source files that should stay on the local machine:
+#   - Cobb_Whiskey_Collection.xlsx (Paul's whiskey shelf)
+#   - any future member-specific catalogs
+*
+!.gitignore
+!README.md

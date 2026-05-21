@@ -19,6 +19,7 @@
     "seed:cigars-api": "tsx --env-file=.env.local scripts/seed/seed-cigars-api.ts",
     "seed:cigars-json": "tsx --env-file=.env.local scripts/seed/seed-cigars-json.ts",
     "seed:cigars-cigarbase": "tsx --env-file=.env.local scripts/seed/seed-cigars-cigarbase.ts",
+    "seed:cobb-whiskey": "tsx --env-file=.env.local scripts/seed/seed-cobb-whiskey.ts",
     "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
     "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
     "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
@@ -45,6 +46,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/ui": "^4.1.7",
     "csv-parse": "^6.2.1",
+    "exceljs": "^4.4.0",
     "fast-xml-parser": "^5.8.0",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",

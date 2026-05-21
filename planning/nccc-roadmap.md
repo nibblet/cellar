@@ -53,6 +53,73 @@ That's ship-ready. Everything below is post-launch.
 
 ---
 
+## UI/UX Pass v1 — sequenced ahead of Tier 1 features
+
+Agreed 2026-05-20 (Paul + Claude design conversation). The baseline app is shipped and functional, but several surfaces need a visual pass before we keep stacking features on top. Build in order — each step sets the visual vocabulary the next one inherits.
+
+**Working principles for this pass:**
+- iPhone-first. Test every change in mobile viewport before declaring done.
+- Honor `docs/design-system.md`: brass = single primary action, ember = lit recommend, moss = club-validated pairing, etched dividers at section breaks, Bartender voice in italic Playfair.
+- Run `anthropic-skills:frontend-design` per-screen, not whole-app — keeps the existing identity intact.
+- Photo-as-card is the new visual primitive. Overlays, scrims, etched glass chips inherit from the feed work.
+
+### Bug bar — fix before/with the pass
+- **Feed overflow:** content wider than the mobile viewport. Likely a `flex` child without `min-w-0` or an unconstrained `<img>`. Audit the whole `(app)/` shell for horizontal overflow while we're in there.
+- **Bottom nav overflow:** the 5-tab grid pushes past `max-w-md` on narrow viewports. Will be resolved by the nav redesign below but verify the fix.
+
+### Sequence
+
+#### UX-1. Feed photo-overlay redesign — **first**
+Pivot the feed from list-row (64px thumb + text) to **photo-as-card** with overlays. Highest-visited screen; sets the vocabulary for product detail and member profile.
+
+- Photo becomes the card (sepia treatment preserved, full-bleed within card padding).
+- Member tag (`formatMemberName` → "Paul C") overlaid bottom-left, sepia gradient scrim behind for legibility, Playfair italic.
+- 2–3 descriptor chips overlaid bottom-right, etched-glass style (low-opacity surface, subtle border).
+- Ember dot moves to top-right corner when lit.
+- Product name + brand remain below the photo in a compact strip.
+- Fix horizontal overflow as part of this work.
+
+#### UX-2. Bottom nav redesign — center-FAB + icons
+- **4 tabs + center Capture FAB**, not 5 equal tabs. Brass-rimmed elevated circle for Capture (still respects "brass = primary action" since Capture IS the primary action of the shell).
+- Outline icons above labels (Lucide or custom etched glyphs). Stroke thickens on active.
+- Brass underline stays for active state (don't fill — would break brass rule).
+- Drop **Meetups** from primary nav → move under **You**. Surface a Meetups card on Feed when one is scheduled in the next 48h.
+- Final shape: `[Feed] [Members] [⊕ Capture] [Pairings] [You]`.
+- Verify overflow is gone at all iPhone widths (320 / 375 / 390 / 430).
+
+#### UX-3. Product detail deep-dive design
+Most-visited screen after feed. Currently functional but flat. Needs to support **dense info without losing the clean face**.
+
+- Hero photo with overlay treatment inherited from Feed (member who first captured + their descriptors).
+- "THE CLUB SAYS" tag cloud as the visual centerpiece — bigger, more typographic, less list-y.
+- Bartender voice intro line (italic Playfair).
+- CONSTRUCTION section (Tier 2 item #6 promoted here — data's already in `products.specs`).
+- THE FACTS as a dense info-strip, not a stacked list (e.g. `Proof 100 · Age 7yr · Mashbill 51/39/10`).
+- Pairs With panel — moss accent when club-validated.
+- "Open the depth" tap-through scaffolded (radar chart itself is Tier 2 #4, but the affordance lands here).
+
+#### UX-4. Capture flow — add wow factor
+Currently a form. Should feel ceremonial — like a Polaroid being developed.
+
+- Photo capture → animated sepia develop transition (1–2s, skippable).
+- Chip selection as tactile press-and-hold pills, not checkboxes. Selected chips animate up with weight.
+- Recommend-to-NCCC as the brass primary at bottom (already is, but elevate it).
+- Bartender does NOT appear here (per design system — preserve).
+- Optional: shutter haptic on capture (iOS PWA supports `navigator.vibrate` on some installs).
+
+#### UX-5. You / Settings buildout — **needs clarification before building**
+Paul wants the **You** section expanded to hold member preferences with flag/badge selections.
+
+**Open questions for Paul:**
+- What preferences? (Pairing Preferences from Tier 2 #5 is one — strength range, style families, avoids. What else?)
+- "Flag or badge selections" — does this mean: (a) toggle preferences on/off with visible badges, (b) member achievement badges, or (c) flagging products as favorites/saved?
+- Where does Meetups live within You? Sub-page or surfaced inline?
+- Does Cellar (Tier 1 #1) land here or stay as its own tab when built?
+
+**Decision needed before scoping UX-5.** Skip in build order until clarified — UX-1 → UX-2 → UX-3 → UX-4 can proceed in parallel branches.
+
+---
+
 ## Post-launch roadmap, prioritized by impact
 
 Ranked by what NCCC members will most notice / value after they're using the app daily. **Build these in tier order**, but each tier is parallelizable internally.
