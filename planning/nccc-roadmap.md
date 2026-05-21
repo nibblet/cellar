@@ -232,6 +232,79 @@ For members who want to nerd out beyond the chip-cloud face.
 
 ---
 
+#### 5b. Tabbed Feed — For You / Cigars / Bourbons / Favorites (NEW, 2026-05-21)
+
+The current Feed home is a single chronological list of member tastings.
+Lovely when the club is active, sparse when it isn't. Inspired by
+TikTok's For-You / Following pattern: turn the Feed into a tabbed
+browsing surface so there's always something to look at, ranked by the
+viewer's taste.
+
+**Tabs (segmented selector under the page header):**
+
+- **For You** — current behavior. NCCC tastings, newest first. The
+  page lands here by default. Tasting cards continue to carry the
+  match badge from #5a when applicable.
+- **Cigars** — catalog browse. ~2,020 cigars from StickPicks + any
+  member-contributed. Card layout reuses Feed photo-as-card; without a
+  member photo the stylized PhotoPlaceholder carries the look.
+- **Bourbons** — catalog browse, same shape.
+- **Favorites** — products the member has hearted. Empty state with
+  a Bartender prompt to favorite something. Same products surface on
+  the member profile per UX-5; this tab is just the home-page entry.
+
+**Ranking inside Cigars / Bourbons tabs:**
+- If preferences exist (#5), order by a simple match score:
+  preference-matched products first (subtly tagged), then high-rated
+  catalog entries, then random tail. Pairing-engine score is NOT
+  used here — that's for cross-product matching, not browse ranking.
+- If no preferences, fall back to randomized-with-recent-tastings-
+  prioritized. Anything a club member has touched lately bubbles up.
+- Cache the rank order per session so scrolling stays stable; refresh
+  on pull-to-refresh or 1h TTL.
+
+**Card behavior:**
+- Tap → product detail page (existing route).
+- Photo: member-contributed hero when present, else PhotoPlaceholder
+  with the etched cigar/glencairn glyph.
+- Match badge ("FOR YOU") top-right when the viewer's preferences
+  match — same component from #5a.
+- A small ember pip can mark products the viewer has personally
+  recommended; a moss pip can mark products the club has validated
+  via group-validated pairings. Both are subtle — the goal is
+  glanceability without competing with the photo.
+
+**Catalog-image gap (data dependency):**
+We currently only have member-contributed photos. Catalog rows have no
+default imagery. The Cigars / Bourbons tabs will mostly render
+placeholders until a member captures each product. Three paths to
+populate later:
+1. Pull image URLs from the cigar-api / CigarBase RapidAPI endpoints
+   we already integrated (CigarBase returns image_url on most rows).
+2. Hand-curate a starter set tied to Tier 3 #12.
+3. Accept stylized-placeholder-as-default; let real photos accrete
+   via captures.
+
+Option 3 is the design-system-honest answer — the etched-glyph
+placeholder is intentional, not a hole. But (1) is cheap once
+CigarBase's subscription gate is sorted.
+
+**Scope cut for v1:**
+- No infinite scroll — pagination by "Load more" button. Keeps the
+  query budget honest for a 12-person Supabase free-tier.
+- No filters beyond the tab itself. Brand / strength / style filters
+  ride the Cellar work in Tier 1 #1.
+
+**Schema:** none new. Reads from existing `products`, `tastings`,
+`member_favorites` (#9), `member_preferences` (#5).
+
+**Why Tier 2 not Tier 1:** the For-You tab already exists; the
+catalog tabs are additive discovery surfaces, not load-bearing for
+the core capture-and-recommend loop. Build #5 + #5a first so the
+ranking has something to rank against.
+
+---
+
 #### 5a. Match badge on Feed cards (NEW, 2026-05-21)
 
 Direct partner to #5. Once a member has stored preferences, every feed
