@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { ThemeInitScript } from "@/components/theme";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,9 +52,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} dark h-full antialiased`}
+      // Don't hard-code a theme class here — ThemeInitScript runs first
+      // and applies the user's stored choice (or leaves it empty so the
+      // OS preference wins). Default appearance stays dark via the
+      // @media (prefers-color-scheme: dark) block in globals.css.
+      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <ThemeInitScript />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
         {children}
       </body>

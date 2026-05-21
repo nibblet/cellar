@@ -44,7 +44,7 @@ export function NCCCLogo({
           alt={alt}
           width={size * 1.6}
           height={size * 1.6}
-          className="absolute -left-[30%] -top-[20%] max-w-none"
+          className="nccc-logo-mark absolute -left-[30%] -top-[20%] max-w-none"
         />
       </div>
     );
@@ -57,7 +57,7 @@ export function NCCCLogo({
       alt={alt}
       width={size}
       height={size}
-      className={cn("rounded-full", className)}
+      className={cn("nccc-logo-mark rounded-full", className)}
       aria-hidden={decorative ? true : undefined}
     />
   );

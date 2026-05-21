@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button, Card, Divider } from "@/components/primitives";
-import { formatMemberName } from "@/lib/identity";
+import { ThemeToggle } from "@/components/theme";
+import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
 
@@ -14,14 +15,43 @@ export default async function SettingsPage() {
     .maybeSingle();
 
   const isAdmin = profile?.role === "admin";
+  const displayName = profile ? formatMemberName(profile as MemberNameFields) : "Member";
+  const initial = profile?.name_first?.charAt(0).toUpperCase() ?? "?";
+
+  // Member-since label (e.g. "Member since May 2026")
+  const joinedLabel = profile?.joined_at
+    ? `Member since ${new Date(profile.joined_at).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })}`
+    : null;
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
-      <header className="mb-6">
-        <p className="text-sm tracking-widest uppercase text-foreground-subtle">You</p>
-        <h1 className="text-3xl mt-1">{profile ? formatMemberName(profile) : "Settings"}</h1>
-        <p className="text-sm text-foreground-muted mt-1">{auth.user?.email}</p>
+      {/* Hero — avatar + name + email + role, big enough to feel like an
+          identity card rather than a settings header. */}
+      <header className="mb-6 flex flex-col items-center text-center">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-tint to-accent/30 border border-accent/40 flex items-center justify-center mb-4">
+          <span className="font-display text-4xl text-foreground">{initial}</span>
+        </div>
+        <h1 className="text-4xl">{displayName}</h1>
+        {auth.user?.email ? (
+          <p className="text-sm text-foreground-muted mt-1">{auth.user.email}</p>
+        ) : null}
+        <div className="flex items-center gap-2 mt-3">
+          {isAdmin ? (
+            <span className="text-[10px] uppercase tracking-widest text-accent px-2 py-0.5 rounded-full bg-accent-tint border border-accent/40">
+              Admin
+            </span>
+          ) : null}
+          {joinedLabel ? (
+            <span className="text-[11px] text-foreground-subtle">{joinedLabel}</span>
+          ) : null}
+        </div>
       </header>
+
+      <Divider label="Appearance" />
+      <ThemeToggle />
 
       <Divider label="Club" />
       <Card className="mb-3">

@@ -197,20 +197,27 @@ For members who want to nerd out beyond the chip-cloud face.
 
 ---
 
-#### 5. Pairing Preferences (Phase 5 enhancement → Profile)
-**Scope:**
-- Settings page entry: "What you tend toward."
-- Member sets strength range, favorite style families, things to avoid.
-- Feeds the pairing engine as personalization weights.
+#### 5. Tasting + Pairing Preferences (Phase 5 enhancement → Profile)
+**Scope (expanded 2026-05-21 from smoke-test feedback):**
+- Settings page entry: "What you tend toward." Lives in the You section.
+- **Bourbon preferences:** style families (wheated, high-rye, standard, single malt, Irish whiskey, rye), proof bands (≤100 / 100–115 / ≥115), things to avoid.
+- **Cigar preferences:** strength (mild, medium, medium-full, full), wrapper-color leanings (claro / colorado / maduro / oscuro), size/format inclinations, things to avoid.
+- Feeds the pairing engine as personalization weights — biases the top-N
+  candidates toward profiles the member actually likes.
+- Also drives commentary: Bartender intro lines on product detail and the
+  Daily Pour can reference the member's stated preferences ("Knowing you
+  lean wheated, sir, this one might surprise you").
+- Member can update anytime; no defaults baked in (avoid mis-signaling for
+  members who haven't filled it out yet).
 
 ---
 
-#### 6. CONSTRUCTION section on product detail (Idea 1.1)
-**Scope:**
-- Promote wrapper/binder/filler/country (cigars) and mashbill/proof/age/distillery (bourbons) to their own labeled section on the product detail face, above THE FACTS.
-- Pull from `products.specs` (already populated by the cigar and bourbon seeders).
-
-**Effort:** Small (~30 min). The data's already there; this is just a layout addition.
+#### 6. CONSTRUCTION section on product detail (Idea 1.1) — **✅ shipped UX-3**
+Wrapper / binder / filler / origin / vitola / strength (cigars) and
+distillery / mashbill / proof / age / style family / DSP (bourbons) now
+have their own labeled section above THE FACTS on the product detail
+page. THE FACTS itself became a dense single-line info strip in the same
+pass.
 
 ---
 
@@ -224,8 +231,20 @@ Trivial. Better voice match. ~10 minutes.
 #### 8. Pairing screen redesign per Idea 2.2
 Two-card stacked layout, status badge (THE CLUB AGREES / THE BARTENDER SUGGESTS), "Try this tonight" → adds to next Session, "Suggest another" rotates the bourbon.
 
-#### 9. Member profile sections — Favorites + History + Education (Phase 5 enhancement)
-Saved-products list (Favorites), chronological Sessions + recommends (History), Bartender library (Education).
+#### 9. You-page expansion — Favorites + History + (preferences land Tier 2)
+**Scope (sharpened 2026-05-21 from smoke-test feedback):**
+- **Favorites:** members heart cigars + bourbons they want to remember
+  (distinct from "Recommended to NCCC" — favorites are aspirational, an
+  Amazon-list, not a tasting record). Shown as a compact gallery on the
+  You page below the hero.
+- **Contribution history (compact):** chronological strip on the You page
+  showing recent recommends + meetups + photos contributed. Glanceable;
+  taps drill into the full /members/[id] view.
+- Pairing/tasting Preferences land alongside these in the same You section
+  (Tier 2 #5).
+- Format: Paul-C hero on top (avatar + name + email + role + member-since),
+  then Appearance toggle (✅ shipped 2026-05-21), then Favorites strip,
+  then History, then Preferences, then Club / Admin / Account sections.
 
 #### 10. Bartender illustration variants
 Splash, header bust, small-glass-only variants. Currently using one logo image for all surfaces — works but lacks the Bartender-as-character continuity the design system gestures at.
@@ -242,8 +261,34 @@ Promote `style_family`, `tier_seed`, `dsp_code`, `mash_bill` from inside `produc
 #### 14. Education content library
 Bartender-voiced articles: glossary, "what are thirds?", "what's a mashbill?", pairing fundamentals.
 
-#### 15. Center-FAB nav redesign
-Current 5-tab nav works; the brass-FAB center variant from Cigarbase is an iPhone ergonomics polish.
+#### 15. Member badges & micro-badges (NEW, 2026-05-21 smoke-test feedback)
+**Scope:**
+- Members page currently reads as a thin roster — needs visual texture
+  once everyone's on. Add light gamification surfaces.
+- **Micro-badges:** small earned achievements rendered as little marks
+  next to a member's name on the Members page + their /members/[id]
+  profile. Examples to seed:
+  - **First Light** — first tasting recommended to NCCC
+  - **First Pour** — first bourbon tasting
+  - **First Smoke** — first cigar tasting
+  - **Tenth Contribution** — milestone count
+  - **Founder** — joined within the first 30 days
+  - **Host** — hosted a meetup
+  - **Validator** — first pairing the club later validates
+  - **Bartender's Choice** — a tasting the Bartender quotes in a Daily Pour
+- Implementation: derive from existing `tastings` / `events` data — no
+  new schema needed for the seed set. A `member_badges` table later for
+  ones that aren't trivially derivable.
+- Voice + style match the design system — moss / brass / ember accents
+  reserved per their existing rules; new badge colors stay subdued.
+- **Out of scope intentionally:** leaderboards, scores, public rankings.
+  Badges are flavor, not competition. They surface what someone has
+  contributed; they don't rank members against each other.
+
+#### 16. ~~Center-FAB nav redesign~~ — **✅ shipped UX-2**
+Bottom nav now has the four-tab + center-FAB shape. Brass Capture FAB
+floats above the bar, side tabs use Lucide outline icons + brass
+underline for active state. Done.
 
 ---
 

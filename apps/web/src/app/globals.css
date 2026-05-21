@@ -210,6 +210,43 @@ h4 {
 }
 
 /* ============================================================
+   Logo mark — invert + screen-blend on dark mode
+   The bundled NCCC logo PNG is ink-on-white. On dark mode it would
+   otherwise render as a white circle with black ink (jarring). We
+   invert the image and screen-blend it so the result reads as white
+   ink on the page background, transparent where the original was
+   white.
+
+   The selectors honor: explicit html.dark / html.light classes for
+   user-chosen modes, plus the OS preference as a fallback when
+   neither class is set.
+   ============================================================ */
+
+html.dark .nccc-logo-mark {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
+html.light .nccc-logo-mark {
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .nccc-logo-mark {
+    filter: invert(1);
+    mix-blend-mode: screen;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html:not(.dark) .nccc-logo-mark {
+    filter: none;
+    mix-blend-mode: normal;
+  }
+}
+
+/* ============================================================
    Voice: The Bartender's italic serif
    ============================================================ */
 
