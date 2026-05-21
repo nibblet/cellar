@@ -35,7 +35,13 @@ export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: 
         const isValidated = validatedPairs.has(c.product_id);
         return (
           <Link key={c.product_id} href={pairingHref(sourceType, sourceId, c.product_id)}>
-            <Card className="hover:bg-surface-2 transition-colors">
+            <Card
+              className={
+                isValidated
+                  ? "border border-moss-600 bg-gradient-to-br from-surface to-moss-600/5 hover:bg-surface-2 transition-colors"
+                  : "hover:bg-surface-2 transition-colors"
+              }
+            >
               <div className="flex items-baseline justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-base text-foreground truncate">{c.name}</p>
@@ -45,7 +51,7 @@ export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: 
                 </div>
                 {isValidated ? (
                   <span
-                    className="text-xs uppercase tracking-widest text-moss-600 shrink-0"
+                    className="text-[10px] uppercase tracking-widest text-moss-600 shrink-0"
                     title="The club has tasted this pairing"
                   >
                     ● club tried

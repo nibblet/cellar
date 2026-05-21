@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PhotoFrame, PhotoPlaceholder } from "@/components/feed";
 import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
 import { PairsWith } from "@/components/pairing";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
+import { ConstructionPanel, DepthAffordance, FactsStrip } from "@/components/product";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
-import { PhotoFrame } from "./photo-frame";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{
@@ -16,6 +17,28 @@ type SearchParams = Promise<{
   just_saved?: string;
   event?: string;
 }>;
+
+// Keys we surfaced in the Construction panel — exclude from the dense
+// Facts strip below so we don't repeat values.
+const CIGAR_CONSTRUCTION_KEYS = [
+  "wrapper",
+  "wrapper_color",
+  "binder",
+  "filler",
+  "country",
+  "vitola",
+  "strength",
+];
+const BOURBON_CONSTRUCTION_KEYS = [
+  "distillery",
+  "mash_bill",
+  "proof",
+  "abv",
+  "age_years",
+  "age_label",
+  "style_family",
+  "dsp",
+];
 
 export default async function ProductDetailPage({
   params,
@@ -46,8 +69,6 @@ export default async function ProductDetailPage({
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
 
-  // Top pairings + per-candidate club-validated status. We resolve in
-  // parallel; both are cheap.
   const pairings = await loadOrComputeTopPairings(supabase, id, { limit: 3 });
   const validatedFlags = await Promise.all(
     pairings.map(async (c) => {
@@ -61,38 +82,71 @@ export default async function ProductDetailPage({
   );
   const validatedPairs = new Set(validatedFlags.filter((x): x is string => x !== null));
 
+  // Hero image + the member who first contributed it (for the overlay).
   const { data: images } = await supabase
     .from("product_images")
-    .select("image_url, is_hero")
+    .select(
+      "image_url, is_hero, contributed_by, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+    )
     .eq("product_id", id)
     .order("is_hero", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(1);
 
-  const heroPath = images?.[0]?.image_url;
-  const heroSignedUrl = heroPath ? await signImage(supabase, heroPath) : null;
+  type HeroRow = {
+    image_url: string;
+    is_hero: boolean;
+    contributed_by: string | null;
+    contributor: { name_first: string; name_last_initial: string } | null;
+  };
+  const hero = (images as unknown as HeroRow[] | null)?.[0] ?? null;
+  const heroSignedUrl = hero?.image_url ? await signImage(supabase, hero.image_url) : null;
+  const contributorName = hero?.contributor
+    ? `${hero.contributor.name_first} ${hero.contributor.name_last_initial}`
+    : null;
 
   const isDraft = product.status === "draft";
 
+  // Pick a top descriptor for the Bartender intro line. Falls back to a
+  // generic line when the cloud is empty.
+  const topTag = groupVoice.tag_cloud[0]?.label ?? null;
+  const bartenderIntro = composeIntro({
+    memberCount: groupVoice.member_count,
+    recommendCount: groupVoice.recommend_count,
+    topTag,
+  });
+
   return (
-    <main className="mx-auto max-w-md px-5 py-6 flex-1">
+    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       {just_saved ? (
         <Voice className="text-center mb-4">"Noted. Thank you, sir."</Voice>
       ) : just_captured ? (
         <Voice className="text-center mb-4">"Here we are. A fine choice."</Voice>
       ) : null}
 
-      {heroSignedUrl ? (
-        <PhotoFrame src={heroSignedUrl} alt={product.name} className="aspect-square mb-6" sepia />
-      ) : (
-        <div className="aspect-square mb-6 rounded-[16px] border border-border bg-surface flex items-center justify-center">
-          <p className="text-foreground-subtle text-sm">No photo yet</p>
-        </div>
-      )}
+      {/* Hero photo — inherits the photo-as-card primitive from Feed.
+          Member-who-first-captured overlay bottom-left + ember-aware corner. */}
+      <div className="relative aspect-[4/5] rounded-[16px] border border-border overflow-hidden mb-5">
+        {heroSignedUrl ? (
+          <PhotoFrame src={heroSignedUrl} alt={product.name}>
+            <HeroOverlay contributorName={contributorName} />
+          </PhotoFrame>
+        ) : (
+          <PhotoPlaceholder productType={productType}>
+            <HeroOverlay contributorName={contributorName} />
+          </PhotoPlaceholder>
+        )}
+      </div>
 
+      {/* Product header */}
       <h1 className="text-3xl mb-1">{product.name}</h1>
       {product.brand ? <p className="text-base text-foreground-muted">{product.brand}</p> : null}
-      <p className="text-sm uppercase tracking-widest text-foreground-subtle mt-1">{productType}</p>
+      <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-1">
+        {productType}
+      </p>
+
+      {/* Bartender intro line */}
+      <Voice className="block mt-4">{bartenderIntro}</Voice>
 
       {isDraft ? (
         <Card className="mt-6 border border-ember-500">
@@ -163,9 +217,11 @@ export default async function ProductDetailPage({
 
       <Divider label="How it tastes" />
 
-      <Card>
+      <Card className="py-6">
         <TagCloud entries={groupVoice.tag_cloud} />
       </Card>
+
+      <DepthAffordance />
 
       <Divider label="Pairs with" />
 
@@ -176,26 +232,58 @@ export default async function ProductDetailPage({
         validatedPairs={validatedPairs}
       />
 
+      <Divider label="Construction" />
+
+      <ConstructionPanel productType={productType} specs={product.specs} />
+
       <Divider label="The facts" />
 
-      <Card>
-        <dl className="grid grid-cols-1 gap-2 text-sm">
-          {Object.entries(product.specs ?? {}).map(([key, value]) => {
-            if (value === null || value === undefined || value === "") return null;
-            return (
-              <div key={key} className="flex justify-between gap-4">
-                <dt className="text-foreground-subtle capitalize">{key.replace(/_/g, " ")}</dt>
-                <dd className="text-foreground text-right">{String(value)}</dd>
-              </div>
-            );
-          })}
-          {Object.values(product.specs ?? {}).every((v) => !v) ? (
-            <p className="text-foreground-subtle">No specs recorded yet.</p>
-          ) : null}
-        </dl>
-      </Card>
+      <FactsStrip
+        productType={productType}
+        specs={product.specs}
+        excludeKeys={productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS}
+      />
     </main>
   );
+}
+
+/**
+ * Bottom-left overlay on the hero — credits whoever first contributed the
+ * photo. Same scrim treatment as the Feed cards for consistency.
+ */
+function HeroOverlay({ contributorName }: { contributorName: string | null }) {
+  if (!contributorName) return null;
+  return (
+    <div className="absolute inset-x-0 bottom-0 p-3 pt-10 bg-gradient-to-t from-ink-900/65 via-ink-900/30 to-transparent">
+      <p className="font-display italic text-sm text-paper-50 drop-shadow-md">
+        photographed by {contributorName}
+      </p>
+    </div>
+  );
+}
+
+function composeIntro({
+  memberCount,
+  recommendCount,
+  topTag,
+}: {
+  memberCount: number;
+  recommendCount: number;
+  topTag: string | null;
+}): string {
+  if (memberCount === 0) {
+    return "“No one's lit one up yet. Be the first, sir.”";
+  }
+  if (topTag && memberCount >= 3) {
+    return `“${memberCount} of us have had it. ${recommendCount} would do it again — ${topTag} keeps coming up.”`;
+  }
+  if (topTag) {
+    return `“${memberCount} ${memberCount === 1 ? "tasting" : "tastings"} so far. ${topTag} on the palate.”`;
+  }
+  if (recommendCount > 0) {
+    return `“${recommendCount} of ${memberCount} would recommend. Worth a try.”`;
+  }
+  return `“${memberCount} ${memberCount === 1 ? "member has" : "members have"} weighed in.”`;
 }
 
 async function signImage(
