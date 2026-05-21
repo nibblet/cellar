@@ -107,16 +107,51 @@ Currently a form. Should feel ceremonial — like a Polaroid being developed.
 - Bartender does NOT appear here (per design system — preserve).
 - Optional: shutter haptic on capture (iOS PWA supports `navigator.vibrate` on some installs).
 
-#### UX-5. You / Settings buildout — **needs clarification before building**
-Paul wants the **You** section expanded to hold member preferences with flag/badge selections.
+#### UX-5. You / Settings buildout — **decisions locked 2026-05-21**
 
-**Open questions for Paul:**
-- What preferences? (Pairing Preferences from Tier 2 #5 is one — strength range, style families, avoids. What else?)
-- "Flag or badge selections" — does this mean: (a) toggle preferences on/off with visible badges, (b) member achievement badges, or (c) flagging products as favorites/saved?
-- Where does Meetups live within You? Sub-page or surfaced inline?
-- Does Cellar (Tier 1 #1) land here or stay as its own tab when built?
+**Hero-first layout** ✅ shipped 2026-05-21:
+- Big initial circle + name + email + Admin chip + member-since line.
+- Appearance toggle (Light / Dark / Auto) sits just below the hero.
 
-**Decision needed before scoping UX-5.** Skip in build order until clarified — UX-1 → UX-2 → UX-3 → UX-4 can proceed in parallel branches.
+**Meetups placement** (decided): right below the hero in Settings.
+Already shipped in the same pass.
+
+**Preferences** (decided — keep simple, positives only, no "avoids"):
+- **Bourbon**: style families to lean toward (wheated / high-rye /
+  standard / single malt / Irish whiskey / rye). Proof band (≤100 /
+  100–115 / ≥115). Multi-select; no "things to avoid" — we want the
+  Bartender to suggest *toward* taste, not against.
+- **Cigar**: strength bands (mild / medium / medium-full / full).
+  Wrapper-color leanings (claro / colorado / maduro / oscuro) as
+  multi-select.
+- Member can update anytime; defaults are all-unselected so the
+  Bartender starts neutral until the member opts in.
+- Feeds Tier 2 #5 (Pairing Preferences) AND the new "match badge"
+  surface (Tier 2 #5a, see below).
+
+**"Flag/badge selections" clarified**: small "for you" pill that
+appears on Feed tasting cards (and elsewhere) when the underlying
+product matches the *viewer's* stated preferences. Not the
+achievement badges (those are Tier 3 #15). This becomes a separate
+Tier 2 entry — see #5a below.
+
+**Cellar placement** (decided): lives on the member's profile, not
+its own bottom-nav tab. Rationale:
+- Nav slots are full and Cellar is high-personal, low-traffic-per-day.
+- Inventory IS identity for a collector — "what's on Paul's shelf"
+  reads naturally as part of Paul's profile.
+- Each member's profile (/members/[id]) gets tabs: Tastings (today's
+  default), Cellar, Favorites.
+- The Settings "Club" section gets a "Your cellar" deep-link to the
+  member's own profile with the Cellar tab active.
+- Social bonus: members can browse each other's cellars while
+  scrolling Members. Adds texture to the Members page that was
+  flagged as "too light" in the 2026-05-21 smoke test.
+
+**Status:** UX-5 is now scoped and ready to build whenever bandwidth
+allows. The expanded surfaces (Favorites, History, Preferences,
+Cellar tab) are Tier 1 / Tier 2 items in their own right; UX-5 is
+the layout glue that holds them.
 
 ---
 
@@ -194,6 +229,44 @@ For members who want to nerd out beyond the chip-cloud face.
 - **No 0–100 aggregate score, ever.**
 
 **Schema:** `products.editorial_baseline_profile jsonb`, new `product_adjustments` table.
+
+---
+
+#### 5a. Match badge on Feed cards (NEW, 2026-05-21)
+
+Direct partner to #5. Once a member has stored preferences, every feed
+surface checks: does this product match what you tend toward? If yes,
+show a small "for you" pill — subtle brass-tint, top-right of the feed
+card, only present when the match is real.
+
+**Scope:**
+- Pure presentation layer on existing Feed + (later) Cellar / Pairings
+  cards. No new tap-through; the badge is a glance signal, not a CTA.
+- Matching logic v1 (pure functions in `lib/preferences/`):
+  - For a bourbon product + viewer-bourbon-prefs: style_family ∈ pref.styles
+    OR proof ∈ pref.proof_band → match.
+  - For a cigar product + viewer-cigar-prefs: strength ∈ pref.strengths
+    OR wrapper_color ∈ pref.wrappers → match.
+  - One match suffices to light the badge. Don't try to score depth —
+    binary keeps the surface uncluttered.
+- Empty preferences → badge never lights (graceful zero-state for
+  members who haven't opted in).
+- The viewer's own tastings always count as matches by definition
+  (they obviously liked it); skip the badge on your own cards to avoid
+  noise.
+
+**Voice:** copy on the badge is just "for you" in tracked-widest
+all-caps. The Bartender doesn't speak through this surface — it's a
+quiet hint, not a recommendation.
+
+**Schema:** ties to the `member_preferences` table from #5. No new
+tables.
+
+**Stickiness signal:** members see their preferences validated as
+the feed scrolls — small dopamine hits that reinforce the value of
+filling out preferences in the first place. The loop: "I see 'for
+you' on something I like → I trust the matcher → I update prefs to
+get better matches → I see more 'for you' tags".
 
 ---
 

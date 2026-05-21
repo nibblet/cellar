@@ -50,9 +50,6 @@ export default async function SettingsPage() {
         </div>
       </header>
 
-      <Divider label="Appearance" />
-      <ThemeToggle />
-
       <Divider label="Club" />
       <Card className="mb-3">
         <Link
@@ -65,6 +62,9 @@ export default async function SettingsPage() {
           The calendar of NCCC nights, past and upcoming.
         </p>
       </Card>
+
+      <Divider label="Appearance" />
+      <ThemeToggle />
 
       {isAdmin ? (
         <>
