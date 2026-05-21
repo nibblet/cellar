@@ -2,12 +2,15 @@ import Link from "next/link";
 import { NCCCLogo } from "@/components/brand";
 import {
   CatalogCard,
+  DailyPourCard,
   type FeedTab,
   FeedTabs,
   TastingCard,
   UpcomingMeetupCard,
 } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
+import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
+import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { loadCatalogBrowse } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { loadMemberPreferences } from "@/lib/preferences/load";
@@ -82,6 +85,16 @@ async function ForYouBody({
     entries.map((e) => e.hero_image_path),
   );
 
+  // Daily Pour hero: deterministic per-member-per-day pick from a
+  // preference-biased pool (falls back to club-validated). Hidden when the
+  // viewer isn't signed in or the pool is empty (sparse catalog state).
+  const dailyPour = viewerId
+    ? selectDailyPour(
+        { memberId: viewerId, date: todayKey() },
+        await loadDailyPourCandidates(supabase, preferences),
+      )
+    : null;
+
   const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
   const forYouByEntry = new Map<string, boolean>();
   if (matchesEnabled && preferences) {
@@ -111,6 +124,7 @@ async function ForYouBody({
   if (entries.length === 0) {
     return (
       <>
+        {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
         {upcoming ? (
           <div className="mb-4">
             <UpcomingMeetupCard event={upcoming} />
@@ -131,6 +145,7 @@ async function ForYouBody({
 
   return (
     <>
+      {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
       {upcoming ? (
         <div className="mb-4">
           <UpcomingMeetupCard event={upcoming} />
