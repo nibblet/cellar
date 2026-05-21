@@ -1,12 +1,13 @@
 /**
- * Download a remote image URL and upload it to the public `product-catalog`
- * Supabase Storage bucket. Returns the public URL we should store on
- * products.image_url.
+ * Download a remote image URL, downscale it to a reasonable web size, and
+ * upload to the public `product-catalog` Supabase Storage bucket.
  *
- * Key layout: `{type}/{product_id}.{ext}`. One image per product — re-running
- * overwrites in place, so the URL on products.image_url stays stable.
+ * Key layout: `{type}/{product_id}.jpg`. Every image is re-encoded to JPEG so
+ * we get consistent extensions and a predictable URL on products.image_url.
+ * Re-runs overwrite in place.
  */
 
+import sharp from "sharp";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const BUCKET = "product-catalog";
@@ -15,24 +16,12 @@ const BUCKET = "product-catalog";
 // never a real product photo. Real catalog photos are ~30KB minimum.
 const MIN_IMAGE_BYTES = 5 * 1024;
 
-// Cap to keep the bucket lean. ~580MB total across the catalog at this cap.
-// Oversized sources (e.g. kohnhed serves unoptimized full-res) are skipped
-// rather than mirrored — leaves image_url null for a later downscaling pass.
-const MAX_IMAGE_BYTES = 500 * 1024;
-
-// Extension fallback when the Content-Type header is missing or weird.
-const EXT_BY_CT: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/jpg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-};
-
-function extFromUrl(url: string): string | null {
-  const match = url.toLowerCase().match(/\.(jpe?g|png|webp)(?:\?|$|#)/);
-  if (!match) return null;
-  return match[1] === "jpeg" ? "jpg" : match[1];
-}
+// Target max dimension and quality for stored catalog photos. Halfwheel et al.
+// serve 1600px+ unoptimized JPEGs; we resize to <=1200px on the longest edge
+// and re-encode at ~78 quality. Lands every image around 150–250KB regardless
+// of source, keeps the bucket lean and the iPhone PWA fast.
+const MAX_WIDTH_PX = 1200;
+const JPEG_QUALITY = 78;
 
 export type MirrorResult = {
   publicUrl: string;
@@ -43,7 +32,7 @@ export type MirrorResult = {
 export class MirrorError extends Error {
   constructor(
     message: string,
-    public readonly stage: "fetch" | "type" | "size" | "upload",
+    public readonly stage: "fetch" | "type" | "size" | "decode" | "upload",
   ) {
     super(message);
   }
@@ -70,39 +59,46 @@ export async function mirrorImage(
     throw new MirrorError(`fetch ${res.status} ${args.sourceUrl}`, "fetch");
   }
 
-  const contentType = (res.headers.get("content-type") ?? "").split(";")[0].trim();
-  const ext = EXT_BY_CT[contentType] ?? extFromUrl(args.sourceUrl);
-  if (!ext) {
-    throw new MirrorError(
-      `unknown image type: ct="${contentType}" url=${args.sourceUrl}`,
-      "type",
-    );
-  }
-  const normalizedCt = contentType.startsWith("image/")
-    ? contentType
-    : `image/${ext === "jpg" ? "jpeg" : ext}`;
-
-  const buf = await res.arrayBuffer();
+  const buf = Buffer.from(await res.arrayBuffer());
   if (buf.byteLength < MIN_IMAGE_BYTES) {
     throw new MirrorError(
       `image too small: ${buf.byteLength}b (likely a UI sprite) ${args.sourceUrl}`,
       "size",
     );
   }
-  if (buf.byteLength > MAX_IMAGE_BYTES) {
+
+  // Decode + downscale + re-encode as JPEG. Sharp throws on invalid input
+  // (e.g. HTML returned with image/* content-type), which is a useful signal.
+  let processed: Buffer;
+  try {
+    processed = await sharp(buf)
+      .rotate() // honor EXIF orientation
+      .resize({
+        width: MAX_WIDTH_PX,
+        height: MAX_WIDTH_PX,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
+      .toBuffer();
+  } catch (err) {
     throw new MirrorError(
-      `image too large: ${Math.round(buf.byteLength / 1024)}kb > ${MAX_IMAGE_BYTES / 1024}kb cap ${args.sourceUrl}`,
-      "size",
+      `sharp decode failed: ${(err as Error).message} ${args.sourceUrl}`,
+      "decode",
     );
   }
-  const path = `${args.productType}/${args.productId}.${ext}`;
 
-  const { error: upErr } = await supa.storage.from(BUCKET).upload(path, buf, {
-    contentType: normalizedCt,
+  const path = `${args.productType}/${args.productId}.jpg`;
+  const { error: upErr } = await supa.storage.from(BUCKET).upload(path, processed, {
+    contentType: "image/jpeg",
     upsert: true,
   });
   if (upErr) throw new MirrorError(`upload: ${upErr.message}`, "upload");
 
   const { data } = supa.storage.from(BUCKET).getPublicUrl(path);
-  return { publicUrl: data.publicUrl, bytes: buf.byteLength, contentType: normalizedCt };
+  return {
+    publicUrl: data.publicUrl,
+    bytes: processed.byteLength,
+    contentType: "image/jpeg",
+  };
 }

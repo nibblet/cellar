@@ -25,6 +25,7 @@
     "repair:bourbon-apostrophes": "tsx --env-file=.env.local scripts/seed/repair-bourbon-apostrophes.ts",
     "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
     "seed:enrich-apify": "tsx --env-file=.env.local scripts/seed/enrich-apify.ts",
+    "seed:enrich-specs": "tsx --env-file=.env.local scripts/seed/enrich-specs.ts",
     "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
     "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
   },
@@ -54,6 +55,7 @@
     "exceljs": "^4.4.0",
     "fast-xml-parser": "^5.8.0",
     "jsdom": "^29.1.1",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "tsx": "^4.22.3",
     "typescript": "^5",

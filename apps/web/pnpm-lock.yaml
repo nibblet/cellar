@@ -78,6 +78,9 @@ importers:
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
       tailwindcss:
         specifier: ^4
         version: 4.3.0
@@ -2057,8 +2060,7 @@ snapshots:
       lodash.isundefined: 3.0.1
       lodash.uniq: 4.5.0
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.34.5':
     optionalDependencies:
@@ -3094,8 +3096,7 @@ snapshots:
 
   scheduler@0.27.0: {}
 
-  semver@7.8.0:
-    optional: true
+  semver@7.8.0: {}
 
   setimmediate@1.0.5: {}
 
@@ -3129,7 +3130,6 @@ snapshots:
       '@img/sharp-win32-arm64': 0.34.5
       '@img/sharp-win32-ia32': 0.34.5
       '@img/sharp-win32-x64': 0.34.5
-    optional: true
 
   siginfo@2.0.0: {}
 

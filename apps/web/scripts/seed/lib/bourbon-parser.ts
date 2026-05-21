@@ -34,6 +34,17 @@ export type ParsedBourbon = {
 
 const synonymIndex = buildSynonymIndex("bourbon");
 
+/**
+ * BourbonData.csv lost apostrophes upstream — "Jefferson's" arrives as
+ * "Jefferson s" and plural possessives like "Tasters'" as "Tasters " (double
+ * space). Restore them before the name propagates into products.name.
+ */
+export function restoreLostApostrophes(input: string): string {
+  return input
+    .replace(/([A-Za-z]s)  ([A-Z])/g, "$1' $2")
+    .replace(/([A-Za-z]) s\b/g, "$1's");
+}
+
 function num(input: string): number | undefined {
   const trimmed = input?.trim();
   if (!trimmed) return undefined;
@@ -73,8 +84,9 @@ function parseFlavorProfile(input: string): { mapped: WheelVector; unmapped: str
 }
 
 export function parseBourbonRow(row: BourbonCsvRow): ParsedBourbon | null {
-  const name = row.Name?.trim();
-  if (!name) return null;
+  const rawName = row.Name?.trim();
+  if (!rawName) return null;
+  const name = restoreLostApostrophes(rawName);
 
   const abv = num(row.Abv);
   const { mapped, unmapped } = parseFlavorProfile(row.Flavor_Profile);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type BourbonCsvRow, parseBourbonRow } from "./bourbon-parser";
+import { type BourbonCsvRow, parseBourbonRow, restoreLostApostrophes } from "./bourbon-parser";
 
 const sampleRow: BourbonCsvRow = {
   Name: "Jack Daniel's Bonded, 50%",
@@ -63,6 +63,34 @@ describe("parseBourbonRow", () => {
       Distillery: "Old Forester Distillery (Brown-Forman)",
     });
     expect(parsed?.brand).toBe("Old Forester");
+  });
+
+  it("restores apostrophes lost in the upstream CSV (singular possessive)", () => {
+    const parsed = parseBourbonRow({
+      ...sampleRow,
+      Name: "Jefferson s Presidential Select 16 year old Twin Oak, 47%",
+    });
+    expect(parsed?.name).toBe("Jefferson's Presidential Select 16 year old Twin Oak, 47%");
+  });
+
+  it("restores apostrophes in multi-word singular possessives", () => {
+    const parsed = parseBourbonRow({
+      ...sampleRow,
+      Name: "Jack Daniel s 12 year old, 53.5%",
+    });
+    expect(parsed?.name).toBe("Jack Daniel's 12 year old, 53.5%");
+  });
+
+  it("restores plural-possessive apostrophes flagged by double spaces", () => {
+    expect(restoreLostApostrophes("Tennessee Tasters  Selection")).toBe(
+      "Tennessee Tasters' Selection",
+    );
+    expect(restoreLostApostrophes("Coopers  Craft")).toBe("Coopers' Craft");
+  });
+
+  it("leaves already-correct apostrophes alone", () => {
+    const parsed = parseBourbonRow(sampleRow);
+    expect(parsed?.name).toBe("Jack Daniel's Bonded, 50%");
   });
 
   it("returns null for an unnamed row", () => {
