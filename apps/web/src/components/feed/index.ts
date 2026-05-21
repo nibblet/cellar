@@ -1,5 +1,6 @@
 export { CatalogCard } from "./catalog-card";
 export { DailyPourCard } from "./daily-pour-card";
+export { FeedBodySkeleton } from "./feed-body-skeleton";
 export { FEED_TABS, type FeedTab, FeedTabs } from "./feed-tabs";
 export { PhotoFrame, PhotoPlaceholder } from "./photo-frame";
 export { SearchInput } from "./search-input";

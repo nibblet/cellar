@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { NCCCLogo } from "@/components/brand";
 import {
   CatalogCard,
   DailyPourCard,
+  FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
   TastingCard,
@@ -13,7 +15,7 @@ import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { loadCatalogBrowse } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { ensurePairingProse } from "@/lib/pairing/prose-cache";
+import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import { hasAnyPreferences } from "@/lib/preferences/types";
@@ -37,11 +39,6 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
   const { tab: tabParam } = await searchParams;
   const tab = parseTab(tabParam);
 
-  const supabase = await createSupabaseServerClient();
-  const { data: auth } = await supabase.auth.getUser();
-  const viewerId = auth.user?.id ?? null;
-  const preferences = viewerId ? await loadMemberPreferences(supabase, viewerId) : null;
-
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="text-center mb-6 flex flex-col items-center">
@@ -58,16 +55,29 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
 
       <FeedTabs active={tab} />
 
-      {tab === "for-you" ? (
-        <ForYouBody supabase={supabase} viewerId={viewerId} preferences={preferences} />
-      ) : (
-        <CatalogBody
-          supabase={supabase}
-          productType={tab === "cigars" ? "cigar" : "bourbon"}
-          preferences={preferences}
-        />
-      )}
+      <Suspense fallback={<FeedBodySkeleton />}>
+        <FeedBody tab={tab} />
+      </Suspense>
     </main>
+  );
+}
+
+async function FeedBody({ tab }: { tab: FeedTab }) {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  const viewerId = auth.user?.id ?? null;
+  const preferences = viewerId ? await loadMemberPreferences(supabase, viewerId) : null;
+
+  if (tab === "for-you") {
+    return <ForYouBody supabase={supabase} viewerId={viewerId} preferences={preferences} />;
+  }
+
+  return (
+    <CatalogBody
+      supabase={supabase}
+      productType={tab === "cigars" ? "cigar" : "bourbon"}
+      preferences={preferences}
+    />
   );
 }
 
@@ -80,32 +90,40 @@ async function ForYouBody({
   viewerId: string | null;
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
 }) {
-  const entries = await loadFeed(supabase, { limit: 50 });
-  const signed = await signImagePaths(
-    supabase,
-    entries.map((e) => e.hero_image_path),
-  );
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const horizon = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
-  // Daily Pour hero: deterministic per-member-per-day pick from a
-  // preference-biased pool (falls back to club-validated). Hidden when the
-  // viewer isn't signed in or the pool is empty (sparse catalog state).
+  const [entries, dailyPourCandidates, upcomingResult] = await Promise.all([
+    loadFeed(supabase, { limit: 50 }),
+    viewerId ? loadDailyPourCandidates(supabase, preferences) : Promise.resolve([]),
+    supabase
+      .from("events")
+      .select("id, name, date, notes")
+      .gte("date", today)
+      .lte("date", horizon)
+      .order("date", { ascending: true })
+      .limit(1),
+  ]);
+
   const dailyPour = viewerId
-    ? selectDailyPour(
-        { memberId: viewerId, date: todayKey() },
-        await loadDailyPourCandidates(supabase, preferences),
-      )
+    ? selectDailyPour({ memberId: viewerId, date: todayKey() }, dailyPourCandidates)
     : null;
 
-  // One LLM call per day-member at most: ensure the picked pair has a real
-  // Bartender line. Cached read on subsequent renders. The engine's
-  // single-rule fallback gets used only when generation errors.
+  // Read cached Bartender prose only — never block the feed on an LLM call.
+  // DailyPourCard falls back to "A measured match, sir." when rationale is null.
   if (dailyPour) {
-    dailyPour.rationale = await ensurePairingProse(
+    dailyPour.rationale = await loadCachedPairingProse(
       supabase,
       dailyPour.cigar_id,
       dailyPour.bourbon_id,
     );
   }
+
+  const signed = await signImagePaths(
+    supabase,
+    entries.map((e) => e.hero_image_path),
+  );
 
   const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
   const forYouByEntry = new Map<string, boolean>();
@@ -120,18 +138,7 @@ async function ForYouBody({
     }
   }
 
-  // Look forward 48h for any scheduled meetup; promote it above the feed.
-  const now = new Date();
-  const today = now.toISOString().slice(0, 10);
-  const horizon = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const { data: upcomingRaw } = await supabase
-    .from("events")
-    .select("id, name, date, notes")
-    .gte("date", today)
-    .lte("date", horizon)
-    .order("date", { ascending: true })
-    .limit(1);
-  const upcoming = (upcomingRaw as UpcomingEvent[] | null)?.[0] ?? null;
+  const upcoming = (upcomingResult.data as UpcomingEvent[] | null)?.[0] ?? null;
 
   if (entries.length === 0) {
     return (
