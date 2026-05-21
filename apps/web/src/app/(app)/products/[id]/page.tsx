@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PhotoFrame, PhotoPlaceholder } from "@/components/feed";
-import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
 import { PairsWith } from "@/components/pairing";
-import { Button, Card, Divider, Voice } from "@/components/primitives";
-import { ConstructionPanel, DepthAffordance, FactsStrip } from "@/components/product";
+import { Button, Card, Divider } from "@/components/primitives";
+import {
+  ClubVoice,
+  ConstructionPanel,
+  DepthAffordance,
+  FactsStrip,
+  ProductHero,
+  type ProductHeroImage,
+} from "@/components/product";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -18,8 +24,8 @@ type SearchParams = Promise<{
   event?: string;
 }>;
 
-// Keys we surfaced in the Construction panel — exclude from the dense
-// Facts strip below so we don't repeat values.
+// Keys surfaced in the Construction panel — excluded from the dense Facts
+// strip so values don't repeat.
 const CIGAR_CONSTRUCTION_KEYS = [
   "wrapper",
   "wrapper_color",
@@ -61,15 +67,27 @@ export default async function ProductDetailPage({
   if (error || !product) notFound();
 
   const productType = product.type as ProductType;
+  const specs = (product.specs ?? {}) as Record<string, unknown>;
 
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
-  const groupVoice = await loadGroupVoice(supabase, id, productType);
+  const [groupVoice, pairings, imagesResult] = await Promise.all([
+    loadGroupVoice(supabase, id, productType),
+    loadOrComputeTopPairings(supabase, id, { limit: 3 }),
+    supabase
+      .from("product_images")
+      .select(
+        "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+      )
+      .eq("product_id", id)
+      .order("is_hero", { ascending: false })
+      .order("created_at", { ascending: false }),
+  ]);
+
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
 
-  const pairings = await loadOrComputeTopPairings(supabase, id, { limit: 3 });
   const validatedFlags = await Promise.all(
     pairings.map(async (c) => {
       const validated = await checkGroupValidation(
@@ -82,74 +100,60 @@ export default async function ProductDetailPage({
   );
   const validatedPairs = new Set(validatedFlags.filter((x): x is string => x !== null));
 
-  // Hero image + the member who first contributed it (for the overlay).
-  const { data: images } = await supabase
-    .from("product_images")
-    .select(
-      "image_url, is_hero, contributed_by, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
-    )
-    .eq("product_id", id)
-    .order("is_hero", { ascending: false })
-    .order("created_at", { ascending: false })
-    .limit(1);
-
-  type HeroRow = {
+  type ImageRow = {
     image_url: string;
     is_hero: boolean;
-    contributed_by: string | null;
     contributor: { name_first: string; name_last_initial: string } | null;
   };
-  const hero = (images as unknown as HeroRow[] | null)?.[0] ?? null;
-  const heroSignedUrl = hero?.image_url ? await signImage(supabase, hero.image_url) : null;
-  const contributorName = hero?.contributor
-    ? `${hero.contributor.name_first} ${hero.contributor.name_last_initial}`
-    : null;
+  const imageRows = (imagesResult.data as unknown as ImageRow[] | null) ?? [];
+  const signedMap = await signImagePaths(
+    supabase,
+    imageRows.map((r) => r.image_url),
+  );
+  const userImages: ProductHeroImage[] = imageRows
+    .map((r) => {
+      const url = signedMap.get(r.image_url);
+      if (!url) return null;
+      const contributor = r.contributor
+        ? `${r.contributor.name_first} ${r.contributor.name_last_initial}`
+        : null;
+      return { url, contributor };
+    })
+    .filter((x): x is ProductHeroImage => x !== null);
+
+  const stockUrl = typeof specs.image_url === "string" && specs.image_url ? specs.image_url : null;
 
   const isDraft = product.status === "draft";
-
-  // Pick a top descriptor for the Bartender intro line. Falls back to a
-  // generic line when the cloud is empty.
-  const topTag = groupVoice.tag_cloud[0]?.label ?? null;
-  const bartenderIntro = composeIntro({
-    memberCount: groupVoice.member_count,
-    recommendCount: groupVoice.recommend_count,
-    topTag,
-  });
+  const subtitle = composeSubtitle(productType, specs);
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
-      {just_saved ? (
-        <Voice className="text-center mb-4">"Noted. Thank you, sir."</Voice>
-      ) : just_captured ? (
-        <Voice className="text-center mb-4">"Here we are. A fine choice."</Voice>
+      {just_saved || just_captured ? (
+        <div className="mb-4 flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
+          <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
+          {just_saved ? "Tasting saved" : "Added to the archive"}
+        </div>
       ) : null}
 
-      {/* Hero photo — inherits the photo-as-card primitive from Feed.
-          Member-who-first-captured overlay bottom-left + ember-aware corner. */}
-      <div className="relative aspect-[4/5] rounded-[16px] border border-border overflow-hidden mb-5">
-        {heroSignedUrl ? (
-          <PhotoFrame src={heroSignedUrl} alt={product.name}>
-            <HeroOverlay contributorName={contributorName} />
-          </PhotoFrame>
-        ) : (
-          <PhotoPlaceholder productType={productType}>
-            <HeroOverlay contributorName={contributorName} />
-          </PhotoPlaceholder>
-        )}
-      </div>
+      <ProductHero
+        productType={productType}
+        productName={product.name}
+        userImages={userImages}
+        stockUrl={stockUrl}
+      />
 
-      {/* Product header */}
-      <h1 className="text-3xl mb-1">{product.name}</h1>
-      {product.brand ? <p className="text-base text-foreground-muted">{product.brand}</p> : null}
-      <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-1">
-        {productType}
-      </p>
-
-      {/* Bartender intro line */}
-      <Voice className="block mt-4">{bartenderIntro}</Voice>
+      <header className="mt-6">
+        {product.brand ? (
+          <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-2">
+            {product.brand}
+          </p>
+        ) : null}
+        <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>
+        {subtitle ? <p className="text-sm text-foreground-muted mt-2">{subtitle}</p> : null}
+      </header>
 
       {isDraft ? (
-        <Card className="mt-6 border border-ember-500">
+        <Card className="mt-5 border border-ember-500">
           <p className="text-sm text-foreground-muted">
             <span className="text-ember-500 font-medium">Draft.</span> The Bartender wasn't certain
             — confirm or edit the details below.
@@ -159,46 +163,12 @@ export default async function ProductDetailPage({
 
       <Divider label="The club says" />
 
-      <Card>
-        <RecommendBar
-          productType={productType}
-          recommendCount={groupVoice.recommend_count}
-          memberCount={groupVoice.member_count}
-        />
-      </Card>
-
-      {otherTakes.length > 0 ? (
-        <Card className="mt-4">
-          <MemberTakes takes={otherTakes} />
-        </Card>
-      ) : null}
-
-      {myTake ? (
-        <Card className="mt-4">
-          <p className="text-sm text-foreground-subtle uppercase tracking-widest mb-2">
-            Your tasting
-          </p>
-          <p className="text-base mb-2">
-            <span className={myTake.recommend ? "text-ember-500" : "text-foreground-subtle"}>
-              ●
-            </span>{" "}
-            {myTake.recommend ? "You recommend this." : "You passed on this."}
-          </p>
-          {myTake.chips.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              {myTake.chips.map((c: string) => (
-                <span
-                  key={c}
-                  className="px-2 py-0.5 rounded-full bg-accent-tint text-xs text-foreground border border-accent"
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          ) : null}
-          {myTake.note ? <p className="text-sm text-foreground italic">"{myTake.note}"</p> : null}
-        </Card>
-      ) : null}
+      <ClubVoice
+        productType={productType}
+        groupVoice={groupVoice}
+        otherTakes={otherTakes}
+        myTake={myTake}
+      />
 
       <div className="mt-6 flex flex-col gap-3">
         <Link
@@ -215,14 +185,6 @@ export default async function ProductDetailPage({
         </Link>
       </div>
 
-      <Divider label="How it tastes" />
-
-      <Card className="py-6">
-        <TagCloud entries={groupVoice.tag_cloud} />
-      </Card>
-
-      <DepthAffordance productId={product.id} available={product.trait_vector != null} />
-
       <Divider label="Pairs with" />
 
       <PairsWith
@@ -232,64 +194,43 @@ export default async function ProductDetailPage({
         validatedPairs={validatedPairs}
       />
 
-      <Divider label="Construction" />
+      <Divider label="Details" />
 
       <ConstructionPanel productType={productType} specs={product.specs} />
 
-      <Divider label="The facts" />
+      <div className="mt-3">
+        <FactsStrip
+          productType={productType}
+          specs={product.specs}
+          excludeKeys={
+            productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS
+          }
+        />
+      </div>
 
-      <FactsStrip
-        productType={productType}
-        specs={product.specs}
-        excludeKeys={productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS}
-      />
+      <div className="mt-6">
+        <DepthAffordance productId={product.id} available={product.trait_vector != null} />
+      </div>
     </main>
   );
 }
 
 /**
- * Bottom-left overlay on the hero — credits whoever first contributed the
- * photo. Same scrim treatment as the Feed cards for consistency.
+ * Short type-specific one-liner under the title — vitola/strength/origin for
+ * cigars, age/proof/style for bourbons. Skips anything the product doesn't
+ * carry rather than rendering blanks.
  */
-function HeroOverlay({ contributorName }: { contributorName: string | null }) {
-  if (!contributorName) return null;
-  return (
-    <div className="absolute inset-x-0 bottom-0 p-3 pt-10 bg-gradient-to-t from-ink-900/65 via-ink-900/30 to-transparent">
-      <p className="font-display italic text-sm text-paper-50 drop-shadow-md">
-        photographed by {contributorName}
-      </p>
-    </div>
-  );
-}
-
-function composeIntro({
-  memberCount,
-  recommendCount,
-  topTag,
-}: {
-  memberCount: number;
-  recommendCount: number;
-  topTag: string | null;
-}): string {
-  if (memberCount === 0) {
-    return "“No one's lit one up yet. Be the first, sir.”";
+function composeSubtitle(productType: ProductType, specs: Record<string, unknown>): string | null {
+  const tokens: string[] = [];
+  if (productType === "cigar") {
+    if (typeof specs.vitola === "string" && specs.vitola) tokens.push(specs.vitola);
+    if (typeof specs.strength === "string" && specs.strength) tokens.push(specs.strength);
+    if (typeof specs.country === "string" && specs.country) tokens.push(specs.country);
+  } else {
+    if (typeof specs.age_label === "string" && specs.age_label) tokens.push(specs.age_label);
+    if (typeof specs.proof === "number") tokens.push(`${specs.proof}°`);
+    if (typeof specs.style_family === "string" && specs.style_family)
+      tokens.push(specs.style_family);
   }
-  if (topTag && memberCount >= 3) {
-    return `“${memberCount} of us have had it. ${recommendCount} would do it again — ${topTag} keeps coming up.”`;
-  }
-  if (topTag) {
-    return `“${memberCount} ${memberCount === 1 ? "tasting" : "tastings"} so far. ${topTag} on the palate.”`;
-  }
-  if (recommendCount > 0) {
-    return `“${recommendCount} of ${memberCount} would recommend. Worth a try.”`;
-  }
-  return `“${memberCount} ${memberCount === 1 ? "member has" : "members have"} weighed in.”`;
-}
-
-async function signImage(
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
-  path: string,
-): Promise<string | null> {
-  const { data } = await supabase.storage.from("product-photos").createSignedUrl(path, 3600);
-  return data?.signedUrl ?? null;
+  return tokens.length > 0 ? tokens.join(" · ") : null;
 }
