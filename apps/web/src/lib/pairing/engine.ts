@@ -39,7 +39,7 @@ export async function suggestPairings(
     .eq("id", sourceProductId)
     .maybeSingle();
 
-  if (!source || !source.trait_vector) return [];
+  if (!source?.trait_vector) return [];
 
   const sourceType = source.type as ProductType;
   const candidateType: ProductType = sourceType === "cigar" ? "bourbon" : "cigar";
