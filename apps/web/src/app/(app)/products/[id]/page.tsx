@@ -54,7 +54,7 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, type, name, brand, specs, status, created_at")
+    .select("id, type, name, brand, specs, status, created_at, trait_vector")
     .eq("id", id)
     .maybeSingle();
 
@@ -221,7 +221,7 @@ export default async function ProductDetailPage({
         <TagCloud entries={groupVoice.tag_cloud} />
       </Card>
 
-      <DepthAffordance />
+      <DepthAffordance productId={product.id} available={product.trait_vector != null} />
 
       <Divider label="Pairs with" />
 
