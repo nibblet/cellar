@@ -55,6 +55,8 @@ That's ship-ready. Everything below is post-launch.
 
 ## UI/UX Pass v1 — sequenced ahead of Tier 1 features
 
+> **v1 shipped 2026-05-21.** Full detail in `planning/ui-refresh-plan.md`. A second pass — copy tweaks, pairing detail restructure, "Tasted this pairing" capture path, "The reviewers say" depth block, **Cellar/Wishlist lightweight entry point**, and external shop link — is captured in `planning/ui-refresh-v2.md` (agreed 2026-05-21). v2's Cellar primitive is the on-ramp for the full Phase 5.5 Cellar in Tier 1 #1 below; the richer scope here (pour levels, finished/on-hand, Paul's xlsx import) layers onto the same `member_saves` table v2 introduces.
+
 Agreed 2026-05-20 (Paul + Claude design conversation). The baseline app is shipped and functional, but several surfaces need a visual pass before we keep stacking features on top. Build in order — each step sets the visual vocabulary the next one inherits.
 
 **Working principles for this pass:**
@@ -166,7 +168,9 @@ These are the post-launch features most likely to surface in member feedback wit
 #### 1. The Cellar (Phase 5.5)
 **Why first:** Collectors track inventory religiously. The bourbon shelf and the humidor are real, physical things members care about. Once a member captures a bottle, "is this in my cellar?" is the next question.
 
-**Scope:**
+> **Lightweight v2 entry point lands first.** `planning/ui-refresh-v2.md` §5 introduces a minimum-viable Cellar + Wishlist: a single boolean per (member, product) with three states (have / want / neither), `/shelf` route, and toggles on catalog cards + product detail. That ships as part of the v2 UI pass. The richer scope below (pour levels, finished/on-hand, Paul's xlsx import) layers onto the same `member_saves` table later as the full Phase 5.5 build.
+
+**Scope (full Phase 5.5, on top of the v2 primitive):**
 - New bottom-nav tab between Members and Meetups.
 - Two views: **On Hand** and **Finished**.
 - Bourbon: pour level state (`full / half / heel / empty`), pour count.
@@ -749,7 +753,7 @@ Shipped.
 - ❌ Member profile sections: Pairing Preferences, Favorites, History, Education.
 
 ### Phase 5.5 — The Cellar ❌
-Not started. Tier 1 item.
+Not started as a full phase. **Lightweight v2 primitive (`planning/ui-refresh-v2.md` §5) is the first step** — `member_saves` table, have/want booleans, `/shelf` route. Full phase (pour levels, finished/on-hand, Paul's xlsx import, dedicated nav tab) layers on top later. Tier 1 item.
 
 ### Phase 6 — Pairing engine 🟡
 - ✅ 8 declarative rules, scoring (0–100, clamped, 50 baseline), engine over the catalog, group validation, Bartender prose via gpt-5-mini cached in `pairings_cache`, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail.
@@ -777,7 +781,7 @@ Not started. Tier 1 item.
 ## Dependencies / critical path
 
 - **The Session (Tier 1 #2) and the Depth view (Tier 2 #4) both need a new schema:** `product_adjustments` table for per-member per-axis adjustments, `product_member_chips` for chip add/removes. Build the schema once; both features consume it.
-- **The Cellar (Tier 1 #1)** depends only on the capture pipeline (already shipped) and Paul's xlsx import (pre-launch checklist).
+- **The Cellar (Tier 1 #1)** depends only on the capture pipeline (already shipped) and Paul's xlsx import (pre-launch checklist). The lightweight v2 primitive (`member_saves` table, have/want booleans, `/shelf` route) ships first as part of UI Refresh v2; the full Phase 5.5 features layer on top.
 - **Daily Pour (Tier 1 #3)** depends on the pairing engine (already shipped) and a few weeks of real member activity to have non-empty source data.
 - **Pairing Preferences (Tier 2 #5)** feeds the pairing engine — engine already accepts personalization weights through `trait_vector` math; just needs UI + storage.
 

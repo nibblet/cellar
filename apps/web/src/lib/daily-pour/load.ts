@@ -98,10 +98,13 @@ async function loadClubValidatedCandidates(
   supabase: SupabaseClient,
   limit = 20,
 ): Promise<DailyPourCandidate[]> {
+  // rationale_text is intentionally not read here. The feed page resolves
+  // the picked candidate's prose through loadCachedPairingProse after
+  // selection, which knows how to decode the structured JSON shape.
   const { data } = await supabase
     .from("pairings_cache")
     .select(
-      "cigar_id, bourbon_id, score, rationale_text, cigar:cigar_id(name, brand), bourbon:bourbon_id(name, brand)",
+      "cigar_id, bourbon_id, score, cigar:cigar_id(name, brand), bourbon:bourbon_id(name, brand)",
     )
     .eq("is_group_validated", true)
     .order("score", { ascending: false })
@@ -111,7 +114,6 @@ async function loadClubValidatedCandidates(
     cigar_id: string;
     bourbon_id: string;
     score: number;
-    rationale_text: string | null;
     cigar: { name: string; brand: string | null } | null;
     bourbon: { name: string; brand: string | null } | null;
   };
@@ -127,7 +129,7 @@ async function loadClubValidatedCandidates(
         bourbon_name: r.bourbon?.name ?? "",
         bourbon_brand: r.bourbon?.brand ?? null,
         score: r.score,
-        rationale: r.rationale_text,
+        rationale: null,
         club_validated: true,
       }),
     );

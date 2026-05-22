@@ -95,6 +95,8 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
         />
       </div>
 
+      <ReviewersSay specs={specs} />
+
       <Divider label="Flavor profile" />
 
       {flavorEntries.length > 0 ? (
@@ -140,6 +142,29 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
         </Link>
       </div>
     </main>
+  );
+}
+
+/**
+ * "The reviewers say" — surfaces specs.tasting_notes_raw from the enrichment
+ * pipeline as a single italicized prose block. Only renders when the field
+ * is populated; cigars don't have an equivalent populated field yet, so this
+ * shows up for bourbons only in practice.
+ *
+ * The source URL (specs.review_url) is intentionally not linked from here —
+ * the depth view is for browsing, not source-chasing. Curious members can
+ * still find it via the product edit page.
+ */
+function ReviewersSay({ specs }: { specs: Record<string, unknown> }) {
+  const raw = specs.tasting_notes_raw;
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  return (
+    <>
+      <Divider label="The reviewers say" />
+      <blockquote className="text-base leading-relaxed text-foreground-muted italic font-display">
+        "{raw.trim()}"
+      </blockquote>
+    </>
   );
 }
 

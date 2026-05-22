@@ -166,8 +166,8 @@ async function loadRecommendations(
     if (!top) continue;
     const cigarId = t.product.type === "cigar" ? t.product.id : top.product_id;
     const bourbonId = t.product.type === "bourbon" ? t.product.id : top.product_id;
-    const cached_prose = await loadCachedPairingProse(supabase, cigarId, bourbonId);
-    results.push({ source: t.product, candidate: top, cached_prose });
+    const cached = await loadCachedPairingProse(supabase, cigarId, bourbonId);
+    results.push({ source: t.product, candidate: top, cached_prose: cached?.notes ?? null });
   }
   return results;
 }

@@ -4,9 +4,9 @@ import type { DailyPourCandidate } from "@/lib/daily-pour/load";
 import { cn } from "@/lib/utils";
 
 /**
- * Home-page hero card (Tier 1 #3, Phase 8). Surfaces tonight's suggested
- * pairing — a single cigar + bourbon, Bartender-narrated. Tap-through goes
- * to the existing pair-detail page so we don't fork the pairing surface.
+ * Home-page hero card (Tier 1 #3, Phase 8). Surfaces the Bartender's pick of
+ * the day — a single cigar + bourbon pairing, Bartender-narrated. Tap-through
+ * goes to the existing pair-detail page so we don't fork the pairing surface.
  *
  * The card is the only place outside /pairings where moss can light: when
  * the picked pair is club-validated, the border gets a moss tint and the
@@ -17,7 +17,7 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
     <Link
       href={`/pairings/${pour.cigar_id}/${pour.bourbon_id}`}
       className="block mb-4 group"
-      aria-label={`Tonight's pour: ${pour.cigar_name} with ${pour.bourbon_name}`}
+      aria-label={`The Bartender's pick: ${pour.cigar_name} with ${pour.bourbon_name}`}
     >
       <Card
         className={cn(
@@ -27,7 +27,7 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
       >
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-            Tonight's pour
+            The Bartender's pick
           </p>
           {pour.club_validated ? (
             <p className="text-[10px] uppercase tracking-widest text-moss-600">● club tried</p>
@@ -64,7 +64,7 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
           </div>
         </div>
 
-        <p className="mt-3 text-sm text-accent group-hover:text-accent-hover">Open the pairing →</p>
+        <p className="mt-3 text-sm text-accent group-hover:text-accent-hover">Why this pairing →</p>
       </Card>
     </Link>
   );

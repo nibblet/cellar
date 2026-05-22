@@ -14,6 +14,10 @@ type SaveTastingArgs = {
   chips: string[];
   note: string | null;
   eventId?: string | null;
+  /** When set, this tasting is half of a "Tasted this pairing" capture. */
+  pairingSessionId?: string | null;
+  /** product_images row to attach as the tasting's photo. */
+  photoImageId?: string | null;
 };
 
 /**
@@ -25,7 +29,18 @@ type SaveTastingArgs = {
  * still has a usable wheel vector from the chip synonyms.
  */
 export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: string }> {
-  const { supabase, userId, productId, productType, recommend, chips, note, eventId } = args;
+  const {
+    supabase,
+    userId,
+    productId,
+    productType,
+    recommend,
+    chips,
+    note,
+    eventId,
+    pairingSessionId,
+    photoImageId,
+  } = args;
 
   // Fast path: synonym-mapped vector lets us redirect immediately.
   const seedVector = fallbackMapFromChips(productType, chips);
@@ -42,6 +57,8 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
         note: note?.trim() || null,
         wheel_version: WHEEL_VERSION,
         wheel_vector: seedVector,
+        pairing_session_id: pairingSessionId ?? null,
+        photo_image_id: photoImageId ?? null,
       },
       { onConflict: "user_id,product_id" },
     )

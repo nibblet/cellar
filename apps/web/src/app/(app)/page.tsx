@@ -222,11 +222,12 @@ async function ForYouBody({
     : null;
 
   if (dailyPour) {
-    dailyPour.rationale = await loadCachedPairingProse(
+    const cached = await loadCachedPairingProse(
       supabase,
       dailyPour.cigar_id,
       dailyPour.bourbon_id,
     );
+    dailyPour.rationale = cached?.notes ?? null;
   }
 
   const signed = await signImagePaths(
