@@ -4,9 +4,7 @@ import { PairsWith } from "@/components/pairing";
 import { Button, Card, Divider } from "@/components/primitives";
 import {
   ClubVoice,
-  ConstructionPanel,
   DepthAffordance,
-  FactsStrip,
   ProductHero,
   type ProductHeroImage,
 } from "@/components/product";
@@ -23,28 +21,6 @@ type SearchParams = Promise<{
   just_saved?: string;
   event?: string;
 }>;
-
-// Keys surfaced in the Construction panel — excluded from the dense Facts
-// strip so values don't repeat.
-const CIGAR_CONSTRUCTION_KEYS = [
-  "wrapper",
-  "wrapper_color",
-  "binder",
-  "filler",
-  "country",
-  "vitola",
-  "strength",
-];
-const BOURBON_CONSTRUCTION_KEYS = [
-  "distillery",
-  "mash_bill",
-  "proof",
-  "abv",
-  "age_years",
-  "age_label",
-  "style_family",
-  "dsp",
-];
 
 export default async function ProductDetailPage({
   params,
@@ -170,17 +146,12 @@ export default async function ProductDetailPage({
         myTake={myTake}
       />
 
-      <div className="mt-6 flex flex-col gap-3">
+      <div className="mt-6">
         <Link
           href={`/products/${product.id}/recommend${event ? `?event=${encodeURIComponent(event)}` : ""}`}
         >
           <Button size="large" className="w-full">
             {myTake ? "Edit your tasting" : "Recommend to NCCC"}
-          </Button>
-        </Link>
-        <Link href={`/products/${product.id}/edit`}>
-          <Button variant="ghost" className="w-full">
-            Not quite right? Edit
           </Button>
         </Link>
       </div>
@@ -193,20 +164,6 @@ export default async function ProductDetailPage({
         candidates={pairings}
         validatedPairs={validatedPairs}
       />
-
-      <Divider label="Details" />
-
-      <ConstructionPanel productType={productType} specs={product.specs} />
-
-      <div className="mt-3">
-        <FactsStrip
-          productType={productType}
-          specs={product.specs}
-          excludeKeys={
-            productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS
-          }
-        />
-      </div>
 
       <div className="mt-6">
         <DepthAffordance productId={product.id} available={product.trait_vector != null} />

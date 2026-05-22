@@ -60,11 +60,10 @@ Full separate route, not a sheet — confirmed in review.
 **Problem:** Radar chart implies "more = better" and is hard to read.
 
 **Change:**
-- **Cigars:** horizontal bar chart. Flavor categories on Y axis, intensity on X. Thin
-  brass-toned bars on dark background.
-- **Bourbons:** start with horizontal bars too. Evaluate **stacked horizontal bar** once
-  enriched bourbon data lands — bourbon profiles may read better as proportional segments
-  (sweet/oak/spice/fruit) of a single bar. Defer the decision.
+- **Cigars and bourbons:** horizontal bar chart. Flavor categories on Y axis, intensity
+  on X. Thin brass-toned bars on dark background.
+- Stacked horizontal bar for bourbon deferred — revisit only if the flat bars feel weak
+  once richer bourbon data backfills.
 - Lives in the depth view (#2), not top-level.
 
 ---
@@ -146,8 +145,10 @@ with…" moment. The Bartender's pairing intelligence is buried on a separate ta
 - This is an *affordance*, not prose — does not violate the "Bartender doesn't narrate on
   feed" rule from CLAUDE.md.
 
-**Open implementation question:** confirm the existing rules-based pairing engine supports
-"given X, suggest Y" directly. If not, needs a thin wrapper.
+**Implementation note:** A thin wrapper around the pairing engine is likely needed to
+support "given X, suggest Y." Defer build until bourbon catalog backfill is further along
+— suggestions are only as good as the data behind them, and bourbon coverage is thin
+today. Track as a follow-up; not blocking on the rest of this plan.
 
 ---
 
@@ -227,9 +228,18 @@ enriched), browsing without facets becomes painful.
 **State:** URL search params (`?strength=medium&sort=recommended`). Shareable,
 back-nav-friendly, no client state library.
 
-**Server-side:** filter against `specs` JSONB using Postgres `jsonb` operators. Facet
-*values* derived from data (distinct query, cached) — not hardcoded — so enrichment
-auto-surfaces new variants.
+**Server-side:** specs JSONB is **freeform**, not canonical — direct equality matching
+won't work for wrapper or bourbon style. Existing bucketing functions in
+[apps/web/src/lib/preferences/derive.ts](../apps/web/src/lib/preferences/derive.ts) already
+solve this:
+- `bucketCigarWrapper()` maps freeform wrapper strings → 8 canonical tokens
+- `deriveBourbonStyles()` computes style membership from `whiskey_type` + `mash_bill` +
+  `style_family`
+- `normalizeCigarStrength()` collapses strength variants
+Feed filter queries must call these to bucket rows server-side before matching the
+selected facet. Cigar strength can hit specs directly (already canonical from
+`specs-extractor.ts`). Facet *values* derived from data via distinct query over bucketed
+output, cached — not hardcoded — so enrichment auto-surfaces new variants.
 
 **Skipped:** "Things I've recommended" personal filter — not adding.
 
@@ -269,9 +279,10 @@ sanity-check the catalog without wading through stubs.
 
 ## Open implementation questions
 
-- **#9** — confirm pairing engine supports "given X, suggest Y" directly, or if a thin
-  wrapper is needed.
-- **#3** — once enriched bourbon data lands, decide horizontal bar vs. stacked horizontal
-  bar for bourbon flavor viz.
-- **#12** — confirm cigar wrapper and bourbon style values stored in specs JSONB match the
-  filter facet lists, or whether we need a normalization pass during enrichment.
+- **#9** — wrapper likely needed around pairing engine for "given X, suggest Y"; defer
+  build until bourbon backfill is further along. Tracked, not blocking.
+
+Resolved during planning:
+- **#3** — horizontal bars for both cigar and bourbon. Stacked variant deferred.
+- **#12** — specs JSONB is freeform; bucketing via existing `lib/preferences/derive.ts`
+  functions at query time, not via re-normalization at enrichment.

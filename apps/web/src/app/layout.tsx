@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Fraunces, Inter, Playfair_Display } from "next/font/google";
 import { ThemeInitScript } from "@/components/theme";
 import "./globals.css";
 
@@ -15,6 +15,16 @@ const playfair = Playfair_Display({
   display: "swap",
   weight: ["500", "600", "700", "800"],
   style: ["normal", "italic"],
+});
+
+// The Bartender's voice — opinionated upright serif, legible at body size.
+// Replaces Playfair italic for prose; Playfair roman stays for display text.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+  style: ["normal"],
 });
 
 export const metadata: Metadata = {
@@ -56,7 +66,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       // and applies the user's stored choice (or leaves it empty so the
       // OS preference wins). Default appearance stays dark via the
       // @media (prefers-color-scheme: dark) block in globals.css.
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

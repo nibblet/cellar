@@ -38,7 +38,22 @@ const FORMATTERS: Record<string, (v: unknown) => string | null> = {
   whiskey_type: (v) => (typeof v === "string" && v ? v : null),
 };
 
-const HIDE_KEYS = new Set(["image_url", "source_id", "review_url", "review_published"]);
+const HIDE_KEYS = new Set([
+  // Storage / linkback fields — never user-visible
+  "image_url",
+  "source_id",
+  "review_url",
+  "review_published",
+  // Numeric enrichment scores — shown in depth view with labels, not here
+  "body_score",
+  "strength_score",
+  "price_tier",
+  // Raw text blobs — too long for a strip
+  "tasting_notes_raw",
+  "additional_notes",
+  // Internal flags
+  "shelf",
+]);
 
 /**
  * Dense single-line info strip for the leftover product facts (UX-3).

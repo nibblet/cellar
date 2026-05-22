@@ -16,6 +16,55 @@ export async function signOut() {
   redirect("/login");
 }
 
+export type MemberSinceFormState = {
+  ok: boolean;
+  message: string | null;
+};
+
+/**
+ * Update the member's self-reported club join date (month + year).
+ * Stored as the first of the selected month so we have a valid date type.
+ */
+export async function updateClubJoinedAt(
+  _prev: MemberSinceFormState,
+  formData: FormData,
+): Promise<MemberSinceFormState> {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { ok: false, message: "Not signed in." };
+
+  const monthRaw = formData.get("month");
+  const yearRaw = formData.get("year");
+
+  const month = typeof monthRaw === "string" ? Number.parseInt(monthRaw, 10) : Number.NaN;
+  const year = typeof yearRaw === "string" ? Number.parseInt(yearRaw, 10) : Number.NaN;
+  const currentYear = new Date().getFullYear();
+
+  if (
+    Number.isNaN(month) ||
+    Number.isNaN(year) ||
+    month < 1 ||
+    month > 12 ||
+    year < 2014 ||
+    year > currentYear
+  ) {
+    return { ok: false, message: "Please choose a valid month and year." };
+  }
+
+  // Store as first of month — date type requires a day value.
+  const isoDate = `${year}-${String(month).padStart(2, "0")}-01`;
+
+  const { error } = await supabase
+    .from("users")
+    .update({ club_joined_at: isoDate })
+    .eq("id", auth.user.id);
+
+  if (error) return { ok: false, message: error.message };
+
+  revalidatePath("/settings");
+  return { ok: true, message: "Saved." };
+}
+
 export type PreferencesFormState = {
   ok: boolean;
   message: string | null;

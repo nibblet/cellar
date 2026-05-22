@@ -46,7 +46,7 @@ export function ClubVoice({ productType, groupVoice, otherTakes, myTake }: ClubV
       {myTake ? (
         <>
           <Hairline />
-          <YourTake take={myTake} />
+          <YourNotes take={myTake} />
         </>
       ) : null}
     </Card>
@@ -57,23 +57,19 @@ function Hairline() {
   return <div className="my-5 h-px bg-border" aria-hidden="true" />;
 }
 
-function YourTake({ take }: { take: MemberTake }) {
+/**
+ * Your tasting notes — chips + note only. The recommend state is already
+ * communicated by the lit icon in RecommendBar above; repeating "You recommend
+ * this." as a sentence is redundant. This block carries what only you said.
+ */
+function YourNotes({ take }: { take: MemberTake }) {
   return (
     <div>
       <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-        Your tasting
-      </p>
-      <p className="text-sm">
-        <span
-          className={take.recommend ? "text-ember-500" : "text-foreground-subtle"}
-          aria-hidden="true"
-        >
-          ●
-        </span>{" "}
-        {take.recommend ? "You recommend this." : "You passed on this."}
+        Your notes
       </p>
       {take.chips.length > 0 ? (
-        <div className="flex flex-wrap gap-1.5 mt-2">
+        <div className="flex flex-wrap gap-1.5">
           {take.chips.map((c) => (
             <span
               key={c}
@@ -84,7 +80,12 @@ function YourTake({ take }: { take: MemberTake }) {
           ))}
         </div>
       ) : null}
-      {take.note ? <p className="text-sm text-foreground italic mt-2">"{take.note}"</p> : null}
+      {take.note ? (
+        <p className="text-sm text-foreground-muted italic mt-2">"{take.note}"</p>
+      ) : null}
+      {take.chips.length === 0 && !take.note ? (
+        <p className="text-sm text-foreground-subtle">No notes recorded.</p>
+      ) : null}
     </div>
   );
 }

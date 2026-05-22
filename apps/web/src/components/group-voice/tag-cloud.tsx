@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { TagCloudEntry } from "@/lib/aggregation/group-voice";
 
 type TagCloudProps = {
@@ -5,41 +8,72 @@ type TagCloudProps = {
 };
 
 /**
- * Typographic centerpiece (UX-3). The cloud carries "how it tastes" entirely
- * on its own — no surrounding label, no list, no chart. Words are sized by
- * frequency in Playfair Display so the top descriptors read as an editorial
- * pull-quote, not a tag list.
+ * Club flavor profile (UX-3). Shows the top 3 flavor descriptors prominently
+ * in Playfair roman, then collapses the rest behind an "and N more" toggle.
  *
- * Each entry's `score` is 0..1 with the top entry at 1.0; we scale font
- * weight (400 → 700) and opacity in addition to size so the eye lands on
- * the top hits without help.
+ * Replaced the size-weighted word cloud: the cloud's visual encoding was hard
+ * to decode and a member's own chips dominated the view. This layout reads
+ * like a tasting-note pull-quote — top notes first, supporting notes below.
  */
 export function TagCloud({ entries }: TagCloudProps) {
+  const [expanded, setExpanded] = useState(false);
+
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-foreground-subtle italic">
+      <p className="text-sm text-foreground-subtle">
         Not enough impressions yet to draw a profile.
       </p>
     );
   }
 
+  const top = entries.slice(0, 3);
+  const rest = entries.slice(3);
+
   return (
-    <div className="flex flex-wrap items-baseline justify-center gap-x-5 gap-y-3 py-2">
-      {entries.map((entry) => {
-        // Map score 0..1 → font-size 18..36px, weight 400..800, opacity 0.55..1.
-        const fontSize = 18 + entry.score * 18;
-        const fontWeight = Math.round(400 + entry.score * 400);
-        const opacity = 0.55 + entry.score * 0.45;
-        return (
+    <div>
+      {/* Top 3 — editorial pull-quote style */}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 items-baseline">
+        {top.map((entry, i) => (
           <span
             key={entry.leaf_id}
-            className="font-display leading-tight text-foreground"
-            style={{ fontSize, fontWeight, opacity }}
+            className="font-display text-foreground leading-tight"
+            style={{
+              // Primary note larger, supporting notes step down subtly
+              fontSize: i === 0 ? 22 : i === 1 ? 18 : 15,
+              fontWeight: i === 0 ? 700 : i === 1 ? 600 : 500,
+              opacity: i === 0 ? 1 : i === 1 ? 0.85 : 0.7,
+            }}
           >
             {entry.label}
           </span>
-        );
-      })}
+        ))}
+      </div>
+
+      {/* Rest — shown inline when expanded */}
+      {rest.length > 0 ? (
+        <div className="mt-2">
+          {expanded ? (
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {rest.map((entry) => (
+                <span
+                  key={entry.leaf_id}
+                  className="text-sm text-foreground-muted"
+                >
+                  {entry.label}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="text-xs text-foreground-subtle hover:text-foreground-muted mt-1"
+            >
+              and {rest.length} more
+            </button>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

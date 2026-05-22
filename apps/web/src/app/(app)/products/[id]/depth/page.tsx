@@ -1,35 +1,56 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Card, Divider, Voice } from "@/components/primitives";
-import { TraitRadar } from "@/components/product";
+import { Divider } from "@/components/primitives";
+import { ConstructionPanel, FactsStrip, FlavorBarChart } from "@/components/product";
+import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { ProductType, TraitVector } from "@/lib/wheel";
+import type { ProductType } from "@/lib/wheel";
 
 type Params = Promise<{ id: string }>;
 
+// Keys surfaced in the Construction panel — excluded from the dense Facts
+// strip so values don't repeat.
+const CIGAR_CONSTRUCTION_KEYS = [
+  "wrapper",
+  "wrapper_color",
+  "binder",
+  "filler",
+  "country",
+  "vitola",
+  "strength",
+];
+const BOURBON_CONSTRUCTION_KEYS = [
+  "distillery",
+  "mash_bill",
+  "proof",
+  "abv",
+  "age_years",
+  "age_label",
+  "style_family",
+  "dsp",
+];
+
 /**
- * Tier 2 #4 — The Depth view (v1). Read-only radar of the product's
- * catalog-baseline `trait_vector` against the 10 pairing axes.
- *
- * Future iterations layer in member adjustments (outlined dots,
- * attributable) and a club-consensus shape (soft moss fill). Both
- * require a new `product_adjustments` table; v1 ships only the visual
- * primitive so the route + affordance + radar component land first.
+ * Depth view — full spec table, flavor bar chart, and correction affordance.
+ * Accessible whether or not a trait_vector exists; the flavor chart simply
+ * shows a placeholder when no tastings have been logged.
  */
 export default async function ProductDepthPage({ params }: { params: Params }) {
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
+
   const { data: product } = await supabase
     .from("products")
-    .select("id, type, name, brand, trait_vector")
+    .select("id, type, name, brand, specs")
     .eq("id", id)
     .maybeSingle();
 
   if (!product) notFound();
-  if (!product.trait_vector) notFound();
 
   const productType = product.type as ProductType;
-  const traitVector = product.trait_vector as TraitVector;
+  const specs = (product.specs ?? {}) as Record<string, unknown>;
+
+  const groupVoice = await loadGroupVoice(supabase, id, productType);
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
@@ -38,30 +59,48 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
           href={`/products/${id}`}
           className="text-[11px] uppercase tracking-widest text-foreground-subtle hover:text-foreground-muted"
         >
-          ← Back to the face
+          ← Back
         </Link>
         <h1 className="text-3xl mt-2">{product.name}</h1>
-        <p className="text-sm text-foreground-muted mt-1">
-          {product.brand ? `${product.brand} · ` : ""}
-          <span className="uppercase tracking-widest text-foreground-subtle">{productType}</span>
-        </p>
+        {product.brand ? (
+          <p className="text-sm text-foreground-muted mt-1">
+            {product.brand} ·{" "}
+            <span className="uppercase tracking-widest text-foreground-subtle">{productType}</span>
+          </p>
+        ) : null}
       </header>
 
-      <Divider label="The shape" />
+      <Divider label="Construction" />
+      <ConstructionPanel productType={productType} specs={specs} />
 
-      <Card className="py-6">
-        <TraitRadar vector={traitVector} label={product.name as string} />
-      </Card>
+      <div className="mt-3">
+        <FactsStrip
+          productType={productType}
+          specs={specs}
+          excludeKeys={
+            productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS
+          }
+        />
+      </div>
 
-      <Voice className="block mt-5 text-center">
-        "Ten axes, sir. The shape is the catalog's read on this one — your own dots and the club's
-        consensus will lay over it as members weigh in."
-      </Voice>
+      <Divider label="Flavor profile" />
 
-      <p className="mt-6 text-xs text-foreground-subtle text-center">
-        The values come from the silent wheel mapping. Member adjustments + group consensus layer
-        onto this baseline in a coming pass.
-      </p>
+      {groupVoice.tag_cloud.length > 0 ? (
+        <FlavorBarChart entries={groupVoice.tag_cloud} />
+      ) : (
+        <p className="text-sm text-foreground-subtle">
+          No tastings logged yet — the profile fills in as the club weighs in.
+        </p>
+      )}
+
+      <div className="mt-10 pt-6 border-t border-border">
+        <Link
+          href={`/products/${id}/edit`}
+          className="text-sm text-foreground-subtle hover:text-foreground-muted"
+        >
+          Spot something wrong? Suggest a correction →
+        </Link>
+      </div>
     </main>
   );
 }

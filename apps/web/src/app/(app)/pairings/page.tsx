@@ -123,7 +123,7 @@ export default async function PairingsIndexPage() {
 
           {recommendations.length > 0 ? (
             <>
-              <Divider label="From your shelf" />
+              <Divider label="From your tastings" />
               <div className="flex flex-col gap-4">
                 {recommendations.map((r) => (
                   <RecommendationCard key={`${r.source.id}:${r.candidate.product_id}`} entry={r} />

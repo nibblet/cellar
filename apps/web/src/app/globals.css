@@ -117,7 +117,8 @@ html.light {
   /* Fonts */
   --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
   --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-voice: var(--font-playfair), Georgia, "Times New Roman", serif;
+  /* Bartender's voice: Fraunces upright, distinctive but readable at body size. */
+  --font-voice: var(--font-fraunces), "Palatino Linotype", Palatino, Georgia, serif;
 
   /* Radii */
   --radius-button: 12px;
@@ -247,15 +248,17 @@ html.light .nccc-logo-mark {
 }
 
 /* ============================================================
-   Voice: The Bartender's italic serif
+   Voice: The Bartender's prose serif (Fraunces, upright)
+   Italic is reserved for short one-line garnishes only (photo
+   credits, callout lines). Prose uses roman for readability.
    ============================================================ */
 
 .nccc-voice {
   font-family: var(--font-voice);
-  font-style: italic;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 400;
   font-size: 17px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--foreground-muted);
 }
 

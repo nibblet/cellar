@@ -3,41 +3,131 @@ import { Suspense } from "react";
 import { NCCCLogo } from "@/components/brand";
 import {
   CatalogCard,
+  CatalogFilterControls,
   DailyPourCard,
   FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
+  MeetupCard,
   TastingCard,
-  UpcomingMeetupCard,
 } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
-import { loadCatalogBrowse } from "@/lib/feed/catalog-queries";
+import {
+  type CatalogFilters,
+  type CatalogSortKey,
+  loadCatalogBrowse,
+} from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
+import type {
+  BourbonProofBand,
+  BourbonStyle,
+  CigarStrength,
+  CigarWrapperBucket,
+} from "@/lib/preferences/types";
 import { hasAnyPreferences } from "@/lib/preferences/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-type UpcomingEvent = {
+type MeetupEvent = {
   id: string;
   name: string;
   date: string;
   notes: string | null;
+  tasting_count?: number;
 };
 
-type SearchParams = Promise<{ tab?: string }>;
+type SearchParams = Promise<{
+  tab?: string;
+  // Cigar filters
+  strength?: string;
+  wrappers?: string;
+  origin?: string;
+  // Bourbon filters
+  styles?: string;
+  proof?: string;
+  age?: string;
+  // Shared
+  club?: string;
+  enriched?: string;
+  sort?: string;
+}>;
 
 function parseTab(raw: string | undefined): FeedTab {
   if (raw === "cigars" || raw === "bourbons") return raw;
   return "for-you";
 }
 
+const VALID_STRENGTHS = new Set(["mild", "mild-medium", "medium", "medium-full", "full"]);
+const VALID_WRAPPERS = new Set([
+  "connecticut", "habano", "maduro", "san-andres", "corojo", "sumatra", "cameroon", "oscuro",
+]);
+const VALID_STYLES = new Set([
+  "bourbon", "rye", "wheated", "high-rye", "bottled-in-bond", "single-barrel",
+]);
+const VALID_PROOF_BANDS = new Set(["low", "mid", "high"]);
+const VALID_AGE_BANDS = new Set(["nas", "4-8", "8-12", "12+"]);
+const VALID_SORTS = new Set([
+  "recommended", "az", "recent", "tasted", "strength-asc", "proof-asc", "age-asc",
+]);
+
+function parseFilters(sp: Awaited<SearchParams>): {
+  filters: CatalogFilters;
+  sort: CatalogSortKey;
+} {
+  const strength =
+    sp.strength && VALID_STRENGTHS.has(sp.strength)
+      ? (sp.strength as CigarStrength)
+      : undefined;
+
+  const wrappers = sp.wrappers
+    ? (sp.wrappers
+        .split(",")
+        .filter((w) => VALID_WRAPPERS.has(w)) as CigarWrapperBucket[])
+    : undefined;
+
+  const styles = sp.styles
+    ? (sp.styles.split(",").filter((s) => VALID_STYLES.has(s)) as BourbonStyle[])
+    : undefined;
+
+  const proofBand =
+    sp.proof && VALID_PROOF_BANDS.has(sp.proof)
+      ? (sp.proof as BourbonProofBand)
+      : undefined;
+
+  const ageBand =
+    sp.age && VALID_AGE_BANDS.has(sp.age)
+      ? (sp.age as "nas" | "4-8" | "8-12" | "12+")
+      : undefined;
+
+  const sort =
+    sp.sort && VALID_SORTS.has(sp.sort)
+      ? (sp.sort as CatalogSortKey)
+      : "recommended";
+
+  return {
+    filters: {
+      strength,
+      wrappers: wrappers?.length ? wrappers : undefined,
+      origin: sp.origin || undefined,
+      styles: styles?.length ? styles : undefined,
+      proofBand,
+      ageBand,
+      clubOnly: sp.club === "1",
+      enrichedOnly: sp.enriched === "1",
+      sort,
+    },
+    sort,
+  };
+}
+
 export default async function FeedPage({ searchParams }: { searchParams: SearchParams }) {
-  const { tab: tabParam } = await searchParams;
-  const tab = parseTab(tabParam);
+  const sp = await searchParams;
+  const tab = parseTab(sp.tab);
+  const { filters, sort } = parseFilters(sp);
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
@@ -56,13 +146,21 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
       <FeedTabs active={tab} />
 
       <Suspense fallback={<FeedBodySkeleton />}>
-        <FeedBody tab={tab} />
+        <FeedBody tab={tab} filters={filters} sort={sort} />
       </Suspense>
     </main>
   );
 }
 
-async function FeedBody({ tab }: { tab: FeedTab }) {
+async function FeedBody({
+  tab,
+  filters,
+  sort,
+}: {
+  tab: FeedTab;
+  filters: CatalogFilters;
+  sort: CatalogSortKey;
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
   const viewerId = auth.user?.id ?? null;
@@ -77,6 +175,8 @@ async function FeedBody({ tab }: { tab: FeedTab }) {
       supabase={supabase}
       productType={tab === "cigars" ? "cigar" : "bourbon"}
       preferences={preferences}
+      filters={filters}
+      sort={sort}
     />
   );
 }
@@ -92,17 +192,21 @@ async function ForYouBody({
 }) {
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
-  const horizon = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
-  const [entries, dailyPourCandidates, upcomingResult] = await Promise.all([
+  const [entries, dailyPourCandidates, upcomingResult, lastResult] = await Promise.all([
     loadFeed(supabase, { limit: 50 }),
     viewerId ? loadDailyPourCandidates(supabase, preferences) : Promise.resolve([]),
     supabase
       .from("events")
       .select("id, name, date, notes")
       .gte("date", today)
-      .lte("date", horizon)
       .order("date", { ascending: true })
+      .limit(1),
+    supabase
+      .from("events")
+      .select("id, name, date, notes, tastings(count)")
+      .lt("date", today)
+      .order("date", { ascending: false })
       .limit(1),
   ]);
 
@@ -110,8 +214,6 @@ async function ForYouBody({
     ? selectDailyPour({ memberId: viewerId, date: todayKey() }, dailyPourCandidates)
     : null;
 
-  // Read cached Bartender prose only — never block the feed on an LLM call.
-  // DailyPourCard falls back to "A measured match, sir." when rationale is null.
   if (dailyPour) {
     dailyPour.rationale = await loadCachedPairingProse(
       supabase,
@@ -138,15 +240,33 @@ async function ForYouBody({
     }
   }
 
-  const upcoming = (upcomingResult.data as UpcomingEvent[] | null)?.[0] ?? null;
+  type LastEventRow = {
+    id: string;
+    name: string;
+    date: string;
+    notes: string | null;
+    tastings: [{ count: number }] | null;
+  };
+
+  const upcoming = (upcomingResult.data as MeetupEvent[] | null)?.[0] ?? null;
+  const lastRaw = (lastResult.data as LastEventRow[] | null)?.[0] ?? null;
+  const last: MeetupEvent | null = lastRaw
+    ? {
+        id: lastRaw.id,
+        name: lastRaw.name,
+        date: lastRaw.date,
+        notes: lastRaw.notes,
+        tasting_count: lastRaw.tastings?.[0]?.count ?? 0,
+      }
+    : null;
 
   if (entries.length === 0) {
     return (
       <>
         {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
-        {upcoming ? (
+        {upcoming || last ? (
           <div className="mb-4">
-            <UpcomingMeetupCard event={upcoming} />
+            <MeetupCard upcoming={upcoming} last={last} />
           </div>
         ) : null}
         <Card className="flex flex-col items-center text-center">
@@ -165,12 +285,11 @@ async function ForYouBody({
   return (
     <>
       {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
-      {upcoming ? (
+      {upcoming || last ? (
         <div className="mb-4">
-          <UpcomingMeetupCard event={upcoming} />
+          <MeetupCard upcoming={upcoming} last={last} />
         </div>
       ) : null}
-
       <div className="flex flex-col gap-3">
         {entries.map((entry) => (
           <TastingCard
@@ -193,36 +312,47 @@ async function CatalogBody({
   supabase,
   productType,
   preferences,
+  filters,
+  sort,
 }: {
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
   productType: "cigar" | "bourbon";
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
+  filters: CatalogFilters;
+  sort: CatalogSortKey;
 }) {
-  const entries = await loadCatalogBrowse(supabase, productType, preferences, 100);
+  const entries = await loadCatalogBrowse(supabase, productType, preferences, 100, filters);
   const signed = await signImagePaths(
     supabase,
     entries.map((e) => e.hero_image_path),
   );
 
-  if (entries.length === 0) {
-    return (
-      <Card className="text-center">
-        <Voice className="block">
-          "The shelf is empty, sir. Check back as the catalog fills in."
-        </Voice>
-      </Card>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-3">
-      {entries.map((entry) => (
-        <CatalogCard
-          key={entry.product_id}
-          entry={entry}
-          signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
-        />
-      ))}
-    </div>
+    <>
+      {/* Filter + sort controls — client component, reads/writes URL params */}
+      <CatalogFilterControls
+        productType={productType}
+        activeFilters={filters}
+        activeSort={sort}
+      />
+
+      {entries.length === 0 ? (
+        <Card className="text-center">
+          <Voice className="block">
+            "Nothing on the shelf matching those terms, sir. Try broadening the filter."
+          </Voice>
+        </Card>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {entries.map((entry) => (
+            <CatalogCard
+              key={entry.product_id}
+              entry={entry}
+              signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
