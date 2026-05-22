@@ -35,15 +35,32 @@ const BODY_END_MARKERS = [
 // a reviewer blog when both surface for the same product. Not a filter —
 // products only found on lower-tier hosts still get picked.
 const PREMIUM_HOSTS = [
+  // Cigar
   "mshanken.imgix.net", // Cigar Aficionado CDN — clean white-bg shots
   "cigaraficionado.com",
+  "drewestate.com",
+  "padroncigars.com",
+  // Bourbon retail / specialist
   "totalwine.com",
   "masterofmalt.com",
   "klwines.com",
-  "drewestate.com",
-  "padroncigars.com",
+  "seelbachs.com",
+  "breakingbourbon.com", // consistently good hero shots, webflow CDN
+  "whiskyadvocate.com",
+  // Bourbon manufacturer sites — cleanest bottle shots when they surface
   "buffalotracedistillery.com",
   "fourrosesbourbon.com",
+  "heavenhilldistillery.com",
+  "heavenhill.com",
+  "oldforester.com",
+  "wildturkeybourbon.com",
+  "makersmark.com",
+  "wlweller.com",
+  "eaglerare.com",
+  "blantonsbourbon.com",
+  "woodfordreserve.com",
+  "knobcreek.com",
+  "jimbeam.com",
 ];
 
 // URL fragments that almost always indicate junk (logos, social, ads).

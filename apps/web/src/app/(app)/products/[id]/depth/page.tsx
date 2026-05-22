@@ -2,9 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Divider } from "@/components/primitives";
 import { ConstructionPanel, FactsStrip, FlavorBarChart } from "@/components/product";
-import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { buildTagCloud, loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { ProductType } from "@/lib/wheel";
+import type { ProductType, WheelVector } from "@/lib/wheel";
 
 type Params = Promise<{ id: string }>;
 
@@ -41,7 +41,7 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, type, name, brand, specs")
+    .select("id, type, name, brand, specs, wheel_vector")
     .eq("id", id)
     .maybeSingle();
 
@@ -51,6 +51,15 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
   const specs = (product.specs ?? {}) as Record<string, unknown>;
 
   const groupVoice = await loadGroupVoice(supabase, id, productType);
+
+  // Fall back to the catalog baseline (wheel_vector from enrichment) when no
+  // member tastings have been logged yet.
+  const wheelVector = (product as unknown as { wheel_vector?: WheelVector | null }).wheel_vector;
+  const flavorEntries =
+    groupVoice.tag_cloud.length > 0
+      ? groupVoice.tag_cloud
+      : buildTagCloud(productType, wheelVector ? [wheelVector] : []);
+  const isBaseline = groupVoice.tag_cloud.length === 0 && flavorEntries.length > 0;
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
@@ -85,8 +94,15 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
 
       <Divider label="Flavor profile" />
 
-      {groupVoice.tag_cloud.length > 0 ? (
-        <FlavorBarChart entries={groupVoice.tag_cloud} />
+      {flavorEntries.length > 0 ? (
+        <>
+          <FlavorBarChart entries={flavorEntries} />
+          {isBaseline ? (
+            <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-3">
+              Catalog baseline · Fills in as the club weighs in
+            </p>
+          ) : null}
+        </>
       ) : (
         <p className="text-sm text-foreground-subtle">
           No tastings logged yet — the profile fills in as the club weighs in.
