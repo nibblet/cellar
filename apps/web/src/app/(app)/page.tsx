@@ -63,15 +63,33 @@ function parseTab(raw: string | undefined): FeedTab {
 
 const VALID_STRENGTHS = new Set(["mild", "mild-medium", "medium", "medium-full", "full"]);
 const VALID_WRAPPERS = new Set([
-  "connecticut", "habano", "maduro", "san-andres", "corojo", "sumatra", "cameroon", "oscuro",
+  "connecticut",
+  "habano",
+  "maduro",
+  "san-andres",
+  "corojo",
+  "sumatra",
+  "cameroon",
+  "oscuro",
 ]);
 const VALID_STYLES = new Set([
-  "bourbon", "rye", "wheated", "high-rye", "bottled-in-bond", "single-barrel",
+  "bourbon",
+  "rye",
+  "wheated",
+  "high-rye",
+  "bottled-in-bond",
+  "single-barrel",
 ]);
 const VALID_PROOF_BANDS = new Set(["low", "mid", "high"]);
 const VALID_AGE_BANDS = new Set(["nas", "4-8", "8-12", "12+"]);
 const VALID_SORTS = new Set([
-  "recommended", "az", "recent", "tasted", "strength-asc", "proof-asc", "age-asc",
+  "recommended",
+  "az",
+  "recent",
+  "tasted",
+  "strength-asc",
+  "proof-asc",
+  "age-asc",
 ]);
 
 function parseFilters(sp: Awaited<SearchParams>): {
@@ -79,14 +97,10 @@ function parseFilters(sp: Awaited<SearchParams>): {
   sort: CatalogSortKey;
 } {
   const strength =
-    sp.strength && VALID_STRENGTHS.has(sp.strength)
-      ? (sp.strength as CigarStrength)
-      : undefined;
+    sp.strength && VALID_STRENGTHS.has(sp.strength) ? (sp.strength as CigarStrength) : undefined;
 
   const wrappers = sp.wrappers
-    ? (sp.wrappers
-        .split(",")
-        .filter((w) => VALID_WRAPPERS.has(w)) as CigarWrapperBucket[])
+    ? (sp.wrappers.split(",").filter((w) => VALID_WRAPPERS.has(w)) as CigarWrapperBucket[])
     : undefined;
 
   const styles = sp.styles
@@ -94,19 +108,12 @@ function parseFilters(sp: Awaited<SearchParams>): {
     : undefined;
 
   const proofBand =
-    sp.proof && VALID_PROOF_BANDS.has(sp.proof)
-      ? (sp.proof as BourbonProofBand)
-      : undefined;
+    sp.proof && VALID_PROOF_BANDS.has(sp.proof) ? (sp.proof as BourbonProofBand) : undefined;
 
   const ageBand =
-    sp.age && VALID_AGE_BANDS.has(sp.age)
-      ? (sp.age as "nas" | "4-8" | "8-12" | "12+")
-      : undefined;
+    sp.age && VALID_AGE_BANDS.has(sp.age) ? (sp.age as "nas" | "4-8" | "8-12" | "12+") : undefined;
 
-  const sort =
-    sp.sort && VALID_SORTS.has(sp.sort)
-      ? (sp.sort as CatalogSortKey)
-      : "recommended";
+  const sort = sp.sort && VALID_SORTS.has(sp.sort) ? (sp.sort as CatalogSortKey) : "recommended";
 
   return {
     filters: {
@@ -330,11 +337,7 @@ async function CatalogBody({
   return (
     <>
       {/* Filter + sort controls — client component, reads/writes URL params */}
-      <CatalogFilterControls
-        productType={productType}
-        activeFilters={filters}
-        activeSort={sort}
-      />
+      <CatalogFilterControls productType={productType} activeFilters={filters} activeSort={sort} />
 
       {entries.length === 0 ? (
         <Card className="text-center">
@@ -348,7 +351,9 @@ async function CatalogBody({
             <CatalogCard
               key={entry.product_id}
               entry={entry}
-              signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
+              signedHero={
+                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+              }
             />
           ))}
         </div>

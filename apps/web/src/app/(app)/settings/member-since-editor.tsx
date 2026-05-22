@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { updateClubJoinedAt, type MemberSinceFormState } from "./actions";
+import { type MemberSinceFormState, updateClubJoinedAt } from "./actions";
 
 type MemberSinceEditorProps = {
   /** Current display label, e.g. "Member since June 2019" or null. */
@@ -12,8 +12,18 @@ type MemberSinceEditorProps = {
 };
 
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const FOUNDING_YEAR = 2014;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PairsWith } from "@/components/pairing";
-import { Button, Card, Divider } from "@/components/primitives";
+import { Button, Divider } from "@/components/primitives";
 import {
   ClubVoice,
   DepthAffordance,
@@ -14,6 +14,7 @@ import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
+import { DraftConfirmBanner } from "./draft-confirm";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{
@@ -134,12 +135,13 @@ export default async function ProductDetailPage({
       </header>
 
       {isDraft ? (
-        <Card className="mt-5 border border-ember-500">
-          <p className="text-sm text-foreground-muted">
-            <span className="text-ember-500 font-medium">Draft.</span> The Bartender wasn't certain
-            — confirm or edit the details below.
-          </p>
-        </Card>
+        <DraftConfirmBanner
+          productId={product.id}
+          productType={productType}
+          productName={product.name}
+          brand={product.brand ?? null}
+          justCaptured={Boolean(just_captured)}
+        />
       ) : null}
 
       <Divider label="The club says" />

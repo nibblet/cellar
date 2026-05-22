@@ -7,7 +7,7 @@
  * list — not a URL string — so it can't hallucinate.
  */
 
-import OpenAI from "openai";
+import type OpenAI from "openai";
 import type { RagItem } from "./apify-client";
 
 const MODEL = "gpt-5-nano";
@@ -23,8 +23,7 @@ Rules:
 
 Return only the index of your chosen URL (0-based), or -1.`;
 
-const IMAGE_RE =
-  /!\[[^\]]*\]\((https?:\/\/[^)\s]+\.(?:jpe?g|png|webp|gif|avif))[^)]*\)/gi;
+const IMAGE_RE = /!\[[^\]]*\]\((https?:\/\/[^)\s]+\.(?:jpe?g|png|webp|gif|avif))[^)]*\)/gi;
 
 function collectAllImageUrls(items: RagItem[]): string[] {
   const seen = new Set<string>();

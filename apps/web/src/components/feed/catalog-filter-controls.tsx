@@ -3,17 +3,17 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import type { CatalogFilters, CatalogSortKey } from "@/lib/feed/catalog-queries";
-import type { ProductType } from "@/lib/wheel";
 import {
   BOURBON_PROOF_BAND_LABEL,
   BOURBON_STYLE_LABEL,
-  CIGAR_STRENGTH_LABEL,
-  CIGAR_WRAPPER_LABEL,
   type BourbonProofBand,
   type BourbonStyle,
+  CIGAR_STRENGTH_LABEL,
+  CIGAR_WRAPPER_LABEL,
   type CigarStrength,
   type CigarWrapperBucket,
 } from "@/lib/preferences/types";
+import type { ProductType } from "@/lib/wheel";
 
 type Props = {
   productType: ProductType;
@@ -72,7 +72,16 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
 
   const clearFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
-    for (const key of ["strength", "wrappers", "origin", "styles", "proof", "age", "club", "enriched"]) {
+    for (const key of [
+      "strength",
+      "wrappers",
+      "origin",
+      "styles",
+      "proof",
+      "age",
+      "club",
+      "enriched",
+    ]) {
       params.delete(key);
     }
     router.push(`?${params.toString()}`, { scroll: false });
@@ -88,7 +97,10 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
       <div className="flex items-center justify-between gap-2">
         <button
           type="button"
-          onClick={() => { setFilterOpen(!filterOpen); setSortOpen(false); }}
+          onClick={() => {
+            setFilterOpen(!filterOpen);
+            setSortOpen(false);
+          }}
           className={`text-xs uppercase tracking-widest px-3 py-1.5 rounded-full border transition-colors ${
             filterCount > 0
               ? "border-accent text-accent bg-accent-tint"
@@ -100,7 +112,10 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
 
         <button
           type="button"
-          onClick={() => { setSortOpen(!sortOpen); setFilterOpen(false); }}
+          onClick={() => {
+            setSortOpen(!sortOpen);
+            setFilterOpen(false);
+          }}
           className="text-xs uppercase tracking-widest px-3 py-1.5 rounded-full border border-border text-foreground-subtle hover:text-foreground-muted transition-colors"
         >
           {sortLabel}
@@ -168,16 +183,12 @@ function FilterSheet({
     <div className="mt-3 rounded-2xl border border-border bg-surface p-4 flex flex-col gap-5">
       {/* Dev enriched toggle — top, subtle */}
       <section>
-        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-          Data
-        </p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Data</p>
         <label className="flex items-center gap-2 text-sm text-foreground-muted cursor-pointer">
           <input
             type="checkbox"
             checked={!!activeFilters.enrichedOnly}
-            onChange={(e) =>
-              onUpdate({ enriched: e.target.checked ? "1" : null })
-            }
+            onChange={(e) => onUpdate({ enriched: e.target.checked ? "1" : null })}
             className="accent-accent"
           />
           Show enriched only (has photo + specs)
@@ -186,9 +197,7 @@ function FilterSheet({
           <input
             type="checkbox"
             checked={!!activeFilters.clubOnly}
-            onChange={(e) =>
-              onUpdate({ club: e.target.checked ? "1" : null })
-            }
+            onChange={(e) => onUpdate({ club: e.target.checked ? "1" : null })}
             className="accent-accent"
           />
           Recommended by the club
@@ -221,7 +230,14 @@ function CigarFilters({
 }) {
   const strengths: CigarStrength[] = ["mild", "mild-medium", "medium", "medium-full", "full"];
   const wrappers: CigarWrapperBucket[] = [
-    "connecticut", "habano", "maduro", "san-andres", "corojo", "sumatra", "cameroon", "oscuro",
+    "connecticut",
+    "habano",
+    "maduro",
+    "san-andres",
+    "corojo",
+    "sumatra",
+    "cameroon",
+    "oscuro",
   ];
 
   return (
@@ -235,9 +251,7 @@ function CigarFilters({
             <button
               key={s}
               type="button"
-              onClick={() =>
-                onUpdate({ strength: activeFilters.strength === s ? null : s })
-              }
+              onClick={() => onUpdate({ strength: activeFilters.strength === s ? null : s })}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                 activeFilters.strength === s
                   ? "border-accent bg-accent-tint text-foreground"
@@ -251,9 +265,7 @@ function CigarFilters({
       </section>
 
       <section>
-        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-          Wrapper
-        </p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Wrapper</p>
         <div className="flex flex-wrap gap-1.5">
           {wrappers.map((w) => {
             const active = activeFilters.wrappers?.includes(w);
@@ -289,16 +301,21 @@ function BourbonFilters({
   activeFilters: CatalogFilters;
   onUpdate: (u: Record<string, string | null>) => void;
 }) {
-  const styles: BourbonStyle[] = ["bourbon", "rye", "wheated", "high-rye", "bottled-in-bond", "single-barrel"];
+  const styles: BourbonStyle[] = [
+    "bourbon",
+    "rye",
+    "wheated",
+    "high-rye",
+    "bottled-in-bond",
+    "single-barrel",
+  ];
   const proofBands: BourbonProofBand[] = ["low", "mid", "high"];
   const ageBands = ["nas", "4-8", "8-12", "12+"] as const;
 
   return (
     <>
       <section>
-        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-          Style
-        </p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Style</p>
         <div className="flex flex-wrap gap-1.5">
           {styles.map((s) => {
             const active = activeFilters.styles?.includes(s);
@@ -325,17 +342,13 @@ function BourbonFilters({
       </section>
 
       <section>
-        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-          Proof
-        </p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Proof</p>
         <div className="flex flex-wrap gap-1.5">
           {proofBands.map((b) => (
             <button
               key={b}
               type="button"
-              onClick={() =>
-                onUpdate({ proof: activeFilters.proofBand === b ? null : b })
-              }
+              onClick={() => onUpdate({ proof: activeFilters.proofBand === b ? null : b })}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                 activeFilters.proofBand === b
                   ? "border-accent bg-accent-tint text-foreground"
@@ -349,17 +362,13 @@ function BourbonFilters({
       </section>
 
       <section>
-        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-          Age
-        </p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Age</p>
         <div className="flex flex-wrap gap-1.5">
           {ageBands.map((b) => (
             <button
               key={b}
               type="button"
-              onClick={() =>
-                onUpdate({ age: activeFilters.ageBand === b ? null : b })
-              }
+              onClick={() => onUpdate({ age: activeFilters.ageBand === b ? null : b })}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                 activeFilters.ageBand === b
                   ? "border-accent bg-accent-tint text-foreground"

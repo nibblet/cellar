@@ -55,10 +55,7 @@ export function TagCloud({ entries }: TagCloudProps) {
           {expanded ? (
             <div className="flex flex-wrap gap-x-3 gap-y-1">
               {rest.map((entry) => (
-                <span
-                  key={entry.leaf_id}
-                  className="text-sm text-foreground-muted"
-                >
+                <span key={entry.leaf_id} className="text-sm text-foreground-muted">
                   {entry.label}
                 </span>
               ))}

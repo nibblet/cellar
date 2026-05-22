@@ -1,50 +1,38 @@
 /**
- * Apify-driven enrichment pass — prototype.
+ * Apify-driven enrichment pass — CLI wrapper.
  *
- * Pulls products missing an image_url, asks Apify's rag-web-browser actor for
- * a few search results per product, picks a hero image candidate, and inserts
- * the cleaned review markdown into product_reviews.
- *
- * Designed to be run on a small slice first. Always start with --dry-run and
- * eyeball the audit log before letting it write.
+ * The per-product logic lives in @/lib/enrich so it can be shared with the
+ * capture server action. This script just iterates products that need
+ * enrichment and calls the shared function with an audit-log shim.
  *
  *   pnpm seed:enrich-apify --type cigar --limit 5 --dry-run
- *   pnpm seed:enrich-apify --type bourbon --limit 5
+ *   pnpm seed:enrich-apify --type bourbon --limit 50
+ *   pnpm seed:enrich-apify --type cigar --limit 5 --backfill
  *
  * Flags:
  *   --type      bourbon | cigar              (required)
  *   --limit     how many products to enrich  (default 5)
  *   --dry-run   no DB writes, audit only     (default false)
  *   --max       results per Apify query      (default 3)
- *
- * Writes an audit log to scripts/seed/data/private/enrichment-<ts>.jsonl
- * regardless of dry-run.
+ *   --backfill  re-process products whose image_url points outside Supabase
  */
 
 import { mkdirSync, appendFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import OpenAI from "openai";
-import { ApifyClient } from "./lib/apify-client";
-import { extractEnrichment } from "./lib/apify-extractor";
-import { pickImageWithLlm } from "./lib/llm-image-picker";
-import { mirrorImage, MirrorError } from "./lib/storage-mirror";
+import { ApifyClient } from "@/lib/enrich/apify-client";
+import {
+  type EnrichInput,
+  buildSearchQuery,
+  enrichProductFromWeb,
+} from "@/lib/enrich/apify-enrich";
 import { adminClient } from "./lib/supabase-admin";
-
-type ProductRow = {
-  id: string;
-  type: "bourbon" | "cigar";
-  name: string;
-  brand: string | null;
-  line: string | null;
-};
 
 type Args = {
   type: "bourbon" | "cigar";
   limit: number;
   dryRun: boolean;
   max: number;
-  /** Re-process products whose image_url points outside Supabase Storage —
-   *  useful for fixing up earlier rows that landed before the mirror step. */
   backfill: boolean;
 };
 
@@ -64,30 +52,6 @@ function parseArgs(argv: string[]): Args {
     backfill: argv.includes("--backfill"),
     max: Number(arg("max") ?? 3),
   };
-}
-
-/**
- * Build a search query from brand/line/name, deduping overlapping tokens.
- *
- * The catalog is noisy: brand="Punch Rare Corojo" and name="Punch Rare Corojo
- * 25th Anniversary" naively joins to "Punch Rare Corojo Punch Rare Corojo
- * 25th Anniversary", which returns junk results. We keep tokens in source
- * order but drop case-insensitive duplicates.
- */
-function buildQuery(p: ProductRow): string {
-  const raw = [p.brand, p.line, p.name].filter(Boolean).join(" ");
-  const seen = new Set<string>();
-  const deduped: string[] = [];
-  for (const tok of raw.split(/\s+/)) {
-    const key = tok.toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    deduped.push(tok);
-  }
-  const base = deduped.join(" ");
-  return p.type === "cigar"
-    ? `${base} cigar review`
-    : `${base} bourbon review tasting notes`;
 }
 
 function logPath(): string {
@@ -116,18 +80,15 @@ async function main() {
   );
   console.log(`[enrich-apify] audit log → ${audit}`);
 
-  // In backfill mode, pick products whose image_url still points at the
-  // upstream source (i.e., not at our Supabase Storage CDN). In normal mode,
-  // only products with no image at all.
-  const query = supa
+  const baseQuery = supa
     .from("products")
     .select("id, type, name, brand, line")
     .eq("type", args.type)
     .order("created_at", { ascending: true })
     .limit(args.limit);
   const filtered = args.backfill
-    ? query.not("image_url", "ilike", "%supabase.co/storage%")
-    : query.is("image_url", null);
+    ? baseQuery.not("image_url", "ilike", "%supabase.co/storage%")
+    : baseQuery.is("image_url", null);
   const { data: products, error } = await filtered;
 
   if (error) throw error;
@@ -139,96 +100,32 @@ async function main() {
   let imageWrites = 0;
   let reviewWrites = 0;
 
-  for (const p of products as ProductRow[]) {
-    const query = buildQuery(p);
+  for (const p of products as EnrichInput[]) {
     console.log(`\n• ${p.brand ?? ""} ${p.name} (${p.id.slice(0, 8)})`);
-    console.log(`  query: ${query}`);
+    console.log(`  query: ${buildSearchQuery(p)}`);
 
-    let items;
-    try {
-      items = await apify.ragWebBrowser({ query, maxResults: args.max });
-    } catch (err) {
-      console.error("  apify failed:", (err as Error).message);
+    const result = await enrichProductFromWeb(
+      p,
+      { apify, openai, supabase: supa },
+      { maxResults: args.max, dryRun: args.dryRun },
+    );
+
+    appendFileSync(audit, `${JSON.stringify(result)}\n`);
+
+    if (result.apifyError) {
+      console.error("  apify failed:", result.apifyError);
       continue;
     }
 
-    const enrichment = extractEnrichment(items, p);
+    const tag = result.llmFallbackUsed ? " [llm]" : "";
+    console.log(`  image: ${result.imageUrl ?? "(none picked)"}${tag}`);
+    console.log(`  reviews: ${result.reviewsWritten}`);
 
-    // LLM fallback: if heuristic found nothing, ask gpt-5-nano to pick from
-    // the raw image URL list (logos and all). It returns an index or -1.
-    let llmFallback: { used: boolean; reason?: string } = { used: false };
-    if (!enrichment.imageUrl) {
-      try {
-        const llm = await pickImageWithLlm(openai, items, p);
-        if (llm.imageUrl) {
-          enrichment.imageUrl = llm.imageUrl;
-          enrichment.imageSourceUrl = null; // LLM picked across items
-          llmFallback = { used: true, reason: "heuristic empty" };
-        }
-      } catch (err) {
-        console.error("  llm picker failed:", (err as Error).message);
-      }
-    }
+    if (result.imageUrl && !args.dryRun) imageWrites++;
+    reviewWrites += result.reviewsWritten;
 
-    const record = { productId: p.id, query, enrichment, llmFallback };
-    appendFileSync(audit, `${JSON.stringify(record)}\n`);
-
-    console.log(
-      `  image: ${enrichment.imageUrl ?? "(none picked)"}${
-        llmFallback.used ? " [llm]" : ""
-      }`,
-    );
-    if (enrichment.imageCandidates.length > 1) {
-      console.log(
-        `  image candidates (${enrichment.imageCandidates.length} considered):`,
-      );
-      for (const c of enrichment.imageCandidates.slice(0, 3)) {
-        console.log(`    [${c.score}] ${c.url.slice(0, 110)}`);
-      }
-    }
-    console.log(`  reviews: ${enrichment.reviews.length}`);
-    for (const r of enrichment.reviews) {
-      console.log(`    - ${r.source} :: ${r.title?.slice(0, 60) ?? ""}`);
-    }
-
-    if (args.dryRun) continue;
-
-    if (enrichment.imageUrl) {
-      try {
-        const mirrored = await mirrorImage(supa, {
-          sourceUrl: enrichment.imageUrl,
-          productId: p.id,
-          productType: p.type,
-        });
-        const { error: updErr } = await supa
-          .from("products")
-          .update({ image_url: mirrored.publicUrl })
-          .eq("id", p.id);
-        if (updErr) console.error("  image update failed:", updErr.message);
-        else {
-          imageWrites++;
-          console.log(
-            `  mirrored: ${mirrored.publicUrl} (${Math.round(mirrored.bytes / 1024)}kb)`,
-          );
-        }
-      } catch (err) {
-        const stage = err instanceof MirrorError ? err.stage : "unknown";
-        console.error(`  mirror failed [${stage}]:`, (err as Error).message);
-      }
-    }
-
-    if (enrichment.reviews.length) {
-      const rows = enrichment.reviews.map((r) => ({
-        product_id: p.id,
-        source: r.source,
-        source_url: r.sourceUrl,
-        reviewer: null,
-        score: null,
-        text: r.text,
-      }));
-      const { error: insErr } = await supa.from("product_reviews").insert(rows);
-      if (insErr) console.error("  reviews insert failed:", insErr.message);
-      else reviewWrites += rows.length;
+    if (result.mirrorError) {
+      console.error(`  mirror failed: ${result.mirrorError}`);
     }
   }
 

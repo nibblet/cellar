@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { Button, Card } from "@/components/primitives";
+import { useActionState, useEffect, useState } from "react";
+import { Button, Card, Voice } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
 import { submitCapture } from "./actions";
@@ -21,6 +21,10 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [preparingPhoto, setPreparingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+
+  if (pending) {
+    return <CapturePendingState type={type} preview={preview} />;
+  }
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -144,6 +148,61 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
         {pending ? "Identifying…" : preparingPhoto ? "Preparing photo…" : "Identify"}
       </Button>
     </form>
+  );
+}
+
+/**
+ * Rendered while the server action is in flight (15-90s end to end). The
+ * Bartender narrates each phase loosely; we don't poll because the action
+ * is monolithic. The text rotates on a timer so it doesn't feel stuck.
+ */
+function CapturePendingState({ type, preview }: { type: ProductType; preview: string | null }) {
+  const lines =
+    type === "cigar"
+      ? [
+          "Reading the band…",
+          "Let me check the humidor for this one.",
+          "Pulling reviews — give me a moment.",
+          "Almost there. Setting the ashtray.",
+        ]
+      : [
+          "Reading the label…",
+          "Let me check the rickhouse log.",
+          "Pulling reviews — give me a moment.",
+          "Almost there. Pouring a neat one.",
+        ];
+
+  // Rotate the Bartender's line every ~6s so the page doesn't feel frozen.
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      setIdx((i) => (i < lines.length - 1 ? i + 1 : i));
+    }, 6000);
+    return () => window.clearInterval(t);
+  }, [lines.length]);
+
+  return (
+    <div className="flex flex-col gap-8 items-center text-center">
+      {preview ? (
+        // biome-ignore lint/performance/noImgElement: data URL preview not optimized via next/image
+        <img
+          src={preview}
+          alt="Your capture"
+          className="w-full aspect-square object-cover rounded-[16px] opacity-70"
+        />
+      ) : null}
+
+      <Voice className="text-lg leading-relaxed">{lines[idx]}</Voice>
+
+      <div
+        role="progressbar"
+        aria-label="Working"
+        aria-busy="true"
+        className="h-1 w-32 rounded-full bg-surface-2 overflow-hidden"
+      >
+        <div className="h-full bg-accent animate-pulse" />
+      </div>
+    </div>
   );
 }
 

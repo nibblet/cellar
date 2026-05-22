@@ -28,9 +28,7 @@ export default async function SettingsPage() {
   const joinedDate = joinedSource ? new Date(joinedSource) : null;
 
   // club_joined_at is stored as "YYYY-MM-01" — parse month/year for the editor.
-  const clubDate: Date | null = profile?.club_joined_at
-    ? new Date(profile.club_joined_at)
-    : null;
+  const clubDate: Date | null = profile?.club_joined_at ? new Date(profile.club_joined_at) : null;
   const currentMonth = clubDate ? clubDate.getUTCMonth() + 1 : null;
   const currentYear = clubDate ? clubDate.getUTCFullYear() : null;
 
