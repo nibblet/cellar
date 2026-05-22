@@ -77,6 +77,19 @@ export default async function SettingsPage() {
         </>
       ) : null}
 
+      <Divider label="The Club" />
+      <Card className="mb-3">
+        <Link
+          href="/roadmap"
+          className="block text-base text-foreground hover:text-foreground-muted"
+        >
+          Roadmap & suggestions →
+        </Link>
+        <p className="text-sm text-foreground-subtle mt-1">
+          See what's coming and send Paul a feature idea or bug report.
+        </p>
+      </Card>
+
       {isAdmin ? (
         <>
           <Divider label="Admin" />
@@ -89,6 +102,17 @@ export default async function SettingsPage() {
             </Link>
             <p className="text-sm text-foreground-subtle mt-1">
               Create a one-shot link to bring a new member in.
+            </p>
+          </Card>
+          <Card className="mb-3">
+            <Link
+              href="/admin/suggestions"
+              className="block text-base text-foreground hover:text-foreground-muted"
+            >
+              Member suggestions →
+            </Link>
+            <p className="text-sm text-foreground-subtle mt-1">
+              Feature ideas and bug reports from the club.
             </p>
           </Card>
           <Card>

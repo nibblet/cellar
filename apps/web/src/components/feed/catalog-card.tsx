@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { CellarCardControls } from "@/components/cellar";
+import type { CellarRow } from "@/lib/cellar/types";
 import type { CatalogEntry } from "@/lib/feed/catalog-queries";
 import { PhotoFrame, PhotoPlaceholder } from "./photo-frame";
 
 type CatalogCardProps = {
   entry: CatalogEntry;
   signedHero: string | null;
+  cellarState?: CellarRow | null;
 };
 
 /**
@@ -15,7 +18,7 @@ type CatalogCardProps = {
  * If the product matches the viewer's preferences, the same FOR YOU pill
  * lights at the top-left of the photo. Otherwise the card stays clean.
  */
-export function CatalogCard({ entry, signedHero }: CatalogCardProps) {
+export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps) {
   const Overlays = entry.matches_preferences ? (
     <div className="absolute top-3 left-3 z-10">
       <span className="px-2 py-0.5 rounded-full text-[10px] tracking-widest uppercase text-paper-50 bg-ink-900/40 border border-paper-50/40 backdrop-blur-[2px]">
@@ -48,14 +51,21 @@ export function CatalogCard({ entry, signedHero }: CatalogCardProps) {
           )}
         </div>
 
-        <div className="px-3.5 py-3 min-w-0">
-          <p className="text-[15px] font-medium text-foreground truncate leading-snug">
-            {entry.name}
-          </p>
-          <p className="text-[11px] text-foreground-muted truncate mt-0.5">
-            {entry.brand ? `${entry.brand} · ` : ""}
-            <span className="uppercase tracking-widest text-foreground-subtle">{entry.type}</span>
-          </p>
+        <div className="px-3.5 py-3 min-w-0 flex items-start gap-2">
+          <div className="flex-1 min-w-0">
+            <p className="text-[15px] font-medium text-foreground truncate leading-snug">
+              {entry.name}
+            </p>
+            <p className="text-[11px] text-foreground-muted truncate mt-0.5">
+              {entry.brand ? `${entry.brand} · ` : ""}
+              <span className="uppercase tracking-widest text-foreground-subtle">{entry.type}</span>
+            </p>
+          </div>
+          {cellarState != null ? (
+            <div className="shrink-0 mt-0.5">
+              <CellarCardControls productId={entry.product_id} initialState={cellarState} />
+            </div>
+          ) : null}
         </div>
       </article>
     </Link>

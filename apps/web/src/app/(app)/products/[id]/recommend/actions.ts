@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { markTried } from "@/lib/cellar/actions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { saveTasting } from "@/lib/tasting/save";
 import type { ProductType } from "@/lib/wheel";
@@ -48,6 +49,10 @@ export async function submitRecommend(_prev: State, formData: FormData): Promise
     const message = err instanceof Error ? err.message : "Couldn't save your tasting.";
     return { status: "error", message };
   }
+
+  // Tasting recorded → member has tried this product. Fire-and-forget; a
+  // failure here should never block the redirect.
+  void markTried(auth.user.id, product.id, supabase);
 
   redirect(`/products/${product.id}?just_saved=1`);
 }

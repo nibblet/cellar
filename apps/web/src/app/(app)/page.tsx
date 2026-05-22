@@ -14,6 +14,8 @@ import {
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
+import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { ZERO_ROW } from "@/lib/cellar/types";
 import {
   type CatalogFilters,
   type CatalogSortKey,
@@ -180,6 +182,7 @@ async function FeedBody({
   return (
     <CatalogBody
       supabase={supabase}
+      viewerId={viewerId}
       productType={tab === "cigars" ? "cigar" : "bourbon"}
       preferences={preferences}
       filters={filters}
@@ -202,7 +205,7 @@ async function ForYouBody({
 
   const [entries, dailyPourCandidates, upcomingResult, lastResult] = await Promise.all([
     loadFeed(supabase, { limit: 50 }),
-    viewerId ? loadDailyPourCandidates(supabase, preferences) : Promise.resolve([]),
+    viewerId ? loadDailyPourCandidates(supabase, preferences, viewerId) : Promise.resolve([]),
     supabase
       .from("events")
       .select("id, name, date, notes")
@@ -318,18 +321,23 @@ async function ForYouBody({
 
 async function CatalogBody({
   supabase,
+  viewerId,
   productType,
   preferences,
   filters,
   sort,
 }: {
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
+  viewerId: string | null;
   productType: "cigar" | "bourbon";
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
   filters: CatalogFilters;
   sort: CatalogSortKey;
 }) {
-  const entries = await loadCatalogBrowse(supabase, productType, preferences, 100, filters);
+  const [entries, cellarSnapshot] = await Promise.all([
+    loadCatalogBrowse(supabase, productType, preferences, 100, filters),
+    viewerId ? loadCellarSnapshot(supabase, viewerId) : null,
+  ]);
   const signed = await signImagePaths(
     supabase,
     entries.map((e) => e.hero_image_path),
@@ -348,15 +356,25 @@ async function CatalogBody({
         </Card>
       ) : (
         <div className="flex flex-col gap-3">
-          {entries.map((entry) => (
-            <CatalogCard
-              key={entry.product_id}
-              entry={entry}
-              signedHero={
-                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-              }
-            />
-          ))}
+          {entries.map((entry) => {
+            const cellarState = cellarSnapshot
+              ? {
+                  have: cellarSnapshot.have.has(entry.product_id),
+                  want: cellarSnapshot.want.has(entry.product_id),
+                  tried: cellarSnapshot.tried.has(entry.product_id),
+                }
+              : ZERO_ROW;
+            return (
+              <CatalogCard
+                key={entry.product_id}
+                entry={entry}
+                signedHero={
+                  entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+                }
+                cellarState={viewerId ? cellarState : null}
+              />
+            );
+          })}
         </div>
       )}
     </>

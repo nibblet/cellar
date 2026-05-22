@@ -191,6 +191,50 @@ async function main() {
       console.log(`  ${String(count).padStart(3)}  ${term}`);
     }
   }
+
+  // Seed Paul's Cellar: have=true + tried=true for every bottle in the collection.
+  // PAUL_USER_ID must be set in env or .env.local for this step to run.
+  await seedCellarForPaul(supabase);
+}
+
+async function seedCellarForPaul(supabase: ReturnType<typeof adminClient>): Promise<void> {
+  const paulId = process.env.PAUL_USER_ID;
+  if (!paulId) {
+    console.log(
+      "\n[cobb-whiskey] Skipping cellar seed — set PAUL_USER_ID in .env.local to populate Have+Tried.",
+    );
+    return;
+  }
+
+  // Find all products seeded from the Cobb collection.
+  const { data: products } = await supabase
+    .from("products")
+    .select("id")
+    .eq("type", "bourbon")
+    .filter("specs->>in_cobb_collection", "eq", "true");
+
+  if (!products || products.length === 0) {
+    console.log("[cobb-whiskey] No in_cobb_collection products found — cellar seed skipped.");
+    return;
+  }
+
+  const rows = products.map((p) => ({
+    member_id: paulId,
+    product_id: p.id,
+    have: true,
+    want: false,
+    tried: true,
+  }));
+
+  const { error } = await supabase
+    .from("member_saves")
+    .upsert(rows, { onConflict: "member_id,product_id" });
+
+  if (error) {
+    console.warn("[cobb-whiskey] cellar seed failed:", error.message);
+  } else {
+    console.log(`[cobb-whiskey] cellar seed: ${rows.length} bottles → Paul's Cellar (have + tried).`);
+  }
 }
 
 async function upsertWhiskey(

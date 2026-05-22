@@ -1,4 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { applyCellarBias } from "@/lib/cellar/bias";
+import { loadCellarSnapshot } from "@/lib/cellar/load";
+import type { CellarSnapshot } from "@/lib/cellar/types";
+import { EMPTY_SNAPSHOT } from "@/lib/cellar/types";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type { MemberPreferences } from "@/lib/preferences/types";
@@ -34,12 +38,34 @@ export type DailyPourCandidate = {
 export async function loadDailyPourCandidates(
   supabase: SupabaseClient,
   preferences: MemberPreferences | null,
+  memberId?: string | null,
 ): Promise<DailyPourCandidate[]> {
+  const cellar = memberId
+    ? await loadCellarSnapshot(supabase, memberId)
+    : EMPTY_SNAPSHOT;
+
+  let candidates: DailyPourCandidate[];
+
   if (preferences && hasAnyPreferences(preferences)) {
     const personal = await loadPreferenceCandidates(supabase, preferences);
-    if (personal.length > 0) return personal;
+    candidates = personal.length > 0 ? personal : await loadClubValidatedCandidates(supabase);
+  } else {
+    candidates = await loadClubValidatedCandidates(supabase);
   }
-  return loadClubValidatedCandidates(supabase);
+
+  return applyBias(candidates, cellar);
+}
+
+function applyBias(
+  candidates: DailyPourCandidate[],
+  cellar: CellarSnapshot,
+): DailyPourCandidate[] {
+  return candidates
+    .map((c) => ({
+      ...c,
+      score: applyCellarBias(c.score, cellar, c.cigar_id, c.bourbon_id),
+    }))
+    .sort((a, b) => b.score - a.score);
 }
 
 async function loadPreferenceCandidates(

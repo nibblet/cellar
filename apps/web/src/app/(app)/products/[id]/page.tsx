@@ -8,7 +8,10 @@ import {
   ProductHero,
   type ProductHeroImage,
 } from "@/components/product";
+import { CellarToggle } from "@/components/cellar";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { loadCellarRow } from "@/lib/cellar/load";
+import { ZERO_ROW } from "@/lib/cellar/types";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -48,6 +51,10 @@ export default async function ProductDetailPage({
 
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
+
+  const cellarRow = userId
+    ? await loadCellarRow(supabase, userId, id)
+    : ZERO_ROW;
 
   const [groupVoice, pairings, imagesResult] = await Promise.all([
     loadGroupVoice(supabase, id, productType),
@@ -111,9 +118,17 @@ export default async function ProductDetailPage({
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       {just_saved || just_captured ? (
-        <div className="mb-4 flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
-          <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
-          {just_saved ? "Tasting saved" : "Added to the archive"}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
+            <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
+            {just_saved ? "Tasting saved" : "Added to the archive"}
+          </div>
+          {just_saved && userId && !cellarRow.have && !cellarRow.want ? (
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-xs text-foreground-muted">Add to cellar?</span>
+              <CellarToggle productId={product.id} initialState={cellarRow} />
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -133,6 +148,12 @@ export default async function ProductDetailPage({
         <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>
         {subtitle ? <p className="text-sm text-foreground-muted mt-2">{subtitle}</p> : null}
       </header>
+
+      {userId ? (
+        <div className="mt-4">
+          <CellarToggle productId={product.id} initialState={cellarRow} />
+        </div>
+      ) : null}
 
       {isDraft ? (
         <DraftConfirmBanner
