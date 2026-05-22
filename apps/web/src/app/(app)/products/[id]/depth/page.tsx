@@ -2,11 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Divider } from "@/components/primitives";
 import { ConstructionPanel, FactsStrip } from "@/components/product";
-import {
-  buildTagCloud,
-  loadGroupVoice,
-  type TagCloudEntry,
-} from "@/lib/aggregation/group-voice";
+import { buildTagCloud, loadGroupVoice, type TagCloudEntry } from "@/lib/aggregation/group-voice";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType, WheelVector } from "@/lib/wheel";
 

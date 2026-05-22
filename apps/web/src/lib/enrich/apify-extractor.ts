@@ -99,7 +99,10 @@ export type Enrichment = {
 };
 
 function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function hostname(url: string): string {
@@ -133,10 +136,7 @@ function isImageLikelyProduct(imgUrl: string, productSlug: string): number {
   return score;
 }
 
-function imageCandidatesFromItem(
-  item: RagItem,
-  productSlug: string,
-): ImageCandidate[] {
+function imageCandidatesFromItem(item: RagItem, productSlug: string): ImageCandidate[] {
   const md = item.markdown ?? "";
   const sourceUrl = item.metadata?.url ?? item.searchResult?.url ?? "";
   const out: ImageCandidate[] = [];

@@ -7,8 +7,8 @@
  * Re-runs overwrite in place.
  */
 
-import sharp from "sharp";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 
 const BUCKET = "product-catalog";
 

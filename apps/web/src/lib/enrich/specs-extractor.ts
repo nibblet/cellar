@@ -7,7 +7,7 @@
  * The caller is responsible for merging into existing specs.
  */
 
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
 const MODEL = "gpt-5-nano";
 
@@ -74,8 +74,7 @@ export const BOURBON_SCHEMA = {
     distillery: { type: ["string", "null"] },
     expression_type: {
       type: ["string", "null"],
-      description:
-        "e.g. 'Single Barrel', 'Bottled-in-Bond', 'Small Batch', 'Cask Strength'",
+      description: "e.g. 'Single Barrel', 'Bottled-in-Bond', 'Small Batch', 'Cask Strength'",
     },
     msrp_usd: { type: ["number", "null"] },
     release_year: { type: ["integer", "null"] },

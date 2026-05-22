@@ -9,14 +9,7 @@ type FactsStripProps = {
   excludeKeys?: string[];
 };
 
-const PREFERRED_ORDER = [
-  "price_usd",
-  "year_made",
-  "series",
-  "tier",
-  "tall",
-  "in_cobb_collection",
-];
+const PREFERRED_ORDER = ["price_usd", "year_made", "series", "tier", "tall", "in_cobb_collection"];
 
 // Renderers for the misc fields. Keeping each one short on purpose; the strip
 // is for the dense-glance facts, not narrative.

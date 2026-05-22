@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { enrichDraftProduct } from "@/lib/enrich";
 import { identifyProductFromImage } from "@/lib/openai/identify";
 import type { ProductType } from "@/lib/wheel";
 import { type CandidateProduct, pickBestMatch } from "./normalize";
@@ -7,6 +8,10 @@ export type IdentifyOutcome = {
   productId: string;
   matched: boolean;
   confidence: "high" | "medium" | "low";
+  /** True when we created a fresh draft and ran the catalog enrichment pass
+   *  on it. The capture flow uses this to decide whether to show a confirm
+   *  prompt vs. drop the member straight onto a familiar product page. */
+  enriched: boolean;
 };
 
 type OrchestrateArgs = {
@@ -61,6 +66,8 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     }
   }
 
+  let enriched = false;
+
   if (!matchedProductId) {
     const { data: created, error } = await supabase
       .from("products")
@@ -73,13 +80,35 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
         source: "ai",
         created_by: userId,
       })
-      .select("id")
+      .select("id, specs, name, brand")
       .single();
 
     if (error || !created) {
       throw new Error(`Failed to create draft product: ${error?.message ?? "no row returned"}`);
     }
     matchedProductId = created.id;
+
+    // Fresh draft: kick off the same catalog enrichment we run from the
+    // CLI scripts. Mirrors a hero image, captures editorial reviews, and
+    // patches in structured specs. Runs inline — the caller's UX expects
+    // a 30-60s "checking the humidor" wait. Failures are non-fatal:
+    // the draft still gets created and the member can confirm/edit by hand.
+    try {
+      await enrichDraftProduct(
+        {
+          id: created.id,
+          type: finalType,
+          name: extracted.name,
+          brand: extracted.brand,
+          line: null,
+          specs: (created.specs ?? {}) as Record<string, unknown>,
+        },
+        supabase,
+      );
+      enriched = true;
+    } catch (err) {
+      console.error("[identify] enrichment failed:", (err as Error).message);
+    }
   }
 
   if (!matchedProductId) {
@@ -96,6 +125,7 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     productId: matchedProductId,
     matched,
     confidence: extracted.confidence,
+    enriched,
   };
 }
 

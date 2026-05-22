@@ -110,10 +110,7 @@ export async function loadCatalogBrowse(
       .in("product_id", productIds)
       .order("is_hero", { ascending: false })
       .order("created_at", { ascending: false }),
-    supabase
-      .from("tastings")
-      .select("product_id, recommend")
-      .in("product_id", productIds),
+    supabase.from("tastings").select("product_id, recommend").in("product_id", productIds),
   ]);
 
   const heroByProduct = new Map<string, string>();
@@ -155,7 +152,8 @@ export async function loadCatalogBrowse(
     const catalogImageUrl = p.image_url ?? null;
 
     // Apply filters.
-    if (hasActiveFilters && !passesFilters(p, specs, heroPath, catalogImageUrl, counts, filters)) continue;
+    if (hasActiveFilters && !passesFilters(p, specs, heroPath, catalogImageUrl, counts, filters))
+      continue;
 
     entries.push({
       product_id: p.id,
@@ -178,7 +176,9 @@ export async function loadCatalogBrowse(
   // Sort.
   entries = sortEntries(entries, sort, matchesEnabled);
 
-  return entries.map(({ _rec_count: _r, _tasting_count: _t, _created_at: _c, _specs: _s, ...e }) => e);
+  return entries.map(
+    ({ _rec_count: _r, _tasting_count: _t, _created_at: _c, _specs: _s, ...e }) => e,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -219,7 +219,9 @@ function passesFilters(
 
   if (p.type === "cigar") {
     if (f.strength) {
-      const norm = normalizeCigarStrength(typeof specs.strength === "string" ? specs.strength : null);
+      const norm = normalizeCigarStrength(
+        typeof specs.strength === "string" ? specs.strength : null,
+      );
       if (norm !== f.strength) return false;
     }
     if (f.wrappers?.length) {
@@ -249,10 +251,7 @@ function passesFilters(
   return true;
 }
 
-function passesAgeBand(
-  age: number | null,
-  band: "nas" | "4-8" | "8-12" | "12+",
-): boolean {
+function passesAgeBand(age: number | null, band: "nas" | "4-8" | "8-12" | "12+"): boolean {
   if (band === "nas") return age == null || age === 0;
   if (age == null) return false;
   if (band === "4-8") return age >= 4 && age <= 8;
@@ -302,8 +301,10 @@ function sortEntries(
       break;
     case "strength-asc": {
       sorted.sort((a, b) => {
-        const sa = typeof a._specs.strength === "string" ? (STRENGTH_ORDER[a._specs.strength] ?? 99) : 99;
-        const sb = typeof b._specs.strength === "string" ? (STRENGTH_ORDER[b._specs.strength] ?? 99) : 99;
+        const sa =
+          typeof a._specs.strength === "string" ? (STRENGTH_ORDER[a._specs.strength] ?? 99) : 99;
+        const sb =
+          typeof b._specs.strength === "string" ? (STRENGTH_ORDER[b._specs.strength] ?? 99) : 99;
         return sa - sb || a.name.localeCompare(b.name);
       });
       break;
