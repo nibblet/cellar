@@ -25,7 +25,7 @@ const today: Item[] = [
   },
   {
     title: "The Daily Pour",
-    body: "The Bartender's daily pick — one cigar and one bourbon, narrated, on your home screen.",
+    body: "Winston's daily pick — one cigar and one bourbon, narrated, on your home screen.",
   },
 ];
 
@@ -44,7 +44,7 @@ const upcoming: Item[] = [
   },
   {
     title: "Knowing what you like",
-    body: "Pairing Preferences are already in Settings. Next: tune the Bartender's nightly pick and feed cards to your taste even more tightly.",
+    body: "Pairing Preferences are already in Settings. Next: tune Winston's nightly pick and feed cards to your taste even more tightly.",
   },
   {
     title: "Member badges",
@@ -61,9 +61,8 @@ export default function RoadmapPage() {
       </header>
 
       <Voice className="block mb-6">
-        "NCCC is live and we're starting to use it. The Bartender has the bourbon shelf cataloged,
-        the cigar lounge is open, and the pairing engine is reading the room. Here's the path
-        forward."
+        "NCCC is live and we're starting to use it. Winston has the bourbon shelf cataloged, the
+        cigar lounge is open, and the pairing engine is reading the room. Here's the path forward."
       </Voice>
 
       <Divider label="What you can do today" />

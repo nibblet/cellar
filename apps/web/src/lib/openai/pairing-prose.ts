@@ -13,7 +13,7 @@ type ProseArgs = {
 };
 
 /**
- * Two-shape pairing rationale. `notes` is the Bartender's 2-3-sentence prose
+ * Two-shape pairing rationale. `notes` is Winston's 2-3-sentence prose
  * (rendered italic in the Voice block). `why_bullets` is 3-4 short reasons
  * extracted from the rules engine, rephrased plainly — fed into the bulleted
  * "Why it works" section beneath the prose. The model produces both in one
@@ -24,13 +24,13 @@ export type PairingProse = {
   why_bullets: string[];
 };
 
-const SYSTEM_PROMPT = `You are The Bartender at the Norton Commons Cigar Club — gentlemanly, dry, slightly archaic. You speak in serif italic; assume that's how the user sees it.
+const SYSTEM_PROMPT = `You are Winston, the resident narrator at the Norton Commons Cigar Club — gentlemanly, dry, slightly archaic. You speak in serif italic; assume that's how the user sees it. Never refer to yourself as "the Bartender"; if you sign off or self-reference, you are Winston.
 
 Generate a pairing rationale for a cigar + bourbon combination. You're given the products, a numeric pairing score (0-100), and a list of structured "reasons" the rules engine surfaced (these are the underlying flavor logic).
 
 Return JSON with this exact shape:
 {
-  "notes": "<2-3 sentences, Bartender voice>",
+  "notes": "<2-3 sentences, Winston voice>",
   "why_bullets": ["<bullet 1>", "<bullet 2>", "<bullet 3>"]
 }
 
@@ -46,7 +46,7 @@ Rules for "why_bullets":
 - 3 to 4 bullets. Each one a single short phrase, 4 to 10 words.
 - No leading dash or bullet character — just the text.
 - Each bullet names one concrete flavor or structural reason (e.g., "cocoa cigar lands on vanilla bourbon", "shared earthy backbone", "soft proof keeps the cigar's pepper in check").
-- Drop the Bartender voice here — these are crisp, plain rationale, not prose.
+- Drop the Winston voice here — these are crisp, plain rationale, not prose.
 - Do not repeat the prose. Bullets surface what the prose left implicit.
 `;
 
@@ -143,7 +143,7 @@ function stripMarkdownEmphasis(input: string): string {
 
 /**
  * Deterministic fallback used when the LLM is unavailable. Composes the
- * structured reasons into a serviceable Bartender line plus a short bullet
+ * structured reasons into a serviceable Winston line plus a short bullet
  * list. Not as good as the model — but always available, and the pairing
  * screen never goes empty.
  */

@@ -18,7 +18,7 @@ order, but the copy tweaks (#1) are 15 minutes and should go first.
 - "Open the pairing →" — describes the action, not the content.
 
 **Change:**
-- "TONIGHT'S POUR" → **"The Bartender's pick"** — character-led, fits either format,
+- "TONIGHT'S POUR" → **"Winston's pick"** — character-led, fits either format,
   preserves the persona moment in the feed.
 - "Open the pairing →" → **"Why this pairing →"** — leads with the editorial promise
   (rationale prose) instead of the mechanical action.
@@ -36,7 +36,7 @@ better and lets the engine show its work without dragging the reader.
 
 **New structure** on `/pairings/[cigarId]/[bourbonId]`:
 
-- **Pairing notes** — the existing prose paragraph (Bartender voice)
+- **Pairing notes** — the existing prose paragraph (Winston voice)
 - **Why it works** — 3-4 bullets: trait alignment, contrast, anchor flavors. Generated
   from the same LLM call as the prose, using structured output (single round trip).
 - **Alternatives** — the existing "other matches" list, just relabeled and given its

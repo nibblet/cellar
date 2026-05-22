@@ -14,7 +14,7 @@ type Props = {
   brand: string | null;
   /** True when the member just came from /capture (just_captured=1). Switches
    *  the banner's role from passive draft notice to active capture flow:
-   *  first show the Bartender narrating the enrichment pass, then the confirm. */
+   *  first show Winston narrating the enrichment pass, then the confirm. */
   justCaptured: boolean;
   /** True when products.image_url is already populated. Used to decide whether
    *  we still need to fire the async enrichment fetch on mount. */
@@ -112,7 +112,7 @@ export function DraftConfirmBanner({
 }
 
 /**
- * Bartender-narrated loading state shown while /api/enrich-draft is running.
+ * Winston-narrated loading state shown while /api/enrich-draft is running.
  * The member is already on the product page with their own photo visible;
  * this just covers the ~30-60s wait for the catalog data to fill in.
  */

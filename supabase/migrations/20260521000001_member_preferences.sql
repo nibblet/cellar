@@ -1,6 +1,6 @@
 -- Tier 2 #5: member tasting + pairing preferences.
 --
--- One row per member, positives-only. Empty arrays mean "the Bartender stays
+-- One row per member, positives-only. Empty arrays mean "Winston stays
 -- neutral" — feature gates (e.g. the FOR YOU badge) only light when the
 -- member has opted into at least one trait. There's no avoid list by design.
 

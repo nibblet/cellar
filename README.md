@@ -9,7 +9,7 @@ Twelve guys, monthly bourbon and cigar tastings. The app exists to move good cig
 ```
 apps/web/                 Next.js 15 PWA (App Router, TypeScript, Tailwind)
 data/flavor-wheels/       Versioned cigar + bourbon flavor wheels (JSON)
-docs/design-system.md     Visual identity, type, components, Bartender voice
+docs/design-system.md     Visual identity, type, components, Winston voice
 planning/                 Spec + phased implementation plan
 scripts/                  Seeding + ops scripts
 supabase/migrations/      SQL migrations

@@ -5,7 +5,7 @@ A living catalog of ideas inspired by other apps, translated into NCCC's voice, 
 **Translation rules** (from `CLAUDE.md` + `design-system.md`):
 - No 1–100 scores, star ratings, or user-facing sliders on the **face**.
 - The flavor wheel is **silent infrastructure** — surface as aggregate tag clouds, never as input sliders.
-- The Bartender is the system voice. Brass is the single primary action. Ember = lit recommend. Moss = club-validated pairing.
+- Winston is the system voice. Brass is the single primary action. Ember = lit recommend. Moss = club-validated pairing.
 - Private to 12 members. No public feeds, no follower counts.
 
 ---
@@ -23,8 +23,8 @@ What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / 
 | 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts. **Depth view (radar + per-member adjustments + moss consensus) NOT shipped.** |
 | 5 — Feed/Members/Events | 🟡 | All three pages + bottom nav. Feed now tabbed (For You / Cigars / Bourbons; Favorites still pending). Member profile still lacks Favorites / History / Education. Tasting + Pairing Preferences shipped in Settings (#5 ✅). |
 | 5.5 — The Cellar | ❌ | Not started. |
-| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Bartender prose, cache, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail. **Two-card stacked layout + "Try this tonight" + "Suggest another" rotation NOT shipped.** |
-| 7 — Polish / admin | 🟡 | Settings + sign-out, admin invites, product edit, logo reuse, end-of-night recap card. Bartender illustration variants + Education library NOT shipped. |
+| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Winston prose, cache, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail. **Two-card stacked layout + "Try this tonight" + "Suggest another" rotation NOT shipped.** |
+| 7 — Polish / admin | 🟡 | Settings + sign-out, admin invites, product edit, logo reuse, end-of-night recap card. Winston illustration variants + Education library NOT shipped. |
 | 8 — Daily Pour | ❌ | Not started. |
 
 **Tests:** 151 unit tests passing on `main` (wheel math, pairing rules, scoring, name normalization, fallback mappers, group voice aggregation, identity, preference derivation + matching).
@@ -61,7 +61,7 @@ Agreed 2026-05-20 (Paul + Claude design conversation). The baseline app is shipp
 
 **Working principles for this pass:**
 - iPhone-first. Test every change in mobile viewport before declaring done.
-- Honor `docs/design-system.md`: brass = single primary action, ember = lit recommend, moss = club-validated pairing, etched dividers at section breaks, Bartender voice in italic Playfair.
+- Honor `docs/design-system.md`: brass = single primary action, ember = lit recommend, moss = club-validated pairing, etched dividers at section breaks, Winston voice in italic Playfair.
 - Run `anthropic-skills:frontend-design` per-screen, not whole-app — keeps the existing identity intact.
 - Photo-as-card is the new visual primitive. Overlays, scrims, etched glass chips inherit from the feed work.
 
@@ -94,7 +94,7 @@ Most-visited screen after feed. Currently functional but flat. Needs to support 
 
 - Hero photo with overlay treatment inherited from Feed (member who first captured + their descriptors).
 - "THE CLUB SAYS" tag cloud as the visual centerpiece — bigger, more typographic, less list-y.
-- Bartender voice intro line (italic Playfair).
+- Winston voice intro line (italic Playfair).
 - CONSTRUCTION section (Tier 2 item #6 promoted here — data's already in `products.specs`).
 - THE FACTS as a dense info-strip, not a stacked list (e.g. `Proof 100 · Age 7yr · Mashbill 51/39/10`).
 - Pairs With panel — moss accent when club-validated.
@@ -106,7 +106,7 @@ Currently a form. Should feel ceremonial — like a Polaroid being developed.
 - Photo capture → animated sepia develop transition (1–2s, skippable).
 - Chip selection as tactile press-and-hold pills, not checkboxes. Selected chips animate up with weight.
 - Recommend-to-NCCC as the brass primary at bottom (already is, but elevate it).
-- Bartender does NOT appear here (per design system — preserve).
+- Winston does NOT appear here (per design system — preserve).
 - Optional: shutter haptic on capture (iOS PWA supports `navigator.vibrate` on some installs).
 
 #### UX-5. You / Settings buildout — **decisions locked 2026-05-21**
@@ -122,12 +122,12 @@ Already shipped in the same pass.
 - **Bourbon**: style families to lean toward (wheated / high-rye /
   standard / single malt / Irish whiskey / rye). Proof band (≤100 /
   100–115 / ≥115). Multi-select; no "things to avoid" — we want the
-  Bartender to suggest *toward* taste, not against.
+  Winston to suggest *toward* taste, not against.
 - **Cigar**: strength bands (mild / medium / medium-full / full).
   Wrapper-color leanings (claro / colorado / maduro / oscuro) as
   multi-select.
 - Member can update anytime; defaults are all-unselected so the
-  Bartender starts neutral until the member opts in.
+  Winston starts neutral until the member opts in.
 - Feeds Tier 2 #5 (Pairing Preferences) AND the new "match badge"
   surface (Tier 2 #5a, see below).
 
@@ -176,7 +176,7 @@ These are the post-launch features most likely to surface in member feedback wit
 - Bourbon: pour level state (`full / half / heel / empty`), pour count.
 - Cigars: count + format/vitola.
 - Add-to-Cellar is a path on the capture sheet (parallel to Recommend, not a separate flow).
-- Onboarding hook: Paul's 98 bottles seed his Cellar on first login. Others start empty with a Bartender greeting.
+- Onboarding hook: Paul's 98 bottles seed his Cellar on first login. Others start empty with a Winston greeting.
 - Filter: brand, style family, strength, recommended-to-NCCC.
 
 **Stickiness signal:** Daily for active collectors.
@@ -192,7 +192,7 @@ These are the post-launch features most likely to surface in member feedback wit
 - Bourbon: tabs for **Nose / Palate / Finish**.
 - Each phase accepts chips + optional free-text. No strength slider — strength derives from chip patterns.
 - Optional ambient timer (not gating).
-- Bartender help: *"What are thirds?"* / *"What's nose/palate/finish?"*
+- Winston help: *"What are thirds?"* / *"What's nose/palate/finish?"*
 - End-of-Session moment is the natural place to tap **Recommend to NCCC**. Optional second action: **Add to Cellar**.
 
 **Stickiness signal:** Members who care about the ritual will use The Session for every smoke. The data captured is also richer for the pairing engine.
@@ -204,16 +204,16 @@ These are the post-launch features most likely to surface in member feedback wit
 - Home-page hero card sits above the For You feed body only (catalog tabs stay catalog-pure).
 - Deterministic per-member-per-day pick via FNV-1a hash of `<memberId>|<UTC date>` modulo the candidate pool; rotates at UTC midnight.
 - Candidate pool: preference-biased — match cigars against the member's prefs, take up to 5, run the pairing engine in parallel. Falls back to top 20 club-validated rows from `pairings_cache` when prefs are empty or yield no cigar matches.
-- Bartender voice line in italic Playfair (uses the engine's single-rule fallback for now; see prose-cache note below). Brass "Open the pairing →" link drops into the existing `/pairings/[cigar]/[bourbon]` route.
+- Winston voice line in italic Playfair (uses the engine's single-rule fallback for now; see prose-cache note below). Brass "Open the pairing →" link drops into the existing `/pairings/[cigar]/[bourbon]` route.
 - Moss border + "● club tried" eyebrow when the picked pair is club-validated.
 - 11 new unit tests on the deterministic selector (162 total).
 
 **Deferred from original scope:**
 - Recent-activity weighting + Paul's tier signal aren't wired in v1 — pure preference-bias + club-validated fallback was the v1 cut.
-- LLM-generated Bartender prose: we still fall back to the engine's `reasons[0].reason` text on the hero (same generic line on the Pairings index too). Resolved by the new "pairing-prose cache" follow-up logged below.
+- LLM-generated Winston prose: we still fall back to the engine's `reasons[0].reason` text on the hero (same generic line on the Pairings index too). Resolved by the new "pairing-prose cache" follow-up logged below.
 
 **Followups (logged 2026-05-21):**
-- **Pairing-prose cache.** Persist one LLM-generated Bartender line per `(cigar_id, bourbon_id)` pair so the Daily Pour hero and the Pairings index can render real prose without burning an OpenAI call per page render. The `pairings_cache` table already has a `rationale_text` column — wire it. Generate on-demand the first time the pair is surfaced; subsequent renders read the cached line.
+- **Pairing-prose cache.** Persist one LLM-generated Winston line per `(cigar_id, bourbon_id)` pair so the Daily Pour hero and the Pairings index can render real prose without burning an OpenAI call per page render. The `pairings_cache` table already has a `rationale_text` column — wire it. Generate on-demand the first time the pair is surfaced; subsequent renders read the cached line.
 
 **Stickiness signal:** Daily opens. The marketing-style hook for a private app.
 
@@ -234,8 +234,8 @@ For members who want to nerd out beyond the chip-cloud face.
   already has a shape to draw, with no new aggregation.
 - `DepthAffordance` (previously a scaffold) now renders as a real
   brass Link when the product has a vector, and as a disabled
-  Bartender card when it doesn't.
-- Header + back link + Bartender voice line + footnote setting
+  Winston card when it doesn't.
+- Header + back link + Winston voice line + footnote setting
   expectations for the layered passes.
 
 **Followups (deliberate v1 cuts):**
@@ -295,7 +295,7 @@ viewer's taste.
   member photo the stylized PhotoPlaceholder carries the look.
 - **Bourbons** — catalog browse, same shape.
 - **Favorites** — products the member has hearted. Empty state with
-  a Bartender prompt to favorite something. Same products surface on
+  a Winston prompt to favorite something. Same products surface on
   the member profile per UX-5; this tab is just the home-page entry.
 
 **Ranking inside Cigars / Bourbons tabs:**
@@ -385,7 +385,7 @@ card, only present when the match is real.
   noise.
 
 **Voice:** copy on the badge is just "for you" in tracked-widest
-all-caps. The Bartender doesn't speak through this surface — it's a
+all-caps. Winston doesn't speak through this surface — it's a
 quiet hint, not a recommendation.
 
 **Schema:** ties to the `member_preferences` table from #5. No new
@@ -410,11 +410,11 @@ get better matches → I see more 'for you' tags".
 - **Bourbon style:** 6 derived tags (bourbon, rye, wheated, high-rye, bottled-in-bond, single-barrel). Derived from `whiskey_type` + `mash_bill` rather than the sparse `style_family` column — covers the full ~2,000-row catalog.
 - **Bourbon proof:** 3 multi-select chip bands (≤90 / 90–110 / ≥110).
 - Settings UI: a Preferences card sits between Appearance and Admin,
-  opening with a Bartender intro line. Single Save button + inline
+  opening with a Winston intro line. Single Save button + inline
   "Saved." confirmation. Server action whitelists each axis against its
   vocabulary before upsert.
 - Positives-only: there is no avoid list. Empty preferences mean the
-  Bartender stays neutral — the #5a badge and #5b ranking both light up
+  Winston stays neutral — the #5a badge and #5b ranking both light up
   only when the member has opted in.
 
 **Followups consumed elsewhere:** the planned "things to avoid" axis was
@@ -441,7 +441,7 @@ Lower-stakes improvements. Ship as bandwidth allows.
 Trivial. Better voice match. ~10 minutes.
 
 #### 8. Pairing screen redesign per Idea 2.2
-Two-card stacked layout, status badge (THE CLUB AGREES / THE BARTENDER SUGGESTS), "Try this tonight" → adds to next Session, "Suggest another" rotates the bourbon.
+Two-card stacked layout, status badge (THE CLUB AGREES / WINSTON SUGGESTS), "Try this tonight" → adds to next Session, "Suggest another" rotates the bourbon.
 
 #### 9. You-page expansion — Favorites + History + (preferences land Tier 2)
 **Scope (sharpened 2026-05-21 from smoke-test feedback):**
@@ -458,8 +458,24 @@ Two-card stacked layout, status badge (THE CLUB AGREES / THE BARTENDER SUGGESTS)
   then Appearance toggle (✅ shipped 2026-05-21), then Favorites strip,
   then History, then Preferences, then Club / Admin / Account sections.
 
-#### 10. Bartender illustration variants
-Splash, header bust, small-glass-only variants. Currently using one logo image for all surfaces — works but lacks the Bartender-as-character continuity the design system gestures at.
+#### 10. Winston illustration variants — **🟡 partial 2026-05-22**
+Splash, header bust, small-glass-only variants. Currently using one logo image for all surfaces — works but lacks the Winston-as-character continuity the design system gestures at.
+
+**Character rename (locked 2026-05-22):** the working title "The Bartender" is retired. The character's name is **Winston**. Voice rules unchanged — still serif italic via `<Voice />`, still gentlemanly-dry. He just has a name now.
+
+**Surface assignments (locked 2026-05-22, illustrations on disk at `apps/web/public/winston/`):**
+
+| Variant | File | Surfaces |
+|---|---|---|
+| Splash / full-figure | `winston-splash.png` | `/login`, `/accept-invite`, end-of-night recap (`/events/[id]/recap`) |
+| Header bust | `winston-bust.png` | Empty states (Cellar, Favorites, History, Pairings, quiet Lounge), header avatar where Winston is named |
+| Small glass-offering (roundel) | `winston-glass.png` | Inline ornament above `PAIRS WITH` divider; small "Winston says" callouts |
+| Daily Pour active | `winston-pour.png` | Daily Pour hero card (Tier 1 #3) accent |
+| Library + owl-Archivist (narrative) | `winston-library.png` | First-run onboarding screen (#17 below); reserved for Education library headers later (Tier 3 #14) |
+
+**Out of scope for v1:** the owl character in `winston-library.png` is not yet a committed second mascot. He rides along on the onboarding image but doesn't appear elsewhere. If the club takes to him, formalize him later (working name: the Archivist).
+
+**Surfaces that intentionally do NOT get a Winston illustration** (per design system §6): capture screen, Lounge/feed cards themselves, product detail face.
 
 #### 11. UPC barcode scanner (Idea 2.3)
 `@zxing/browser` on the capture sheet, bourbon only. Cigars don't have UPCs.
@@ -485,7 +501,7 @@ The audit also found Fuente Opus X, Hemingway Short Story, and Oliva Serie V at 
 Promote `style_family`, `tier_seed`, `dsp_code`, `mash_bill` from inside `products.specs` (jsonb) to dedicated columns. Enables better indexing + filter UIs.
 
 #### 14. Education content library
-Bartender-voiced articles: glossary, "what are thirds?", "what's a mashbill?", pairing fundamentals.
+Winston-voiced articles: glossary, "what are thirds?", "what's a mashbill?", pairing fundamentals.
 
 #### 15. Member badges & micro-badges (NEW, 2026-05-21 smoke-test feedback)
 **Scope:**
@@ -501,7 +517,7 @@ Bartender-voiced articles: glossary, "what are thirds?", "what's a mashbill?", p
   - **Founder** — joined within the first 30 days
   - **Host** — hosted a meetup
   - **Validator** — first pairing the club later validates
-  - **Bartender's Choice** — a tasting the Bartender quotes in a Daily Pour
+  - **Winston's Choice** — a tasting Winston quotes in a Daily Pour
 - Implementation: derive from existing `tastings` / `events` data — no
   new schema needed for the seed set. A `member_badges` table later for
   ones that aren't trivially derivable.
@@ -510,6 +526,18 @@ Bartender-voiced articles: glossary, "what are thirds?", "what's a mashbill?", p
 - **Out of scope intentionally:** leaderboards, scores, public rankings.
   Badges are flavor, not competition. They surface what someone has
   contributed; they don't rank members against each other.
+
+#### 17. First-run onboarding screen — **🟡 in flight 2026-05-22**
+A one-time "meet Winston, here's the club" screen shown after a new member completes accept-invite. Lives at `/welcome` and is reached automatically when the auth callback creates a brand-new `users` row.
+
+**Scope:**
+- Hero illustration: `winston-library.png` (full library scene with owl-Archivist + Winston pouring a dram).
+- Winston intro line in `<Voice />`: a single welcoming sentence using the member's first name.
+- Three short orienting lines: what NCCC is, how a recommend works, why preferences matter.
+- Brass primary: **Step into the lounge** → `/`.
+- One-shot: not gated by a DB flag in v1 (the callback only routes here on the leg that created the profile). Direct visits to `/welcome` still work — it's a static page, harmless to revisit.
+
+**Out of scope:** preference capture on this screen (Settings already has it; we don't want the first impression to be a form). No "tour" overlays on the real app — the lounge speaks for itself.
 
 #### 16. ~~Center-FAB nav redesign~~ — **✅ shipped UX-2**
 Bottom nav now has the four-tab + center-FAB shape. Brass Capture FAB
@@ -524,7 +552,7 @@ This is the version you can paste into the NCCC group chat or share when a membe
 
 ---
 
-> **NCCC is live and we're starting to use it.** The Bartender has the bourbon shelf cataloged, the cigar lounge is open, and the pairing engine is reading the room. Here's the path forward.
+> **NCCC is live and we're starting to use it.** Winston has the bourbon shelf cataloged, the cigar lounge is open, and the pairing engine is reading the room. Here's the path forward.
 >
 > **What you can do today:**
 > - Snap a cigar band or bourbon label, tap **Recommend to NCCC**, optionally add a few flavor words.
@@ -535,9 +563,9 @@ This is the version you can paste into the NCCC group chat or share when a membe
 > **Coming up — in roughly this order:**
 > 1. **The Cellar** — a place for your bourbon shelf and humidor inventory. Bottle levels, cigar counts, what you've already finished. Add bottles straight from the capture screen.
 > 2. **The Session** — when you light a cigar, you taste through First / Second / Final Third. Bourbon has Nose / Palate / Finish. The app will honor the ritual instead of asking you to summarize it in one chip-list.
-> 3. **The Daily Pour** — the Bartender's nightly suggestion. One cigar, one bourbon, narrated. A reason to open the app any evening.
+> 3. **The Daily Pour** — Winston's nightly suggestion. One cigar, one bourbon, narrated. A reason to open the app any evening.
 > 4. **Going deeper on every product** — tap any cigar or bourbon to see a flavor radar with the editorial baseline, every member's personal adjustments, and the club's consensus shape laid on top. No scores. Just the shape.
-> 5. **Knowing what you like** — a Pairing Preferences setting that tunes the Bartender's recommendations to your tastes.
+> 5. **Knowing what you like** — a Pairing Preferences setting that tunes Winston's recommendations to your tastes.
 >
 > **Send feedback to Paul.** This is a hobby project for us — what you ask for is what gets built next.
 
@@ -551,11 +579,11 @@ Decided together (Paul + the roadmap conversation). This principle resolves the 
 
 1. **Editorial layer** — curated reference data per product: construction (wrapper / binder / filler for cigars; mashbill / proof / age / distillery for bourbons), baseline tasting profile, canonical flavor descriptors. We author or source this. Seeded lazily on first recognition or eagerly for a starter set.
 2. **Member layer** — each member's individual annotations on top of the editorial baseline: adjusted strength, adjusted flavor descriptors, free-text Session notes per phase. A member's adjustments are attributable to them and visible to the club.
-3. **Club aggregate** — derived signal from the member layer: chip frequencies, consensus shape, "what the club tastes." This is what the Bartender narrates on the face.
+3. **Club aggregate** — derived signal from the member layer: chip frequencies, consensus shape, "what the club tastes." This is what Winston narrates on the face.
 
 **What lives where:**
 
-- **The face** (home, Lounge feed, capture flow, feed cards): club aggregate only, Bartender-voiced, chip-based. No scores, no sliders, no charts.
+- **The face** (home, Lounge feed, capture flow, feed cards): club aggregate only, Winston-voiced, chip-based. No scores, no sliders, no charts.
 - **The depth** (tap into a stored or recognized product): editorial baseline + every member's adjustments overlaid + your own row for editing. Radar charts and per-field adjustments live here. Still no aggregated 0–100 score — adjustments are per-field, never collapsed into a single number that ranks products.
 
 **Seed strategy (decided, partially shipped):** proactive seeding. Paul's whiskey collection xlsx is the bourbon authority (98 bottles, 41 descriptors, 6 style families). Cigar editorial baseline still needs hand-curation of ~100–150 brands NCCC actually smokes — defer to Tier 3.
@@ -595,12 +623,12 @@ Axes derived from the flavor-wheel taxonomy. Numeric axis labels stay (0–10) b
 **What Capa does:** Start a session → timer runs → tabs for First Third / Second Third / Final Third. Per-third inputs: strength scale + flavor note chips.
 
 **NCCC translation:**
-- Rename to **"The Session"** (Bartender-ish, generic across cigar + bourbon).
+- Rename to **"The Session"** (Winston-ish, generic across cigar + bourbon).
 - Cigar: First / Second / Final Third.
 - Bourbon: Nose / Palate / Finish.
 - Per-phase input is **chips only**.
 - Timer is optional and ambient, not gating.
-- Bartender help link explains the ritual.
+- Winston help link explains the ritual.
 - Finishing a Session is the natural moment to tap **Recommend to NCCC**.
 
 **Status:** Tier 1 (item #2 above). Marquee feature.
@@ -626,7 +654,7 @@ Reviewed: profile/settings page, barcode scanner upsell screen.
 ---
 
 #### Idea 2.2 — Pairing presentation
-**NCCC translation (initial design):** Two-card stacked layout (cigar above bourbon), Bartender intro line, `PAIRS WITH` etched divider between, status badge (`THE CLUB AGREES` moss / `THE BARTENDER SUGGESTS` brass-subdued), why-it-pairs prose, brass primary `Try this tonight`, secondary `Suggest another`.
+**NCCC translation (initial design):** Two-card stacked layout (cigar above bourbon), Winston intro line, `PAIRS WITH` etched divider between, status badge (`THE CLUB AGREES` moss / `WINSTON SUGGESTS` brass-subdued), why-it-pairs prose, brass primary `Try this tonight`, secondary `Suggest another`.
 
 Entry points: from product page, from Daily Pour hero, from Lounge cards with club-validated pairings.
 
@@ -646,14 +674,14 @@ Entry points: from product page, from Daily Pour hero, from Lounge cards with cl
 Reviewed: For You feed, My Humidor empty state, home page with Cigar of the Day + Featured Lounge.
 
 #### Idea 3.1 — The Humidor (personal inventory)
-**NCCC translation:** **My Cellar** as a primary tab. Two views: **On Hand** and **Finished**. Bourbon bottle level state. Cigar count + format. Add via camera capture (same pipeline as Recommend). Bartender empty state. Overlaps with Profile/Favorites — cleanest model: Cellar replaces both Favorites (inventory + state) and parts of History; Favorites becomes a saved-products list (things you want, not things you own).
+**NCCC translation:** **My Cellar** as a primary tab. Two views: **On Hand** and **Finished**. Bourbon bottle level state. Cigar count + format. Add via camera capture (same pipeline as Recommend). Winston empty state. Overlaps with Profile/Favorites — cleanest model: Cellar replaces both Favorites (inventory + state) and parts of History; Favorites becomes a saved-products list (things you want, not things you own).
 
 **Status:** Tier 1 (item #1 above). Phase 5.5 — biggest collector value-add.
 
 ---
 
 #### Idea 3.2 — Cigar of the Day → "Tonight's Pour"
-**NCCC translation:** Home-page hero card. **Always rooted in club activity** — never editorial / algorithmic-only. Source blend: member activity in last 24h + pairing-engine top result + Paul's tier signal. Moss-accented when club-validated. Bartender narrates the why.
+**NCCC translation:** Home-page hero card. **Always rooted in club activity** — never editorial / algorithmic-only. Source blend: member activity in last 24h + pairing-engine top result + Paul's tier signal. Moss-accented when club-validated. Winston narrates the why.
 
 **Status:** Tier 1 (item #3). The marquee daily-hook feature.
 
@@ -738,7 +766,7 @@ Shipped.
 
 ### Phase 3 — Tasting flow 🟡
 - ✅ Recommend-to-NCCC with chips + note + silent wheel mapper.
-- ❌ The Session (thirds / nose-palate-finish, ambient timer, Bartender help links).
+- ❌ The Session (thirds / nose-palate-finish, ambient timer, Winston help links).
 
 ### Phase 4 — Product detail 🟡
 - ✅ Face: group voice (recommend bar, member takes), tag cloud, Pairs With (Phase 6 active), The Facts.
@@ -756,14 +784,14 @@ Shipped.
 Not started as a full phase. **Lightweight v2 primitive (`planning/ui-refresh-v2.md` §5) is the first step** — `member_saves` table, have/want booleans, `/shelf` route. Full phase (pour levels, finished/on-hand, Paul's xlsx import, dedicated nav tab) layers on top later. Tier 1 item.
 
 ### Phase 6 — Pairing engine 🟡
-- ✅ 8 declarative rules, scoring (0–100, clamped, 50 baseline), engine over the catalog, group validation, Bartender prose via gpt-5-mini cached in `pairings_cache`, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail.
+- ✅ 8 declarative rules, scoring (0–100, clamped, 50 baseline), engine over the catalog, group validation, Winston prose via gpt-5-mini cached in `pairings_cache`, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail.
 - ❌ Two-card stacked layout per Idea 2.2.
 - ❌ "Try this tonight" → adds both products to next Session.
 - ❌ "Suggest another" rotation.
 
-### Phase 7 — Polish, admin, Bartender 🟡
+### Phase 7 — Polish, admin, Winston 🟡
 - ✅ Settings page + sign-out, admin invite generation, product edit screen, NCCCLogo component reused across surfaces, end-of-night recap card at `/events/[id]/recap`.
-- ❌ Bartender illustration variants (splash, header bust, small-glass).
+- ❌ Winston illustration variants (splash, header bust, small-glass).
 - ❌ Education content library.
 - ❌ Depth-view admin (review member adjustments and accept into editorial baseline).
 

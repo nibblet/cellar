@@ -75,7 +75,7 @@ export default async function RecommendPage({
       <Divider label="That's all" />
 
       <p className="text-sm text-foreground-subtle text-center">
-        Chips and notes are optional. The Bartender does the rest.
+        Chips and notes are optional. Winston does the rest.
       </p>
     </main>
   );

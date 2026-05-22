@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+  const requestedNext = searchParams.get("next");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=missing_code`);
@@ -21,7 +21,11 @@ export async function GET(request: Request) {
     );
   }
 
-  // If this was the post-invite leg of signup, finish creating the member.
+  // First-run flag: flipped only when we insert the public.users row in
+  // this very request (the post-invite leg of signup). Returning members
+  // skip the welcome screen.
+  let justJoined = false;
+
   const cookieStore = await cookies();
   const pendingRaw = cookieStore.get(PENDING_SIGNUP_COOKIE)?.value;
 
@@ -45,6 +49,7 @@ export async function GET(request: Request) {
             name_last_initial: pending.name_last_initial,
           });
           await supabase.rpc("consume_invite_token", { token_param: pending.token });
+          justJoined = true;
         }
       }
     } catch {
@@ -53,6 +58,10 @@ export async function GET(request: Request) {
 
     cookieStore.delete(PENDING_SIGNUP_COOKIE);
   }
+
+  // New members land on /welcome (Tier 3 #17). Everyone else respects an
+  // explicit `next` or falls through to the home feed.
+  const next = justJoined ? "/welcome" : (requestedNext ?? "/");
 
   return NextResponse.redirect(`${origin}${next}`);
 }

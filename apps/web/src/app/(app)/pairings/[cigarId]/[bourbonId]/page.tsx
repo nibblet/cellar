@@ -63,9 +63,7 @@ export default async function PairingPage({
 
       <header className="mb-6 flex flex-col items-center text-center">
         <NCCCLogo variant="bust" size={64} className="mb-3" decorative />
-        <p className="text-sm tracking-widest uppercase text-foreground-subtle">
-          The Bartender suggests
-        </p>
+        <p className="text-sm tracking-widest uppercase text-foreground-subtle">Winston suggests</p>
         <h1 className="text-3xl mt-1">{cigar.name}</h1>
         <p className="text-sm text-foreground-muted">with</p>
         <h2 className="text-2xl">{bourbon.name}</h2>
@@ -83,10 +81,7 @@ export default async function PairingPage({
           <ul className="space-y-2 list-none">
             {prose.why_bullets.map((bullet) => (
               <li key={bullet} className="flex gap-3 text-sm text-foreground leading-relaxed">
-                <span
-                  className="text-foreground-subtle pt-1.5 shrink-0"
-                  aria-hidden="true"
-                >
+                <span className="text-foreground-subtle pt-1.5 shrink-0" aria-hidden="true">
                   ●
                 </span>
                 <span>{bullet}</span>

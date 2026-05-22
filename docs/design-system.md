@@ -12,7 +12,7 @@ Everything here derives from one source: the logo. A monocle-less unicorn in a s
 
 **Library, not museum.** Warm and inviting. The app should feel like the room the club meets in, not a curator's display case.
 
-**The wink is in the details.** The unicorn, the etched dividers, the Bartender's voice. Refinement with a smirk. Never sarcasm.
+**The wink is in the details.** The unicorn, the etched dividers, Winston's voice. Refinement with a smirk. Never sarcasm.
 
 **One primary action per screen.** Brass is reserved for the thing we want you to tap.
 
@@ -66,7 +66,7 @@ Two typefaces. One for voice (serif, etched), one for utility (sans, humble).
 - Tracking: 0 for body, +0.04em for ALL-CAPS section labels.
 
 **Voice — `Playfair Display Italic`** (500 weight)
-- Reserved for The Bartender's lines. When he speaks, he uses serif italic. This is how the user knows it's him. Italic Playfair has a calligraphic flourish that suits the gentlemanly tone.
+- Reserved for Winston's lines. When he speaks, he uses serif italic. This is how the user knows it's him. Italic Playfair has a calligraphic flourish that suits the gentlemanly tone.
 
 **Type scale (mobile baseline)**:
 
@@ -78,7 +78,7 @@ Two typefaces. One for voice (serif, etched), one for utility (sans, humble).
 | `label` | 11 / 12 | 1.2, +0.08em tracking, ALL CAPS | Section dividers ("THE CLUB SAYS") |
 | `body` | 16 | 1.5 | Reading text, member takes |
 | `meta` | 13 | 1.4 | Timestamps, captions |
-| `voice` | 17 italic serif | 1.5 | The Bartender |
+| `voice` | 17 italic serif | 1.5 | Winston |
 
 ---
 
@@ -186,12 +186,15 @@ The light-touch (sepia 0.35, not 0.7) keeps the cigar wrapper readable while sti
 
 ---
 
-## 6. The Bartender — illustration & voice
+## 6. Winston — illustration & voice
+
+The club's narrator and mascot. A monocle-less unicorn in a smoking jacket. Named **Winston** (locked 2026-05-22 — was working title "The Bartender"). Always referred to by name in user-facing copy.
 
 ### Where he appears
 - Splash / loading transitions
+- First-run onboarding (`/welcome`)
 - Empty states ("No tastings yet. Snap your first.")
-- Recommendation screen header ("The Bartender suggests...")
+- Recommendation screen header ("Winston suggests…")
 - System messages (welcome, errors handled gracefully, end-of-night recap intro)
 
 ### Where he does NOT appear
@@ -236,7 +239,7 @@ Restrained. We're a library, not a TikTok.
 
 - **Reveals** (photo → ID): 400ms ease-out, slight scale-from-95%. Like flipping a card.
 - **Recommend tap**: brass button briefly inverts (text → bg, bg → text) for 120ms, then a soft confirmation toast.
-- **Bartender appearances**: 600ms fade-in with a subtle 2px upward drift.
+- **Winston appearances**: 600ms fade-in with a subtle 2px upward drift.
 - **No bounces.** No spring physics. Everything eases like a closing door.
 
 ---
@@ -245,7 +248,7 @@ Restrained. We're a library, not a TikTok.
 
 - All text meets WCAG AA against its background. Brass-on-paper is verified at AA for `label`+ sizes; never use brass for `body`.
 - Recommend icons always paired with a number ("6 of 8") — never icons alone.
-- Bartender's italic serif `voice` type is ≥17px to stay legible.
+- Winston's italic serif `voice` type is ≥17px to stay legible.
 - Dark mode is default; light mode is a real first-class theme, not an afterthought.
 - One-handed reachability: primary CTAs live in the bottom 40% of the screen.
 
@@ -264,8 +267,8 @@ Each accent has exactly one job. No re-using brass for status, no re-using ember
 
 ## 11. What this leaves open
 
-- **Exact illustration assets for The Bartender's variants** — needs an illustrator pass once we know the moments.
-- **Final mascot name** — "The Bartender" is the working title.
+- **Exact illustration assets for Winston's variants** — initial set landed 2026-05-22 (`apps/web/public/winston/`). Surface assignments locked in `planning/nccc-roadmap.md` Tier 3 #10.
+- ~~**Final mascot name**~~ — locked 2026-05-22 as **Winston**.
 - **Icon set delivery** — sketched in spec here, drawn later.
 - **Onboarding visual treatment** — the first time someone opens the app should feel like opening a leather-bound book. TBD.
 - **Animation specifics for the "reveal"** — the photo-to-ID transition is the signature interaction. Worth a dedicated prototype.

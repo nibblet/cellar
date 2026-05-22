@@ -11,7 +11,7 @@ This plan is sized for a hobby app serving 12 friends — not a production SaaS.
 1. **Ship the capture loop first.** Nothing else matters until a member can snap a photo and recommend a cigar.
 2. **The flavor wheel is invisible.** No sliders in any UI, ever. The wheel only surfaces as aggregated tag clouds.
 3. **The group voice is the destination.** Every screen should make group sentiment easy to find.
-4. **The Bartender is a tone, not a feature.** A small library of his lines, used consistently.
+4. **Winston is a tone, not a feature.** A small library of his lines, used consistently.
 5. **Don't build for 12,000 users.** Build for 12. Skip rate limiting, queues, sharding, and similar machinery until something actually breaks.
 
 ---
@@ -29,7 +29,7 @@ This plan is sized for a hobby app serving 12 friends — not a production SaaS.
 | Image embeddings | OpenAI `text-embedding-3-small` for label OCR text + Replicate CLIP for image embeddings | Replicate's CLIP is the cheapest hosted option; alternatively self-host on Vercel cron if needed. |
 | Vision identification | OpenAI **GPT-5 mini** (Vision + structured outputs) | Latest generation, strong vision, reasonable cost. |
 | LLM mapper (chips/notes → wheel) | OpenAI **GPT-5 nano** with JSON mode | Cheapest current-gen model. Mapping is structurally simple; nano is sufficient. |
-| Pairing prose generation | OpenAI **GPT-5 mini** | Quality matters more here than cost (it's the Bartender's voice). Cached per pair so we don't pay twice. |
+| Pairing prose generation | OpenAI **GPT-5 mini** | Quality matters more here than cost (it's Winston's voice). Cached per pair so we don't pay twice. |
 | UI | Tailwind CSS + shadcn/ui primitives | Tailwind tokens map cleanly to our design system; shadcn for primitives we'll heavily customize. |
 | Type fonts | `next/font/google` (Playfair Display, Inter) | First-class Next.js font handling, zero layout shift. |
 | Forms/state | Server actions + React 19 `useActionState` | No form library needed at this scale. |
@@ -63,7 +63,7 @@ This plan is sized for a hobby app serving 12 friends — not a production SaaS.
 │       │   │       └── revalidate/
 │       │   ├── components/               # UI components
 │       │   │   ├── primitives/           # Button, Card, Chip, etc.
-│       │   │   ├── bartender/            # Bartender voice + illustrations
+│       │   │   ├── Winston/            # Winston voice + illustrations
 │       │   │   ├── capture/              # Capture flow
 │       │   │   ├── product/              # Product detail screens
 │       │   │   ├── tasting/              # Tasting form & cards
@@ -74,13 +74,13 @@ This plan is sized for a hobby app serving 12 friends — not a production SaaS.
 │       │   │   ├── pairing/              # Pure rules engine (well-tested)
 │       │   │   ├── wheel/                # Wheel loaders + vector helpers
 │       │   │   ├── identity/             # formatMemberName(), avatars
-│       │   │   └── voice/                # Bartender line library
+│       │   │   └── voice/                # Winston line library
 │       │   ├── styles/
 │       │   │   └── tokens.css            # CSS variables from design-system.md
 │       │   └── types/
 │       ├── public/
 │       │   ├── logo/                     # NCCC logo + favicons
-│       │   ├── bartender/                # Mascot illustration variants
+│       │   ├── Winston/                # Mascot illustration variants
 │       │   └── manifest.webmanifest      # PWA manifest
 │       ├── tests/
 │       │   ├── unit/
@@ -312,7 +312,7 @@ Each phase is a complete, deployable slice. Don't move to phase N+1 until phase 
   1. Insert `tastings` row with `recommend`, `chips`, `note`.
   2. Async LLM call (GPT-4o-mini, JSON mode) to map chips + note → wheel_vector against the appropriate wheel.
   3. Update tasting with `wheel_vector` + `wheel_version`.
-- [ ] Confirmation toast in The Bartender's voice.
+- [ ] Confirmation toast in Winston's voice.
 
 **Tests:**
 - Unit: chip-autocomplete matcher (synonyms work, "barnyard" finds `hay`).
@@ -377,10 +377,10 @@ Each phase is a complete, deployable slice. Don't move to phase N+1 until phase 
   - `rules.ts`: declarative rules (balance, harmony, conflict) over trait_vectors. Each rule outputs a delta score with a reason string.
   - `score.ts`: combine rules into a final 0–100 score per cigar/bourbon pair.
   - `engine.ts`: given a cigar id, return top 3 bourbon ids (and vice versa).
-- [ ] `lib/voice/bartender.ts`: prompt template + GPT-4o-mini call to generate the prose "why" for each pairing. Cached in `pairings_cache.rationale_text`.
+- [ ] `lib/voice/Winston.ts`: prompt template + GPT-4o-mini call to generate the prose "why" for each pairing. Cached in `pairings_cache.rationale_text`.
 - [ ] Group-validated detection: a pairing is "group-validated" if ≥1 member has tasted both cigar and bourbon at the same event and recommended both.
 - [ ] Background job (Vercel cron, weekly): recompute top pairings for all products that have new tastings since last computation. Cache in `pairings_cache`.
-- [ ] `app/(app)/pairings/[cigarId]/[bourbonId]/page.tsx` — the dedicated pairing screen with Bartender intro + prose + club status.
+- [ ] `app/(app)/pairings/[cigarId]/[bourbonId]/page.tsx` — the dedicated pairing screen with Winston intro + prose + club status.
 - [ ] **PAIRS WITH** section on product detail wired up.
 
 **Tests:**
@@ -388,22 +388,22 @@ Each phase is a complete, deployable slice. Don't move to phase N+1 until phase 
 - Unit: trait roll-up math (wheel_vector → trait_vector).
 - Unit: group-validation detection.
 - Snapshot test: given a fixed cigar profile, the top-3 bourbons are stable across runs.
-- E2E: view a product's pairings, navigate to the pairing screen, see Bartender prose.
+- E2E: view a product's pairings, navigate to the pairing screen, see Winston prose.
 
 **Definition of done:** I can open Padron 1964's product page and see a Weller 12 pairing card with prose like "The cigar's cocoa and leather find a soft landing in Weller's wheated vanilla. A harmony, not a contrast." The reasoning matches what a thoughtful steward would actually say.
 
 ---
 
-### Phase 7 — The Bartender, polish, admin (1–2 evenings)
+### Phase 7 — Winston, polish, admin (1–2 evenings)
 
 **Goal:** Ship-ready.
 
-- [ ] `lib/voice/lines.ts`: typed library of Bartender lines for empty states, errors, prompts, end-of-night. Use `<Voice />` component for consistent rendering (Playfair italic).
-- [ ] Bartender illustration assets:
+- [ ] `lib/voice/lines.ts`: typed library of Winston lines for empty states, errors, prompts, end-of-night. Use `<Voice />` component for consistent rendering (Playfair italic).
+- [ ] Winston illustration assets:
   - Splash variant (full-figure).
   - Header bust variant (used on pairing intro, empty states).
   - Single-hand-with-glass variant (small UI moments).
-- [ ] All empty states audited and given Bartender voice.
+- [ ] All empty states audited and given Winston voice.
 - [ ] Settings page: edit name, view invite history.
 - [ ] Admin: generate invites, edit any product, view all members.
 - [ ] PWA install prompt + add-to-home-screen flow.
@@ -460,7 +460,7 @@ Each phase's test list above is the **test-first** scaffold. For each phase:
 
 - Cigar wheel mapper accuracy (user-flagged "cigars is harder than bourbon"). Plan a v0.2 wheel iteration after 30 days based on unmapped chip text.
 - Identification accuracy on real-world boutique cigar bands. Expect 70-80% on first launch, rising as more photos accumulate.
-- Whether the Bartender's voice lands or grates. Tunable in `lib/voice/lines.ts` without redeploy if hot-loaded; otherwise a small content change.
+- Whether Winston's voice lands or grates. Tunable in `lib/voice/lines.ts` without redeploy if hot-loaded; otherwise a small content change.
 - Whether pairings feel useful before group data accumulates. We'll know in month 2.
 
 ---
@@ -476,7 +476,7 @@ Each phase's test list above is the **test-first** scaffold. For each phase:
 | 4 — Product detail | 2 | 5 |
 | 5 — Feed/profile/events | 2 | 6 |
 | 6 — Pairing engine | 3 | 7.5 |
-| 7 — Polish & Bartender | 2 | 8.5 |
+| 7 — Polish & Winston | 2 | 8.5 |
 
 **Roughly 8–9 calendar weeks** working evenings, give or take. Probably 50% longer in practice (life, debugging, design iterations) — so **call it ~14 weeks** from kickoff to ship.
 

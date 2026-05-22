@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-// The Bartender's voice — opinionated upright serif, legible at body size.
+// Winston's voice — opinionated upright serif, legible at body size.
 // Replaces Playfair italic for prose; Playfair roman stays for display text.
 const fraunces = Fraunces({
   variable: "--font-fraunces",

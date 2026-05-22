@@ -97,7 +97,7 @@ export function ConstructionPanel({ productType, specs }: ConstructionPanelProps
     return (
       <Card>
         <p className="text-sm text-foreground-subtle">
-          The Bartender hasn't catalogued how this one's made yet.
+          Winston hasn't catalogued how this one's made yet.
         </p>
       </Card>
     );

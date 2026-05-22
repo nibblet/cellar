@@ -19,13 +19,13 @@ A private iPhone-first PWA for the Norton Commons Cigar Club — 12 guys, monthl
 In this order:
 
 1. `CLAUDE.md` (repo root + `apps/web/CLAUDE.md`) — code conventions
-2. `docs/design-system.md` — visual identity, brass/ember/moss rules, Bartender voice
+2. `docs/design-system.md` — visual identity, brass/ember/moss rules, Winston voice
 3. `planning/nccc-spec.md` — product spec (locked)
 4. `planning/nccc-implementation-plan.md` — phased build plan (Phases 0–7 ✅ shipped)
 5. `planning/nccc-roadmap.md` — post-launch ideas, prioritized in tiers
 6. `data/flavor-wheels/wheel-schema.md` — wheel structure + v0.1-syn2 synonym evolution log
 
-When in doubt, **the design system overrides everything else.** Brass is the single primary action per screen, ember is for lit recommend only, moss is for club-validated only. Etched dividers at every section break. The Bartender speaks in italic Playfair via `<Voice />`.
+When in doubt, **the design system overrides everything else.** Brass is the single primary action per screen, ember is for lit recommend only, moss is for club-validated only. Etched dividers at every section break. Winston speaks in italic Playfair via `<Voice />`.
 
 ---
 
@@ -41,7 +41,7 @@ When in doubt, **the design system overrides everything else.** Brass is the sin
 | Phase 3 — Tasting flow (recommend + chips + silent wheel mapper) | ✅ |
 | Phase 4 — Group voice (recommend bar + member takes + tag cloud) | ✅ |
 | Phase 5 — Feed / Members / Events + bottom nav | ✅ |
-| Phase 6 — Pairing engine + Bartender prose + dedicated screen | ✅ |
+| Phase 6 — Pairing engine + Winston prose + dedicated screen | ✅ |
 | Phase 7 — Settings + admin + recap card + logo + cigar seeding | ✅ |
 | UX-1 — Feed photo-as-card redesign | ✅ |
 | UX-2 — Bottom nav with center brass Capture FAB | ✅ |
@@ -77,7 +77,7 @@ The trilogy landed in three commits on 2026-05-21: `c6a5dcc` (#5), `84bf5f5`
 With the #5 trilogy shipped, the natural next move is one of:
 - **Tier 1 #1 — The Cellar** on `/members/[id]` profile as a tab. Big surface, blocks #5b Favorites + #9 You-page expansion.
 - **Tier 1 #2 — The Session** (restructure tasting flow into First/Second/Final Third for cigars, Nose/Palate/Finish for bourbons). Touches capture + product-detail.
-- **Tier 1 #3 — Daily Pour** (home hero with rotating Bartender suggestion). Smaller, would surface preferences immediately.
+- **Tier 1 #3 — Daily Pour** (home hero with rotating Winston suggestion). Smaller, would surface preferences immediately.
 
 Ask Paul which one to tackle first.
 
@@ -101,7 +101,7 @@ See `planning/nccc-roadmap.md` for full scope on each.
 - **Wheel version stays at 0.1.** Synonyms are additive metadata; freshness stamped via `updated` field (`2026-05-20-syn2` is current). Bump to `0.2` only when leaves change meaning or new leaves are added.
 - **"Line-level is fine" for batch collapsing.** Elijah Craig Barrel Proof batches merge into one product. Same for Larceny BP batches, Bardstown Fusion #s, Maker's Mark FAE variants.
 - **Cross-line stays distinct.** Rye expressions vs. bourbon expressions of the same brand are separate products. Sub-line projects (Maltster, Single Oak Project, etc.) are separate.
-- **Preferences are positive-only.** No "things to avoid" — the Bartender suggests *toward* taste. (Locked in #5 schema; the `member_preferences` table has no avoid columns.)
+- **Preferences are positive-only.** No "things to avoid" — Winston suggests *toward* taste. (Locked in #5 schema; the `member_preferences` table has no avoid columns.)
 - **FOR YOU pill is top-LEFT on photo-as-card surfaces** (#5a). The ember dot owns top-right; the two never collide.
 - **Tabbed Feed is URL-driven** (`?tab=cigars` etc.), not client-state. Lets bookmarks and back/forward work.
 - **Product-level trait_vector aggregation only fills products that lack a trait_vector.** Curated seed signal is never overwritten by one or two member tastings. Drafts + seed gaps auto-fill from chip-mapped tasting vectors; seeded products stay as-is.
@@ -155,7 +155,7 @@ The pattern was established for Feed and inherited by Product Detail (UX-3). Whe
 - Both accept an overlay-slot children prop for member-tag / chips / ember dot composition
 - Standard aspect ratio: 4:5 (Polaroid-ish, editorial)
 
-### Bartender voice rules
+### Winston voice rules
 - Italic Playfair via `<Voice />` component
 - Appears at: empty states, recommendation intros, system messages, end-of-night recap
 - Does NOT appear on: capture screen, feed cards directly, product detail face (it intros via composeIntro pattern)
@@ -237,7 +237,7 @@ pnpm admin:set-password <email> <password> [first] [last_initial]
 - **Education library authorship** (Tier 3 #14) — Paul writes? gpt-5-mini drafts? Defer until that tier comes up.
 - **Cigar editorial baseline** (Tier 3 #12) — which ~100–150 to hand-curate? Paul to provide list.
 - **Pairing screen redesign** (Tier 3 #8) — Cigarbase pairings screenshot still pending from Paul.
-- **Real-art Bartender illustrations** (Tier 3 #10) — Paul commissions or AI-generates? Currently using the one logo for all surfaces.
+- **Real-art Winston illustrations** (Tier 3 #10) — Paul commissions or AI-generates? Currently using the one logo for all surfaces.
 
 ---
 

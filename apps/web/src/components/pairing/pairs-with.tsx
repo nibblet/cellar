@@ -23,7 +23,7 @@ export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: 
     return (
       <Card>
         <p className="text-sm text-foreground-subtle">
-          Not enough flavor data yet for the Bartender to suggest a pairing.
+          Not enough flavor data yet for Winston to suggest a pairing.
         </p>
       </Card>
     );

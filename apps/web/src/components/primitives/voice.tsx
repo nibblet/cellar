@@ -7,7 +7,7 @@ type VoiceProps = {
 };
 
 /**
- * The Bartender's voice. Fraunces upright serif — distinctive but readable
+ * Winston's voice. Fraunces upright serif — distinctive but readable
  * at body size. Used for empty states, recommendation intros, system messages,
  * and end-of-night recaps.
  *

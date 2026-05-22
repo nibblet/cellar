@@ -10,7 +10,7 @@ A private iPhone-first PWA. Members snap photos of cigars/bourbons, tap **Recomm
 
 ## Core artifacts (the source of truth)
 
-- **`docs/design-system.md`** — visual identity, type, palette, components, Bartender voice rules. Honor it.
+- **`docs/design-system.md`** — visual identity, type, palette, components, Winston voice rules. Honor it.
 - **`data/flavor-wheels/`** — versioned cigar + bourbon flavor wheels (JSON). Schema documented inline.
 - **`planning/nccc-spec.md`** — product spec.
 - **`planning/nccc-implementation-plan.md`** — phased build plan. Current state: Phase 0.
@@ -23,7 +23,7 @@ A private iPhone-first PWA. Members snap photos of cigars/bourbons, tap **Recomm
 - **Flavor wheel:** never rendered as sliders to users. Aggregate tag clouds only. The wheel is silent infrastructure.
 - **Brass = the single primary action per screen.** No other element gets accent color. Ember is for lit recommend icons only. Moss is for club-validated pairings only.
 - **Etched dividers** at every major section break. Use `<Divider label="THE CLUB SAYS" />`.
-- **The Bartender** speaks in italic Playfair via `<Voice />`. He appears at empty states, recommendation intros, and system messages. Never on capture, feed, or product-detail.
+- **Winston** (the unicorn mascot — narrator of the club) speaks in italic Playfair via `<Voice />`. He appears at empty states, recommendation intros, first-run onboarding, and system messages. Never on capture, feed, or product-detail.
 - **Imports:** absolute via `@/` alias. Type imports must use `import type`.
 - **Forms:** Server Actions + `useActionState`. No form libraries.
 - **State:** server state via Supabase + RSC. No Redux, Zustand, or context for anything Supabase can answer.

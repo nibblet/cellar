@@ -6,7 +6,7 @@ import { Card } from "@/components/primitives";
  * Entry point to the depth view on the product detail face.
  * Always clickable — the depth view shows construction + correction affordance
  * even when there's no flavor data yet. The `available` prop controls whether
- * the Bartender's teaser mentions the flavor profile or not.
+ * Winston's teaser mentions the flavor profile or not.
  */
 export function DepthAffordance({
   productId,

@@ -82,7 +82,7 @@ export function PreferencesForm({ initial }: { initial: MemberPreferences }) {
       </div>
 
       <p className="text-xs text-foreground-subtle">
-        Leave everything unselected and the Bartender stays neutral.
+        Leave everything unselected and Winston stays neutral.
       </p>
     </form>
   );

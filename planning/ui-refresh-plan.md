@@ -10,10 +10,10 @@ everything else.
 
 ---
 
-## 1. Typography — Bartender voice
+## 1. Typography — Winston voice
 
 **Problem:** Playfair italic at body-copy size on dark backgrounds is hard to read. It's
-swallowing the Bartender's substance everywhere he speaks (Tonight's Pour, pairing prose,
+swallowing Winston's substance everywhere he speaks (Tonight's Pour, pairing prose,
 empty states).
 
 **Change:**
@@ -27,7 +27,7 @@ empty states).
 **Files:**
 - `apps/web/src/components/primitives/Voice.tsx` (or wherever Voice lives)
 - `apps/web/src/app/globals.css` — register font via `@theme`, update Tailwind font tokens
-- `docs/design-system.md` — update Bartender voice rule
+- `docs/design-system.md` — update Winston voice rule
 
 ---
 
@@ -136,13 +136,13 @@ comes from what members have recommended in the feed.
 ## 9. Capture → suggested pairing on the feed card
 
 **Problem:** After a member recommends a cigar/bourbon, there's no natural "now try this
-with…" moment. The Bartender's pairing intelligence is buried on a separate tab.
+with…" moment. Winston's pairing intelligence is buried on a separate tab.
 
 **Change:**
-- The feed entry card surfaces a small Bartender-suggested pairing affordance inline.
+- The feed entry card surfaces a small Winston-suggested pairing affordance inline.
 - Restrained presentation: icon + one line, e.g. *"✦ try with Weller 12 →"*. Tap opens
   the pairing detail page.
-- This is an *affordance*, not prose — does not violate the "Bartender doesn't narrate on
+- This is an *affordance*, not prose — does not violate the "Winston doesn't narrate on
   feed" rule from CLAUDE.md.
 
 **Implementation note:** A thin wrapper around the pairing engine is likely needed to

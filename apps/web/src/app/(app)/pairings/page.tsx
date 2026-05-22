@@ -45,7 +45,7 @@ export default async function PairingsIndexPage() {
     : [];
 
   // Knowing whether the member has *any* recommends lets us distinguish
-  // "nothing on your shelf yet" from "you have a shelf but the Bartender
+  // "nothing on your shelf yet" from "you have a shelf but Winston
   // can't pair these products yet" (typically: source missing trait_vector).
   const recommendCount = userId
     ? ((
@@ -78,7 +78,7 @@ export default async function PairingsIndexPage() {
         <NCCCLogo variant="bust" size={56} className="mb-2" decorative />
         <h1 className="text-3xl">Pairings</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle mt-1">
-          The Bartender's matches
+          Winston's matches
         </p>
       </header>
 
@@ -87,8 +87,8 @@ export default async function PairingsIndexPage() {
           {recommendedButNoPairs ? (
             <>
               <Voice className="block mb-3">
-                "Your shelf is set, sir, but the Bartender hasn't taken the measure of these yet. A
-                few more notes and the matches will come."
+                "Your shelf is set, sir, but Winston hasn't taken the measure of these yet. A few
+                more notes and the matches will come."
               </Voice>
               <Link href="/" className="text-sm text-accent hover:text-accent-hover underline">
                 Back to the feed →
@@ -97,7 +97,7 @@ export default async function PairingsIndexPage() {
           ) : (
             <>
               <Voice className="block mb-3">
-                "Recommend a cigar or pour first, sir. The Bartender works from your shelf."
+                "Recommend a cigar or pour first, sir. Winston works from your shelf."
               </Voice>
               <Link
                 href="/capture"
@@ -215,7 +215,7 @@ function RecommendationCard({ entry }: { entry: RecommendationEntry }) {
           <div className="flex items-baseline justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-                The Bartender suggests
+                Winston suggests
               </p>
               <p className="text-base text-foreground truncate mt-0.5">{candidate.name}</p>
               {candidate.brand ? (

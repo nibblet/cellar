@@ -63,7 +63,7 @@ In the background:
 - **THE FACTS** section, collapsed by default. Wrapper/binder/filler/factory or mash bill/proof/age.
 
 ### 4.3 Pairing Suggestion
-- Opens with The Bartender's italic-serif intro: *"The Bartender suggests…"*
+- Opens with Winston's italic-serif intro: *"Winston suggests…"*
 - Hero of the suggested product.
 - **WHY THIS PAIRING** prose paragraph, derived from the pairing_traits math but written in plain English.
 - **CLUB STATUS** marker:
@@ -127,7 +127,7 @@ No ML. Pure rules over the 10 shared pairing traits.
 
 ### 7.3 "Why" copy generation
 - For each top-3 pairing, generate a one-paragraph explanation using the trait math as input to a small LLM call (cached per cigar+bourbon pair).
-- Voice: The Bartender's gentlemanly italic register.
+- Voice: Winston's gentlemanly italic register.
 
 ### 7.4 Honest caveat
 - Pairing quality will feel weak for ~2–3 months until enough tasting data accumulates. The rules-based engine works on theoretical math from day one, but "the club has paired this" data is the more trusted source and takes time to build.
@@ -139,7 +139,7 @@ No ML. Pure rules over the 10 shared pairing traits.
 Already locked at [docs/design-system.md](../docs/design-system.md) v0.2.
 
 - **Logo:** unicorn in a smoking jacket and glasses, smoking a cigar, holding a Glencairn glass in an ashtray.
-- **Mascot/voice:** "The Bartender." Speaks in Playfair Display italic. Appears in empty states, recommendation headers, system messages. Never on capture/feed/product-detail screens.
+- **Mascot/voice:** "Winston." Speaks in Playfair Display italic. Appears in empty states, recommendation headers, system messages. Never on capture/feed/product-detail screens.
 - **Palette:** ink + paper + brass primary; ember (lit recommend icons only) and moss (club-validated pairings only) as disciplined one-job accents.
 - **Type:** Playfair Display (headers, voice) + Inter (body, UI).
 - **Aesthetic:** dark leather library with a wink. Dark mode default.
@@ -203,11 +203,11 @@ flavor_wheels    (version, type, json) -- versioned snapshots
 - Product detail with group voice (recommend bar, member takes, tag cloud, pairings)
 - Tasting flow (capture → recommend → optional chips/note → save)
 - Group feed (filterable by member, event)
-- Pairing suggestion screen (rules-based engine + Bartender prose)
+- Pairing suggestion screen (rules-based engine + Winston prose)
 - Member profile (their tastings, their recommendations)
 - Event/meetup view (tastings grouped by night)
 - Admin: invite generation, product correction
-- The Bartender's voice in all designated moments
+- Winston's voice in all designated moments
 - Design system fully implemented
 
 ---
@@ -239,8 +239,8 @@ flavor_wheels    (version, type, json) -- versioned snapshots
 ### 12.4 Hosting cost
 - OpenAI calls per photo are the biggest variable. Estimate: ~$0.03 per identification (Vision + structured extraction) + ~$0.005 per chip→wheel mapping. At 100 tastings/month = ~$3.50/month in AI. Negligible. Vercel + Supabase free tiers should handle 12 users for v1.
 
-### 12.5 Bartender's name
-- "The Bartender" is a working title. App constant; trivial rename when the club decides.
+### 12.5 Winston's name
+- "Winston" is a working title. App constant; trivial rename when the club decides.
 
 ### 12.6 Stewardship long-term
 - Sole-admin model (the builder). If the builder steps away, the app becomes unmaintainable. Worth designing minimal-touch ops (managed Supabase, no custom infra).
@@ -252,7 +252,7 @@ flavor_wheels    (version, type, json) -- versioned snapshots
 - All 12 members onboarded within 2 weeks of launch.
 - At least 8 members log a tasting in the first monthly meetup post-launch.
 - ≥ 90% of cigar/bourbon scans correctly identified (member doesn't need to manually correct).
-- The Bartender's voice consistently delights and never grates (subjective; gather feedback at month 1).
+- Winston's voice consistently delights and never grates (subjective; gather feedback at month 1).
 - Pairing engine produces at least one "huh, I want to try that" reaction per member per month.
 
 ---

@@ -28,7 +28,7 @@ export function NCCCLogo({
 
   if (variant === "bust") {
     // Crop the upper portion of the roundel to a circle; offsets the
-    // logo upward so the bartender's bust dominates the frame.
+    // logo upward so Winston's bust dominates the frame.
     return (
       <div
         className={cn(

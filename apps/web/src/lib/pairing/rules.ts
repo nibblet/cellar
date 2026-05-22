@@ -3,7 +3,7 @@ import type { TraitVector } from "@/lib/wheel";
 /**
  * One firing of a pairing rule. The scoring layer sums `contribution` across
  * all rules that fired; the prose layer reads `reason` strings to compose the
- * Bartender's explanation.
+ * Winston's explanation.
  */
 export type RuleResult = {
   rule: string;
