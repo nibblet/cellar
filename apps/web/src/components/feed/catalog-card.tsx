@@ -32,6 +32,17 @@ export function CatalogCard({ entry, signedHero }: CatalogCardProps) {
             <PhotoFrame src={signedHero} alt={entry.name}>
               {Overlays}
             </PhotoFrame>
+          ) : entry.catalog_image_url ? (
+            // Public catalog mirror — no signing needed (product-catalog bucket is public)
+            <div className="relative w-full h-full bg-surface">
+              {/* biome-ignore lint/performance/noImgElement: external public catalog URL */}
+              <img
+                src={entry.catalog_image_url}
+                alt={entry.name}
+                className="absolute inset-0 w-full h-full object-contain p-4"
+              />
+              {Overlays}
+            </div>
           ) : (
             <PhotoPlaceholder productType={entry.type}>{Overlays}</PhotoPlaceholder>
           )}

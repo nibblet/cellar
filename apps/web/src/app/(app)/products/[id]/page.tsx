@@ -36,7 +36,7 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, type, name, brand, specs, status, created_at, trait_vector")
+    .select("id, type, name, brand, image_url, specs, status, created_at, trait_vector")
     .eq("id", id)
     .maybeSingle();
 
@@ -97,7 +97,12 @@ export default async function ProductDetailPage({
     })
     .filter((x): x is ProductHeroImage => x !== null);
 
-  const stockUrl = typeof specs.image_url === "string" && specs.image_url ? specs.image_url : null;
+  // products.image_url is the authoritative catalog image (set by enrichment mirror).
+  // Fall back to specs.image_url for legacy rows seeded before the direct column existed.
+  const stockUrl =
+    (product as unknown as { image_url?: string | null }).image_url ||
+    (typeof specs.image_url === "string" ? specs.image_url : null) ||
+    null;
 
   const isDraft = product.status === "draft";
   const subtitle = composeSubtitle(productType, specs);

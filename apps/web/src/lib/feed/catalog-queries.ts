@@ -44,7 +44,10 @@ export type CatalogEntry = {
   name: string;
   brand: string | null;
   type: ProductType;
+  /** Storage path in the private product-photos bucket (member captures). Needs signing. */
   hero_image_path: string | null;
+  /** Public URL from the product-catalog bucket (enrichment mirror). Ready to use directly. */
+  catalog_image_url: string | null;
   matches_preferences: boolean;
 };
 
@@ -53,6 +56,7 @@ type ProductRow = {
   name: string;
   brand: string | null;
   type: ProductType;
+  image_url: string | null; // direct column — set by enrichment mirror
   specs: Record<string, unknown> | null;
   created_at: string;
 };
@@ -83,9 +87,11 @@ export async function loadCatalogBrowse(
   const sort = filters.sort ?? "recommended";
 
   // Pull all confirmed products (we'll filter in-memory).
+  // image_url is the direct column written by the enrichment mirror — distinct
+  // from specs.image_url (legacy) and product_images (member captures).
   const { data: rows } = await supabase
     .from("products")
-    .select("id, name, brand, type, specs, created_at")
+    .select("id, name, brand, type, image_url, specs, created_at")
     .eq("type", type)
     .eq("status", "confirmed")
     .order("name", { ascending: true })
@@ -144,8 +150,12 @@ export async function loadCatalogBrowse(
     const heroPath = heroByProduct.get(p.id) ?? null;
     const counts = countByProduct.get(p.id);
 
+    // products.image_url is the public catalog mirror (enrichment). Use it as
+    // the display image when no member photo exists for this product.
+    const catalogImageUrl = p.image_url ?? null;
+
     // Apply filters.
-    if (hasActiveFilters && !passesFilters(p, specs, heroPath, counts, filters)) continue;
+    if (hasActiveFilters && !passesFilters(p, specs, heroPath, catalogImageUrl, counts, filters)) continue;
 
     entries.push({
       product_id: p.id,
@@ -153,6 +163,7 @@ export async function loadCatalogBrowse(
       brand: p.brand,
       type: p.type,
       hero_image_path: heroPath,
+      catalog_image_url: catalogImageUrl,
       matches_preferences:
         matchesEnabled && preferences
           ? matchesPreferencesCheck({ type: p.type, specs }, preferences)
@@ -191,12 +202,14 @@ function passesFilters(
   p: ProductRow,
   specs: Record<string, unknown>,
   heroPath: string | null,
+  catalogImageUrl: string | null,
   counts: TastingCount | undefined,
   f: CatalogFilters,
 ): boolean {
-  // Enriched-only (dev): has hero image + specs with meaningful data
+  // Enriched-only (dev): has any photo (member capture OR catalog mirror) + meaningful spec data
   if (f.enrichedOnly) {
-    if (!heroPath) return false;
+    const hasPhoto = !!heroPath || !!catalogImageUrl;
+    if (!hasPhoto) return false;
     const specKeys = Object.keys(specs).filter((k) => specs[k] != null && specs[k] !== "");
     if (specKeys.length < 3) return false;
   }
