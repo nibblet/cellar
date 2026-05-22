@@ -86,16 +86,24 @@ export async function loadCatalogBrowse(
 ): Promise<CatalogEntry[]> {
   const sort = filters.sort ?? "recommended";
 
-  // Pull all confirmed products (we'll filter in-memory).
+  // Pull confirmed products (we'll filter the rest in-memory).
   // image_url is the direct column written by the enrichment mirror — distinct
   // from specs.image_url (legacy) and product_images (member captures).
-  const { data: rows } = await supabase
+  //
+  // When enrichedOnly is set, push the photo requirement down to SQL so the
+  // alphabetic limit doesn't slice off all the enriched rows before filtering
+  // sees them. Without this, a 1,350-row bourbon catalog with ~100 enriched
+  // rows returns 100 alphabetic-front rows that are mostly unenriched, then
+  // the in-memory filter drops every one of them.
+  let query = supabase
     .from("products")
     .select("id, name, brand, type, image_url, specs, created_at")
     .eq("type", type)
-    .eq("status", "confirmed")
-    .order("name", { ascending: true })
-    .limit(limit);
+    .eq("status", "confirmed");
+  if (filters.enrichedOnly) {
+    query = query.not("image_url", "is", null);
+  }
+  const { data: rows } = await query.order("name", { ascending: true }).limit(limit);
 
   const products = ((rows ?? []) as ProductRow[]).filter((p) => Boolean(p.name));
   if (products.length === 0) return [];
