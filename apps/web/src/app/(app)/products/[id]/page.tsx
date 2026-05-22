@@ -141,6 +141,7 @@ export default async function ProductDetailPage({
           productName={product.name}
           brand={product.brand ?? null}
           justCaptured={Boolean(just_captured)}
+          alreadyEnriched={Boolean(stockUrl)}
         />
       ) : null}
 

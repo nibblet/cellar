@@ -2,9 +2,9 @@ import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { CaptureForm } from "./capture-form";
 
-// Vision ID + storage upload + draft enrichment can run 60–90s when a fresh
-// product is captured (Apify web search dominates). 120s gives headroom.
-export const maxDuration = 120;
+// Vision ID + storage upload only. Catalog enrichment runs separately via
+// /api/enrich-draft so this stays under Vercel Hobby's 60s ceiling.
+export const maxDuration = 60;
 
 export default async function CapturePage() {
   const supabase = await createSupabaseServerClient();

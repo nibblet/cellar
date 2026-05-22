@@ -152,32 +152,21 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
 }
 
 /**
- * Rendered while the server action is in flight (15-90s end to end). The
- * Bartender narrates each phase loosely; we don't poll because the action
- * is monolithic. The text rotates on a timer so it doesn't feel stuck.
+ * Rendered while the capture server action is in flight. Now a short window
+ * (~15-20s) — just vision identify + match + draft creation. Catalog
+ * enrichment narration takes over on the product detail page.
  */
 function CapturePendingState({ type, preview }: { type: ProductType; preview: string | null }) {
   const lines =
     type === "cigar"
-      ? [
-          "Reading the band…",
-          "Let me check the humidor for this one.",
-          "Pulling reviews — give me a moment.",
-          "Almost there. Setting the ashtray.",
-        ]
-      : [
-          "Reading the label…",
-          "Let me check the rickhouse log.",
-          "Pulling reviews — give me a moment.",
-          "Almost there. Pouring a neat one.",
-        ];
+      ? ["Reading the band…", "Checking the catalog for a match."]
+      : ["Reading the label…", "Checking the catalog for a match."];
 
-  // Rotate the Bartender's line every ~6s so the page doesn't feel frozen.
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const t = window.setInterval(() => {
       setIdx((i) => (i < lines.length - 1 ? i + 1 : i));
-    }, 6000);
+    }, 7000);
     return () => window.clearInterval(t);
   }, [lines.length]);
 

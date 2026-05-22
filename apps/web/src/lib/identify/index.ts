@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { enrichDraftProduct } from "@/lib/enrich";
 import { identifyProductFromImage } from "@/lib/openai/identify";
 import type { ProductType } from "@/lib/wheel";
 import { type CandidateProduct, pickBestMatch } from "./normalize";
@@ -8,10 +7,10 @@ export type IdentifyOutcome = {
   productId: string;
   matched: boolean;
   confidence: "high" | "medium" | "low";
-  /** True when we created a fresh draft and ran the catalog enrichment pass
-   *  on it. The capture flow uses this to decide whether to show a confirm
-   *  prompt vs. drop the member straight onto a familiar product page. */
-  enriched: boolean;
+  /** True when we created a fresh draft and the caller should kick off the
+   *  async catalog enrichment pass (POST /api/enrich-draft). The capture
+   *  flow uses this to decide whether to fire the enrichment fetch. */
+  needsEnrichment: boolean;
 };
 
 type OrchestrateArgs = {
@@ -26,13 +25,17 @@ const MATCH_THRESHOLD_WITH_BRAND = 0.55;
 const MATCH_THRESHOLD_NAME_ONLY = 0.7;
 
 /**
- * Full identification flow:
+ * Photo-identify orchestration:
  *   1. Ask GPT-5 mini to extract structured product info from the photo.
- *   2. Pull a shortlist of catalog candidates by type + brand trigram.
- *   3. Score against candidates; if best score clears threshold, link to existing.
+ *   2. Pull a shortlist of catalog candidates by type + brand prefilter.
+ *   3. Score against candidates; if best score clears threshold, link to it.
  *   4. Otherwise create a draft product with the AI's best guess.
  *   5. Insert a product_images row with the photo URL.
- *   6. Return the product id + match info for the caller to redirect to.
+ *
+ * Catalog enrichment of fresh drafts runs ASYNCHRONOUSLY in a follow-up
+ * /api/enrich-draft fetch fired from the product detail page. We deliberately
+ * don't enrich inline here because the Apify pass takes 30-60s, which would
+ * push this server action past Vercel Hobby's 60s function timeout.
  */
 export async function identifyAndPersist(args: OrchestrateArgs): Promise<IdentifyOutcome> {
   const { supabase, userId, imagePublicUrl, storagePath, expectedType } = args;
@@ -66,7 +69,7 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     }
   }
 
-  let enriched = false;
+  let needsEnrichment = false;
 
   if (!matchedProductId) {
     const { data: created, error } = await supabase
@@ -80,35 +83,14 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
         source: "ai",
         created_by: userId,
       })
-      .select("id, specs, name, brand")
+      .select("id")
       .single();
 
     if (error || !created) {
       throw new Error(`Failed to create draft product: ${error?.message ?? "no row returned"}`);
     }
     matchedProductId = created.id;
-
-    // Fresh draft: kick off the same catalog enrichment we run from the
-    // CLI scripts. Mirrors a hero image, captures editorial reviews, and
-    // patches in structured specs. Runs inline — the caller's UX expects
-    // a 30-60s "checking the humidor" wait. Failures are non-fatal:
-    // the draft still gets created and the member can confirm/edit by hand.
-    try {
-      await enrichDraftProduct(
-        {
-          id: created.id,
-          type: finalType,
-          name: extracted.name,
-          brand: extracted.brand,
-          line: null,
-          specs: (created.specs ?? {}) as Record<string, unknown>,
-        },
-        supabase,
-      );
-      enriched = true;
-    } catch (err) {
-      console.error("[identify] enrichment failed:", (err as Error).message);
-    }
+    needsEnrichment = true;
   }
 
   if (!matchedProductId) {
@@ -125,7 +107,7 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     productId: matchedProductId,
     matched,
     confidence: extracted.confidence,
-    enriched,
+    needsEnrichment,
   };
 }
 
