@@ -12,18 +12,10 @@ type FactsStripProps = {
 const PREFERRED_ORDER = [
   "price_usd",
   "year_made",
-  "aging_period_years",
+  "series",
   "tier",
   "tall",
-  "image_url",
-  "source_id",
-  "review_url",
-  "review_published",
-  "additional_notes",
-  "tasting_notes_raw",
-  "shelf",
   "in_cobb_collection",
-  "whiskey_type",
 ];
 
 // Renderers for the misc fields. Keeping each one short on purpose; the strip
@@ -31,11 +23,10 @@ const PREFERRED_ORDER = [
 const FORMATTERS: Record<string, (v: unknown) => string | null> = {
   price_usd: (v) => (typeof v === "number" ? `$${v}` : null),
   year_made: (v) => (typeof v === "number" ? String(v) : null),
-  aging_period_years: (v) => (typeof v === "number" ? `${v}yr aged` : null),
   tier: (v) => (typeof v === "number" ? `Tier ${v}` : null),
   tall: (v) => (v ? "tall bottle" : null),
   in_cobb_collection: (v) => (v ? "Paul's shelf" : null),
-  whiskey_type: (v) => (typeof v === "string" && v ? v : null),
+  series: (v) => (typeof v === "string" && v ? `${v} series` : null),
 };
 
 const HIDE_KEYS = new Set([
@@ -48,9 +39,22 @@ const HIDE_KEYS = new Set([
   "body_score",
   "strength_score",
   "price_tier",
+  "rating",
+  "score",
+  // Construction-panel fields (shown above, don't repeat)
+  "length",
+  "ring_gauge",
+  "age_years",
+  "age_label",
+  "aging_period_years",
+  // Redundant with Construction (proof) or with the subtitle (whiskey_type)
+  "abv",
+  "whiskey_type",
+  "style_family",
   // Raw text blobs — too long for a strip
   "tasting_notes_raw",
   "additional_notes",
+  "flavor_profile_raw",
   // Internal flags
   "shelf",
 ]);
@@ -85,10 +89,12 @@ export function FactsStrip({
       if (value === null || value === undefined || value === "") return null;
       const fmt = FORMATTERS[key];
       if (fmt) return fmt(value);
-      // Default: short key + value (skip booleans, objects)
+      // Default: only allow strings + booleans through. Unknown numerics
+      // ("83", "50") have no inherent meaning to a viewer — anything we want
+      // to show numerically needs an explicit formatter above.
       if (typeof value === "boolean") return value ? key.replace(/_/g, " ") : null;
-      if (typeof value === "object") return null;
-      return String(value);
+      if (typeof value === "string") return value;
+      return null;
     })
     .filter((t): t is string => t !== null && t.trim() !== "");
 

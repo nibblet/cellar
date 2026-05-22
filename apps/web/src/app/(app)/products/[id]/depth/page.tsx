@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Divider } from "@/components/primitives";
-import { ConstructionPanel, FactsStrip, FlavorBarChart } from "@/components/product";
-import { buildTagCloud, loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { ConstructionPanel, FactsStrip } from "@/components/product";
+import {
+  buildTagCloud,
+  loadGroupVoice,
+  type TagCloudEntry,
+} from "@/lib/aggregation/group-voice";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType, WheelVector } from "@/lib/wheel";
 
@@ -17,6 +21,8 @@ const CIGAR_CONSTRUCTION_KEYS = [
   "filler",
   "country",
   "vitola",
+  "length",
+  "ring_gauge",
   "strength",
 ];
 const BOURBON_CONSTRUCTION_KEYS = [
@@ -26,6 +32,7 @@ const BOURBON_CONSTRUCTION_KEYS = [
   "abv",
   "age_years",
   "age_label",
+  "aging_period_years",
   "style_family",
   "dsp",
 ];
@@ -96,9 +103,28 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
 
       {flavorEntries.length > 0 ? (
         <>
-          <FlavorBarChart entries={flavorEntries} />
+          {/* Notes grouped by wheel branch (Wood / Earth / Spice / …). The
+              underlying 0-5 intensities saturate and tie at the top, so we
+              don't draw bars; instead each branch heads its own row and notes
+              appear in rank order. Branches themselves are ordered by their
+              top-ranked leaf, so the most-prominent family leads. */}
+          <dl className="space-y-3">
+            {groupByCategory(flavorEntries).map((group) => (
+              <div
+                key={group.category_id}
+                className="grid grid-cols-[88px,1fr] gap-3 items-baseline"
+              >
+                <dt className="text-[11px] uppercase tracking-widest text-foreground-subtle">
+                  {group.category_label}
+                </dt>
+                <dd className="text-base leading-relaxed text-foreground">
+                  {group.entries.map((e) => e.label).join(" · ")}
+                </dd>
+              </div>
+            ))}
+          </dl>
           {isBaseline ? (
-            <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-3">
+            <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-4">
               Catalog baseline · Fills in as the club weighs in
             </p>
           ) : null}
@@ -119,4 +145,33 @@ export default async function ProductDepthPage({ params }: { params: Params }) {
       </div>
     </main>
   );
+}
+
+/**
+ * Group ranked tag-cloud entries by wheel branch, preserving the input rank
+ * order both across branches (first branch = branch of the top-ranked leaf)
+ * and within a branch (leaves stay in rank order). Entries without a known
+ * branch fall into an "Other" group at the end.
+ */
+function groupByCategory(
+  entries: TagCloudEntry[],
+): { category_id: string; category_label: string; entries: TagCloudEntry[] }[] {
+  const groups = new Map<
+    string,
+    { category_id: string; category_label: string; entries: TagCloudEntry[] }
+  >();
+  for (const entry of entries) {
+    const key = entry.category_id || "other";
+    const existing = groups.get(key);
+    if (existing) {
+      existing.entries.push(entry);
+    } else {
+      groups.set(key, {
+        category_id: key,
+        category_label: entry.category_label || "Other",
+        entries: [entry],
+      });
+    }
+  }
+  return Array.from(groups.values());
 }

@@ -15,6 +15,8 @@ export type MemberTake = {
 export type TagCloudEntry = {
   leaf_id: string;
   label: string;
+  category_id: string; // wheel branch the leaf belongs to (e.g. "wood", "earth")
+  category_label: string; // display label for the branch (e.g. "Wood", "Earth")
   score: number; // 0..1 normalized weight for sizing
   raw: number; // sum of intensities (for tie-break / debug)
   mentions: number; // how many tastings included this leaf
@@ -109,16 +111,23 @@ export function buildTagCloud(
   }
 
   const wheel = getWheel(productType);
-  const leafIndex = new Map(wheel.leaves.map((l) => [l.id, l.label] as const));
+  const leafIndex = new Map(wheel.leaves.map((l) => [l.id, l] as const));
+  const categoryIndex = new Map(wheel.categories.map((c) => [c.id, c.label] as const));
 
   const ranked = Object.entries(totals)
-    .map(([leaf_id, { raw, mentions }]) => ({
-      leaf_id,
-      label: leafIndex.get(leaf_id) ?? leaf_id,
-      raw,
-      mentions,
-      score: 0, // normalized below
-    }))
+    .map(([leaf_id, { raw, mentions }]) => {
+      const leaf = leafIndex.get(leaf_id);
+      const category_id = leaf?.category_id ?? "";
+      return {
+        leaf_id,
+        label: leaf?.label ?? leaf_id,
+        category_id,
+        category_label: categoryIndex.get(category_id) ?? category_id,
+        raw,
+        mentions,
+        score: 0, // normalized below
+      };
+    })
     .sort((a, b) => b.raw - a.raw || b.mentions - a.mentions)
     .slice(0, maxEntries);
 
