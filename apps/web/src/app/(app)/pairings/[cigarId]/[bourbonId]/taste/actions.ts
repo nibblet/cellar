@@ -15,10 +15,7 @@ const BUCKET = "product-photos";
  * bourbon — sharing a pairing_session_id so the feed can render them linked
  * later. Skips vision identification: we already know both products.
  */
-export async function submitPairingTaste(
-  _prev: State,
-  formData: FormData,
-): Promise<State> {
+export async function submitPairingTaste(_prev: State, formData: FormData): Promise<State> {
   const cigarId = String(formData.get("cigar_id") ?? "");
   const bourbonId = String(formData.get("bourbon_id") ?? "");
   if (!cigarId || !bourbonId) {

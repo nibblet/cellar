@@ -1,8 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Button, Card, Divider } from "@/components/primitives";
 import { ChipInput } from "@/app/(app)/products/[id]/recommend/chip-input";
+import { Button, Card, Divider } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
 import { submitPairingTaste } from "./actions";
@@ -144,9 +144,7 @@ export function PairingTasteForm({
       <Divider label="Notes on the pairing" />
 
       <label className="flex flex-col gap-2">
-        <span className="text-sm text-foreground-muted">
-          How did they sit together? (optional)
-        </span>
+        <span className="text-sm text-foreground-muted">How did they sit together? (optional)</span>
         <textarea
           name="note"
           defaultValue={sharedNoteDefault}
@@ -207,13 +205,9 @@ function ProductSlot({
   return (
     <section className="flex flex-col gap-3">
       <header>
-        <p className="text-[11px] uppercase tracking-widest text-foreground-subtle">
-          {kindLabel}
-        </p>
+        <p className="text-[11px] uppercase tracking-widest text-foreground-subtle">{kindLabel}</p>
         <p className="text-lg leading-tight mt-0.5">{product.name}</p>
-        {product.brand ? (
-          <p className="text-xs text-foreground-muted">{product.brand}</p>
-        ) : null}
+        {product.brand ? <p className="text-xs text-foreground-muted">{product.brand}</p> : null}
       </header>
 
       <div

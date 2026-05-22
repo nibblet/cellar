@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { TastingCard } from "@/components/feed";
 import { CellarTab } from "@/components/cellar";
+import { TastingCard } from "@/components/feed";
 import { Card, Divider } from "@/components/primitives";
 import { loadCellarProducts } from "@/lib/cellar/load";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
@@ -59,7 +59,11 @@ export default async function MemberProfilePage({
       </div>
 
       {tab === "cellar" ? (
-        <CellarSection memberId={id} memberFirstName={member.name_first} isOwnProfile={isOwnProfile} />
+        <CellarSection
+          memberId={id}
+          memberFirstName={member.name_first}
+          isOwnProfile={isOwnProfile}
+        />
       ) : (
         <TastingsSection memberId={id} displayName={formatMemberName(profile)} />
       )}
@@ -143,15 +147,7 @@ async function CellarSection({
   );
 }
 
-function TabLink({
-  label,
-  href,
-  active,
-}: {
-  label: string;
-  href: string;
-  active: boolean;
-}) {
+function TabLink({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
     <a
       href={href}

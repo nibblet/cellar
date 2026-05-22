@@ -2,8 +2,8 @@
 
 import { startTransition, useState } from "react";
 import { setCellarState } from "@/lib/cellar/actions";
-import { applyPatch } from "@/lib/cellar/types";
 import type { CellarRow } from "@/lib/cellar/types";
+import { applyPatch } from "@/lib/cellar/types";
 import { cn } from "@/lib/utils";
 
 type CellarCardControlsProps = {
@@ -37,27 +37,15 @@ export function CellarCardControls({ productId, initialState }: CellarCardContro
       onClick={(e) => e.preventDefault()}
     >
       {/* Tried — check mark */}
-      <IconButton
-        active={state.tried}
-        label="Tried"
-        onClick={(e) => toggle("tried", e)}
-      >
+      <IconButton active={state.tried} label="Tried" onClick={(e) => toggle("tried", e)}>
         <CheckIcon active={state.tried} />
       </IconButton>
       {/* Have — glass / leaf */}
-      <IconButton
-        active={state.have}
-        label="Have"
-        onClick={(e) => toggle("have", e)}
-      >
+      <IconButton active={state.have} label="Have" onClick={(e) => toggle("have", e)}>
         <HaveIcon active={state.have} />
       </IconButton>
       {/* Want — bookmark */}
-      <IconButton
-        active={state.want}
-        label="Want"
-        onClick={(e) => toggle("want", e)}
-      >
+      <IconButton active={state.want} label="Want" onClick={(e) => toggle("want", e)}>
         <WantIcon active={state.want} />
       </IconButton>
     </div>
@@ -95,9 +83,23 @@ function IconButton({
 function CheckIcon({ active }: { active: boolean }) {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5" fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+      <circle
+        cx="6"
+        cy="6"
+        r="5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        fill={active ? "currentColor" : "none"}
+        fillOpacity={active ? 0.2 : 0}
+      />
       {active && (
-        <path d="M3.5 6l1.8 1.8 3.2-3.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M3.5 6l1.8 1.8 3.2-3.6"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       )}
     </svg>
   );

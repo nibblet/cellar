@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyCellarBias } from "./bias";
-import { ZERO_ROW, applyPatch, isZeroRow } from "./types";
 import type { CellarSnapshot } from "./types";
+import { applyPatch, isZeroRow, ZERO_ROW } from "./types";
 
 // ---------------------------------------------------------------------------
 // applyPatch
@@ -9,7 +9,11 @@ import type { CellarSnapshot } from "./types";
 
 describe("applyPatch", () => {
   it("merges a simple patch", () => {
-    expect(applyPatch(ZERO_ROW, { tried: true })).toEqual({ have: false, want: false, tried: true });
+    expect(applyPatch(ZERO_ROW, { tried: true })).toEqual({
+      have: false,
+      want: false,
+      tried: true,
+    });
   });
 
   it("have=true clears want", () => {
@@ -112,13 +116,23 @@ describe("applyCellarBias", () => {
   });
 
   it("max boost is +10 and never exceeds 100", () => {
-    const full = snapshot({ cigarTried: true, cigarHave: true, bourbonTried: true, bourbonHave: true });
+    const full = snapshot({
+      cigarTried: true,
+      cigarHave: true,
+      bourbonTried: true,
+      bourbonHave: true,
+    });
     expect(applyCellarBias(95, full, "cigar-1", "bourbon-1")).toBe(100);
     expect(applyCellarBias(70, full, "cigar-1", "bourbon-1")).toBe(80);
   });
 
   it("does not apply bias for unrecognized product ids", () => {
-    const full = snapshot({ cigarTried: true, cigarHave: true, bourbonTried: true, bourbonHave: true });
+    const full = snapshot({
+      cigarTried: true,
+      cigarHave: true,
+      bourbonTried: true,
+      bourbonHave: true,
+    });
     expect(applyCellarBias(70, full, "other-cigar", "other-bourbon")).toBe(70);
   });
 });

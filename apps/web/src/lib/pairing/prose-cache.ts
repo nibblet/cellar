@@ -1,9 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import {
-  fallbackProse,
-  generatePairingProse,
-  type PairingProse,
-} from "@/lib/openai/pairing-prose";
+import { fallbackProse, generatePairingProse, type PairingProse } from "@/lib/openai/pairing-prose";
 import type { TraitVector } from "@/lib/wheel";
 import { scorePair } from "./score";
 
@@ -86,17 +82,15 @@ export async function ensurePairingProse(
     // Await the persistence: under the Next 16 server-component lifecycle,
     // fire-and-forget upserts are cancelled when the response ships, so
     // without this every render misses the cache and re-generates prose.
-    await supabase
-      .from("pairings_cache")
-      .upsert(
-        {
-          cigar_id: cigarId,
-          bourbon_id: bourbonId,
-          score,
-          rationale_text: JSON.stringify(prose),
-        },
-        { onConflict: "cigar_id,bourbon_id" },
-      );
+    await supabase.from("pairings_cache").upsert(
+      {
+        cigar_id: cigarId,
+        bourbon_id: bourbonId,
+        score,
+        rationale_text: JSON.stringify(prose),
+      },
+      { onConflict: "cigar_id,bourbon_id" },
+    );
 
     return prose;
   } catch (err) {

@@ -4,8 +4,8 @@ import { useActionState } from "react";
 import { Card } from "@/components/primitives";
 import {
   deleteSuggestion,
-  updateSuggestionStatus,
   type UpdateSuggestionState,
+  updateSuggestionStatus,
 } from "../../roadmap/actions";
 
 const initial: UpdateSuggestionState = { status: "idle" };

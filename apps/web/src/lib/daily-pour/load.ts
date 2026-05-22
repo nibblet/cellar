@@ -40,9 +40,7 @@ export async function loadDailyPourCandidates(
   preferences: MemberPreferences | null,
   memberId?: string | null,
 ): Promise<DailyPourCandidate[]> {
-  const cellar = memberId
-    ? await loadCellarSnapshot(supabase, memberId)
-    : EMPTY_SNAPSHOT;
+  const cellar = memberId ? await loadCellarSnapshot(supabase, memberId) : EMPTY_SNAPSHOT;
 
   let candidates: DailyPourCandidate[];
 
@@ -56,10 +54,7 @@ export async function loadDailyPourCandidates(
   return applyBias(candidates, cellar);
 }
 
-function applyBias(
-  candidates: DailyPourCandidate[],
-  cellar: CellarSnapshot,
-): DailyPourCandidate[] {
+function applyBias(candidates: DailyPourCandidate[], cellar: CellarSnapshot): DailyPourCandidate[] {
   return candidates
     .map((c) => ({
       ...c,

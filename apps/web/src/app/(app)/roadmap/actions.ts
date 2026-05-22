@@ -23,13 +23,12 @@ export async function submitSuggestion(
   const kindRaw = String(formData.get("kind") ?? "");
   const body = String(formData.get("body") ?? "").trim();
 
-  const kind = VALID_KINDS.includes(kindRaw as SuggestionKind)
-    ? (kindRaw as SuggestionKind)
-    : null;
+  const kind = VALID_KINDS.includes(kindRaw as SuggestionKind) ? (kindRaw as SuggestionKind) : null;
 
   if (!kind) return { status: "error", message: "Pick a type." };
   if (!body) return { status: "error", message: "Say a little more." };
-  if (body.length > 4000) return { status: "error", message: "Too long — keep it under 4000 characters." };
+  if (body.length > 4000)
+    return { status: "error", message: "Too long — keep it under 4000 characters." };
 
   const { error } = await supabase.from("suggestions").insert({
     member_id: auth.user.id,

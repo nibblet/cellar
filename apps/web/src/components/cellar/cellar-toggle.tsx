@@ -2,8 +2,8 @@
 
 import { startTransition, useState } from "react";
 import { setCellarState } from "@/lib/cellar/actions";
-import { applyPatch } from "@/lib/cellar/types";
 import type { CellarRow } from "@/lib/cellar/types";
+import { applyPatch } from "@/lib/cellar/types";
 import { cn } from "@/lib/utils";
 
 type CellarToggleProps = {

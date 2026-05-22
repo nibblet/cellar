@@ -12,10 +12,10 @@ import {
   TastingCard,
 } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
-import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
-import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
+import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
+import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import {
   type CatalogFilters,
   type CatalogSortKey,
@@ -225,11 +225,7 @@ async function ForYouBody({
     : null;
 
   if (dailyPour) {
-    const cached = await loadCachedPairingProse(
-      supabase,
-      dailyPour.cigar_id,
-      dailyPour.bourbon_id,
-    );
+    const cached = await loadCachedPairingProse(supabase, dailyPour.cigar_id, dailyPour.bourbon_id);
     dailyPour.rationale = cached?.notes ?? null;
   }
 

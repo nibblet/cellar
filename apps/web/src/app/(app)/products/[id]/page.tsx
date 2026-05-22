@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CellarToggle } from "@/components/cellar";
 import { PairsWith } from "@/components/pairing";
 import { Button, Divider } from "@/components/primitives";
 import {
@@ -8,7 +9,6 @@ import {
   ProductHero,
   type ProductHeroImage,
 } from "@/components/product";
-import { CellarToggle } from "@/components/cellar";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
@@ -52,9 +52,7 @@ export default async function ProductDetailPage({
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
-  const cellarRow = userId
-    ? await loadCellarRow(supabase, userId, id)
-    : ZERO_ROW;
+  const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
 
   const [groupVoice, pairings, imagesResult] = await Promise.all([
     loadGroupVoice(supabase, id, productType),

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { ZERO_ROW, applyPatch, isZeroRow } from "./types";
 import type { CellarPatch, CellarRow } from "./types";
+import { applyPatch, isZeroRow, ZERO_ROW } from "./types";
 
 /**
  * Upsert the caller's cellar state for one product. Enforces:
@@ -45,10 +45,12 @@ export async function setCellarState(productId: string, patch: CellarPatch): Pro
       .eq("member_id", memberId)
       .eq("product_id", productId);
   } else {
-    await supabase.from("member_saves").upsert(
-      { member_id: memberId, product_id: productId, ...next },
-      { onConflict: "member_id,product_id" },
-    );
+    await supabase
+      .from("member_saves")
+      .upsert(
+        { member_id: memberId, product_id: productId, ...next },
+        { onConflict: "member_id,product_id" },
+      );
   }
 
   revalidatePath(`/products/${productId}`);
@@ -72,7 +74,7 @@ export async function markTried(
     .eq("product_id", productId)
     .maybeSingle();
 
-  if (existing && Boolean((existing as CellarRow).tried)) return; // already set
+  if (existing && (existing as CellarRow).tried) return; // already set
 
   await supabaseClient.from("member_saves").upsert(
     {

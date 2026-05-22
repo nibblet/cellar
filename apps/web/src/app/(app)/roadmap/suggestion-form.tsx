@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Button, Card } from "@/components/primitives";
 import { type SubmitSuggestionState, submitSuggestion } from "./actions";
 

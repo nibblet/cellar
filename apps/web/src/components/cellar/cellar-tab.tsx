@@ -25,13 +25,7 @@ type CellarTabProps = {
  * Tabbed cellar view on a member's profile page.
  * Three filter chips: Have / Want / Tried (default: Have).
  */
-export function CellarTab({
-  have,
-  want,
-  tried,
-  isOwnProfile,
-  memberFirstName,
-}: CellarTabProps) {
+export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: CellarTabProps) {
   const [filter, setFilter] = useState<CellarFilter>("have");
 
   const lists: Record<CellarFilter, CellarProduct[]> = { have, want, tried };
@@ -66,7 +60,10 @@ export function CellarTab({
                 : "bg-surface text-foreground-muted border border-border hover:bg-surface-2",
             )}
           >
-            {f} {lists[f].length > 0 ? <span className="ml-1 text-foreground-subtle">{lists[f].length}</span> : null}
+            {f}{" "}
+            {lists[f].length > 0 ? (
+              <span className="ml-1 text-foreground-subtle">{lists[f].length}</span>
+            ) : null}
           </button>
         ))}
       </div>
