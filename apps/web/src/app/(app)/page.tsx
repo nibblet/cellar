@@ -10,6 +10,7 @@ import {
   type FeedTab,
   FeedTabs,
   MeetupCard,
+  PickPourButton,
   TastingCard,
 } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
@@ -23,7 +24,7 @@ import {
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { CATALOG_TIER_CEILING } from "@/lib/preferences/types";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -221,7 +222,12 @@ async function DailyPourSection({
     pour.rationale = cached.notes;
   }
 
-  return <DailyPourCard pour={pour} />;
+  return (
+    <div className="mb-4">
+      <DailyPourCard pour={pour} />
+      <PickPourButton className="mt-2 flex justify-center" />
+    </div>
+  );
 }
 
 async function FeedList({
@@ -367,7 +373,9 @@ async function CatalogBody({
       {entries.length === 0 ? (
         <Card className="text-center">
           <Voice className="block">
-            "Nothing on the shelf matching those terms, sir. Try broadening the filter."
+            {(preferences?.max_catalog_tier ?? 2) < CATALOG_TIER_CEILING
+              ? '"Nothing on the shelf matching those terms, sir — try broadening the filter or the allocation slider in Settings."'
+              : '"Nothing on the shelf matching those terms, sir. Try broadening the filter."'}
           </Voice>
         </Card>
       ) : (

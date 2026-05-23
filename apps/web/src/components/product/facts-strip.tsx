@@ -1,3 +1,9 @@
+import {
+  formatPriceBucket,
+  formatRarityLabel,
+  NORMALIZED_SPEC_KEYS,
+  normalizeProductSpecs,
+} from "@/lib/catalog/normalize-specs";
 import type { ProductType } from "@/lib/wheel";
 
 type Specs = Record<string, unknown>;
@@ -9,65 +15,48 @@ type FactsStripProps = {
   excludeKeys?: string[];
 };
 
-const PREFERRED_ORDER = ["price_usd", "year_made", "series", "tier", "tall", "in_cobb_collection"];
+const PREFERRED_ORDER = ["year_made", "series", "tall", "in_cobb_collection"];
 
-// Renderers for the misc fields. Keeping each one short on purpose; the strip
-// is for the dense-glance facts, not narrative.
 const FORMATTERS: Record<string, (v: unknown) => string | null> = {
-  price_usd: (v) => (typeof v === "number" ? `$${v}` : null),
   year_made: (v) => (typeof v === "number" ? String(v) : null),
-  tier: (v) => (typeof v === "number" ? `Tier ${v}` : null),
   tall: (v) => (v ? "tall bottle" : null),
   in_cobb_collection: (v) => (v ? "Paul's shelf" : null),
   series: (v) => (typeof v === "string" && v ? `${v} series` : null),
 };
 
 const HIDE_KEYS = new Set([
-  // Storage / linkback fields — never user-visible
+  ...NORMALIZED_SPEC_KEYS,
   "image_url",
   "source_id",
   "review_url",
   "review_published",
-  // Numeric enrichment scores — shown in depth view with labels, not here
   "body_score",
   "strength_score",
-  "price_tier",
   "rating",
   "score",
-  // Construction-panel fields (shown above, don't repeat)
   "length",
   "ring_gauge",
   "age_years",
   "age_label",
   "aging_period_years",
-  // Redundant with Construction (proof) or with the subtitle (whiskey_type)
   "abv",
   "whiskey_type",
   "style_family",
-  // Raw text blobs — too long for a strip
   "tasting_notes_raw",
   "additional_notes",
   "flavor_profile_raw",
-  // Internal flags
   "shelf",
 ]);
 
 /**
  * Dense single-line info strip for the leftover product facts (UX-3).
- * Renders dot-separated values: `$30 · 2022 · 4yr aged · Tier 1`.
- *
- * Pulled out of the old vertical "The Facts" list because it now sits below
- * the richer Construction panel and shouldn't compete visually.
+ * Renders dot-separated values: `$$$ · Uncommon · Paul's shelf`.
  */
-export function FactsStrip({
-  productType: _productType,
-  specs,
-  excludeKeys = [],
-}: FactsStripProps) {
+export function FactsStrip({ productType, specs, excludeKeys = [] }: FactsStripProps) {
+  const normalized = normalizeProductSpecs(productType, specs);
   const exclude = new Set([...excludeKeys, ...HIDE_KEYS]);
   const entries = Object.entries((specs ?? {}) as Specs).filter(([k]) => !exclude.has(k));
 
-  // Apply preferred order: known keys first, then anything else alphabetically.
   entries.sort((a, b) => {
     const ia = PREFERRED_ORDER.indexOf(a[0]);
     const ib = PREFERRED_ORDER.indexOf(b[0]);
@@ -77,19 +66,31 @@ export function FactsStrip({
     return ia - ib;
   });
 
-  const tokens = entries
-    .map(([key, value]) => {
-      if (value === null || value === undefined || value === "") return null;
-      const fmt = FORMATTERS[key];
-      if (fmt) return fmt(value);
-      // Default: only allow strings + booleans through. Unknown numerics
-      // ("83", "50") have no inherent meaning to a viewer — anything we want
-      // to show numerically needs an explicit formatter above.
-      if (typeof value === "boolean") return value ? key.replace(/_/g, " ") : null;
-      if (typeof value === "string") return value;
-      return null;
-    })
-    .filter((t): t is string => t !== null && t.trim() !== "");
+  const tokens: string[] = [];
+
+  if (normalized.priceBucket != null) {
+    tokens.push(formatPriceBucket(normalized.priceBucket));
+  }
+
+  if (normalized.rarityLabel != null) {
+    tokens.push(formatRarityLabel(normalized.rarityLabel));
+  }
+
+  for (const [key, value] of entries) {
+    if (value === null || value === undefined || value === "") continue;
+    const fmt = FORMATTERS[key];
+    if (fmt) {
+      const token = fmt(value);
+      if (token) tokens.push(token);
+      continue;
+    }
+    if (typeof value === "boolean") {
+      const token = value ? key.replace(/_/g, " ") : null;
+      if (token) tokens.push(token);
+      continue;
+    }
+    if (typeof value === "string") tokens.push(value);
+  }
 
   if (tokens.length === 0) return null;
 

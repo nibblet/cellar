@@ -260,6 +260,7 @@ async function upsertWhiskey(
     whiskey_type: row.whiskey_type,
     style_family: row.style_family,
     tier: row.tier,
+    ...(row.tier != null ? { tier_source: "cobb" as const } : {}),
     tall: row.tall,
     shelf: row.shelf,
     tasting_notes_raw: row.tasting_notes_raw,

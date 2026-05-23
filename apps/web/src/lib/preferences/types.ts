@@ -38,11 +38,18 @@ export type BourbonStyle = (typeof BOURBON_STYLES)[number];
 export const BOURBON_PROOF_BANDS = ["low", "mid", "high"] as const;
 export type BourbonProofBand = (typeof BOURBON_PROOF_BANDS)[number];
 
+/** Cobb/LLM tier ceiling for catalog browse — 2 = common shelf … 5 = show all. */
+export const CATALOG_TIER_FLOOR = 2;
+export const CATALOG_TIER_CEILING = 5;
+export const DEFAULT_MAX_CATALOG_TIER = 2;
+
 export type MemberPreferences = {
   cigar_strengths: CigarStrength[];
   cigar_wrappers: CigarWrapperBucket[];
   bourbon_styles: BourbonStyle[];
   bourbon_proof_bands: BourbonProofBand[];
+  /** Show products with specs.tier <= this value; unknown tier always shown. */
+  max_catalog_tier: number;
 };
 
 export const EMPTY_PREFERENCES: MemberPreferences = {
@@ -50,6 +57,7 @@ export const EMPTY_PREFERENCES: MemberPreferences = {
   cigar_wrappers: [],
   bourbon_styles: [],
   bourbon_proof_bands: [],
+  max_catalog_tier: DEFAULT_MAX_CATALOG_TIER,
 };
 
 export function hasAnyPreferences(prefs: MemberPreferences): boolean {
@@ -96,4 +104,11 @@ export const BOURBON_PROOF_BAND_LABEL: Record<BourbonProofBand, string> = {
   low: "Low (≤90)",
   mid: "Mid (90–110)",
   high: "High (≥110)",
+};
+
+export const MAX_CATALOG_TIER_LABEL: Record<number, string> = {
+  2: "Common — shelf staples",
+  3: "Through uncommon — seasonal & limited",
+  4: "Through rare allocations",
+  5: "Everything — lottery & unicorns",
 };

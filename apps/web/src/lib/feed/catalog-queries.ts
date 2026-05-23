@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { productVisibleWithMaxCatalogTier } from "@/lib/catalog/normalize-specs";
 import {
   bucketCigarWrapper,
   deriveBourbonStyles,
@@ -12,7 +13,7 @@ import type {
   CigarWrapperBucket,
   MemberPreferences,
 } from "@/lib/preferences/types";
-import { hasAnyPreferences } from "@/lib/preferences/types";
+import { DEFAULT_MAX_CATALOG_TIER, hasAnyPreferences } from "@/lib/preferences/types";
 import type { ProductType } from "@/lib/wheel";
 
 export type CatalogSortKey =
@@ -140,6 +141,7 @@ export async function loadCatalogBrowse(
   }
 
   const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
+  const maxCatalogTier = preferences?.max_catalog_tier ?? DEFAULT_MAX_CATALOG_TIER;
   const hasActiveFilters = hasFilters(filters);
 
   // Build + filter entries.
@@ -162,6 +164,8 @@ export async function loadCatalogBrowse(
     // Apply filters.
     if (hasActiveFilters && !passesFilters(p, specs, heroPath, catalogImageUrl, counts, filters))
       continue;
+
+    if (!productVisibleWithMaxCatalogTier(specs, maxCatalogTier)) continue;
 
     entries.push({
       product_id: p.id,

@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import {
   BOURBON_PROOF_BANDS,
   BOURBON_STYLES,
+  CATALOG_TIER_CEILING,
+  CATALOG_TIER_FLOOR,
   CIGAR_STRENGTHS,
   CIGAR_WRAPPER_BUCKETS,
 } from "@/lib/preferences/types";
@@ -105,6 +107,8 @@ export async function savePreferences(
         typeof v === "string" && (BOURBON_PROOF_BANDS as readonly string[]).includes(v),
     );
 
+  const max_catalog_tier = parseMaxCatalogTier(formData.get("max_catalog_tier"));
+
   const { error } = await supabase.from("member_preferences").upsert(
     {
       user_id: auth.user.id,
@@ -112,6 +116,7 @@ export async function savePreferences(
       cigar_wrappers,
       bourbon_styles,
       bourbon_proof_bands,
+      max_catalog_tier,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },
@@ -122,4 +127,16 @@ export async function savePreferences(
   revalidatePath("/settings");
   revalidatePath("/");
   return { ok: true, message: "Saved." };
+}
+
+function parseMaxCatalogTier(raw: FormDataEntryValue | null): number {
+  const n = typeof raw === "string" ? Number.parseInt(raw, 10) : Number.NaN;
+  if (
+    Number.isInteger(n) &&
+    n >= CATALOG_TIER_FLOOR &&
+    n <= CATALOG_TIER_CEILING
+  ) {
+    return n;
+  }
+  return CATALOG_TIER_FLOOR;
 }

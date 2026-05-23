@@ -13,6 +13,7 @@ import {
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
+import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -182,6 +183,14 @@ export default async function ProductDetailPage({
             {myTake ? "Edit your tasting" : "Recommend to NCCC"}
           </Button>
         </Link>
+        <div className="mt-2 text-center">
+          <Link
+            href={`/products/${product.id}/session${event ? `?event=${encodeURIComponent(event)}` : ""}`}
+            className="text-sm text-foreground-muted hover:text-foreground"
+          >
+            Open a Session →
+          </Link>
+        </div>
       </div>
 
       <div className="mt-2 mb-1 flex justify-center">
@@ -209,7 +218,9 @@ export default async function ProductDetailPage({
  * carry rather than rendering blanks.
  */
 function composeSubtitle(productType: ProductType, specs: Record<string, unknown>): string | null {
+  const { priceBucket } = normalizeProductSpecs(productType, specs);
   const tokens: string[] = [];
+  if (priceBucket != null) tokens.push(formatPriceBucket(priceBucket));
   if (productType === "cigar") {
     if (typeof specs.vitola === "string" && specs.vitola) tokens.push(specs.vitola);
     if (typeof specs.strength === "string" && specs.strength) tokens.push(specs.strength);

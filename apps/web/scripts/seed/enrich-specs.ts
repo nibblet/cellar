@@ -5,7 +5,8 @@
  * extractAndMergeSpecs from @/lib/enrich for each, and writes an audit log.
  *
  *   pnpm seed:enrich-specs --type cigar --limit 5 --dry-run
- *   pnpm seed:enrich-specs --type bourbon --limit 50
+ *   pnpm seed:enrich-specs --type bourbon --limit 100
+ * pnpm seed:enrich-specs --type cigar --limit 100
  */
 
 import { mkdirSync, appendFileSync } from "node:fs";

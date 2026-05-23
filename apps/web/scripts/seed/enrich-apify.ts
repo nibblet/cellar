@@ -6,8 +6,11 @@
  * enrichment and calls the shared function with an audit-log shim.
  *
  *   pnpm seed:enrich-apify --type cigar --limit 5 --dry-run
- *   pnpm seed:enrich-apify --type bourbon --limit 50
+ *   pnpm seed:enrich-apify --type bourbon --limit 100
  *   pnpm seed:enrich-apify --type cigar --limit 5 --backfill
+ * 
+ * pnpm seed:enrich-apify --type cigar --limit 100
+ * pnpm seed:enrich-apify --type bourbon --limit 100
  *
  * Flags:
  *   --type      bourbon | cigar              (required)

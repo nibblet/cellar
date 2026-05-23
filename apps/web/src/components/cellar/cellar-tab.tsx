@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { PickPourButton } from "@/components/feed";
+import { Voice } from "@/components/primitives";
 import { cn } from "@/lib/utils";
 
 type CellarFilter = "have" | "want" | "tried";
@@ -43,8 +45,22 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
       : `"${memberFirstName} hasn't marked anything as tried yet."`,
   };
 
+  const hasHaveItems = have.length >= 1;
+
   return (
     <div>
+      {isOwnProfile && hasHaveItems ? (
+        <div className="mb-4">
+          <PickPourButton variant="primary" label="Pick for me →" />
+        </div>
+      ) : null}
+
+      {isOwnProfile && !hasHaveItems ? (
+        <Voice className="block mb-4 text-sm">
+          "Stock the shelf first, sir — then I'll pick from what you have."
+        </Voice>
+      ) : null}
+
       {/* Filter chips */}
       <div className="flex items-center gap-2 mb-4">
         {(["have", "want", "tried"] as CellarFilter[]).map((f) => (
