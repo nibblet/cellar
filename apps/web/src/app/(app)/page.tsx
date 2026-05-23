@@ -5,6 +5,7 @@ import {
   CatalogCard,
   CatalogFilterControls,
   DailyPourCard,
+  DailyPourSkeleton,
   FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
@@ -22,7 +23,7 @@ import {
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { ensurePairingProse } from "@/lib/pairing/prose-cache";
+import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -176,7 +177,18 @@ async function FeedBody({
   const preferences = viewerId ? await loadMemberPreferences(supabase, viewerId) : null;
 
   if (tab === "for-you") {
-    return <ForYouBody supabase={supabase} viewerId={viewerId} preferences={preferences} />;
+    return (
+      <>
+        {viewerId ? (
+          <Suspense fallback={<DailyPourSkeleton />}>
+            <DailyPourSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
+          </Suspense>
+        ) : null}
+        <Suspense fallback={<FeedBodySkeleton />}>
+          <FeedList supabase={supabase} viewerId={viewerId} preferences={preferences} />
+        </Suspense>
+      </>
+    );
   }
 
   return (
@@ -191,7 +203,28 @@ async function FeedBody({
   );
 }
 
-async function ForYouBody({
+async function DailyPourSection({
+  supabase,
+  viewerId,
+  preferences,
+}: {
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
+  viewerId: string;
+  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
+}) {
+  const candidates = await loadDailyPourCandidates(supabase, preferences, viewerId);
+  const pour = selectDailyPour({ memberId: viewerId, date: todayKey() }, candidates);
+  if (!pour) return null;
+
+  const cached = await loadCachedPairingProse(supabase, pour.cigar_id, pour.bourbon_id);
+  if (cached?.notes) {
+    pour.rationale = cached.notes;
+  }
+
+  return <DailyPourCard pour={pour} />;
+}
+
+async function FeedList({
   supabase,
   viewerId,
   preferences,
@@ -200,12 +233,10 @@ async function ForYouBody({
   viewerId: string | null;
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
 }) {
-  const now = new Date();
-  const today = now.toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
 
-  const [entries, dailyPourCandidates, upcomingResult, lastResult] = await Promise.all([
+  const [entries, upcomingResult, lastResult] = await Promise.all([
     loadFeed(supabase, { limit: 50 }),
-    viewerId ? loadDailyPourCandidates(supabase, preferences, viewerId) : Promise.resolve([]),
     supabase
       .from("events")
       .select("id, name, date, notes")
@@ -219,18 +250,6 @@ async function ForYouBody({
       .order("date", { ascending: false })
       .limit(1),
   ]);
-
-  const dailyPour = viewerId
-    ? selectDailyPour({ memberId: viewerId, date: todayKey() }, dailyPourCandidates)
-    : null;
-
-  if (dailyPour) {
-    // ensurePairingProse: reads cache first; on miss, generates via LLM and
-    // persists so every subsequent render is fast. The one-time generation
-    // cost (~1s) is acceptable for a 12-person app and only fires once per pair.
-    const prose = await ensurePairingProse(supabase, dailyPour.cigar_id, dailyPour.bourbon_id);
-    dailyPour.rationale = prose.notes ?? null;
-  }
 
   const signed = await signImagePaths(
     supabase,
@@ -273,7 +292,6 @@ async function ForYouBody({
   if (entries.length === 0) {
     return (
       <>
-        {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
         {upcoming || last ? (
           <div className="mb-4">
             <MeetupCard upcoming={upcoming} last={last} />
@@ -294,7 +312,6 @@ async function ForYouBody({
 
   return (
     <>
-      {dailyPour ? <DailyPourCard pour={dailyPour} /> : null}
       {upcoming || last ? (
         <div className="mb-4">
           <MeetupCard upcoming={upcoming} last={last} />

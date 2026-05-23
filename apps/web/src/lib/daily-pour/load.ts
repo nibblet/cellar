@@ -3,7 +3,7 @@ import { applyCellarBias } from "@/lib/cellar/bias";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import type { CellarSnapshot } from "@/lib/cellar/types";
 import { EMPTY_SNAPSHOT } from "@/lib/cellar/types";
-import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
+import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type { MemberPreferences } from "@/lib/preferences/types";
 import { hasAnyPreferences } from "@/lib/preferences/types";
@@ -54,13 +54,23 @@ export async function loadDailyPourCandidates(
   return applyBias(candidates, cellar);
 }
 
+/** Stable ordering before FNV selection — same pool → same index every render. */
+export function compareCandidatesForSelection(
+  a: DailyPourCandidate,
+  b: DailyPourCandidate,
+): number {
+  const cigarCmp = a.cigar_id.localeCompare(b.cigar_id);
+  if (cigarCmp !== 0) return cigarCmp;
+  return a.bourbon_id.localeCompare(b.bourbon_id);
+}
+
 function applyBias(candidates: DailyPourCandidate[], cellar: CellarSnapshot): DailyPourCandidate[] {
   return candidates
     .map((c) => ({
       ...c,
       score: applyCellarBias(c.score, cellar, c.cigar_id, c.bourbon_id),
     }))
-    .sort((a, b) => b.score - a.score);
+    .sort(compareCandidatesForSelection);
 }
 
 async function loadPreferenceCandidates(
@@ -76,6 +86,7 @@ async function loadPreferenceCandidates(
     .eq("type", "cigar")
     .eq("status", "confirmed")
     .not("trait_vector", "is", null)
+    .order("name")
     .limit(200);
 
   type CigarRow = {
@@ -92,11 +103,10 @@ async function loadPreferenceCandidates(
     .filter((c) => productMatchesPreferences({ type: "cigar", specs: c.specs }, preferences))
     .slice(0, limit);
 
-  // Parallelize: each pairing computation is independent.
+  // Parallelize: each cache lookup (or one-time engine run on miss) is independent.
   const computed: (DailyPourCandidate | null)[] = await Promise.all(
     matches.map(async (c): Promise<DailyPourCandidate | null> => {
-      const pairs = await loadOrComputeTopPairings(supabase, c.id, { limit: 1 });
-      const top = pairs[0];
+      const top = await loadTopPairingForCigar(supabase, c.id);
       if (!top) return null;
       return {
         cigar_id: c.id,
@@ -113,6 +123,43 @@ async function loadPreferenceCandidates(
   );
 
   return computed.filter((c): c is DailyPourCandidate => c !== null);
+}
+
+/**
+ * Read the top cached bourbon for a cigar; fall back to the engine only when
+ * the cache is empty so the feed never re-scores the full catalog on every visit.
+ */
+async function loadTopPairingForCigar(
+  supabase: SupabaseClient,
+  cigarId: string,
+): Promise<PairingCandidate | null> {
+  type CacheRow = {
+    bourbon_id: string;
+    score: number;
+    bourbon: { name: string; brand: string | null } | null;
+  };
+
+  const { data } = await supabase
+    .from("pairings_cache")
+    .select("bourbon_id, score, bourbon:bourbon_id(name, brand)")
+    .eq("cigar_id", cigarId)
+    .order("score", { ascending: false })
+    .limit(1);
+
+  const row = ((data as unknown as CacheRow[] | null) ?? [])[0];
+  if (row?.bourbon) {
+    return {
+      product_id: row.bourbon_id,
+      name: row.bourbon.name,
+      brand: row.bourbon.brand,
+      type: "bourbon",
+      score: row.score,
+      reasons: [],
+    };
+  }
+
+  const computed = await loadOrComputeTopPairings(supabase, cigarId, { limit: 1 });
+  return computed[0] ?? null;
 }
 
 async function loadClubValidatedCandidates(

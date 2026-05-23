@@ -1,6 +1,7 @@
 export { CatalogCard } from "./catalog-card";
 export { CatalogFilterControls } from "./catalog-filter-controls";
 export { DailyPourCard } from "./daily-pour-card";
+export { DailyPourSkeleton } from "./daily-pour-skeleton";
 export { FeedBodySkeleton } from "./feed-body-skeleton";
 export { FEED_TABS, type FeedTab, FeedTabs } from "./feed-tabs";
 export { MeetupCard } from "./meetup-card";
