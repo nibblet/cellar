@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Winston } from "@/components/brand";
 import { Card, Voice } from "@/components/primitives";
 import type { DailyPourCandidate } from "@/lib/daily-pour/load";
 import { cn } from "@/lib/utils";
@@ -25,10 +26,13 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
           pour.club_validated && "border-moss-600 bg-gradient-to-br from-surface to-moss-600/5",
         )}
       >
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-            Winston's pick
-          </p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Winston variant="pour" size={44} className="rounded-full shrink-0" />
+            <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
+              Winston's pick
+            </p>
+          </div>
           {pour.club_validated ? (
             <p className="text-[10px] uppercase tracking-widest text-moss-600">● club tried</p>
           ) : null}

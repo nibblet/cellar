@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NCCCLogo } from "@/components/brand";
+import { Winston } from "@/components/brand";
 import { Card, Divider, Voice } from "@/components/primitives";
 import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
 import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
@@ -75,7 +75,7 @@ export default async function PairingsIndexPage() {
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="text-center mb-6 flex flex-col items-center">
-        <NCCCLogo variant="bust" size={56} className="mb-2" decorative />
+        <Winston variant="bust" size={64} className="mb-2 rounded-full" />
         <h1 className="text-3xl">Pairings</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle mt-1">
           Winston's matches

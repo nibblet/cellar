@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Winston } from "@/components/brand";
 import { Divider, Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -21,13 +22,11 @@ export default async function WelcomePage() {
   return (
     <main className="mx-auto max-w-md px-5 py-8 pb-24 flex-1">
       <figure className="mb-6 flex flex-col items-center">
-        {/* biome-ignore lint/performance/noImgElement: served from /public, no need for next/image */}
-        <img
-          src="/winston/winston-library.png"
-          alt=""
-          width={1024}
-          height={1024}
-          className="w-full max-w-sm rounded-[16px] border border-border"
+        <Winston
+          variant="library"
+          size={1024}
+          className="w-full max-w-sm h-auto rounded-[16px] border border-border"
+          decorative={false}
         />
         <figcaption className="sr-only">
           Winston, the resident narrator of the Norton Commons Cigar Club, pouring a dram in the

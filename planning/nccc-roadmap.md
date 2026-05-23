@@ -10,30 +10,37 @@ A living catalog of ideas inspired by other apps, translated into NCCC's voice, 
 
 ---
 
-## Current status — 2026-05-21
+## Current status — 2026-05-22
 
-What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / base ships but enhancements pending, ❌ = not shipped.
+What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / base ships but enhancements pending, ❌ = not started.
 
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Foundation | ✅ | Email+password auth, reset flow, design tokens, primitives, Supabase clients, `formatMemberName`, 5-tab nav |
-| 1 — Catalog seeding | 🟡 | bourbonExplorer (1,350) + StickPicks (2,020) seeded. Halfwheel RSS, CigarBase, cigar-api seeders built. **Cobb whiskey collection seeder built but not yet run.** Schema enhancements (style_family, tier_seed, dsp_code, editorial_baseline_profile, product_adjustments) deferred. |
+| 1 — Catalog seeding | 🟡 | bourbonExplorer + StickPicks seeded. Enrichment running (see catalog state below). Cobb whiskey seeder built + updated to seed Cellar. Schema enhancements (style_family, tier_seed, dsp_code, editorial_baseline_profile, product_adjustments) deferred. |
 | 2 — Capture & identify | 🟡 | Camera + GPT-5 mini vision + fuzzy-match working end-to-end. UPC barcode scanner deferred. |
 | 3 — Tasting flow | 🟡 | One-tap "Recommend to NCCC" with optional chips + note + silent wheel mapping. **"The Session" (thirds / nose-palate-finish) NOT shipped.** |
-| 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts. **Depth view (radar + per-member adjustments + moss consensus) NOT shipped.** |
-| 5 — Feed/Members/Events | 🟡 | All three pages + bottom nav. Feed now tabbed (For You / Cigars / Bourbons; Favorites still pending). Member profile still lacks Favorites / History / Education. Tasting + Pairing Preferences shipped in Settings (#5 ✅). |
-| 5.5 — The Cellar | ❌ | Not started. |
-| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Winston prose, cache, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail. **Two-card stacked layout + "Try this tonight" + "Suggest another" rotation NOT shipped.** |
-| 7 — Polish / admin | 🟡 | Settings + sign-out, admin invites, product edit, logo reuse, end-of-night recap card. Winston illustration variants + Education library NOT shipped. |
-| 8 — Daily Pour | ❌ | Not started. |
+| 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts, Construction panel. Depth view (pure SVG radar) ships. **Per-member adjustments + moss consensus shape NOT shipped.** |
+| 5 — Feed/Members/Events | 🟡 | All three pages + 4-tab center-FAB nav. Feed tabbed (For You / Cigars / Bourbons). Member profile now has Tastings / Cellar tabs. Preferences + FOR YOU badge shipped. |
+| 5.5 — The Cellar | ✅ | `member_saves` table (have/want/tried), `setCellarState` action, `CellarToggle` on product detail, compact controls on catalog cards, capture follow-up prompt, member profile Cellar tab, `/shelf` redirect, cellar bias wired into Daily Pour. 177 unit tests. |
+| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Bartender prose, cache, `/pairings/[cigar]/[bourbon]` page, Pairs With. **Prose cache not wired to Daily Pour hero. Two-card redesign + "Suggest another" NOT shipped.** |
+| 7 — Polish / admin | 🟡 | Settings, sign-out, admin invites, product edit, logo, recap card. Bartender illustration variants + Education library NOT shipped. |
+| 8 — Daily Pour | ✅ | Home-page hero, deterministic FNV-1a pick, preference + cellar bias, Bartender voice, moss club-validated badge. Prose still uses engine fallback text (prose-cache not wired). |
 
-**Tests:** 151 unit tests passing on `main` (wheel math, pairing rules, scoring, name normalization, fallback mappers, group voice aggregation, identity, preference derivation + matching).
+**Tests:** 177 unit tests passing (wheel math, pairing rules, scoring, identity, preference derivation + matching, cellar mutex + bias).
 
-**Catalog state:**
-- Bourbons: ~1,350 from bourbonExplorer (rated)
-- Cigars: ~2,020 from StickPicks (with wheel_vector seeded from flavor tags)
-- Cigar wheel and bourbon wheel both got synonym expansions (v0.1-syn1) from real seed-pass findings
-- Paul's 98-bottle whiskey collection ready to import (script committed; not yet run)
+**Catalog state — as of 2026-05-22 enrichment run:**
+
+| Metric | Cigars | Bourbons |
+|---|---|---|
+| Total confirmed | 833 | 2,098 |
+| Has `image_url` | 459 (55%) | 237 (11%) |
+| Has `trait_vector` | 783 (94%) | 2,098 (100%) |
+| Both image + vector | 410 (49%) | 237 (11%) |
+
+- Cigars are nearly fully vectorized (94%) and well-specced (99% have 3+ spec fields). Image gap: ~374 still without photos.
+- Bourbons are 100% vectorized. Image enrichment barely started (11%). Bourbon spec keys use different field names than cigars — the enrichment pass needs to populate `proof`, `age_years`, `distillery` etc. consistently.
+- **Club staple gap** (audited 2026-05-21): 13 of 24 spot-checked NCCC staples missing from the 833-cigar catalog (Padron 1964/1926, Liga Privada No. 9/T52, My Father Le Bijou, Davidoff Nicaragua, Tatuaje Black, Oliva Melanio, La Aroma de Cuba Mi Amor, Aging Room Quattro, Diesel Whiskey Row, Ashton VSG, Nica Rustica).
 
 ---
 
@@ -165,19 +172,24 @@ Ranked by what NCCC members will most notice / value after they're using the app
 
 These are the post-launch features most likely to surface in member feedback within the first month.
 
-#### 1. The Cellar (Phase 5.5)
-**Why first:** Collectors track inventory religiously. The bourbon shelf and the humidor are real, physical things members care about. Once a member captures a bottle, "is this in my cellar?" is the next question.
+#### 1. The Cellar (Phase 5.5) — **✅ v1 shipped 2026-05-22**
 
-> **Lightweight v2 entry point lands first.** `planning/ui-refresh-v2.md` §5 introduces a minimum-viable Cellar + Wishlist: a single boolean per (member, product) with three states (have / want / neither), `/shelf` route, and toggles on catalog cards + product detail. That ships as part of the v2 UI pass. The richer scope below (pour levels, finished/on-hand, Paul's xlsx import) layers onto the same `member_saves` table later as the full Phase 5.5 build.
+**As built** (see `planning/cellar-v1-plan.md`):
+- `member_saves` table: have / want / tried per (member, product). have/want mutex enforced by CHECK constraint + app logic. have implies tried. Zero rows deleted, not stored.
+- `setCellarState` server action, `loadCellarSnapshot`, `loadCellarProducts`, `applyCellarBias`.
+- Auto-tried: every Recommend-to-NCCC tasting automatically sets tried=true.
+- `CellarToggle` (3-pill) on product detail. Compact `CellarCardControls` on catalog cards (Cigars/Bourbons tabs). Contextual "Add to cellar?" prompt on `?just_saved=1` banner.
+- Member profile Tastings / Cellar tab switcher. Cellar tab: Have / Want / Tried filter chips, product list, per-state Bartender empty states.
+- `/shelf` → `/members/[me]?tab=cellar` redirect.
+- Cellar bias wired into Daily Pour candidate ranking (+10 max, viewer-only overlay).
+- Cobb whiskey seeder updated to seed Have+Tried for Paul's 98 bottles when `PAUL_USER_ID` is set.
 
-**Scope (full Phase 5.5, on top of the v2 primitive):**
-- New bottom-nav tab between Members and Meetups.
-- Two views: **On Hand** and **Finished**.
-- Bourbon: pour level state (`full / half / heel / empty`), pour count.
-- Cigars: count + format/vitola.
-- Add-to-Cellar is a path on the capture sheet (parallel to Recommend, not a separate flow).
-- Onboarding hook: Paul's 98 bottles seed his Cellar on first login. Others start empty with a Winston greeting.
-- Filter: brand, style family, strength, recommended-to-NCCC.
+**Deferred to full Phase 5.5:**
+- Pour levels (full/half/heel/empty) and pour count.
+- Finished vs. On Hand split.
+- Dedicated bottom-nav Cellar tab.
+- Bulk backfill UI ("mark everything you've had" sweep).
+- Social counts ("X club members have this") on product detail.
 
 **Stickiness signal:** Daily for active collectors.
 
@@ -458,8 +470,8 @@ Two-card stacked layout, status badge (THE CLUB AGREES / WINSTON SUGGESTS), "Try
   then Appearance toggle (✅ shipped 2026-05-21), then Favorites strip,
   then History, then Preferences, then Club / Admin / Account sections.
 
-#### 10. Winston illustration variants — **🟡 partial 2026-05-22**
-Splash, header bust, small-glass-only variants. Currently using one logo image for all surfaces — works but lacks the Winston-as-character continuity the design system gestures at.
+#### 10. Winston illustration variants — **✅ shipped 2026-05-22**
+Splash, header bust, glass-offering roundel, active-pour, and library variants on disk at `apps/web/public/winston/`. Single `<Winston variant=… />` component (`apps/web/src/components/brand/winston.tsx`) renders each surface from the locked filename map.
 
 **Character rename (locked 2026-05-22):** the working title "The Bartender" is retired. The character's name is **Winston**. Voice rules unchanged — still serif italic via `<Voice />`, still gentlemanly-dry. He just has a name now.
 

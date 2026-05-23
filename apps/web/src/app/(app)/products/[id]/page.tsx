@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Winston } from "@/components/brand";
 import { CellarToggle } from "@/components/cellar";
 import { PairsWith } from "@/components/pairing";
 import { Button, Divider } from "@/components/primitives";
@@ -183,6 +184,9 @@ export default async function ProductDetailPage({
         </Link>
       </div>
 
+      <div className="mt-2 mb-1 flex justify-center">
+        <Winston variant="glass" size={56} className="rounded-full" />
+      </div>
       <Divider label="Pairs with" />
 
       <PairsWith

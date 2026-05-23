@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { NCCCLogo } from "@/components/brand";
+import { NCCCLogo, Winston } from "@/components/brand";
 import {
   CatalogCard,
   CatalogFilterControls,
@@ -280,7 +280,7 @@ async function ForYouBody({
           </div>
         ) : null}
         <Card className="flex flex-col items-center text-center">
-          <NCCCLogo size={96} className="mb-4" decorative />
+          <Winston variant="bust" size={96} className="mb-4 rounded-full" />
           <Voice className="block mb-4">"Nothing logged yet, sir. The night is young."</Voice>
           <Link href="/capture" className="block w-full">
             <Button size="large" className="w-full">

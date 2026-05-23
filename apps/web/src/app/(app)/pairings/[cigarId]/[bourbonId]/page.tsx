@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { NCCCLogo } from "@/components/brand";
+import { Winston } from "@/components/brand";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { suggestPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -62,7 +62,7 @@ export default async function PairingPage({
       ) : null}
 
       <header className="mb-6 flex flex-col items-center text-center">
-        <NCCCLogo variant="bust" size={64} className="mb-3" decorative />
+        <Winston variant="bust" size={72} className="mb-3 rounded-full" />
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Winston suggests</p>
         <h1 className="text-3xl mt-1">{cigar.name}</h1>
         <p className="text-sm text-foreground-muted">with</p>
