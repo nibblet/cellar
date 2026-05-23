@@ -1,4 +1,3 @@
-import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { CaptureForm } from "./capture-form";
 
@@ -24,8 +23,6 @@ export default async function CapturePage() {
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Capture</p>
         <h1 className="text-3xl mt-1">What are you having?</h1>
       </header>
-
-      <Voice className="text-center mb-8">"Hold the band steady, sir. I'll do the rest."</Voice>
 
       <CaptureForm
         recentEvents={(events ?? []) as Array<{ id: string; name: string; date: string }>}

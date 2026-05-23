@@ -22,7 +22,7 @@ import {
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { ensurePairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -225,8 +225,11 @@ async function ForYouBody({
     : null;
 
   if (dailyPour) {
-    const cached = await loadCachedPairingProse(supabase, dailyPour.cigar_id, dailyPour.bourbon_id);
-    dailyPour.rationale = cached?.notes ?? null;
+    // ensurePairingProse: reads cache first; on miss, generates via LLM and
+    // persists so every subsequent render is fast. The one-time generation
+    // cost (~1s) is acceptable for a 12-person app and only fires once per pair.
+    const prose = await ensurePairingProse(supabase, dailyPour.cigar_id, dailyPour.bourbon_id);
+    dailyPour.rationale = prose.notes ?? null;
   }
 
   const signed = await signImagePaths(

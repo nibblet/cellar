@@ -26,9 +26,16 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
     return <CapturePendingState type={type} preview={preview} />;
   }
 
+  const voiceLine =
+    type === "cigar"
+      ? "Hold the band steady, sir. I'll do the rest."
+      : "Hold the label steady, sir. I'll do the rest.";
+
   return (
     <form action={action} className="flex flex-col gap-6">
       <input type="hidden" name="type" value={type} />
+
+      <Voice className="text-center mb-2">{voiceLine}</Voice>
 
       <fieldset className="grid grid-cols-2 gap-2 p-1 bg-surface border border-border rounded-[12px]">
         <legend className="sr-only">What are you tasting?</legend>

@@ -34,7 +34,8 @@ For bourbons, look at:
 - Front label is primary; back label has mash bill sometimes
 
 Be conservative. If you can't read the band/label clearly, say so via low confidence.
-If the image shows a different product type than the user indicated, return the actual type.
+The member's cigar/bourbon toggle is authoritative — always return that type. If the
+photo looks like the other category, mention it in notes instead of changing type.
 `;
 
 const cigarSpecsSchema = {
@@ -69,7 +70,7 @@ function buildSchema(type: ProductType) {
   return {
     type: "object",
     properties: {
-      type: { type: "string", enum: ["cigar", "bourbon"] },
+      type: { type: "string", enum: [type] },
       name: {
         type: "string",
         description:

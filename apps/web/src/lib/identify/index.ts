@@ -47,9 +47,15 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     userId,
   });
 
-  // Trust GPT-5's type call if it disagrees with the user — the photo is the
-  // source of truth. The user-set toggle was a hint, not a constraint.
-  const finalType = extracted.type;
+  // The capture toggle is an explicit member choice — it drives catalog lookup,
+  // specs schema, and the recommend flavor wheel. Vision can misread bottles as
+  // cigars (dark labels, glass shapes); don't let that override the toggle.
+  const finalType = expectedType;
+  if (extracted.type !== expectedType) {
+    console.warn(
+      `[identifyAndPersist] vision type "${extracted.type}" disagrees with capture toggle "${expectedType}" — keeping toggle`,
+    );
+  }
 
   // Pull a candidate list. pg_trgm makes the brand-side filter cheap.
   const candidates = await fetchCandidates(supabase, finalType, extracted.brand);
