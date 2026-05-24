@@ -79,6 +79,9 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
       "styles",
       "proof",
       "age",
+      "brand",
+      "vitola",
+      "ring",
       "club",
       "enriched",
     ]) {
@@ -204,6 +207,8 @@ function FilterSheet({
         </label>
       </section>
 
+      <BrandFilter activeFilters={activeFilters} onUpdate={onUpdate} />
+
       {productType === "cigar" ? (
         <CigarFilters activeFilters={activeFilters} onUpdate={onUpdate} />
       ) : (
@@ -290,7 +295,69 @@ function CigarFilters({
           })}
         </div>
       </section>
+
+      <section>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Vitola</p>
+        <input
+          type="search"
+          defaultValue={activeFilters.vitola ?? ""}
+          placeholder="Robusto, Toro…"
+          onChange={(e) => onUpdate({ vitola: e.target.value.trim() || null })}
+          className="w-full rounded-[8px] border border-border bg-surface px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        />
+      </section>
+
+      <section>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
+          Ring gauge
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {(
+            [
+              ["lt50", "< 50"],
+              ["50-54", "50–54"],
+              ["54+", "54+"],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onUpdate({ ring: activeFilters.ringGauge === key ? null : key })}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                activeFilters.ringGauge === key
+                  ? "border-accent bg-accent-tint text-foreground"
+                  : "border-border text-foreground-subtle hover:border-foreground-subtle"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
     </>
+  );
+}
+
+function BrandFilter({
+  activeFilters,
+  onUpdate,
+}: {
+  activeFilters: CatalogFilters;
+  onUpdate: (u: Record<string, string | null>) => void;
+}) {
+  return (
+    <section>
+      <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
+        Brand / maker
+      </p>
+      <input
+        type="search"
+        defaultValue={activeFilters.brand ?? ""}
+        placeholder="Perdomo, Jim Beam…"
+        onChange={(e) => onUpdate({ brand: e.target.value.trim() || null })}
+        className="w-full rounded-[8px] border border-border bg-surface px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      />
+    </section>
   );
 }
 
@@ -432,9 +499,12 @@ function SortSheet({
 
 function countActiveFilters(f: CatalogFilters): number {
   let n = 0;
+  if (f.brand) n++;
   if (f.strength) n++;
   if (f.wrappers?.length) n++;
   if (f.origin) n++;
+  if (f.vitola) n++;
+  if (f.ringGauge) n++;
   if (f.styles?.length) n++;
   if (f.proofBand) n++;
   if (f.ageBand) n++;
@@ -445,12 +515,15 @@ function countActiveFilters(f: CatalogFilters): number {
 
 function buildFilterSummary(f: CatalogFilters, type: ProductType): string {
   const parts: string[] = [];
+  if (f.brand) parts.push(f.brand);
   if (f.enrichedOnly) parts.push("enriched");
   if (f.clubOnly) parts.push("club recs");
   if (type === "cigar") {
     if (f.strength) parts.push(CIGAR_STRENGTH_LABEL[f.strength]);
     if (f.wrappers?.length) parts.push(f.wrappers.map((w) => CIGAR_WRAPPER_LABEL[w]).join(", "));
     if (f.origin) parts.push(f.origin);
+    if (f.vitola) parts.push(f.vitola);
+    if (f.ringGauge) parts.push(`RG ${f.ringGauge}`);
   } else {
     if (f.styles?.length) parts.push(f.styles.map((s) => BOURBON_STYLE_LABEL[s]).join(", "));
     if (f.proofBand) parts.push(BOURBON_PROOF_BAND_LABEL[f.proofBand]);

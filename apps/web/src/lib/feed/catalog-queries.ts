@@ -30,13 +30,16 @@ export type CatalogFilters = {
   strength?: CigarStrength | null;
   wrappers?: CigarWrapperBucket[];
   origin?: string | null;
+  vitola?: string | null;
+  ringGauge?: "lt50" | "50-54" | "54+" | null;
   // Bourbons
   styles?: BourbonStyle[];
   proofBand?: BourbonProofBand | null;
   ageBand?: "nas" | "4-8" | "8-12" | "12+" | null;
   // Shared
+  brand?: string | null;
   clubOnly?: boolean;
-  enrichedOnly?: boolean; // dev: has photo + populated specs
+  enrichedOnly?: boolean;
   sort?: CatalogSortKey;
 };
 
@@ -202,6 +205,9 @@ function hasFilters(f: CatalogFilters): boolean {
     f.strength ||
     f.wrappers?.length ||
     f.origin ||
+    f.vitola ||
+    f.ringGauge ||
+    f.brand ||
     f.styles?.length ||
     f.proofBand ||
     f.ageBand ||
@@ -229,6 +235,12 @@ function passesFilters(
   // Club only: at least one member recommended it
   if (f.clubOnly && (!counts || counts.rec_count === 0)) return false;
 
+  if (f.brand) {
+    const q = f.brand.toLowerCase();
+    const brand = (p.brand ?? "").toLowerCase();
+    if (!brand.includes(q)) return false;
+  }
+
   if (p.type === "cigar") {
     if (f.strength) {
       const norm = normalizeCigarStrength(
@@ -243,6 +255,19 @@ function passesFilters(
     if (f.origin) {
       const country = typeof specs.country === "string" ? specs.country.toLowerCase() : "";
       if (!country.includes(f.origin.toLowerCase())) return false;
+    }
+    if (f.vitola) {
+      const vitola = typeof specs.vitola === "string" ? specs.vitola.toLowerCase() : "";
+      if (!vitola.includes(f.vitola.toLowerCase())) return false;
+    }
+    if (f.ringGauge) {
+      const rg =
+        typeof specs.ring_gauge === "number"
+          ? specs.ring_gauge
+          : typeof specs.ring_gauge === "string"
+            ? Number.parseFloat(specs.ring_gauge)
+            : Number.NaN;
+      if (!passesRingGauge(rg, f.ringGauge)) return false;
     }
   } else {
     if (f.styles?.length) {
@@ -270,6 +295,13 @@ function passesAgeBand(age: number | null, band: "nas" | "4-8" | "8-12" | "12+")
   if (band === "8-12") return age > 8 && age <= 12;
   if (band === "12+") return age > 12;
   return true;
+}
+
+function passesRingGauge(rg: number, band: "lt50" | "50-54" | "54+"): boolean {
+  if (Number.isNaN(rg)) return false;
+  if (band === "lt50") return rg < 50;
+  if (band === "50-54") return rg >= 50 && rg <= 54;
+  return rg >= 55;
 }
 
 // ---------------------------------------------------------------------------

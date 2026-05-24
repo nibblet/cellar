@@ -25,6 +25,7 @@ import {
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { CATALOG_TIER_CEILING } from "@/lib/preferences/types";
+import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -50,11 +51,14 @@ type SearchParams = Promise<{
   strength?: string;
   wrappers?: string;
   origin?: string;
+  vitola?: string;
+  ring?: string;
   // Bourbon filters
   styles?: string;
   proof?: string;
   age?: string;
   // Shared
+  brand?: string;
   club?: string;
   enriched?: string;
   sort?: string;
@@ -86,6 +90,7 @@ const VALID_STYLES = new Set([
 ]);
 const VALID_PROOF_BANDS = new Set(["low", "mid", "high"]);
 const VALID_AGE_BANDS = new Set(["nas", "4-8", "8-12", "12+"]);
+const VALID_RING_BANDS = new Set(["lt50", "50-54", "54+"]);
 const VALID_SORTS = new Set([
   "recommended",
   "az",
@@ -117,6 +122,11 @@ function parseFilters(sp: Awaited<SearchParams>): {
   const ageBand =
     sp.age && VALID_AGE_BANDS.has(sp.age) ? (sp.age as "nas" | "4-8" | "8-12" | "12+") : undefined;
 
+  const ringGauge =
+    sp.ring && VALID_RING_BANDS.has(sp.ring)
+      ? (sp.ring as "lt50" | "50-54" | "54+")
+      : undefined;
+
   const sort = sp.sort && VALID_SORTS.has(sp.sort) ? (sp.sort as CatalogSortKey) : "recommended";
 
   return {
@@ -124,6 +134,9 @@ function parseFilters(sp: Awaited<SearchParams>): {
       strength,
       wrappers: wrappers?.length ? wrappers : undefined,
       origin: sp.origin || undefined,
+      vitola: sp.vitola || undefined,
+      ringGauge,
+      brand: sp.brand || undefined,
       styles: styles?.length ? styles : undefined,
       proofBand,
       ageBand,

@@ -1,15 +1,15 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Winston } from "@/components/brand";
 import { CellarToggle } from "@/components/cellar";
 import { PairsWith } from "@/components/pairing";
-import { Button, Divider } from "@/components/primitives";
+import { Divider } from "@/components/primitives";
 import {
   ClubVoice,
-  DepthAffordance,
+  ProductDepthSection,
   ProductHero,
   type ProductHeroImage,
+  TastingActionSegment,
 } from "@/components/product";
+import { buildClubSaysProse } from "@/lib/aggregation/club-says-prose";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
@@ -18,7 +18,7 @@ import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { ProductType } from "@/lib/wheel";
+import type { ProductType, WheelVector } from "@/lib/wheel";
 import { DraftConfirmBanner } from "./draft-confirm";
 
 type Params = Promise<{ id: string }>;
@@ -42,7 +42,9 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, type, name, brand, image_url, specs, status, created_at, trait_vector")
+    .select(
+      "id, type, name, brand, image_url, specs, status, created_at, trait_vector, wheel_vector",
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -50,6 +52,7 @@ export default async function ProductDetailPage({
 
   const productType = product.type as ProductType;
   const specs = (product.specs ?? {}) as Record<string, unknown>;
+  const wheelVector = (product.wheel_vector ?? null) as WheelVector | null;
 
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
@@ -58,7 +61,7 @@ export default async function ProductDetailPage({
 
   const [groupVoice, pairings, imagesResult] = await Promise.all([
     loadGroupVoice(supabase, id, productType),
-    loadOrComputeTopPairings(supabase, id, { limit: 3 }),
+    loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: 45 }),
     supabase
       .from("product_images")
       .select(
@@ -71,6 +74,7 @@ export default async function ProductDetailPage({
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
+  const winstonProse = buildClubSaysProse(groupVoice, myTake);
 
   const validatedFlags = await Promise.all(
     pairings.map(async (c) => {
@@ -105,8 +109,6 @@ export default async function ProductDetailPage({
     })
     .filter((x): x is ProductHeroImage => x !== null);
 
-  // products.image_url is the authoritative catalog image (set by enrichment mirror).
-  // Fall back to specs.image_url for legacy rows seeded before the direct column existed.
   const stockUrl =
     (product as unknown as { image_url?: string | null }).image_url ||
     (typeof specs.image_url === "string" ? specs.image_url : null) ||
@@ -114,6 +116,7 @@ export default async function ProductDetailPage({
 
   const isDraft = product.status === "draft";
   const subtitle = composeSubtitle(productType, specs);
+  const isBaseline = groupVoice.tag_cloud.length === 0 && wheelVector != null;
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
@@ -173,50 +176,42 @@ export default async function ProductDetailPage({
         groupVoice={groupVoice}
         otherTakes={otherTakes}
         myTake={myTake}
+        winstonProse={winstonProse}
       />
 
       <div className="mt-6">
-        <Link
-          href={`/products/${product.id}/recommend${event ? `?event=${encodeURIComponent(event)}` : ""}`}
-        >
-          <Button size="large" className="w-full">
-            {myTake ? "Edit your tasting" : "Recommend to NCCC"}
-          </Button>
-        </Link>
-        <div className="mt-2 text-center">
-          <Link
-            href={`/products/${product.id}/session${event ? `?event=${encodeURIComponent(event)}` : ""}`}
-            className="text-sm text-foreground-muted hover:text-foreground"
-          >
-            Open a Session →
-          </Link>
+        <Divider label="Pairs with" />
+        <PairsWith
+          sourceType={productType}
+          sourceId={id}
+          candidates={pairings}
+          validatedPairs={validatedPairs}
+        />
+      </div>
+
+      {userId ? (
+        <div className="mt-6">
+          <TastingActionSegment
+            productId={product.id}
+            hasTasting={Boolean(myTake)}
+            event={event}
+          />
         </div>
-      </div>
+      ) : null}
 
-      <div className="mt-2 mb-1 flex justify-center">
-        <Winston variant="glass" size={56} className="rounded-full" />
-      </div>
-      <Divider label="Pairs with" />
-
-      <PairsWith
-        sourceType={productType}
-        sourceId={id}
-        candidates={pairings}
-        validatedPairs={validatedPairs}
-      />
-
-      <div className="mt-6">
-        <DepthAffordance productId={product.id} available={product.trait_vector != null} />
+      <div className="mt-8" id="depth">
+        <ProductDepthSection
+          productType={productType}
+          specs={specs}
+          tagCloud={groupVoice.tag_cloud}
+          wheelVector={wheelVector}
+          isBaseline={isBaseline}
+        />
       </div>
     </main>
   );
 }
 
-/**
- * Short type-specific one-liner under the title — vitola/strength/origin for
- * cigars, age/proof/style for bourbons. Skips anything the product doesn't
- * carry rather than rendering blanks.
- */
 function composeSubtitle(productType: ProductType, specs: Record<string, unknown>): string | null {
   const { priceBucket } = normalizeProductSpecs(productType, specs);
   const tokens: string[] = [];

@@ -92,14 +92,12 @@ export async function suggestPairings(
 export async function loadOrComputeTopPairings(
   supabase: SupabaseClient,
   sourceProductId: string,
-  options: { limit?: number } = {},
+  options: { limit?: number; minScore?: number } = {},
 ): Promise<PairingCandidate[]> {
   const limit = options.limit ?? 3;
+  const minScore = options.minScore ?? 55;
 
-  // Always compute on demand for v1; we'll layer in cache TTL + cron in
-  // Phase 7. The compute is cheap and the cache write below saves the
-  // pairings screen from re-scoring on the deep link.
-  const fresh = await suggestPairings(supabase, sourceProductId, { limit, minScore: 55 });
+  const fresh = await suggestPairings(supabase, sourceProductId, { limit, minScore });
 
   if (fresh.length === 0) return fresh;
 

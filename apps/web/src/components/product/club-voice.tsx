@@ -1,5 +1,5 @@
 import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
-import { Card } from "@/components/primitives";
+import { Card, Voice } from "@/components/primitives";
 import type { GroupVoice, MemberTake } from "@/lib/aggregation/group-voice";
 import type { ProductType } from "@/lib/wheel";
 
@@ -8,6 +8,7 @@ type ClubVoiceProps = {
   groupVoice: GroupVoice;
   otherTakes: MemberTake[];
   myTake: MemberTake | undefined;
+  winstonProse: string | null;
 };
 
 /**
@@ -17,9 +18,17 @@ type ClubVoiceProps = {
  * internal section breaks — the etched divider is reserved for chapter
  * changes, not the variations within a chapter.
  */
-export function ClubVoice({ productType, groupVoice, otherTakes, myTake }: ClubVoiceProps) {
+export function ClubVoice({
+  productType,
+  groupVoice,
+  otherTakes,
+  myTake,
+  winstonProse,
+}: ClubVoiceProps) {
   return (
     <Card className="px-5 py-5">
+      {winstonProse ? <Voice className="block mb-4 text-base">{winstonProse}</Voice> : null}
+
       <RecommendBar
         productType={productType}
         recommendCount={groupVoice.recommend_count}
