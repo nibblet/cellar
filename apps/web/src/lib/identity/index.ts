@@ -1,1 +1,5 @@
-export { formatMemberName, type MemberNameFields } from "./format-member-name";
+export {
+  formatMemberInitials,
+  formatMemberName,
+  type MemberNameFields,
+} from "./format-member-name";

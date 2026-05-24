@@ -6,7 +6,8 @@ import type { BadgeComputeInput } from "@/lib/badges/compute";
 import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
 import { nextBadgeForMember } from "@/lib/badges/next";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
-import { formatMemberName, type MemberNameFields } from "@/lib/identity";
+import { formatMemberInitials, type MemberNameFields } from "@/lib/identity";
+import { countMemberPairingSessions, loadMemberPairingSessions } from "@/lib/pairing/sessions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PersonalCard, type PersonalCardThumb } from "./_components/personal-card";
 
@@ -23,6 +24,8 @@ export default async function YouHubPage() {
     recentTastingsResult,
     badgeInputs,
     tastingsCountResult,
+    pairingsCount,
+    recentPairings,
   ] = await Promise.all([
     supabase
       .from("users")
@@ -39,13 +42,14 @@ export default async function YouHubPage() {
       .limit(3),
     buildBadgeInputs(supabase),
     supabase.from("tastings").select("id", { count: "exact", head: true }).eq("user_id", me),
+    countMemberPairingSessions(supabase, me),
+    loadMemberPairingSessions(supabase, me, 3),
   ]);
 
   if (!profileResult.data) redirect("/login");
   const profile = profileResult.data;
   const isAdmin = profile.role === "admin";
-  const displayName = formatMemberName(profile as MemberNameFields);
-  const initial = profile.name_first?.charAt(0).toUpperCase() ?? "?";
+  const initials = formatMemberInitials(profile as MemberNameFields);
 
   let avatarSignedUrl: string | null = null;
   if (profile.avatar_url) {
@@ -91,6 +95,12 @@ export default async function YouHubPage() {
   const tastingsCount = tastingsCountResult.count ?? 0;
   const cellarCounts = `${cellarSnapshot.have.size} have · ${cellarSnapshot.want.size} want · ${cellarSnapshot.tried.size} tried`;
   const tastingsCountStr = `${tastingsCount} logged`;
+  const pairingsCountStr = `${pairingsCount} captured`;
+  const pairingThumbs: PersonalCardThumb[] = recentPairings.map((p) => ({
+    productId: p.cigar_id,
+    name: `${p.cigar_name} + ${p.bourbon_name}`,
+    imageUrl: null,
+  }));
 
   const lastVoice = lastTasting?.product
     ? lastTasting.product.type === "bourbon"
@@ -101,15 +111,14 @@ export default async function YouHubPage() {
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="mb-6 flex flex-col items-center text-center">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-tint to-accent/30 border border-accent/40 flex items-center justify-center overflow-hidden mb-4">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-tint to-accent/30 border border-accent/40 flex items-center justify-center overflow-hidden mb-3">
           {avatarSignedUrl ? (
             // biome-ignore lint/performance/noImgElement: signed URL
-            <img src={avatarSignedUrl} alt={displayName} className="w-full h-full object-cover" />
+            <img src={avatarSignedUrl} alt={initials} className="w-full h-full object-cover" />
           ) : (
-            <span className="font-display text-4xl text-foreground">{initial}</span>
+            <span className="font-display text-3xl tracking-tight text-foreground">{initials}</span>
           )}
         </div>
-        <h1 className="text-3xl">{displayName}</h1>
         {profile.joined_at ? (
           <p className="text-sm text-foreground-muted mt-1">
             Member since{" "}
@@ -158,6 +167,13 @@ export default async function YouHubPage() {
           thumbs={tastingThumbs}
           href="/you/tastings"
           emptyVoice='"Nothing logged yet, sir. Open the humidor."'
+        />
+        <PersonalCard
+          title="Your pairings"
+          counts={pairingsCountStr}
+          thumbs={pairingThumbs}
+          href="/you/pairings"
+          emptyVoice='"No pairings captured yet. Pick a cigar and a pour."'
         />
       </div>
 

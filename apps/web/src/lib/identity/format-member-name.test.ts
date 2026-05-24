@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatMemberName } from "./format-member-name";
+import { formatMemberInitials, formatMemberName } from "./format-member-name";
 
 describe("formatMemberName", () => {
   it("returns first name + last initial", () => {
@@ -33,5 +33,24 @@ describe("formatMemberName", () => {
 
   it("falls back to 'Member' when both empty", () => {
     expect(formatMemberName({ name_first: "", name_last_initial: "" })).toBe("Member");
+  });
+});
+
+describe("formatMemberInitials", () => {
+  it("returns first + last initial", () => {
+    expect(formatMemberInitials({ name_first: "Paul", name_last_initial: "C" })).toBe("PC");
+  });
+
+  it("uppercases and trims", () => {
+    expect(formatMemberInitials({ name_first: "  carl  ", name_last_initial: " b " })).toBe("CB");
+  });
+
+  it("falls back when one field missing", () => {
+    expect(formatMemberInitials({ name_first: "John", name_last_initial: "" })).toBe("J");
+    expect(formatMemberInitials({ name_first: "", name_last_initial: "K" })).toBe("K");
+  });
+
+  it("falls back to ? when both empty", () => {
+    expect(formatMemberInitials({ name_first: "", name_last_initial: "" })).toBe("?");
   });
 });

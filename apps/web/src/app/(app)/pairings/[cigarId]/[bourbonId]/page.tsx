@@ -5,6 +5,7 @@ import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { suggestPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
 import { ensurePairingProse } from "@/lib/pairing/prose-cache";
+import { pairingTierLabel } from "@/lib/pairing/tier";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TraitVector } from "@/lib/wheel";
 
@@ -99,8 +100,15 @@ export default async function PairingPage({
             <span className="text-moss-600" aria-hidden="true">
               ●
             </span>{" "}
-            <span className="font-medium">{validated.display_name}</span> paired this at{" "}
-            <span className="font-medium">{validated.event_name}</span> and recommended it.
+            <span className="font-medium">{validated.display_name}</span>{" "}
+            {validated.kind === "event" ? (
+              <>
+                paired this at <span className="font-medium">{validated.event_name}</span> and
+                recommended it.
+              </>
+            ) : (
+              <>captured this pairing and recommended both.</>
+            )}
           </p>
         </Card>
       ) : (
@@ -129,7 +137,7 @@ export default async function PairingPage({
                   <p className="text-[11px] text-foreground-muted truncate mt-0.5">
                     {alt.brand ? `${alt.brand} · ` : ""}
                     <span className="uppercase tracking-widest text-foreground-subtle">
-                      {Math.round(alt.score)}/100
+                      {pairingTierLabel(alt.score)}
                     </span>
                   </p>
                 </Link>

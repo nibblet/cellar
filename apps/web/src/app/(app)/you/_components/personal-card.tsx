@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Card, Voice } from "@/components/primitives";
+import { interactiveCardClassName, Voice } from "@/components/primitives";
+import { cn } from "@/lib/utils";
 
 export type PersonalCardThumb = {
   productId: string;
@@ -21,8 +22,8 @@ export function PersonalCard({
   emptyVoice: string;
 }) {
   return (
-    <Link href={href} className="block">
-      <Card className="hover:bg-surface-2 transition-colors">
+    <Link href={href} className="block group">
+      <div className={cn(interactiveCardClassName, "px-4 py-4")}>
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-base text-foreground">{title}</p>
           {counts ? (
@@ -53,7 +54,7 @@ export function PersonalCard({
         ) : (
           <Voice className="block mt-3 text-sm">{emptyVoice}</Voice>
         )}
-      </Card>
+      </div>
     </Link>
   );
 }

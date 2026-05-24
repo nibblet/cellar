@@ -2,6 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
+import { syncPairingValidationCache } from "@/lib/pairing/sync-validation-cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { saveTasting } from "@/lib/tasting/save";
 import type { ProductType } from "@/lib/wheel";
@@ -48,6 +49,8 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
     .map((c) => String(c).trim())
     .filter(Boolean);
   const note = (formData.get("note") as string | null)?.trim() || null;
+  const eventIdRaw = (formData.get("event_id") as string | null)?.trim() || null;
+  const eventId = eventIdRaw && eventIdRaw !== "none" ? eventIdRaw : null;
 
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -105,9 +108,27 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
   const cigarImageId = images.find((i) => i.product_id === cigarId)?.id ?? null;
   const bourbonImageId = images.find((i) => i.product_id === bourbonId)?.id ?? null;
 
-  // Group the two halves with one session id so feed/audit can treat them as
-  // a unit later. The id is opaque — no FK, just a tag.
-  const pairingSessionId = randomUUID();
+  const { data: sessionRow, error: sessionError } = await supabase
+    .from("pairing_sessions")
+    .insert({
+      user_id: auth.user.id,
+      cigar_id: cigarId,
+      bourbon_id: bourbonId,
+      pairing_note: note,
+      event_id: eventId,
+      photo_storage_path: storagePath,
+    })
+    .select("id")
+    .single();
+
+  if (sessionError || !sessionRow) {
+    return {
+      status: "error",
+      message: `Couldn't start pairing session: ${sessionError?.message ?? "no row"}`,
+    };
+  }
+
+  const pairingSessionId = sessionRow.id;
 
   try {
     await Promise.all([
@@ -119,6 +140,7 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
         recommend: cigarRecommendRaw === "yes",
         chips: cigarChips,
         note,
+        eventId,
         pairingSessionId,
         photoImageId: cigarImageId,
       }),
@@ -130,6 +152,7 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
         recommend: bourbonRecommendRaw === "yes",
         chips: bourbonChips,
         note,
+        eventId,
         pairingSessionId,
         photoImageId: bourbonImageId,
       }),
@@ -137,6 +160,10 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
   } catch (err) {
     const message = err instanceof Error ? err.message : "Couldn't save the pairing.";
     return { status: "error", message };
+  }
+
+  if (cigarRecommendRaw === "yes" && bourbonRecommendRaw === "yes") {
+    void syncPairingValidationCache(supabase, cigarId, bourbonId);
   }
 
   // Land back on the pairing page with a confirmation cue.

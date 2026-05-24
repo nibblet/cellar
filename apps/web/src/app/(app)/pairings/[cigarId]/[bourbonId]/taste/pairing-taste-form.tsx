@@ -15,6 +15,7 @@ type Props = {
   bourbon: Product;
   cigarLeafLabels: string[];
   bourbonLeafLabels: string[];
+  recentEvents: Array<{ id: string; name: string; date: string }>;
   priorCigar: PriorTasting | null;
   priorBourbon: PriorTasting | null;
 };
@@ -32,6 +33,7 @@ export function PairingTasteForm({
   bourbon,
   cigarLeafLabels,
   bourbonLeafLabels,
+  recentEvents,
   priorCigar,
   priorBourbon,
 }: Props) {
@@ -129,6 +131,27 @@ export function PairingTasteForm({
         onRecommendChange={setCigarRecommend}
         chipPlaceholder="e.g. cocoa, leather, pepper"
       />
+
+      {recentEvents.length > 0 ? (
+        <>
+          <Divider label="Meetup (optional)" />
+          <label className="flex flex-col gap-2">
+            <span className="text-sm text-foreground-muted">Tag a club night</span>
+            <select
+              name="event_id"
+              defaultValue="none"
+              className="rounded-[12px] bg-surface border border-border focus:border-accent transition-colors p-3 text-base outline-none"
+            >
+              <option value="none">No meetup</option>
+              {recentEvents.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.name} · {e.date}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      ) : null}
 
       <ProductSlot
         product={bourbon}

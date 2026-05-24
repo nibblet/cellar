@@ -1,9 +1,11 @@
 export { CatalogCard } from "./catalog-card";
 export { CatalogFilterControls } from "./catalog-filter-controls";
 export { DailyPourCard } from "./daily-pour-card";
-export { PickPourButton } from "./pick-pour-button";
 export { DailyPourSkeleton } from "./daily-pour-skeleton";
 export { FeedBodySkeleton } from "./feed-body-skeleton";
+export { FindYourNextHero } from "./find-your-next-hero";
+export { FindYourNextSkeleton } from "./find-your-next-skeleton";
+export { PickPourButton } from "./pick-pour-button";
 export { FEED_TABS, type FeedTab, FeedTabs } from "./feed-tabs";
 export { MeetupCard } from "./meetup-card";
 export { PhotoFrame, PhotoPlaceholder } from "./photo-frame";

@@ -44,6 +44,12 @@ export default async function PairingTastePage({ params }: { params: Params }) {
   const cigarLeafLabels = getWheel("cigar").leaves.map((l) => l.label);
   const bourbonLeafLabels = getWheel("bourbon").leaves.map((l) => l.label);
 
+  const { data: events } = await supabase
+    .from("events")
+    .select("id, name, date")
+    .order("date", { ascending: false })
+    .limit(6);
+
   return (
     <main className="mx-auto max-w-md px-5 py-8 pb-24 flex-1">
       <Link
@@ -69,6 +75,7 @@ export default async function PairingTastePage({ params }: { params: Params }) {
         bourbon={{ id: bourbon.id, name: bourbon.name, brand: bourbon.brand }}
         cigarLeafLabels={cigarLeafLabels}
         bourbonLeafLabels={bourbonLeafLabels}
+        recentEvents={(events ?? []) as Array<{ id: string; name: string; date: string }>}
         priorCigar={
           priorCigar
             ? { recommend: priorCigar.recommend, chips: priorCigar.chips, note: priorCigar.note }

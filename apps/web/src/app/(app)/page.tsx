@@ -9,8 +9,9 @@ import {
   FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
+  FindYourNextHero,
+  FindYourNextSkeleton,
   MeetupCard,
-  PickPourButton,
   TastingCard,
 } from "@/components/feed";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
@@ -24,7 +25,7 @@ import {
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { CATALOG_TIER_CEILING } from "@/lib/preferences/types";
+import { loadFindNextSuggestions } from "@/lib/find-next/load";
 import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
@@ -34,7 +35,7 @@ import type {
   CigarStrength,
   CigarWrapperBucket,
 } from "@/lib/preferences/types";
-import { hasAnyPreferences } from "@/lib/preferences/types";
+import { CATALOG_TIER_CEILING, hasAnyPreferences } from "@/lib/preferences/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type MeetupEvent = {
@@ -123,9 +124,7 @@ function parseFilters(sp: Awaited<SearchParams>): {
     sp.age && VALID_AGE_BANDS.has(sp.age) ? (sp.age as "nas" | "4-8" | "8-12" | "12+") : undefined;
 
   const ringGauge =
-    sp.ring && VALID_RING_BANDS.has(sp.ring)
-      ? (sp.ring as "lt50" | "50-54" | "54+")
-      : undefined;
+    sp.ring && VALID_RING_BANDS.has(sp.ring) ? (sp.ring as "lt50" | "50-54" | "54+") : undefined;
 
   const sort = sp.sort && VALID_SORTS.has(sp.sort) ? (sp.sort as CatalogSortKey) : "recommended";
 
@@ -156,15 +155,7 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="text-center mb-6 flex flex-col items-center">
-        <NCCCLogo size={56} className="mb-2" decorative />
-        <h1 className="text-3xl">NCCC</h1>
-        <p className="text-sm tracking-widest uppercase text-foreground-subtle">
-          {tab === "for-you"
-            ? "Recent tastings"
-            : tab === "cigars"
-              ? "The cigar shelf"
-              : "The bourbon shelf"}
-        </p>
+        <NCCCLogo size={80} decorative />
       </header>
 
       <FeedTabs active={tab} />
@@ -194,8 +185,15 @@ async function FeedBody({
     return (
       <>
         {viewerId ? (
-          <Suspense fallback={<DailyPourSkeleton />}>
-            <DailyPourSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
+          <Suspense
+            fallback={
+              <>
+                <DailyPourSkeleton />
+                <FindYourNextSkeleton />
+              </>
+            }
+          >
+            <LoungeHeroSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
           </Suspense>
         ) : null}
         <Suspense fallback={<FeedBodySkeleton />}>
@@ -217,7 +215,7 @@ async function FeedBody({
   );
 }
 
-async function DailyPourSection({
+async function LoungeHeroSection({
   supabase,
   viewerId,
   preferences,
@@ -228,19 +226,35 @@ async function DailyPourSection({
 }) {
   const candidates = await loadDailyPourCandidates(supabase, preferences, viewerId);
   const pour = selectDailyPour({ memberId: viewerId, date: todayKey() }, candidates);
-  if (!pour) return null;
 
-  const cached = await loadCachedPairingProse(supabase, pour.cigar_id, pour.bourbon_id);
-  if (cached?.notes) {
-    pour.rationale = cached.notes;
+  if (pour) {
+    const cached = await loadCachedPairingProse(supabase, pour.cigar_id, pour.bourbon_id);
+    if (cached?.notes) {
+      pour.rationale = cached.notes;
+    }
   }
 
   return (
     <div className="mb-4">
-      <DailyPourCard pour={pour} />
-      <PickPourButton className="mt-2 flex justify-center" />
+      {pour ? <DailyPourCard pour={pour} /> : null}
+      <Suspense fallback={<FindYourNextSkeleton />}>
+        <FindYourNextSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
+      </Suspense>
     </div>
   );
+}
+
+async function FindYourNextSection({
+  supabase,
+  viewerId,
+  preferences,
+}: {
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
+  viewerId: string;
+  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
+}) {
+  const suggestions = await loadFindNextSuggestions(supabase, viewerId, preferences);
+  return <FindYourNextHero suggestions={suggestions} />;
 }
 
 async function FeedList({

@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { MemberNameWithBadges } from "@/components/members";
 import { Card, Divider } from "@/components/primitives";
-import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -13,13 +11,12 @@ type MemberRow = MemberNameFields & {
 export default async function MembersPage() {
   const supabase = await createSupabaseServerClient();
 
-  const [membersResult, tastingsResult, badgeMap] = await Promise.all([
+  const [membersResult, tastingsResult] = await Promise.all([
     supabase
       .from("users")
       .select("id, name_first, name_last_initial, joined_at")
       .order("name_first", { ascending: true }),
     supabase.from("tastings").select("user_id, recommend"),
-    loadMemberBadges(supabase),
   ]);
 
   const rows = (membersResult.data ?? []) as MemberRow[];
@@ -47,18 +44,13 @@ export default async function MembersPage() {
         <ul className="flex flex-col divide-y divide-border bg-surface border border-border rounded-[12px]">
           {rows.map((m) => {
             const c = counts.get(m.id) ?? { total: 0, recommended: 0 };
-            const badges = badgesForMember(badgeMap, m.id);
             return (
               <li key={m.id}>
                 <Link
                   href={`/members/${m.id}`}
                   className="flex items-baseline justify-between gap-3 py-3 px-4 hover:bg-surface-2 transition-colors"
                 >
-                  <MemberNameWithBadges
-                    name={formatMemberName(m)}
-                    badges={badges}
-                    className="min-w-0 flex-1"
-                  />
+                  <span className="truncate min-w-0 flex-1">{formatMemberName(m)}</span>
                   <span className="text-xs text-foreground-muted tabular-nums shrink-0">
                     {c.total} tasting{c.total === 1 ? "" : "s"}
                     {c.recommended > 0 ? ` · ${c.recommended} ${"recommended"}` : ""}

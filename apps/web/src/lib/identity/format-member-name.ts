@@ -16,3 +16,12 @@ export function formatMemberName(member: MemberNameFields): string {
   if (!initial) return first;
   return `${first} ${initial}`;
 }
+
+/** Avatar monogram — first + last initial, e.g. "PC". */
+export function formatMemberInitials(member: MemberNameFields): string {
+  const first = member.name_first.trim().charAt(0).toUpperCase();
+  const last = member.name_last_initial.trim().charAt(0).toUpperCase();
+
+  if (first && last) return `${first}${last}`;
+  return first || last || "?";
+}

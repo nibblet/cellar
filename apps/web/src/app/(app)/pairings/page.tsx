@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { Winston } from "@/components/brand";
-import { Card, Divider, Voice } from "@/components/primitives";
+import {
+  Button,
+  Card,
+  Divider,
+  interactiveCardClassName,
+  Voice,
+  validatedCardClassName,
+} from "@/components/primitives";
 import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
 import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { pairingTierLabel } from "@/lib/pairing/tier";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { cn } from "@/lib/utils";
 import type { ProductType } from "@/lib/wheel";
 
 type TastingRow = {
@@ -81,6 +90,12 @@ export default async function PairingsIndexPage() {
           Winston's matches
         </p>
       </header>
+
+      <Link href="/pairings/capture" className="block mb-6">
+        <Button size="large" className="w-full">
+          Capture a pairing
+        </Button>
+      </Link>
 
       {!hasContent ? (
         <Card className="text-center">
@@ -175,25 +190,29 @@ async function loadRecommendations(
 function ValidatedCard({ entry }: { entry: ValidatedCacheRow }) {
   if (!entry.cigar || !entry.bourbon) return null;
   return (
-    <Link href={`/pairings/${entry.cigar_id}/${entry.bourbon_id}`} className="block">
-      <Card className="border border-moss-600 bg-gradient-to-br from-surface to-moss-600/5 hover:bg-surface-2 transition-colors">
+    <Link href={`/pairings/${entry.cigar_id}/${entry.bourbon_id}`} className="block group">
+      <div className={cn(validatedCardClassName, "px-4 py-4")}>
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-[10px] uppercase tracking-widest text-moss-600">● club tried</p>
           <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-            {Math.round(entry.score)}/100
+            {pairingTierLabel(entry.score)}
           </p>
         </div>
-        <p className="text-base text-foreground mt-1 truncate">{entry.cigar.name}</p>
+        <p className="text-base text-foreground mt-1 truncate group-hover:text-accent transition-colors">
+          {entry.cigar.name}
+        </p>
         <p className="text-[11px] tracking-widest uppercase text-foreground-subtle my-1.5">
           paired with
         </p>
-        <p className="text-base text-foreground truncate">{entry.bourbon.name}</p>
+        <p className="text-base text-foreground truncate group-hover:text-accent transition-colors">
+          {entry.bourbon.name}
+        </p>
         {entry.rationale_text ? (
           <p className="text-sm text-foreground-muted italic mt-2 line-clamp-2">
             "{entry.rationale_text}"
           </p>
         ) : null}
-      </Card>
+      </div>
     </Link>
   );
 }
@@ -210,20 +229,22 @@ function RecommendationCard({ entry }: { entry: RecommendationEntry }) {
       <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-1.5">
         You recommended <span className="text-foreground">{source.name}</span>
       </p>
-      <Link href={`/pairings/${cigarId}/${bourbonId}`} className="block">
-        <Card className="hover:bg-surface-2 transition-colors">
+      <Link href={`/pairings/${cigarId}/${bourbonId}`} className="block group">
+        <div className={cn(interactiveCardClassName, "px-4 py-4")}>
           <div className="flex items-baseline justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
                 Winston suggests
               </p>
-              <p className="text-base text-foreground truncate mt-0.5">{candidate.name}</p>
+              <p className="text-base text-foreground truncate mt-0.5 group-hover:text-accent transition-colors">
+                {candidate.name}
+              </p>
               {candidate.brand ? (
                 <p className="text-xs text-foreground-muted truncate">{candidate.brand}</p>
               ) : null}
             </div>
             <p className="text-[10px] uppercase tracking-widest text-foreground-subtle shrink-0">
-              {Math.round(candidate.score)}/100
+              {pairingTierLabel(candidate.score)}
             </p>
           </div>
           {(entry.cached_prose ?? candidate.reasons[0]?.reason) ? (
@@ -231,7 +252,7 @@ function RecommendationCard({ entry }: { entry: RecommendationEntry }) {
               "{entry.cached_prose ?? candidate.reasons[0]?.reason}"
             </p>
           ) : null}
-        </Card>
+        </div>
       </Link>
     </div>
   );
