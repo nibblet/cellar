@@ -1,20 +1,18 @@
 /**
  * Apify-driven enrichment pass — CLI wrapper.
  *
- * The per-product logic lives in @/lib/enrich so it can be shared with the
- * capture server action. This script just iterates products that need
- * enrichment and calls the shared function with an audit-log shim.
+ * Recommended bourbon pipeline: run enrich-bourbon-tier on the full catalog
+ * first, then Apify in tier order (default for bourbon) so shelf staples
+ * get photos before allocated unicorns.
  *
- *   pnpm seed:enrich-apify --type cigar --limit 5 --dry-run
  *   pnpm seed:enrich-apify --type bourbon --limit 100
- *   pnpm seed:enrich-apify --type cigar --limit 5 --backfill
- * 
- * pnpm seed:enrich-apify --type cigar --limit 100
- * pnpm seed:enrich-apify --type bourbon --limit 100
+ *   pnpm seed:enrich-apify --type bourbon --limit 100 --order created
+ *   pnpm seed:enrich-apify --type cigar --limit 5 --dry-run
  *
  * Flags:
  *   --type      bourbon | cigar              (required)
  *   --limit     how many products to enrich  (default 5)
+ *   --order     created | tier | name        (default: tier for bourbon, created for cigar)
  *   --dry-run   no DB writes, audit only     (default false)
  *   --max       results per Apify query      (default 3)
  *   --backfill  re-process products whose image_url points outside Supabase
@@ -29,6 +27,7 @@ import {
   buildSearchQuery,
   enrichProductFromWeb,
 } from "@/lib/enrich/apify-enrich";
+import { type EnrichOrder, parseEnrichOrder, sortByTier } from "./lib/enrich-order";
 import { adminClient } from "./lib/supabase-admin";
 
 type Args = {
@@ -37,6 +36,7 @@ type Args = {
   dryRun: boolean;
   max: number;
   backfill: boolean;
+  order: EnrichOrder;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -54,6 +54,7 @@ function parseArgs(argv: string[]): Args {
     dryRun: argv.includes("--dry-run"),
     backfill: argv.includes("--backfill"),
     max: Number(arg("max") ?? 3),
+    order: parseEnrichOrder(argv, type),
   };
 }
 
@@ -79,22 +80,39 @@ async function main() {
   mkdirSync(dirname(audit), { recursive: true });
 
   console.log(
-    `[enrich-apify] type=${args.type} limit=${args.limit} dryRun=${args.dryRun}`,
+    `[enrich-apify] type=${args.type} limit=${args.limit} order=${args.order} dryRun=${args.dryRun}`,
   );
   console.log(`[enrich-apify] audit log → ${audit}`);
 
-  const baseQuery = supa
+  let query = supa
     .from("products")
-    .select("id, type, name, brand, line")
-    .eq("type", args.type)
-    .order("created_at", { ascending: true })
-    .limit(args.limit);
-  const filtered = args.backfill
-    ? baseQuery.not("image_url", "ilike", "%supabase.co/storage%")
-    : baseQuery.is("image_url", null);
-  const { data: products, error } = await filtered;
+    .select("id, type, name, brand, line, specs")
+    .eq("type", args.type);
+  if (args.backfill) {
+    query = query.not("image_url", "ilike", "%supabase.co/storage%");
+  } else {
+    query = query.is("image_url", null);
+  }
+
+  if (args.order === "tier") {
+    query = query
+      .order("specs->tier", { ascending: true, nullsFirst: false })
+      .order("name", { ascending: true });
+  } else if (args.order === "name") {
+    query = query.order("name", { ascending: true });
+  } else {
+    query = query.order("created_at", { ascending: true });
+  }
+
+  const { data: rawProducts, error } = await query.limit(args.limit);
 
   if (error) throw error;
+  const products =
+    args.order === "tier"
+      ? sortByTier(
+          (rawProducts ?? []) as Array<EnrichInput & { specs: Record<string, unknown> | null }>,
+        ).slice(0, args.limit)
+      : ((rawProducts ?? []) as EnrichInput[]);
   if (!products?.length) {
     console.log("[enrich-apify] nothing to enrich.");
     return;
@@ -103,8 +121,10 @@ async function main() {
   let imageWrites = 0;
   let reviewWrites = 0;
 
-  for (const p of products as EnrichInput[]) {
-    console.log(`\n• ${p.brand ?? ""} ${p.name} (${p.id.slice(0, 8)})`);
+  for (const p of products) {
+    const tier = (p as EnrichInput & { specs?: Record<string, unknown> | null }).specs?.tier;
+    const tierLabel = typeof tier === "number" ? ` tier=${tier}` : "";
+    console.log(`\n• ${p.brand ?? ""} ${p.name} (${p.id.slice(0, 8)})${tierLabel}`);
     console.log(`  query: ${buildSearchQuery(p)}`);
 
     const result = await enrichProductFromWeb(

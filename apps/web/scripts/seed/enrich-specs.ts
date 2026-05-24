@@ -1,24 +1,31 @@
 /**
  * Structured specs extraction — CLI wrapper.
  *
- * Iterates products that have product_reviews, calls the shared
- * extractAndMergeSpecs from @/lib/enrich for each, and writes an audit log.
+ * Run after enrich-apify. Bourbon defaults to tier order so shelf staples
+ * get structured specs before allocated bottles.
  *
- *   pnpm seed:enrich-specs --type cigar --limit 5 --dry-run
  *   pnpm seed:enrich-specs --type bourbon --limit 100
- * pnpm seed:enrich-specs --type cigar --limit 100
+ *   pnpm seed:enrich-specs --type bourbon --limit 100 --order updated
+ *   pnpm seed:enrich-specs --type cigar --limit 5 --dry-run
  */
 
 import { mkdirSync, appendFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import OpenAI from "openai";
 import { extractAndMergeSpecs } from "@/lib/enrich/specs-enrich";
+import {
+  type EnrichOrder,
+  parseEnrichOrder,
+  sortByTier,
+  tierOrderFetchLimit,
+} from "./lib/enrich-order";
 import { adminClient } from "./lib/supabase-admin";
 
 type Args = {
   type: "bourbon" | "cigar";
   limit: number;
   dryRun: boolean;
+  order: EnrichOrder;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -34,6 +41,7 @@ function parseArgs(argv: string[]): Args {
     type,
     limit: Number(arg("limit") ?? 5),
     dryRun: argv.includes("--dry-run"),
+    order: parseEnrichOrder(argv, type),
   };
 }
 
@@ -55,21 +63,49 @@ async function main() {
   mkdirSync(dirname(audit), { recursive: true });
 
   console.log(
-    `[enrich-specs] type=${args.type} limit=${args.limit} dryRun=${args.dryRun}`,
+    `[enrich-specs] type=${args.type} limit=${args.limit} order=${args.order} dryRun=${args.dryRun}`,
   );
   console.log(`[enrich-specs] audit log → ${audit}`);
 
-  // Products with at least one product_reviews row, most recently updated
-  // first. The inner-join semantics skip rows without reviews.
-  const { data: products, error } = await supa
+  const fetchLimit = args.order === "tier" ? tierOrderFetchLimit(args.limit) : args.limit;
+
+  let query = supa
     .from("products")
     .select("id, type, name, brand, specs, product_reviews!inner(text)")
-    .eq("type", args.type)
-    .order("updated_at", { ascending: false })
-    .limit(args.limit);
+    .eq("type", args.type);
+
+  if (args.order === "updated") {
+    query = query.order("updated_at", { ascending: false });
+  } else if (args.order === "name") {
+    query = query.order("name", { ascending: true });
+  } else if (args.order === "tier") {
+    query = query
+      .order("specs->tier", { ascending: true, nullsFirst: false })
+      .order("name", { ascending: true });
+  } else {
+    query = query.order("created_at", { ascending: true });
+  }
+
+  const { data: rawProducts, error } = await query.limit(fetchLimit);
 
   if (error) throw error;
-  if (!products?.length) {
+
+  type ProductRow = {
+    id: string;
+    type: "bourbon" | "cigar";
+    name: string;
+    brand: string | null;
+    specs: Record<string, unknown> | null;
+  };
+
+  let products = (rawProducts ?? []) as ProductRow[];
+  if (args.order === "tier") {
+    products = sortByTier(products).slice(0, args.limit);
+  } else {
+    products = products.slice(0, args.limit);
+  }
+
+  if (!products.length) {
     console.log("[enrich-specs] nothing to enrich.");
     return;
   }
@@ -78,14 +114,10 @@ async function main() {
   let totalIn = 0;
   let totalOut = 0;
 
-  for (const row of products as Array<{
-    id: string;
-    type: "bourbon" | "cigar";
-    name: string;
-    brand: string | null;
-    specs: Record<string, unknown> | null;
-  }>) {
-    console.log(`\n• ${row.brand ?? ""} ${row.name} (${row.id.slice(0, 8)})`);
+  for (const row of products) {
+    const tier = row.specs?.tier;
+    const tierLabel = typeof tier === "number" ? ` tier=${tier}` : "";
+    console.log(`\n• ${row.brand ?? ""} ${row.name} (${row.id.slice(0, 8)})${tierLabel}`);
 
     const result = await extractAndMergeSpecs(
       row,

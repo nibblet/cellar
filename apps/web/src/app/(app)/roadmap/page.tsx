@@ -13,7 +13,7 @@ const today: Item[] = [
   },
   {
     title: "Browse the club",
-    body: "See what the rest of the club has been smoking and pouring on the Feed.",
+    body: "See what the rest of the club has been smoking and pouring in the Lounge.",
   },
   {
     title: "The group's voice",

@@ -1,8 +1,13 @@
 /**
  * Bourbon allocation/rarity tier enrichment — LLM batch pass.
  *
+ * Recommended pipeline (bourbon):
+ *   1. pnpm seed:enrich-bourbon-tier --limit 2500        # fast nano pass on full catalog
+ *   2. pnpm seed:enrich-apify --type bourbon --limit 100  # shelf staples first (default --order tier)
+ *   3. pnpm seed:enrich-specs --type bourbon --limit 100  # specs from reviews, tier order
+ *
  *   pnpm seed:enrich-bourbon-tier --limit 20 --dry-run
- *   pnpm seed:enrich-bourbon-tier --limit 100
+ *   pnpm seed:enrich-bourbon-tier --limit 2500
  *   pnpm seed:enrich-bourbon-tier --limit 50 --force
  */
 
@@ -52,11 +57,13 @@ async function main() {
   );
   console.log(`[enrich-bourbon-tier] audit log → ${audit}`);
 
+  // Untiered rows first so a partial run still advances the catalog.
   const { data: products, error } = await supa
     .from("products")
     .select("id, name, brand, specs")
     .eq("type", "bourbon")
     .eq("status", "confirmed")
+    .order("specs->tier", { ascending: true, nullsFirst: true })
     .order("name")
     .limit(args.limit);
 

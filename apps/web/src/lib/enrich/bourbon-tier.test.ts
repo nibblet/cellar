@@ -35,6 +35,13 @@ describe("shouldSkipTierEnrichment", () => {
     );
   });
 
+  it("never re-classifies llm tiers unless forced", () => {
+    expect(shouldSkipTierEnrichment({ tier: 2, tier_source: "llm" }, false)).toBe(
+      "tier_source_llm",
+    );
+    expect(shouldSkipTierEnrichment({ tier: 2, tier_source: "llm" }, true)).toBeNull();
+  });
+
   it("enriches Cobb collection rows even when tier is already set", () => {
     expect(shouldSkipTierEnrichment({ tier: 2, in_cobb_collection: true }, false)).toBeNull();
     expect(shouldSkipTierEnrichment({ tier: 4, tier_source: "cobb" }, false)).toBeNull();

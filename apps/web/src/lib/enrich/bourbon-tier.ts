@@ -20,7 +20,10 @@ export type TierClassification = {
   rationale: string;
 };
 
-export type TierSkipReason = "tier_source_manual" | "tier_exists_no_source";
+export type TierSkipReason =
+  | "tier_source_manual"
+  | "tier_source_llm"
+  | "tier_exists_no_source";
 
 const TIER_SCHEMA = {
   type: "object",
@@ -97,6 +100,7 @@ export function shouldSkipTierEnrichment(
 ): TierSkipReason | null {
   const source = tierSource(specs);
   if (source === "manual") return "tier_source_manual";
+  if (source === "llm" && !force) return "tier_source_llm";
   if (
     existingTier(specs) != null &&
     source == null &&

@@ -24,7 +24,7 @@ export const FEED_TABS: { value: FeedTab; label: string }[] = [
 export function FeedTabs({ active }: { active: FeedTab }) {
   return (
     <div className="relative mb-5">
-      <div role="tablist" aria-label="Feed view" className="flex justify-center gap-6">
+      <div role="tablist" aria-label="The Lounge" className="flex justify-center gap-6">
         {FEED_TABS.map((t) => {
           const isActive = t.value === active;
           return (

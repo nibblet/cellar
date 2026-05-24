@@ -4,7 +4,7 @@
  */
 export function FeedBodySkeleton() {
   return (
-    <div className="flex flex-col gap-3" role="status" aria-busy="true" aria-label="Loading feed">
+    <div className="flex flex-col gap-3" role="status" aria-busy="true" aria-label="Loading the lounge">
       {[0, 1, 2].map((i) => (
         <div
           key={i}

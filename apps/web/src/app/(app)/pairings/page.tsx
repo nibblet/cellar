@@ -91,7 +91,7 @@ export default async function PairingsIndexPage() {
                 more notes and the matches will come."
               </Voice>
               <Link href="/" className="text-sm text-accent hover:text-accent-hover underline">
-                Back to the feed →
+                Back to the lounge →
               </Link>
             </>
           ) : (

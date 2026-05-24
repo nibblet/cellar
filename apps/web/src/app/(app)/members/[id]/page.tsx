@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { CellarTab } from "@/components/cellar";
 import { TastingCard } from "@/components/feed";
+import { MemberBadges } from "@/components/members";
 import { Card, Divider } from "@/components/primitives";
+import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
 import { loadCellarProducts } from "@/lib/cellar/load";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
@@ -29,13 +31,14 @@ export default async function MemberProfilePage({
 
   const supabase = await createSupabaseServerClient();
 
-  const [memberResult, authResult] = await Promise.all([
+  const [memberResult, authResult, badgeMap] = await Promise.all([
     supabase
       .from("users")
       .select("id, name_first, name_last_initial, joined_at")
       .eq("id", id)
       .maybeSingle(),
     supabase.auth.getUser(),
+    loadMemberBadges(supabase),
   ]);
 
   if (!memberResult.data) notFound();
@@ -44,12 +47,16 @@ export default async function MemberProfilePage({
   const profile = member as MemberNameFields & { id: string; joined_at: string };
   const viewerId = authResult.data.user?.id ?? null;
   const isOwnProfile = viewerId === id;
+  const badges = badgesForMember(badgeMap, id);
 
   return (
     <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
       <header className="mb-5">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Member</p>
         <h1 className="text-3xl mt-1">{formatMemberName(profile)}</h1>
+        {badges.length > 0 ? (
+          <MemberBadges badges={badges} variant="profile" className="mt-3" />
+        ) : null}
       </header>
 
       {/* Tab switcher */}
