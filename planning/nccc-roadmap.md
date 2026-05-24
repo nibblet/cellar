@@ -10,7 +10,7 @@ A living catalog of ideas inspired by other apps, translated into NCCC's voice, 
 
 ---
 
-## Current status — 2026-05-22
+## Current status — 2026-05-24
 
 What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / base ships but enhancements pending, ❌ = not started.
 
@@ -19,15 +19,15 @@ What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / 
 | 0 — Foundation | ✅ | Email+password auth, reset flow, design tokens, primitives, Supabase clients, `formatMemberName`, 5-tab nav |
 | 1 — Catalog seeding | 🟡 | bourbonExplorer + StickPicks seeded. Enrichment running (see catalog state below). Cobb whiskey seeder built + updated to seed Cellar. Schema enhancements (style_family, tier_seed, dsp_code, editorial_baseline_profile, product_adjustments) deferred. |
 | 2 — Capture & identify | 🟡 | Camera + GPT-5 mini vision + fuzzy-match working end-to-end. UPC barcode scanner deferred. |
-| 3 — Tasting flow | 🟡 | One-tap "Recommend to NCCC" with optional chips + note + silent wheel mapping. **"The Session" (thirds / nose-palate-finish) NOT shipped.** |
+| 3 — Tasting flow | 🟡 | One-tap "Recommend to NCCC" with optional chips + note + silent wheel mapping. **The Session v1 shipped** — optional `/products/[id]/session` path (thirds / nose-palate-finish, Winston help, finish → Recommend). Quick Recommend remains default. Ambient timer deferred. |
 | 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts, Construction panel. Depth view (pure SVG radar) ships. **Per-member adjustments + moss consensus shape NOT shipped.** |
 | 5 — Feed/Members/Events | 🟡 | All three pages + 4-tab center-FAB nav. Feed tabbed (For You / Cigars / Bourbons). Member profile now has Tastings / Cellar tabs. Preferences + FOR YOU badge shipped. |
 | 5.5 — The Cellar | ✅ | `member_saves` table (have/want/tried), `setCellarState` action, `CellarToggle` on product detail, compact controls on catalog cards, capture follow-up prompt, member profile Cellar tab, `/shelf` redirect, cellar bias wired into Daily Pour. 177 unit tests. |
-| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Bartender prose, cache, `/pairings/[cigar]/[bourbon]` page, Pairs With. **Prose cache not wired to Daily Pour hero. Two-card redesign + "Suggest another" NOT shipped.** |
-| 7 — Polish / admin | 🟡 | Settings, sign-out, admin invites, product edit, logo, recap card. Bartender illustration variants + Education library NOT shipped. |
-| 8 — Daily Pour | ✅ | Home-page hero, deterministic FNV-1a pick, preference + cellar bias, Bartender voice, moss club-validated badge. Prose still uses engine fallback text (prose-cache not wired). |
+| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Winston prose, cache, `/pairings/[cigar]/[bourbon]` page, Pairs With. **Pick My Pour** (cellar-driven on-demand pick) shipped. Two-card redesign + "Suggest another" NOT shipped. |
+| 7 — Polish / admin | 🟡 | Settings, sign-out, admin invites, product edit, logo, recap card, Winston illustration variants. Education library NOT shipped. **WS4 You hub shipped 2026-05-24** — `/you` hub with badge hero, personal Cellar/Tastings cards, unified `/you/settings` (avatar + display name), `/you/cellar` + `/you/tastings`, redirects from `/settings`, `/shelf`, `/members/[me]`. |
+| 8 — Daily Pour | ✅ | Home-page hero, deterministic FNV-1a pick, preference + cellar bias, Winston voice, moss club-validated badge, prose cache on home. **Pick My Pour** secondary action on hero + Cellar tab. |
 
-**Tests:** 177 unit tests passing (wheel math, pairing rules, scoring, identity, preference derivation + matching, cellar mutex + bias).
+**Tests:** 233 unit tests passing (wheel math, pairing rules, scoring, identity, preference derivation + matching, cellar mutex + bias, pick-pour selector, session merge, badges next + hero variant).
 
 **Catalog state — as of 2026-05-22 enrichment run:**
 
@@ -168,7 +168,7 @@ the layout glue that holds them.
 
 Ranked by what NCCC members will most notice / value after they're using the app daily. **Build these in tier order**, but each tier is parallelizable internally.
 
-### Tier 1 — The next three features members will ask for
+### Tier 1 — Post-launch features (all four shipped as of 2026-05-23)
 
 These are the post-launch features most likely to surface in member feedback within the first month.
 
@@ -195,17 +195,22 @@ These are the post-launch features most likely to surface in member feedback wit
 
 ---
 
-#### 2. The Session — restructure the tasting flow (Phase 3 enhancement)
-**Why second:** This is the cigar-nerd-respect feature. Cigars evolve across the smoke; bourbons across nose/palate/finish. A single "Recommend" tap doesn't honor that ritual. The Session does.
+#### 2. The Session — restructure the tasting flow (Phase 3 enhancement) — **✅ v1 shipped 2026-05-23**
 
-**Scope:**
-- Rename the current "Recommend" flow to **The Session**.
-- Cigar: tabs for **First Third / Second Third / Final Third**.
-- Bourbon: tabs for **Nose / Palate / Finish**.
-- Each phase accepts chips + optional free-text. No strength slider — strength derives from chip patterns.
-- Optional ambient timer (not gating).
-- Winston help: *"What are thirds?"* / *"What's nose/palate/finish?"*
-- End-of-Session moment is the natural place to tap **Recommend to NCCC**. Optional second action: **Add to Cellar**.
+**As built (lightweight v1 — Recommend stays the default fast path):**
+- Optional route at `/products/[id]/session` — ghost **"Open a Session →"** link on product detail; brass **Recommend to NCCC** unchanged.
+- Cigar: **First Third / Second Third / Final Third** tabs. Bourbon: **Nose / Palate / Finish** tabs.
+- Per-phase chips (reuse `ChipInput`) + optional one-line note. Phases skippable — finish with zero input still allowed.
+- Collapsible Winston help (*"What are thirds?"* / *"What's nose, palate, finish?"*).
+- Finish step: **Recommend to NCCC** / Pass + optional **Add to Cellar** checkbox.
+- No new schema — phased chips merge into existing `tastings.chips`; phase notes concatenate into `tastings.note` via `merge-session.ts`.
+- Link back to one-tap `/recommend` from the session page footer.
+
+**Deferred from original scope:**
+- Renaming the Recommend flow to "The Session" (v1 keeps both paths).
+- Optional ambient timer.
+- `product_adjustments` / per-phase persistence for Depth view.
+- "Try this tonight → next Session" from pair detail.
 
 **Stickiness signal:** Members who care about the ritual will use The Session for every smoke. The data captured is also richer for the pairing engine.
 
@@ -228,6 +233,20 @@ These are the post-launch features most likely to surface in member feedback wit
 - **Pairing-prose cache.** Persist one LLM-generated Winston line per `(cigar_id, bourbon_id)` pair so the Daily Pour hero and the Pairings index can render real prose without burning an OpenAI call per page render. The `pairings_cache` table already has a `rationale_text` column — wire it. Generate on-demand the first time the pair is surfaced; subsequent renders read the cached line.
 
 **Stickiness signal:** Daily opens. The marketing-style hook for a private app.
+
+---
+
+#### 4. Pick My Pour — on-demand pairing oracle (NEW 2026-05-23) — **✅ shipped 2026-05-23**
+
+**As built:**
+- `lib/pick-pour/` — cellar Have×Have intersection scoring via `pairings_cache` + engine fallback; widens with Want when pool is thin (< 3 pairs); falls back to Daily Pour candidate loader when cellar is empty or one-sided.
+- FNV-1a selector keyed on `<memberId>|<date>|<rollIndex>` — **unlimited re-rolls** (no server-side cap).
+- Server action `pickMyPour` → redirect to `/pairings/[cigarId]/[bourbonId]`.
+- Entry points: ghost **"Pick from my cellar →"** below Daily Pour hero on For You tab; brass **"Pick for me →"** on own-profile Cellar tab when Have ≥ 1; Winston nudge when shelf is bare.
+
+**Deferred:** Pairings index CTA.
+
+**Stickiness signal:** Intent-driven daily session opener. Members who don't want to think get one tap to a decision.
 
 ---
 
@@ -445,6 +464,129 @@ pass.
 
 ---
 
+#### 18. Preference filter on Cigars / Bourbons catalog tabs (NEW 2026-05-23)
+**Concept:** A "Show matches" toggle / filter chip in the Cigars and Bourbons catalog tabs that collapses the view to products matching the viewer's stored preferences. Currently the FOR YOU pill lights on matched cards but you still scroll the full 100-row list. This makes the filter actionable.
+
+**Scope:**
+- A `matched` filter chip (alongside the existing strength / wrapper / style / proof chips in `CatalogFilterControls`) that, when active, passes a `matchedOnly: true` flag to `loadCatalogBrowse` and the query adds a `WHERE` clause that pre-filters to preference-matched products.
+- Empty state: if preferences aren't set, the chip is hidden with a Winston nudge ("Tell me what you like in Settings and I'll filter the shelf for you, sir.").
+- Chip is mutually exclusive with other filter chips in the same axis (or can stack — bikeshed at implementation time).
+
+**Schema:** none. Reads existing `member_preferences`. Pure query + UI layer.
+
+**Effort:** small — 1–2 hours. Preferences + matching logic already exist; just need the filter path wired through `CatalogFilters` → `loadCatalogBrowse`.
+
+---
+
+#### 19. Bourbon editorial tasting notes (NEW 2026-05-23)
+**Concept:** The bourbonExplorer seed data and Apify enrichment may include editorial tasting notes per product (e.g., "vanilla, oak, cherry, long finish" as a prose sentence, not just chips). If present, surface them on the product detail page in THE FACTS or a new TASTING NOTES strip — distinct from member-contributed chip clouds, labeled as editorial.
+
+**Open question:** Need to audit the enrichment schema. Check `products.specs` for a `tasting_notes` or `description` key on enriched bourbon rows. If present at meaningful coverage (> ~30%), ship the display; if sparse, hold until enrichment catches up.
+
+**Display rules (if shipped):**
+- Shows only when `specs.tasting_notes` is non-null and non-empty.
+- Labeled "DISTILLERY NOTES" or "EDITORIAL" to distinguish from THE CLUB SAYS chip cloud.
+- Winston does NOT narrate this block — it's source data, not club opinion.
+- No interaction (no voting, no editing on the face — depth-view territory).
+
+**Effort:** small display work once data is confirmed present.
+
+---
+
+#### 20. Pairing engine — graceful fallback + top 2-3 surfacing (NEW 2026-05-23)
+**Context:** Paul's observation: "we're getting pairings off of a huge catalog — maybe as our cellar entries grow could be good. Base it on vitola and flavor profile to give top 2-3 instead of some esoteric cigars."
+
+**Three brainstormed improvements:**
+
+**a) Top 2-3 pairs instead of a single result**
+Currently the Pairs With panel on product detail shows one pairing (the highest scored). Showing 2–3 gives the member options and better communicates the pairing space. Carousel or stacked chip-list with the moss badge on the top hit.
+
+**b) Vitola + flavor profile fallback**
+When club activity is sparse (few members have tried a product), the pairing engine has weak signal and can surface obscure products. A vitola + trait-vector similarity fallback: if the top engine result scores below a threshold (e.g. < 60), swap to a similarity-based match — find cigars with the closest `trait_vector` to the bourbon (or vice versa) in a common vitola (Robusto / Toro) the club tends to buy. Fast, deterministic, explainable.
+
+**c) Cellar-biased pairing**
+As cellar grows, a natural enhancement: prefer pairing results where the member **Has** the other item (or wants it). "Winston suggests the Elijah Craig 18yr — you already have a bottle." This extends the existing `applyCellarBias` logic into the Pairs With rendering path, not just the Daily Pour.
+
+**Implementation order:** (c) is the lowest lift — extend bias into Pairs With. Then (a) — query top-3 instead of top-1. Then (b) — the fallback path needs the similarity layer.
+
+**Schema:** none new for (a) and (c). (b) may need a pre-computed `vitola_bucket` column or a derived filter in the query.
+
+---
+
+#### 21. Adjacent picks — "you might also like" (NEW 2026-05-23)
+**Concept:** Alongside (or below) the pairing hero, surface 1–2 **same-category** recommendations. "You just tried the Perdomo Champagne — the club has also been reaching for the Rocky Patel Vintage '92." Cigar → similar cigar; bourbon → similar bourbon.
+
+**Why this is different from pairings:** pairings are cross-category (cigar × bourbon). Adjacent picks are within-category — the recommendation for when a member isn't shopping for a full pairing, just wondering what to smoke next.
+
+**Signal sources (in priority order):**
+1. Trait-vector cosine similarity on `products.trait_vector` (already computed). Fast, no club data required.
+2. "Members who tried X also recommended Y" — a `co_tasted` table derivable from existing `tastings` if enough members accumulate overlapping tastings.
+3. Same distillery / same brand family (bourbon), same vitola + origin (cigar) as a fallback.
+
+**Surfaces:**
+- Product detail page: a compact "ALSO FROM THE SHELF" horizontal strip below Pairs With, showing 2 similar products.
+- Could fold into the Daily Pour / Pairings page later: "Not feeling a full pairing? Here's a cigar you'd likely enjoy on its own."
+
+**Effort:** medium. The trait-vector similarity query is a few lines of pgvector math (`<->` cosine operator) and a wrapper in `lib/feed/`. Display is a horizontal scroll of small product chips.
+
+**Schema:** none new. Pure query over `products.trait_vector` + `tastings`.
+
+---
+
+#### 22. Price bucketing — $ / $$ / $$$ display (NEW 2026-05-23) — **✅ shipped 2026-05-23**
+
+**As built:** `lib/catalog/normalize-specs.ts` coalesces `price_usd` / `msrp_usd`; cigars map StickPicks `price_tier` 1–5 → `$`…`$$$$` (dollar fields override). Bourbons bucket only when a price exists (~14% today). Muted bucket on product detail subtitle + depth Facts strip. No catalog filter chip yet (bourbon coverage too thin).
+
+---
+
+#### 23. Multi-angle capture retry (NEW 2026-05-23)
+**Concept:** When the AI vision pass on a captured photo returns a low-confidence match (or no match), instead of dropping the member into a manual search, offer a "Take another angle" retry path. Cigars are tricky from the band alone — a shot of the box, the foot, or the whole stick can resolve ambiguity.
+
+**Flow:**
+1. First capture → vision match runs → confidence below threshold (or "Not quite right?" is tapped).
+2. Instead of just showing the edit form, offer: "Let me see another angle — try the box, the label, or the foot."
+3. Member takes a second (or third) photo. All N captures are passed together to the vision call (`content: [{ type: "image_url", ... }, { type: "image_url", ... }]` — GPT-5 mini vision accepts multiple images in a single message).
+4. Multi-image pass typically resolves what single-image misses. If still no match, fall through to manual search.
+
+**Why this matters:** the single biggest friction point in the capture flow is a misidentification. Multi-angle retry is cheaper than any other fallback (no extra UI, same API, same pipeline), and the GPT-5 mini vision model handles multi-image context well.
+
+**Effort:** medium. Capture flow (currently a single photo) needs a "retry" state. The server action that calls the vision API needs to accept an array of image URLs. The matching logic is unchanged.
+
+---
+
+#### 24. Rarity tiers — common / uncommon / rare (NEW 2026-05-23)
+**Concept:** Tag each product with a rarity tier: **Common** (widely available at retail), **Uncommon** (allocated, seasonal, or limited distribution), **Rare** (allocated lottery / secondary-market only / vintage).
+
+**Why:** helps pairing (a Rare × Rare pairing should carry different weight than Rare × Common), helps Daily Pour (can lean toward what members are likely to own), and adds collector texture to product detail pages.
+
+**Sources for bourbon:**
+- `tier_seed` from Paul's xlsx (already in `products.specs` — 5-tier ranking from 1–5). Map to rarity bucket: tier 1–2 → Common, tier 3 → Uncommon, tier 4–5 → Rare.
+- For unenriched rows: derive from `proof` + `age_years` heuristic as fallback (high-proof + long-age → Uncommon or Rare).
+
+**Sources for cigars:**
+- No direct equivalent to tier_seed. Options: (a) manual curation for the top 50 NCCC staples, (b) LLM-assisted tagging during enrichment pass, (c) infer from production-run size signals if CigarBase exposes them.
+
+**Display:** a small badge or inline text on product detail in the CONSTRUCTION section. Not on feed cards (too noisy). Potentially a catalog filter chip ("Show rare only").
+
+**Pairing engine hook:** add a rarity-match bonus to the pairing score — Rare × Rare gets +5 (the "special night" signal), Rare × Common gets no bonus/penalty.
+
+**Effort:** medium — bourbon side is mostly data plumbing from existing fields. Cigar side needs an enrichment or manual pass.
+
+---
+
+#### 25. Cellar privacy toggle (NEW 2026-05-23)
+**Concept:** Let each member choose whether their Cellar is visible to other club members. Default: visible (the social discovery value is high in a 12-person private app). Toggle lives in the YOU → Settings page.
+
+**Scope:**
+- Add `cellar_public boolean DEFAULT true` to `users` (or `member_preferences`) table.
+- The member profile page (`/members/[id]`) checks this flag: if the viewer is not the owner and the owner's cellar is private, the Cellar tab is hidden (or shows a Winston "This member keeps their shelf private, sir.").
+- The toggle itself: a simple on/off in the YOU page under a "Privacy" section. Server action to update.
+- The owner always sees their own cellar regardless of the flag.
+
+**Effort:** small — one DB column, one server action, one conditional on the member profile page.
+
+---
+
 ### Tier 3 — Polish and refinements
 
 Lower-stakes improvements. Ship as bandwidth allows.
@@ -555,6 +697,22 @@ A one-time "meet Winston, here's the club" screen shown after a new member compl
 Bottom nav now has the four-tab + center-FAB shape. Brass Capture FAB
 floats above the bar, side tabs use Lucide outline icons + brass
 underline for active state. Done.
+
+#### 26. Collection breakdown (NEW 2026-05-23)
+A visual analytics surface for a member's cellar. "Here's your shelf, sliced."
+
+**Possible cuts:**
+- **By flavor profile:** pie or bar chart of the dominant trait vectors across Have items — "your shelf leans woody + warm."
+- **By price tier:** distribution of $ / $$ / $$$ / $$$$ in your cellar (requires price bucketing from Tier 2 #22).
+- **By distillery / brand family:** how many Buffalo Trace vs. Heaven Hill vs. Jim Beam bottles.
+- **By vitola:** Robusto-heavy vs. Toro-heavy vs. varied.
+- **By rarity tier:** how many Common vs. Uncommon vs. Rare items (requires Tier 2 #24).
+
+**Where it lives:** a "Stats" or "Breakdown" section at the bottom of the member's own Cellar tab. Hidden for members with fewer than 5 cellar items (too sparse to be interesting).
+
+**Design constraint:** no 0–100 scores, no leaderboards. This is self-facing insight, not competitive ranking. Winston can narrate a single summary line ("Your shelf is heavily peated and mostly in the $$ range, sir — perhaps time for something rare.").
+
+**Effort:** medium — mostly aggregation queries + a chart component. Blocked on #22 (price) and #24 (rarity) if you want those dimensions; flavor + distillery cuts can ship from existing data.
 
 ---
 
@@ -778,7 +936,8 @@ Shipped.
 
 ### Phase 3 — Tasting flow 🟡
 - ✅ Recommend-to-NCCC with chips + note + silent wheel mapper.
-- ❌ The Session (thirds / nose-palate-finish, ambient timer, Winston help links).
+- ✅ The Session v1 (optional `/products/[id]/session`, thirds / nose-palate-finish, Winston help, finish → Recommend + Add to Cellar). Quick Recommend remains default.
+- ❌ Ambient session timer.
 
 ### Phase 4 — Product detail 🟡
 - ✅ Face: group voice (recommend bar, member takes), tag cloud, Pairs With (Phase 6 active), The Facts.
@@ -792,8 +951,9 @@ Shipped.
 - ❌ Center-FAB nav visual elevation.
 - ❌ Member profile sections: Pairing Preferences, Favorites, History, Education.
 
-### Phase 5.5 — The Cellar ❌
-Not started as a full phase. **Lightweight v2 primitive (`planning/ui-refresh-v2.md` §5) is the first step** — `member_saves` table, have/want booleans, `/shelf` route. Full phase (pour levels, finished/on-hand, Paul's xlsx import, dedicated nav tab) layers on top later. Tier 1 item.
+### Phase 5.5 — The Cellar ✅
+- ✅ Lightweight v1 (`member_saves`, have/want/tried, Cellar tab, `/shelf` redirect, cellar bias in Daily Pour + Pick My Pour).
+- ❌ Full phase: pour levels, finished/on-hand split, Paul's xlsx bulk import UI, dedicated nav tab.
 
 ### Phase 6 — Pairing engine 🟡
 - ✅ 8 declarative rules, scoring (0–100, clamped, 50 baseline), engine over the catalog, group validation, Winston prose via gpt-5-mini cached in `pairings_cache`, dedicated `/pairings/[cigarId]/[bourbonId]` page, Pairs With wired into product detail.
@@ -807,8 +967,9 @@ Not started as a full phase. **Lightweight v2 primitive (`planning/ui-refresh-v2
 - ❌ Education content library.
 - ❌ Depth-view admin (review member adjustments and accept into editorial baseline).
 
-### Phase 8 — Daily Pour ❌
-Not started. Tier 1 item.
+### Phase 8 — Daily Pour ✅
+- ✅ Home-page hero, deterministic pick, preference + cellar bias, prose cache, moss badge.
+- ✅ Pick My Pour (on-demand cellar pick, unlimited shuffle, Daily Pour + Cellar entry points).
 
 ### Phase 9+ — Deferred bonus ❌
 - Cellar shelf-location import (Paul's Shelf Plan tiers, tall-bottle override, Maker's Mark Wall).
@@ -820,7 +981,7 @@ Not started. Tier 1 item.
 
 ## Dependencies / critical path
 
-- **The Session (Tier 1 #2) and the Depth view (Tier 2 #4) both need a new schema:** `product_adjustments` table for per-member per-axis adjustments, `product_member_chips` for chip add/removes. Build the schema once; both features consume it.
+- **The Session v1 (Tier 1 #2)** ships without `product_adjustments` — phased data merges into existing `tastings` columns. Per-member axis adjustments + `product_member_chips` remain Tier 2 Depth view work.
 - **The Cellar (Tier 1 #1)** depends only on the capture pipeline (already shipped) and Paul's xlsx import (pre-launch checklist). The lightweight v2 primitive (`member_saves` table, have/want booleans, `/shelf` route) ships first as part of UI Refresh v2; the full Phase 5.5 features layer on top.
 - **Daily Pour (Tier 1 #3)** depends on the pairing engine (already shipped) and a few weeks of real member activity to have non-empty source data.
 - **Pairing Preferences (Tier 2 #5)** feeds the pairing engine — engine already accepts personalization weights through `trait_vector` math; just needs UI + storage.
@@ -834,3 +995,8 @@ Not started. Tier 1 item.
 - **Education library authorship:** Paul writes? gpt-5-mini drafts with Paul editing? Defer to when Education ships (Tier 3 #14).
 - **Cigarbase pairings screenshot:** Paul mentioned liking how Cigarbase presents pairings; screenshot wasn't captured. Capture before Tier 3 #8 work.
 - **Comment threads on tastings:** the feed-post anatomy idea kept ember + comment as the interaction bar. Comments aren't built yet. Tier 3 candidate.
+- **Bourbon tasting notes coverage (Tier 2 #19):** audit whether `products.specs` has a `tasting_notes` or `description` key on enriched bourbon rows before building the display. Run: `SELECT count(*) FROM products WHERE type='bourbon' AND specs->>'tasting_notes' IS NOT NULL;` — if > ~200 rows, ship it; otherwise hold.
+- **Adjacent picks signal source (Tier 2 #21):** the trait-vector cosine path is ready today (`pgvector` installed). The "co-tasted" path needs a few months of club usage to accumulate enough overlapping tastings to be meaningful. Ship vector similarity first; layer co-tasted signal once the data is there.
+- **Bourbon tier enrichment (Tier 2 #24 prep):** Cobb xlsx covers ~101 rows via `specs.tier`. For the remaining ~2k bourbon catalog, run a dedicated **LLM-only pass** (gpt-5-nano batch: name + distillery + proof + age → rarity tier 1–5 or Common/Uncommon/Rare) rather than waiting on Apify review prose. Store as `specs.tier` with `specs.tier_source: 'cobb' | 'llm'`. Apify path remains useful for images + review text; tier is a separate cheap batch job. Paul spot-checks the club staples subset before pairing-engine rarity bonus ships.
+- **Price normalization (Tier 2 #22):** **✅ shipped 2026-05-23** — `lib/catalog/normalize-specs.ts`. Cigars: StickPicks `price_tier` → $…$$$$ (782 rows); dollar fields override when present. Bourbons: opportunistic bucket from `price_usd` / `msrp_usd` only (~286 rows); hide when null. Shown on product detail subtitle + depth Facts strip.
+- **Pick My Pour re-roll cap (Tier 1 #4):** **resolved 2026-05-23** — unlimited re-rolls with shuffle; no server-side counter.

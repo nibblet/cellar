@@ -1,11 +1,7 @@
-import { notFound } from "next/navigation";
-import { CellarTab } from "@/components/cellar";
-import { TastingCard } from "@/components/feed";
+import { notFound, redirect } from "next/navigation";
 import { MemberBadges } from "@/components/members";
-import { Card, Divider } from "@/components/primitives";
+import { CellarSection, TastingsSection } from "@/components/members/sections";
 import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
-import { loadCellarProducts } from "@/lib/cellar/load";
-import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -30,14 +26,20 @@ export default async function MemberProfilePage({
   const tab = parseProfileTab(tabRaw);
 
   const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
 
-  const [memberResult, authResult, badgeMap] = await Promise.all([
+  if (auth.user?.id === id) {
+    if (tabRaw === "cellar") redirect("/you/cellar");
+    if (tabRaw === "tastings") redirect("/you/tastings");
+    redirect("/you");
+  }
+
+  const [memberResult, badgeMap] = await Promise.all([
     supabase
       .from("users")
       .select("id, name_first, name_last_initial, joined_at")
       .eq("id", id)
       .maybeSingle(),
-    supabase.auth.getUser(),
     loadMemberBadges(supabase),
   ]);
 
@@ -45,7 +47,7 @@ export default async function MemberProfilePage({
 
   const member = memberResult.data;
   const profile = member as MemberNameFields & { id: string; joined_at: string };
-  const viewerId = authResult.data.user?.id ?? null;
+  const viewerId = auth.user?.id ?? null;
   const isOwnProfile = viewerId === id;
   const badges = badgesForMember(badgeMap, id);
 
@@ -59,7 +61,6 @@ export default async function MemberProfilePage({
         ) : null}
       </header>
 
-      {/* Tab switcher */}
       <div className="flex items-center gap-2 mb-5 border-b border-border">
         <TabLink label="Tastings" href={`/members/${id}`} active={tab === "tastings"} />
         <TabLink label="Cellar" href={`/members/${id}?tab=cellar`} active={tab === "cellar"} />
@@ -75,82 +76,6 @@ export default async function MemberProfilePage({
         <TastingsSection memberId={id} displayName={formatMemberName(profile)} />
       )}
     </main>
-  );
-}
-
-async function TastingsSection({
-  memberId,
-  displayName,
-}: {
-  memberId: string;
-  displayName: string;
-}) {
-  const supabase = await createSupabaseServerClient();
-  const entries = await loadFeed(supabase, { userId: memberId, limit: 100 });
-  const signed = await signImagePaths(
-    supabase,
-    entries.map((e) => e.hero_image_path),
-  );
-
-  const total = entries.length;
-  const recommended = entries.filter((e) => e.recommend).length;
-
-  return (
-    <>
-      <p className="text-sm text-foreground-muted mb-4">
-        {total} tasting{total === 1 ? "" : "s"}
-        {recommended > 0 ? ` · ${recommended} recommended` : ""}
-      </p>
-
-      <Divider label="Their archive" />
-
-      {entries.length === 0 ? (
-        <Card>
-          <p className="text-sm text-foreground-subtle">
-            {displayName} hasn't logged a tasting yet.
-          </p>
-        </Card>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {entries.map((entry) => (
-            <TastingCard
-              key={entry.tasting_id}
-              entry={entry}
-              signedHero={
-                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-              }
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
-}
-
-async function CellarSection({
-  memberId,
-  memberFirstName,
-  isOwnProfile,
-}: {
-  memberId: string;
-  memberFirstName: string;
-  isOwnProfile: boolean;
-}) {
-  const supabase = await createSupabaseServerClient();
-  const [have, want, tried] = await Promise.all([
-    loadCellarProducts(supabase, memberId, "have"),
-    loadCellarProducts(supabase, memberId, "want"),
-    loadCellarProducts(supabase, memberId, "tried"),
-  ]);
-
-  return (
-    <CellarTab
-      have={have}
-      want={want}
-      tried={tried}
-      isOwnProfile={isOwnProfile}
-      memberFirstName={memberFirstName}
-    />
   );
 }
 

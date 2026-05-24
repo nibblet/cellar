@@ -63,6 +63,7 @@ export async function updateClubJoinedAt(
 
   if (error) return { ok: false, message: error.message };
 
+  revalidatePath("/you/settings");
   revalidatePath("/settings");
   return { ok: true, message: "Saved." };
 }
@@ -124,6 +125,7 @@ export async function savePreferences(
 
   if (error) return { ok: false, message: error.message };
 
+  revalidatePath("/you/settings");
   revalidatePath("/settings");
   revalidatePath("/");
   return { ok: true, message: "Saved." };

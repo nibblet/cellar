@@ -34,10 +34,10 @@ const SIDE_ITEMS: NavItem[] = [
     match: (p) => p.startsWith("/pairings"),
   },
   {
-    href: "/settings",
+    href: "/you",
     label: "You",
     icon: User,
-    match: (p) => p.startsWith("/settings") || p.startsWith("/admin") || p.startsWith("/events"),
+    match: (p) => p.startsWith("/you") || p.startsWith("/admin"),
   },
 ];
 
