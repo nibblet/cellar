@@ -3,8 +3,11 @@
 import { useActionState, useState } from "react";
 import { ChipInput } from "@/app/(app)/products/[id]/recommend/chip-input";
 import { Button, Card, Voice } from "@/components/primitives";
+import type { BourbonSessionPhases, CigarSessionPhases } from "@/lib/tasting/merge-session";
 import type { ProductType } from "@/lib/wheel";
 import { submitSession } from "./actions";
+
+type SessionPhaseKey = keyof CigarSessionPhases | keyof BourbonSessionPhases;
 
 type SessionFormProps = {
   productId: string;
@@ -32,7 +35,7 @@ export function SessionForm({ productId, productType, leafLabels, eventId }: Ses
   const [state, action, pending] = useActionState(submitSession, initial);
   const [step, setStep] = useState<"phases" | "finish">("phases");
   const phases = productType === "cigar" ? CIGAR_PHASES : BOURBON_PHASES;
-  const [activePhase, setActivePhase] = useState(phases[0].key);
+  const [activePhase, setActivePhase] = useState<SessionPhaseKey>(phases[0].key);
 
   const chipPlaceholder =
     productType === "cigar" ? "e.g. cocoa, leather, pepper" : "e.g. caramel, oak, rye";
