@@ -8,7 +8,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import { ApifyClient } from "./apify-client";
 import { type ApifyEnrichResult, type EnrichInput, enrichProductFromWeb } from "./apify-enrich";
+import { productNeedsCatalogEnrichment } from "./needs-enrichment";
 import { extractAndMergeSpecs, type SpecsEnrichResult } from "./specs-enrich";
+import { extractAndMergeWheelVector, type WheelEnrichResult } from "./wheel-enrich";
 
 export {
   type ApifyEnrichResult,
@@ -16,27 +18,43 @@ export {
   type EnrichInput,
   enrichProductFromWeb,
 } from "./apify-enrich";
+export { productNeedsCatalogEnrichment } from "./needs-enrichment";
 export {
   extractAndMergeSpecs,
   type SpecsEnrichResult,
 } from "./specs-enrich";
+export {
+  extractAndMergeWheelVector,
+  type WheelEnrichResult,
+} from "./wheel-enrich";
 
 export type DraftEnrichResult = {
   productId: string;
   apify: ApifyEnrichResult;
   specs: SpecsEnrichResult | null;
+  wheel: WheelEnrichResult | null;
 };
+
+async function countReviews(supabase: SupabaseClient, productId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from("product_reviews")
+    .select("id", { count: "exact", head: true })
+    .eq("product_id", productId);
+  if (error) throw new Error(`review count: ${error.message}`);
+  return count ?? 0;
+}
 
 /**
  * One-call entry point for the capture flow. Runs the Apify web enrichment
- * (image + reviews) and then immediately extracts structured specs from
- * those reviews. Total wall time ~30-60s, dominated by Apify.
- *
- * Lazily constructs the OpenAI and Apify clients from process.env so callers
- * (server actions, scripts) don't have to plumb them through.
+ * (image + reviews) and then extracts specs + wheel_vector from those reviews.
+ * Total wall time ~30-60s, dominated by Apify.
  */
 export async function enrichDraftProduct(
-  product: EnrichInput & { specs: Record<string, unknown> | null },
+  product: EnrichInput & {
+    source?: string | null;
+    specs: Record<string, unknown> | null;
+    wheel_vector?: Record<string, number> | null;
+  },
   supabase: SupabaseClient,
 ): Promise<DraftEnrichResult> {
   const apifyToken = process.env.APIFY_TOKEN;
@@ -47,22 +65,54 @@ export async function enrichDraftProduct(
   const apify = new ApifyClient(apifyToken);
   const openai = new OpenAI({ apiKey: openaiKey });
 
-  const apifyResult = await enrichProductFromWeb(product, {
-    apify,
-    openai,
-    supabase,
-  });
+  const reviewCount = await countReviews(supabase, product.id);
 
-  // Only run specs extraction if we actually wrote reviews — otherwise
-  // there's nothing to extract from.
+  let apifyResult: ApifyEnrichResult = {
+    productId: product.id,
+    imageUrl: null,
+    reviewsWritten: 0,
+    llmFallbackUsed: false,
+    mirrorError: null,
+    apifyError: null,
+  };
+
+  if (reviewCount === 0) {
+    apifyResult = await enrichProductFromWeb(product, { apify, openai, supabase });
+  }
+
+  const reviewsAfterApify =
+    apifyResult.reviewsWritten > 0 ? apifyResult.reviewsWritten : reviewCount;
+
   let specsResult: SpecsEnrichResult | null = null;
-  if (apifyResult.reviewsWritten > 0) {
+  let wheelResult: WheelEnrichResult | null = null;
+
+  if (reviewsAfterApify > 0) {
     specsResult = await extractAndMergeSpecs(product, { openai, supabase });
+
+    const { data: fresh } = await supabase
+      .from("products")
+      .select("wheel_vector")
+      .eq("id", product.id)
+      .maybeSingle();
+
+    if (!fresh?.wheel_vector || Object.keys(fresh.wheel_vector as object).length === 0) {
+      wheelResult = await extractAndMergeWheelVector(
+        {
+          id: product.id,
+          type: product.type,
+          name: product.name,
+          brand: product.brand,
+          wheel_vector: (fresh?.wheel_vector ?? null) as Record<string, number> | null,
+        },
+        { openai, supabase },
+      );
+    }
   }
 
   return {
     productId: product.id,
     apify: apifyResult,
     specs: specsResult,
+    wheel: wheelResult,
   };
 }

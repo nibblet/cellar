@@ -6,6 +6,7 @@ import { Divider } from "@/components/primitives";
 import {
   CaptureConfirmBanner,
   ClubVoice,
+  EnrichmentTrigger,
   ProductDepthSection,
   ProductHero,
   type ProductHeroImage,
@@ -17,6 +18,7 @@ import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
+import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
@@ -49,7 +51,9 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, type, name, brand, image_url, specs, status, created_at, wheel_vector, release_pattern, vintages_matter")
+    .select(
+      "id, type, name, brand, image_url, specs, status, source, created_at, wheel_vector, release_pattern, vintages_matter",
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -63,7 +67,7 @@ export default async function ProductDetailPage({
 
   const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
 
-  const [groupVoice, pairings, adjacent, imagesResult] = await Promise.all([
+  const [groupVoice, pairings, adjacent, imagesResult, reviewCountResult] = await Promise.all([
     loadGroupVoice(supabase, id, productType),
     loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: 45 }),
     suggestAdjacentProducts(supabase, id, { limit: 3 }),
@@ -75,6 +79,10 @@ export default async function ProductDetailPage({
       .eq("product_id", id)
       .order("is_hero", { ascending: false })
       .order("created_at", { ascending: false }),
+    supabase
+      .from("product_reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", id),
   ]);
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
@@ -122,6 +130,13 @@ export default async function ProductDetailPage({
   const isDraft = product.status === "draft";
   const subtitle = composeSubtitle(productType, specs);
   const isBaseline = groupVoice.tag_cloud.length === 0 && wheelVector != null;
+  const reviewCount = reviewCountResult.count ?? 0;
+  const needsEnrichment = productNeedsCatalogEnrichment({
+    source: product.source,
+    specs,
+    reviewCount,
+    hasWheelVector: wheelVector != null && Object.keys(wheelVector).length > 0,
+  });
 
   return (
     <AppShell>
@@ -175,7 +190,7 @@ export default async function ProductDetailPage({
           releasePattern={(product as { release_pattern?: string | null }).release_pattern ?? null}
           releaseLabel={release_label ?? null}
           justCaptured={Boolean(just_captured)}
-          alreadyEnriched={Boolean(stockUrl)}
+          needsEnrichment={needsEnrichment}
         />
       ) : just_captured ? (
         <CaptureConfirmBanner
@@ -186,6 +201,14 @@ export default async function ProductDetailPage({
           releasePattern={(product as { release_pattern?: string | null }).release_pattern ?? null}
           releaseLabel={release_label ?? null}
           eventId={event ?? null}
+        />
+      ) : null}
+
+      {!isDraft && needsEnrichment ? (
+        <EnrichmentTrigger
+          productId={product.id}
+          productType={productType}
+          needsEnrichment
         />
       ) : null}
 

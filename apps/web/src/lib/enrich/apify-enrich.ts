@@ -144,7 +144,11 @@ export async function enrichProductFromWeb(
       text: r.text,
     }));
     const { error: insErr } = await supabase.from("product_reviews").insert(rows);
-    if (!insErr) out.reviewsWritten = rows.length;
+    if (insErr) {
+      console.error("[enrichProductFromWeb] review insert:", insErr.message);
+    } else {
+      out.reviewsWritten = rows.length;
+    }
   }
 
   return out;

@@ -5,13 +5,11 @@
  * capture server action itself — splitting the work across two HTTP requests
  * gives the long-running Apify pass its own 60s budget on Vercel Hobby,
  * separate from the capture action's 60s budget.
- *
- * Idempotent: returns early if the product already has an image_url, so a
- * stray re-fire from the client is harmless.
  */
 
 import { NextResponse } from "next/server";
-import { enrichDraftProduct } from "@/lib/enrich";
+import { enrichDraftProduct, productNeedsCatalogEnrichment } from "@/lib/enrich";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
@@ -32,7 +30,7 @@ export async function POST(req: Request) {
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("id, type, name, brand, line, status, image_url, specs")
+    .select("id, type, name, brand, line, source, image_url, specs, wheel_vector")
     .eq("id", productId)
     .maybeSingle();
 
@@ -40,14 +38,37 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  // Already enriched. Idempotent no-op so the client can retry without harm.
-  if (product.image_url) {
+  const { count: reviewCount } = await supabase
+    .from("product_reviews")
+    .select("id", { count: "exact", head: true })
+    .eq("product_id", productId);
+
+  const specs = (product.specs ?? {}) as Record<string, unknown>;
+  const wheelVector = (product.wheel_vector ?? null) as Record<string, number> | null;
+  const needsEnrichment = productNeedsCatalogEnrichment({
+    source: product.source,
+    specs,
+    reviewCount: reviewCount ?? 0,
+    hasWheelVector: wheelVector != null && Object.keys(wheelVector).length > 0,
+  });
+
+  if (!needsEnrichment) {
     return NextResponse.json({ ok: true, skipped: "already enriched" });
   }
 
-  // Run the same enrichment pass the CLI scripts use. Hero image gets mirrored
-  // into Supabase Storage, reviews get inserted, specs get patched.
+  if (!process.env.APIFY_TOKEN) {
+    console.error("[api/enrich-draft] Missing APIFY_TOKEN");
+    return NextResponse.json(
+      { error: "Catalog enrichment is not configured (APIFY_TOKEN missing)" },
+      { status: 503 },
+    );
+  }
+
   try {
+    // Enrichment writes product_reviews, products.image_url/specs, and
+    // product-catalog storage — all service-role only under RLS. Auth gate
+    // above ensures only signed-in members can trigger it.
+    const admin = createSupabaseAdminClient();
     const result = await enrichDraftProduct(
       {
         id: product.id,
@@ -55,19 +76,35 @@ export async function POST(req: Request) {
         name: product.name,
         brand: product.brand,
         line: product.line ?? null,
-        specs: (product.specs ?? {}) as Record<string, unknown>,
+        source: product.source,
+        specs,
+        wheel_vector: wheelVector,
       },
-      supabase,
+      admin,
     );
+
+    if (result.apify.apifyError) {
+      console.warn("[api/enrich-draft] apify:", result.apify.apifyError);
+    }
+    if (result.apify.mirrorError) {
+      console.warn("[api/enrich-draft] mirror:", result.apify.mirrorError);
+    }
 
     return NextResponse.json({
       ok: true,
       imageUrl: result.apify.imageUrl,
       reviewsWritten: result.apify.reviewsWritten,
       specsFilled: result.specs?.fieldsFilled.length ?? 0,
+      wheelLeaves: result.wheel?.leavesFilled ?? 0,
+      apifyError: result.apify.apifyError,
+      mirrorError: result.apify.mirrorError,
+      specsError: result.specs?.error,
     });
   } catch (err) {
     console.error("[api/enrich-draft]", (err as Error).message);
-    return NextResponse.json({ error: "Enrichment failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Enrichment failed" },
+      { status: 500 },
+    );
   }
 }
