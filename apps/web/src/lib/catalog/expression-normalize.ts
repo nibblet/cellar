@@ -782,10 +782,10 @@ export function proposeNormalization(
 }
 
 /** Apply group-level rules: need 2+ rows sharing canonical, and a survivor or proposed one. */
-export function finalizeCollapseProposals(
-  rows: Array<NormalizationInput & { proposal: NormalizationProposal }>,
-): Array<NormalizationInput & { proposal: NormalizationProposal }> {
-  const byCanonical = new Map<string, typeof rows>();
+export function finalizeCollapseProposals<
+  T extends NormalizationInput & { proposal: NormalizationProposal },
+>(rows: T[]): T[] {
+  const byCanonical = new Map<string, T[]>();
   for (const row of rows) {
     const list = byCanonical.get(row.proposal.canonical_name) ?? [];
     list.push(row);
