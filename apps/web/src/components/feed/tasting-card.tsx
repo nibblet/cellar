@@ -92,7 +92,9 @@ export function TastingCard({ entry, signedHero, forYou = false }: TastingCardPr
         <div className="px-3.5 py-3 flex items-baseline justify-between gap-3 min-w-0">
           <div className="min-w-0 flex-1">
             <p className="text-[15px] font-medium text-foreground truncate leading-snug">
-              {entry.product_name}
+              {entry.release_label
+                ? `${entry.product_name} · ${entry.release_label}`
+                : entry.product_name}
             </p>
             <p className="text-[11px] text-foreground-muted truncate mt-0.5">
               {entry.product_brand ? `${entry.product_brand} · ` : ""}

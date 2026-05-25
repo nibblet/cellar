@@ -9,6 +9,7 @@ export type MemberTake = {
   recommend: boolean;
   chips: string[];
   note: string | null;
+  release_label: string | null;
   created_at: string;
 };
 
@@ -44,7 +45,7 @@ export async function loadGroupVoice(
   const { data: rows } = await supabase
     .from("tastings")
     .select(
-      "user_id, recommend, chips, note, wheel_vector, created_at, user:users(name_first, name_last_initial)",
+      "user_id, recommend, chips, note, release_label, wheel_vector, created_at, user:users(name_first, name_last_initial)",
     )
     .eq("product_id", productId)
     .order("created_at", { ascending: false });
@@ -54,6 +55,7 @@ export async function loadGroupVoice(
     recommend: boolean;
     chips: string[];
     note: string | null;
+    release_label: string | null;
     wheel_vector: WheelVector;
     created_at: string;
     user: MemberNameFields | null;
@@ -67,6 +69,7 @@ export async function loadGroupVoice(
     recommend: t.recommend,
     chips: t.chips ?? [],
     note: t.note,
+    release_label: t.release_label,
     created_at: t.created_at,
   }));
 

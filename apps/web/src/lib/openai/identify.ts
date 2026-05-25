@@ -10,6 +10,8 @@ export type IdentifiedProduct = {
   specs: Record<string, string | number | null>;
   confidence: "high" | "medium" | "low";
   notes: string | null;
+  /** Bourbon only: year, batch, or pick visible on the label. Null when unreadable. */
+  release_label: string | null;
 };
 
 type IdentifyArgs = {
@@ -32,6 +34,9 @@ For cigars, look at:
 For bourbons, look at:
 - The bottle label — distillery, brand, expression, age statement, proof/ABV
 - Front label is primary; back label has mash bill sometimes
+- If a release year, batch number, or store pick name is printed on the label,
+  capture it in release_label (e.g. "2021", "Batch 22F", "Total Wine Pick").
+  Match the expression name WITHOUT the variant suffix — Fusion Series, not Fusion #6.
 
 Be conservative. If you can't read the band/label clearly, say so via low confidence.
 The member's cigar/bourbon toggle is authoritative — always return that type. If the
@@ -67,6 +72,12 @@ const bourbonSpecsSchema = {
 } as const;
 
 function buildSchema(type: ProductType) {
+  const bourbonReleaseLabel = {
+    type: ["string", "null"] as const,
+    description:
+      "Release variant visible on label: year, batch, or store pick. Null if none visible.",
+  };
+
   return {
     type: "object",
     properties: {
@@ -74,7 +85,9 @@ function buildSchema(type: ProductType) {
       name: {
         type: "string",
         description:
-          "Full product name as printed (e.g., 'Padrón 1964 Anniversary Maduro Exclusivo')",
+          type === "cigar"
+            ? "Full product name as printed (e.g., 'Padrón 1964 Anniversary Maduro Exclusivo')"
+            : "Expression name without variant suffix (e.g., 'Bardstown Fusion Series', not 'Fusion #6')",
       },
       brand: {
         type: ["string", "null"],
@@ -86,8 +99,9 @@ function buildSchema(type: ProductType) {
         type: ["string", "null"],
         description: "Anything unusual or worth flagging — e.g., 'band partially obscured'",
       },
+      release_label: type === "bourbon" ? bourbonReleaseLabel : { type: "null" as const },
     },
-    required: ["type", "name", "brand", "specs", "confidence", "notes"],
+    required: ["type", "name", "brand", "specs", "confidence", "notes", "release_label"],
     additionalProperties: false,
   } as const;
 }

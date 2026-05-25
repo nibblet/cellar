@@ -24,6 +24,12 @@ const MODE_LABELS: Record<FindNextMode, { title: string; subtitle: string }> = {
 
 const INTERACTIVE_TILE = cn(interactiveCardClassName, cardFocusClassName);
 
+function productHeadline(name: string, brand: string | null): string {
+  if (!brand) return name;
+  if (name.toLowerCase().startsWith(brand.toLowerCase())) return name;
+  return `${brand} ${name}`;
+}
+
 type FindYourNextHeroProps = {
   suggestions: FindNextSuggestions;
 };
@@ -106,11 +112,11 @@ function PairingHeroTile({
       </div>
       <Link href={`/pairings/${topPair.cigar_id}/${topPair.bourbon_id}`} className="block group">
         <p className="text-base text-foreground truncate group-hover:text-accent transition-colors">
-          {topPair.cigar_name}
+          {productHeadline(topPair.cigar_name, topPair.cigar_brand)}
         </p>
         <p className="text-[11px] tracking-widest uppercase text-foreground-subtle my-1">with</p>
         <p className="text-base text-foreground truncate group-hover:text-accent transition-colors">
-          {topPair.bourbon_name}
+          {productHeadline(topPair.bourbon_name, topPair.bourbon_brand)}
         </p>
         {topPair.club_validated ? (
           <p className="text-[10px] uppercase tracking-widest text-moss-600 mt-2">● club tried</p>
@@ -219,11 +225,15 @@ function PairingList({ items }: { items: FindNextPairSuggestion[] }) {
         >
           <Card className="hover:bg-surface-2 transition-colors">
             <SourceBadge source={item.source} />
-            <p className="text-base text-foreground mt-1 truncate">{item.cigar_name}</p>
+            <p className="text-base text-foreground mt-1 truncate">
+              {productHeadline(item.cigar_name, item.cigar_brand)}
+            </p>
             <p className="text-[11px] tracking-widest uppercase text-foreground-subtle my-1">
               paired with
             </p>
-            <p className="text-base text-foreground truncate">{item.bourbon_name}</p>
+            <p className="text-base text-foreground truncate">
+              {productHeadline(item.bourbon_name, item.bourbon_brand)}
+            </p>
             {item.club_validated ? (
               <p className="text-[10px] uppercase tracking-widest text-moss-600 mt-2">
                 ● club tried
@@ -251,10 +261,9 @@ function ProductList({ items }: { items: FindNextProductSuggestion[] }) {
         <Link key={item.product_id} href={`/products/${item.product_id}`} className="block">
           <Card className="hover:bg-surface-2 transition-colors">
             <SourceBadge source={item.source} />
-            <p className="text-base text-foreground mt-1 truncate">{item.name}</p>
-            {item.brand ? (
-              <p className="text-xs text-foreground-muted truncate">{item.brand}</p>
-            ) : null}
+            <p className="text-base text-foreground mt-1 truncate">
+              {productHeadline(item.name, item.brand)}
+            </p>
           </Card>
         </Link>
       ))}

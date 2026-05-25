@@ -19,8 +19,8 @@ export function MemberTakes({ takes, initialVisible = 3 }: MemberTakesProps) {
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col divide-y divide-border">
         {visible.map((t) => (
-          <li key={t.user_id} className="py-3 first:pt-0 last:pb-0">
-            <div className="flex items-baseline gap-2">
+          <li key={`${t.user_id}-${t.release_label ?? ""}-${t.created_at}`} className="py-3 first:pt-0 last:pb-0">
+            <div className="flex items-baseline gap-2 flex-wrap">
               <span
                 className={t.recommend ? "text-ember-500" : "text-foreground-subtle"}
                 aria-hidden="true"
@@ -28,6 +28,11 @@ export function MemberTakes({ takes, initialVisible = 3 }: MemberTakesProps) {
                 ●
               </span>
               <span className="font-medium text-foreground">{t.display_name}</span>
+              {t.release_label ? (
+                <span className="px-2 py-0.5 rounded-full bg-surface-2 text-[11px] text-foreground-muted">
+                  {t.release_label}
+                </span>
+              ) : null}
               <span className="sr-only">{t.recommend ? "recommends" : "passed"}</span>
             </div>
             {t.note ? <p className="text-sm text-foreground italic mt-1">"{t.note}"</p> : null}

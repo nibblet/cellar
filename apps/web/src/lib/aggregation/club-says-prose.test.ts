@@ -31,6 +31,7 @@ describe("buildClubSaysProse", () => {
             recommend: true,
             chips: [],
             note: null,
+            release_label: null,
             created_at: "",
           },
         ],
@@ -68,6 +69,7 @@ describe("buildClubSaysProse", () => {
       recommend: true,
       chips: ["Leather", "Easy draw"],
       note: null,
+      release_label: null,
       created_at: "",
     };
     const prose = buildClubSaysProse(

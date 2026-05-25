@@ -11,6 +11,8 @@ export type IdentifyOutcome = {
    *  async catalog enrichment pass (POST /api/enrich-draft). The capture
    *  flow uses this to decide whether to fire the enrichment fetch. */
   needsEnrichment: boolean;
+  /** Vision-extracted release variant (bourbon). Null when unreadable or cigar. */
+  releaseLabel: string | null;
 };
 
 type OrchestrateArgs = {
@@ -109,11 +111,15 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     contributed_by: userId,
   });
 
+  const releaseLabel =
+    finalType === "bourbon" ? (extracted.release_label?.trim() || null) : null;
+
   return {
     productId: matchedProductId,
     matched,
     confidence: extracted.confidence,
     needsEnrichment,
+    releaseLabel,
   };
 }
 

@@ -15,6 +15,7 @@ export type FeedEntry = {
   recommend: boolean;
   chips: string[];
   note: string | null;
+  release_label: string | null;
   event_id: string | null;
   event_name: string | null;
   created_at: string;
@@ -42,7 +43,7 @@ export async function loadFeed(
     .from("tastings")
     .select(
       `
-      id, user_id, recommend, chips, note, created_at, event_id,
+      id, user_id, recommend, chips, note, release_label, created_at, event_id,
       user:users(name_first, name_last_initial),
       product:products(id, name, brand, type, specs),
       event:events(name)
@@ -62,6 +63,7 @@ export async function loadFeed(
     recommend: boolean;
     chips: string[];
     note: string | null;
+    release_label: string | null;
     created_at: string;
     event_id: string | null;
     user: MemberNameFields | null;
@@ -110,6 +112,7 @@ export async function loadFeed(
     recommend: r.recommend,
     chips: r.chips ?? [],
     note: r.note,
+    release_label: r.release_label,
     event_id: r.event_id,
     event_name: r.event?.name ?? null,
     created_at: r.created_at,

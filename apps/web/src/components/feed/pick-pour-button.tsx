@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { pickMyPour } from "@/app/(app)/pick-pour/actions";
+import { pickMyPour } from "@/app/(app)/(shell)/pick-pour/actions";
 import { Button } from "@/components/primitives";
 
 type PickPourButtonProps = {

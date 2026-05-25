@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackMapFromChips, mapChipsAndNoteToWheel } from "@/lib/openai/map-wheel";
 import type { ProductType } from "@/lib/wheel";
 import { backfillProductVectorIfMissing } from "./aggregate";
+import { parseReleaseLabel, type ReleaseLabelSource } from "./release-label";
 
 const WHEEL_VERSION = "0.1";
 
@@ -18,6 +19,10 @@ type SaveTastingArgs = {
   pairingSessionId?: string | null;
   /** product_images row to attach as the tasting's photo. */
   photoImageId?: string | null;
+  releaseLabel?: string | null;
+  releaseLabelSource?: ReleaseLabelSource | null;
+  /** When set with releaseLabel, upsert targets this specific release row. */
+  visionReleaseLabel?: string | null;
 };
 
 /**
@@ -40,7 +45,21 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
     eventId,
     pairingSessionId,
     photoImageId,
+    releaseLabel,
+    releaseLabelSource,
+    visionReleaseLabel,
   } = args;
+
+  const parsed = parseReleaseLabel(releaseLabel);
+  const memberEditedRelease =
+    visionReleaseLabel != null &&
+    parsed.release_label != null &&
+    parsed.release_label !== visionReleaseLabel.trim();
+  const labelSource = parsed.release_label
+    ? memberEditedRelease
+      ? "member"
+      : (releaseLabelSource ?? "member")
+    : null;
 
   // Fast path: synonym-mapped vector lets us redirect immediately.
   const seedVector = fallbackMapFromChips(productType, chips);
@@ -59,8 +78,11 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
         wheel_vector: seedVector,
         pairing_session_id: pairingSessionId ?? null,
         photo_image_id: photoImageId ?? null,
+        release_label: parsed.release_label,
+        release_year: parsed.release_year,
+        release_label_source: labelSource,
       },
-      { onConflict: "user_id,product_id" },
+      { onConflict: "user_id,product_id,release_label" },
     )
     .select("id")
     .single();

@@ -86,7 +86,7 @@ export async function acceptInvite(
       }
       await supabase.rpc("consume_invite_token", { token_param: token });
     }
-    redirect("/");
+    redirect("/welcome");
   }
 
   // Case B: confirmation email pending. Stash the profile bits so the callback
