@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getWheel } from "@/lib/wheel";
@@ -51,7 +52,7 @@ export default async function PairingTastePage({ params }: { params: Params }) {
     .limit(6);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-8 pb-24 flex-1">
+    <AppShell spacious>
       <Link
         href={`/pairings/${cigarId}/${bourbonId}`}
         className="text-sm text-foreground-muted hover:text-foreground"
@@ -91,6 +92,6 @@ export default async function PairingTastePage({ params }: { params: Params }) {
             : null
         }
       />
-    </main>
+    </AppShell>
   );
 }

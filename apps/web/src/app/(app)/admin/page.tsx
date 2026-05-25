@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -15,7 +16,7 @@ export default async function AdminHubPage() {
   if (profile?.role !== "admin") redirect("/you");
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6 text-center">
         <h1 className="text-3xl">Admin</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle mt-1">Club tools</p>
@@ -49,6 +50,6 @@ export default async function AdminHubPage() {
           </Link>
         </Card>
       </div>
-    </main>
+    </AppShell>
   );
 }

@@ -28,6 +28,9 @@
     "seed:enrich-specs": "tsx --env-file=.env.local scripts/seed/enrich-specs.ts",
     "seed:enrich-bourbon-tier": "tsx --env-file=.env.local scripts/seed/enrich-bourbon-tier.ts",
     "seed:export-bourbon-catalog": "tsx --env-file=.env.local scripts/seed/export-bourbon-catalog.ts",
+    "seed:export-cigar-catalog": "tsx --env-file=.env.local scripts/seed/export-cigar-catalog.ts",
+    "seed:apply-bourbon-review": "tsx --env-file=.env.local scripts/seed/apply-bourbon-catalog-review.ts",
+    "seed:apply-cigar-review": "tsx --env-file=.env.local scripts/seed/apply-cigar-catalog-review.ts",
     "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
     "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
   },

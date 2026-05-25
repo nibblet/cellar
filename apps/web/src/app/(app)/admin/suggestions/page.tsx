@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider, Voice } from "@/components/primitives";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -48,7 +49,7 @@ export default async function AdminSuggestionsPage() {
   const openCount = rows.filter((r) => r.status === "open").length;
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Admin</p>
         <h1 className="text-3xl mt-1">Suggestions</h1>
@@ -81,6 +82,6 @@ export default async function AdminSuggestionsPage() {
           ))}
         </ul>
       )}
-    </main>
+    </AppShell>
   );
 }

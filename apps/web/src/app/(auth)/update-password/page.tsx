@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { NCCCLogo } from "@/components/brand";
+import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { UpdateForm } from "./update-form";
@@ -15,7 +16,7 @@ export default async function UpdatePasswordPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-5 py-10 flex-1">
+    <AppShell auth>
       <header className="text-center mb-8 flex flex-col items-center">
         <NCCCLogo size={100} className="mb-4" decorative />
         <h1 className="text-4xl mb-2">NCCC</h1>
@@ -27,6 +28,6 @@ export default async function UpdatePasswordPage() {
       </Voice>
 
       <UpdateForm />
-    </main>
+    </AppShell>
   );
 }

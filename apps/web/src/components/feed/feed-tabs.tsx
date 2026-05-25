@@ -48,7 +48,7 @@ export function FeedTabs({ active }: { active: FeedTab }) {
       <Link
         href="/search"
         aria-label="Search the catalog"
-        className="absolute right-0 top-1/2 -translate-y-1/2 -mt-0.5 p-1 text-foreground-subtle hover:text-foreground transition-colors"
+        className="absolute right-0 top-1/2 -translate-y-1/2 -mt-0.5 flex items-center justify-center min-w-11 min-h-11 text-foreground-subtle hover:text-foreground transition-colors"
       >
         <Search className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
       </Link>

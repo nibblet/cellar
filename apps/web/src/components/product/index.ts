@@ -5,4 +5,3 @@ export { FactsStrip } from "./facts-strip";
 export { ProductDepthSection } from "./product-depth-section";
 export { ProductHero, type ProductHeroImage } from "./product-hero";
 export { TastingActionSegment } from "./tasting-action-segment";
-export { TraitRadar } from "./trait-radar";

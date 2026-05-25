@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider } from "@/components/primitives";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -30,7 +31,7 @@ export default async function MembersPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">The Club</p>
         <h1 className="text-3xl mt-1">Members</h1>
@@ -66,6 +67,6 @@ export default async function MembersPage() {
       <p className="text-sm text-foreground-subtle text-center">
         Invitations go out from settings.
       </p>
-    </main>
+    </AppShell>
   );
 }

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { CellarToggle } from "@/components/cellar";
+import { AppShell } from "@/components/layout/app-shell";
 import { PairsWith } from "@/components/pairing";
 import { Divider } from "@/components/primitives";
 import {
@@ -11,9 +12,9 @@ import {
 } from "@/components/product";
 import { buildClubSaysProse } from "@/lib/aggregation/club-says-prose";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
-import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -42,9 +43,7 @@ export default async function ProductDetailPage({
 
   const { data: product, error } = await supabase
     .from("products")
-    .select(
-      "id, type, name, brand, image_url, specs, status, created_at, trait_vector, wheel_vector",
-    )
+    .select("id, type, name, brand, image_url, specs, status, created_at, wheel_vector")
     .eq("id", id)
     .maybeSingle();
 
@@ -53,7 +52,6 @@ export default async function ProductDetailPage({
   const productType = product.type as ProductType;
   const specs = (product.specs ?? {}) as Record<string, unknown>;
   const wheelVector = (product.wheel_vector ?? null) as WheelVector | null;
-
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
@@ -119,7 +117,7 @@ export default async function ProductDetailPage({
   const isBaseline = groupVoice.tag_cloud.length === 0 && wheelVector != null;
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       {just_saved || just_captured ? (
         <div className="mb-4">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
@@ -149,6 +147,9 @@ export default async function ProductDetailPage({
           </p>
         ) : null}
         <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>
+        {specs.club_staple === true ? (
+          <p className="text-[11px] uppercase tracking-widest text-moss-500 mt-2">Club staple</p>
+        ) : null}
         {subtitle ? <p className="text-sm text-foreground-muted mt-2">{subtitle}</p> : null}
       </header>
 
@@ -191,24 +192,21 @@ export default async function ProductDetailPage({
 
       {userId ? (
         <div className="mt-6">
-          <TastingActionSegment
-            productId={product.id}
-            hasTasting={Boolean(myTake)}
-            event={event}
-          />
+          <TastingActionSegment productId={product.id} hasTasting={Boolean(myTake)} event={event} />
         </div>
       ) : null}
 
       <div className="mt-8" id="depth">
         <ProductDepthSection
           productType={productType}
+          productName={product.name}
           specs={specs}
           tagCloud={groupVoice.tag_cloud}
           wheelVector={wheelVector}
           isBaseline={isBaseline}
         />
       </div>
-    </main>
+    </AppShell>
   );
 }
 

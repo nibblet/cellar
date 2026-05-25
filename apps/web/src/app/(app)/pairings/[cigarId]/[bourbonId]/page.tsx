@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Winston } from "@/components/brand";
+import { AppShell } from "@/components/layout/app-shell";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { suggestPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -54,7 +55,7 @@ export default async function PairingPage({
   const otherMatches = alternatives.filter((a) => a.product_id !== bourbonId).slice(0, 3);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       {just_tasted ? (
         <div className="mb-4 flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
           <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
@@ -164,6 +165,6 @@ export default async function PairingPage({
           </Button>
         </Link>
       </div>
-    </main>
+    </AppShell>
   );
 }

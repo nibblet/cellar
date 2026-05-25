@@ -14,6 +14,7 @@ import {
   MeetupCard,
   TastingCard,
 } from "@/components/feed";
+import { AppShell } from "@/components/layout/app-shell";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
@@ -153,7 +154,7 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
   const { filters, sort } = parseFilters(sp);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="text-center mb-6 flex flex-col items-center">
         <NCCCLogo size={80} decorative />
       </header>
@@ -163,7 +164,7 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
       <Suspense fallback={<FeedBodySkeleton />}>
         <FeedBody tab={tab} filters={filters} sort={sort} />
       </Suspense>
-    </main>
+    </AppShell>
   );
 }
 

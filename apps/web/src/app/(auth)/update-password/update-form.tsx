@@ -23,7 +23,7 @@ export function UpdateForm() {
           minLength={8}
           autoComplete="new-password"
           placeholder="At least 8 characters"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 
@@ -38,7 +38,7 @@ export function UpdateForm() {
           required
           minLength={8}
           autoComplete="new-password"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 

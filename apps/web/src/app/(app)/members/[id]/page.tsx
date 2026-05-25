@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { MemberBadges } from "@/components/members";
 import { CellarSection, TastingsSection } from "@/components/members/sections";
 import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
@@ -52,7 +53,7 @@ export default async function MemberProfilePage({
   const badges = badgesForMember(badgeMap, id);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-5">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Member</p>
         <h1 className="text-3xl mt-1">{formatMemberName(profile)}</h1>
@@ -75,7 +76,7 @@ export default async function MemberProfilePage({
       ) : (
         <TastingsSection memberId={id} displayName={formatMemberName(profile)} />
       )}
-    </main>
+    </AppShell>
   );
 }
 

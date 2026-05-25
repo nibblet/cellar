@@ -52,7 +52,7 @@ export function SuggestionForm() {
             required
             maxLength={4000}
             placeholder="A feature you wish the app had, or a bug you noticed…"
-            className="w-full px-3 py-3 rounded-[10px] bg-surface-2 border border-border text-sm text-foreground placeholder:text-foreground-subtle resize-y focus:outline-none focus:border-accent"
+            className="w-full px-3 py-3 rounded-[10px] bg-surface-2 border border-border text-base text-foreground placeholder:text-foreground-subtle resize-y focus:outline-none focus:border-accent"
           />
         </div>
 

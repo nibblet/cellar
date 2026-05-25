@@ -140,6 +140,7 @@ html.light {
 
 html {
   height: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -163,6 +164,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100%;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 /* Headings default to display face; per-element classes can override */

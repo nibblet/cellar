@@ -133,11 +133,7 @@ export async function savePreferences(
 
 function parseMaxCatalogTier(raw: FormDataEntryValue | null): number {
   const n = typeof raw === "string" ? Number.parseInt(raw, 10) : Number.NaN;
-  if (
-    Number.isInteger(n) &&
-    n >= CATALOG_TIER_FLOOR &&
-    n <= CATALOG_TIER_CEILING
-  ) {
+  if (Number.isInteger(n) && n >= CATALOG_TIER_FLOOR && n <= CATALOG_TIER_CEILING) {
     return n;
   }
   return CATALOG_TIER_FLOOR;

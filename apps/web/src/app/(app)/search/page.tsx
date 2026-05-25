@@ -1,6 +1,7 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { PhotoFrame, PhotoPlaceholder, SearchInput } from "@/components/feed";
+import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
 import { signImagePaths } from "@/lib/feed/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -96,7 +97,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   const showingTooShort = rawQuery.trim().length > 0 && !hasQuery;
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <Link
         href="/"
         className="inline-flex items-center gap-1 text-sm text-foreground-muted hover:text-foreground mb-4"
@@ -161,7 +162,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
           ))}
         </ul>
       )}
-    </main>
+    </AppShell>
   );
 }
 

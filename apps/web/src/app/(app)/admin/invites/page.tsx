@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider, Voice } from "@/components/primitives";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -40,7 +41,7 @@ export default async function AdminInvitesPage() {
   const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? "";
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">Admin</p>
         <h1 className="text-3xl mt-1">Invites</h1>
@@ -98,6 +99,6 @@ export default async function AdminInvitesPage() {
           })}
         </ul>
       )}
-    </main>
+    </AppShell>
   );
 }

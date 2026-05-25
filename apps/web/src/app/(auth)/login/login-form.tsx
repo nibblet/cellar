@@ -21,7 +21,7 @@ export function LoginForm() {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 
@@ -33,7 +33,7 @@ export function LoginForm() {
           type="password"
           required
           autoComplete="current-password"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 

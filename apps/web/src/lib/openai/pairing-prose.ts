@@ -68,6 +68,7 @@ export async function generatePairingProse(args: ProseArgs): Promise<PairingPros
 
   const completion = await openai().chat.completions.create({
     model: MODELS.prose,
+    reasoning_effort: "minimal",
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: SYSTEM_PROMPT },

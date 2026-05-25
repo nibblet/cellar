@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Winston } from "@/components/brand";
+import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -20,7 +21,7 @@ export default async function WelcomePage() {
   const firstName = profile?.name_first ?? "friend";
 
   return (
-    <main className="mx-auto max-w-md px-5 py-8 pb-24 flex-1">
+    <AppShell spacious>
       <figure className="mb-6 flex flex-col items-center">
         <Winston
           variant="library"
@@ -82,6 +83,6 @@ export default async function WelcomePage() {
       >
         Step into the lounge
       </Link>
-    </main>
+    </AppShell>
   );
 }

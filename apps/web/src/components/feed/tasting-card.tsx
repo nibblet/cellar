@@ -76,7 +76,7 @@ export function TastingCard({ entry, signedHero, forYou = false }: TastingCardPr
 
   return (
     <Link href={`/products/${entry.product_id}`} className="block group">
-      <article className="rounded-[16px] border border-border bg-surface overflow-hidden transition-shadow group-hover:shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
+      <article className="mx-0.5 rounded-[16px] border border-border bg-surface overflow-hidden transition-shadow group-hover:shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
         {/* Photo area — taller-than-wide (Polaroid-ish) for editorial feel */}
         <div className="relative aspect-[4/5]">
           {signedHero ? (

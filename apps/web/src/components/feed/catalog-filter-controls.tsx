@@ -104,7 +104,7 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
             setFilterOpen(!filterOpen);
             setSortOpen(false);
           }}
-          className={`text-xs uppercase tracking-widest px-3 py-1.5 rounded-full border transition-colors ${
+          className={`text-xs uppercase tracking-widest px-3 py-2.5 rounded-full border transition-colors ${
             filterCount > 0
               ? "border-accent text-accent bg-accent-tint"
               : "border-border text-foreground-subtle hover:text-foreground-muted"
@@ -119,7 +119,7 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
             setSortOpen(!sortOpen);
             setFilterOpen(false);
           }}
-          className="text-xs uppercase tracking-widest px-3 py-1.5 rounded-full border border-border text-foreground-subtle hover:text-foreground-muted transition-colors"
+          className="text-xs uppercase tracking-widest px-3 py-2.5 rounded-full border border-border text-foreground-subtle hover:text-foreground-muted transition-colors"
         >
           {sortLabel}
         </button>
@@ -257,7 +257,7 @@ function CigarFilters({
               key={s}
               type="button"
               onClick={() => onUpdate({ strength: activeFilters.strength === s ? null : s })}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                 activeFilters.strength === s
                   ? "border-accent bg-accent-tint text-foreground"
                   : "border-border text-foreground-subtle hover:border-foreground-subtle"
@@ -283,7 +283,7 @@ function CigarFilters({
                   const next = active ? current.filter((x) => x !== w) : [...current, w];
                   onUpdate({ wrappers: next.length ? next.join(",") : null });
                 }}
-                className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                   active
                     ? "border-accent bg-accent-tint text-foreground"
                     : "border-border text-foreground-subtle hover:border-foreground-subtle"
@@ -303,7 +303,7 @@ function CigarFilters({
           defaultValue={activeFilters.vitola ?? ""}
           placeholder="Robusto, Toro…"
           onChange={(e) => onUpdate({ vitola: e.target.value.trim() || null })}
-          className="w-full rounded-[8px] border border-border bg-surface px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="w-full rounded-[8px] border border-border bg-surface px-3 py-2.5 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
       </section>
 
@@ -323,7 +323,7 @@ function CigarFilters({
               key={key}
               type="button"
               onClick={() => onUpdate({ ring: activeFilters.ringGauge === key ? null : key })}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                 activeFilters.ringGauge === key
                   ? "border-accent bg-accent-tint text-foreground"
                   : "border-border text-foreground-subtle hover:border-foreground-subtle"
@@ -355,7 +355,7 @@ function BrandFilter({
         defaultValue={activeFilters.brand ?? ""}
         placeholder="Perdomo, Jim Beam…"
         onChange={(e) => onUpdate({ brand: e.target.value.trim() || null })}
-        className="w-full rounded-[8px] border border-border bg-surface px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="w-full rounded-[8px] border border-border bg-surface px-3 py-2.5 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       />
     </section>
   );
@@ -395,7 +395,7 @@ function BourbonFilters({
                   const next = active ? current.filter((x) => x !== s) : [...current, s];
                   onUpdate({ styles: next.length ? next.join(",") : null });
                 }}
-                className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                   active
                     ? "border-accent bg-accent-tint text-foreground"
                     : "border-border text-foreground-subtle hover:border-foreground-subtle"
@@ -416,7 +416,7 @@ function BourbonFilters({
               key={b}
               type="button"
               onClick={() => onUpdate({ proof: activeFilters.proofBand === b ? null : b })}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                 activeFilters.proofBand === b
                   ? "border-accent bg-accent-tint text-foreground"
                   : "border-border text-foreground-subtle hover:border-foreground-subtle"
@@ -436,7 +436,7 @@ function BourbonFilters({
               key={b}
               type="button"
               onClick={() => onUpdate({ age: activeFilters.ageBand === b ? null : b })}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
                 activeFilters.ageBand === b
                   ? "border-accent bg-accent-tint text-foreground"
                   : "border-border text-foreground-subtle hover:border-foreground-subtle"

@@ -41,7 +41,7 @@ export function InviteCard({ origin }: Props) {
               readOnly
               value={inviteUrl}
               onClick={(e) => e.currentTarget.select()}
-              className="flex-1 px-3 h-11 rounded-[10px] bg-surface-2 border border-border text-sm text-foreground font-mono"
+              className="flex-1 px-3 h-11 rounded-[10px] bg-surface-2 border border-border text-base text-foreground font-mono"
             />
             <Button
               type="button"

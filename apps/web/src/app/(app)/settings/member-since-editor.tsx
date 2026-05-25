@@ -71,7 +71,7 @@ export function MemberSinceEditor({
         <select
           name="month"
           defaultValue={currentMonth ?? ""}
-          className="text-xs bg-surface border border-border rounded-md px-2 py-1 text-foreground"
+          className="text-base bg-surface border border-border rounded-md px-2 py-2 text-foreground"
           required
         >
           <option value="" disabled>
@@ -87,7 +87,7 @@ export function MemberSinceEditor({
         <select
           name="year"
           defaultValue={currentYear ?? ""}
-          className="text-xs bg-surface border border-border rounded-md px-2 py-1 text-foreground"
+          className="text-base bg-surface border border-border rounded-md px-2 py-2 text-foreground"
           required
         >
           <option value="" disabled>

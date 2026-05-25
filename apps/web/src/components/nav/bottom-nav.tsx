@@ -62,7 +62,7 @@ export function BottomNav() {
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-30 bg-surface/95 backdrop-blur border-t border-border pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="mx-auto max-w-md grid grid-cols-5 px-2 pt-1.5 pb-1 relative">
+      <ul className="mx-auto max-w-md grid grid-cols-5 px-6 pt-1.5 pb-1 relative">
         <SideTab item={SIDE_ITEMS[0]} pathname={pathname} />
         <SideTab item={SIDE_ITEMS[1]} pathname={pathname} />
 
@@ -105,7 +105,7 @@ function SideTab({ item, pathname }: { item: NavItem; pathname: string }) {
         href={item.href}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex flex-col items-center justify-center gap-1 py-1.5 transition-colors",
+          "flex flex-col items-center justify-center gap-1 py-2 min-h-11 transition-colors",
           active ? "text-foreground" : "text-foreground-subtle hover:text-foreground-muted",
         )}
       >

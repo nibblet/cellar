@@ -1,6 +1,7 @@
 import { signOut } from "@/app/(app)/settings/actions";
 import { MemberSinceEditor } from "@/app/(app)/settings/member-since-editor";
 import { PreferencesForm } from "@/app/(app)/settings/preferences-form";
+import { AppShell } from "@/components/layout/app-shell";
 import { Button, Card, Divider } from "@/components/primitives";
 import { ThemeToggle } from "@/components/theme";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
@@ -46,7 +47,7 @@ export default async function YouSettingsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6 text-center">
         <h1 className="text-3xl">Settings</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle mt-1">
@@ -92,6 +93,6 @@ export default async function YouSettingsPage() {
           </Card>
         </>
       ) : null}
-    </main>
+    </AppShell>
   );
 }

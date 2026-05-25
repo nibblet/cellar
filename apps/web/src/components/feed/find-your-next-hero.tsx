@@ -168,7 +168,7 @@ function FindNextSheet({
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="relative mx-auto w-full max-w-md max-h-[70vh] overflow-y-auto rounded-t-[16px] border border-border bg-background px-5 pt-4 pb-8">
+      <div className="relative mx-auto w-full max-w-md max-h-[70dvh] overflow-y-auto overscroll-contain rounded-t-[16px] border border-border bg-background px-6 pt-4 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-between gap-3 mb-4">
           <h2 className="text-xl">{title}</h2>
           <button

@@ -1,3 +1,4 @@
+import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider, Voice } from "@/components/primitives";
 import { SuggestionForm } from "./suggestion-form";
 
@@ -54,7 +55,7 @@ const upcoming: Item[] = [
 
 export default function RoadmapPage() {
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">The Club</p>
         <h1 className="text-4xl mt-1">Roadmap</h1>
@@ -97,6 +98,6 @@ export default function RoadmapPage() {
         "This is a hobby project for us — what you ask for is what gets built next."
       </Voice>
       <SuggestionForm />
-    </main>
+    </AppShell>
   );
 }

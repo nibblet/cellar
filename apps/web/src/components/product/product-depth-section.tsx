@@ -10,13 +10,20 @@ const CIGAR_CONSTRUCTION_KEYS = [
   "binder",
   "filler",
   "country",
+  "factory",
   "vitola",
+  "length_inches",
   "length",
   "ring_gauge",
+  "dimension",
+  "size",
   "strength",
+  "body",
 ];
 const BOURBON_CONSTRUCTION_KEYS = [
+  "whiskey_type",
   "distillery",
+  "expression_type",
   "mash_bill",
   "proof",
   "abv",
@@ -24,11 +31,11 @@ const BOURBON_CONSTRUCTION_KEYS = [
   "age_label",
   "aging_period_years",
   "style_family",
-  "dsp",
 ];
 
 type ProductDepthSectionProps = {
   productType: ProductType;
+  productName?: string | null;
   specs: Record<string, unknown>;
   tagCloud: TagCloudEntry[];
   wheelVector: WheelVector | null;
@@ -37,20 +44,19 @@ type ProductDepthSectionProps = {
 
 export function ProductDepthSection({
   productType,
+  productName,
   specs,
   tagCloud,
   wheelVector,
   isBaseline,
 }: ProductDepthSectionProps) {
   const flavorEntries =
-    tagCloud.length > 0
-      ? tagCloud
-      : buildTagCloud(productType, wheelVector ? [wheelVector] : []);
+    tagCloud.length > 0 ? tagCloud : buildTagCloud(productType, wheelVector ? [wheelVector] : []);
 
   return (
     <>
       <Divider label="Construction" />
-      <ConstructionPanel productType={productType} specs={specs} />
+      <ConstructionPanel productType={productType} specs={specs} productName={productName} />
 
       <div className="mt-3">
         <FactsStrip
@@ -77,7 +83,7 @@ export function ProductDepthSection({
                 <dt className="text-[11px] uppercase tracking-widest text-foreground-subtle">
                   {group.category_label}
                 </dt>
-                <dd className="text-base leading-relaxed text-foreground">
+                <dd className="text-base leading-relaxed text-foreground break-words">
                   {group.entries.map((e) => e.label).join(" · ")}
                 </dd>
               </div>
@@ -104,7 +110,7 @@ function ReviewersSay({ specs }: { specs: Record<string, unknown> }) {
   return (
     <>
       <Divider label="The reviewers say" />
-      <blockquote className="text-base leading-relaxed text-foreground-muted italic font-display">
+      <blockquote className="text-base leading-relaxed text-foreground-muted italic font-display break-words">
         "{raw.trim()}"
       </blockquote>
     </>

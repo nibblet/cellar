@@ -1,10 +1,11 @@
 import { Winston } from "@/components/brand";
+import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
 import { LoginForm } from "./login-form";
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto max-w-md px-5 py-10 flex-1">
+    <AppShell auth>
       <header className="text-center mb-8 flex flex-col items-center">
         <Winston variant="splash" size={220} className="mb-4 w-44 h-auto" />
         <h1 className="text-4xl mb-2">NCCC</h1>
@@ -20,6 +21,6 @@ export default function LoginPage() {
       <p className="text-center mt-8 text-sm text-foreground-subtle">
         New to NCCC? You'll need an invite from an existing member.
       </p>
-    </main>
+    </AppShell>
   );
 }

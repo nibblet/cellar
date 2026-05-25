@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Winston } from "@/components/brand";
+import { AppShell } from "@/components/layout/app-shell";
 import {
   Button,
   Card,
@@ -82,7 +83,7 @@ export default async function PairingsIndexPage() {
   const recommendedButNoPairs = !hasContent && recommendCount > 0;
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="text-center mb-6 flex flex-col items-center">
         <Winston variant="bust" size={64} className="mb-2 rounded-full" />
         <h1 className="text-3xl">Pairings</h1>
@@ -152,7 +153,7 @@ export default async function PairingsIndexPage() {
       <p className="mt-8 text-xs text-foreground-subtle text-center">
         Pairings sharpen as you and the club log more.
       </p>
-    </main>
+    </AppShell>
   );
 }
 

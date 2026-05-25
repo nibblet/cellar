@@ -34,8 +34,11 @@ const HIDE_KEYS = new Set([
   "strength_score",
   "rating",
   "score",
+  "length_inches",
   "length",
   "ring_gauge",
+  "dimension",
+  "size",
   "age_years",
   "age_label",
   "aging_period_years",
@@ -46,6 +49,12 @@ const HIDE_KEYS = new Set([
   "additional_notes",
   "flavor_profile_raw",
   "shelf",
+  "curation_notes",
+  "enrichment_pending",
+  "club_staple",
+  "expression_type",
+  "factory",
+  "body",
 ]);
 
 /**
@@ -72,7 +81,9 @@ export function FactsStrip({ productType, specs, excludeKeys = [] }: FactsStripP
     tokens.push(formatPriceBucket(normalized.priceBucket));
   }
 
-  if (normalized.rarityLabel != null) {
+  if (normalized.availabilityLabel != null) {
+    tokens.push(normalized.availabilityLabel);
+  } else if (normalized.rarityLabel != null) {
     tokens.push(formatRarityLabel(normalized.rarityLabel));
   }
 
@@ -95,7 +106,7 @@ export function FactsStrip({ productType, specs, excludeKeys = [] }: FactsStripP
   if (tokens.length === 0) return null;
 
   return (
-    <p className="text-xs text-foreground-muted leading-relaxed">
+    <p className="text-xs text-foreground-muted leading-relaxed break-words">
       {tokens.map((token, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: cosmetic dot-separated list
         <span key={`${token}-${i}`}>

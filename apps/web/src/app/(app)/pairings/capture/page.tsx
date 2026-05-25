@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { PairingCapturePicker } from "@/components/pairing/pairing-capture-picker";
 import { Voice } from "@/components/primitives";
 import { loadPickerProducts } from "@/lib/pairing/picker-products";
@@ -19,7 +20,7 @@ export default async function PairingCapturePage({ searchParams }: { searchParam
   ]);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-4">
         <Link href="/pairings" className="text-sm text-foreground-muted hover:text-foreground">
           ← Pairings
@@ -35,6 +36,6 @@ export default async function PairingCapturePage({ searchParams }: { searchParam
       </Voice>
 
       <PairingCapturePicker cigars={cigars} bourbons={bourbons} initialCigarId={initialCigarId} />
-    </main>
+    </AppShell>
   );
 }

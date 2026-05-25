@@ -33,7 +33,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 
@@ -46,7 +46,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
           required
           autoComplete="given-name"
           maxLength={40}
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 
@@ -62,7 +62,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
           maxLength={1}
           pattern="[A-Za-z]"
           placeholder="C"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent uppercase tracking-widest"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent uppercase tracking-widest"
         />
       </label>
 
@@ -76,7 +76,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
           minLength={8}
           autoComplete="new-password"
           placeholder="At least 8 characters"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 
@@ -91,7 +91,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
           required
           minLength={8}
           autoComplete="new-password"
-          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
+          className="h-14 px-4 rounded-[12px] bg-surface border border-border text-base text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </label>
 

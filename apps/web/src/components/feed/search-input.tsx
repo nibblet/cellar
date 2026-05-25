@@ -63,7 +63,7 @@ export function SearchInput({ initialQuery }: SearchInputProps) {
             setValue("");
             inputRef.current?.focus();
           }}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-foreground-subtle hover:text-foreground transition-colors"
+          className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-11 min-h-11 text-foreground-subtle hover:text-foreground transition-colors"
           aria-label="Clear search"
         >
           <X className="w-4 h-4" aria-hidden="true" />

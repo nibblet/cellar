@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getWheel, type ProductType } from "@/lib/wheel";
@@ -33,7 +34,7 @@ export default async function SessionPage({
   const leafLabels = wheel.leaves.map((l) => l.label);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-8 flex-1">
+    <AppShell spacious>
       <Link
         href={`/products/${product.id}`}
         className="text-sm text-foreground-muted hover:text-foreground"
@@ -71,6 +72,6 @@ export default async function SessionPage({
           Recommend in one tap →
         </Link>
       </p>
-    </main>
+    </AppShell>
   );
 }

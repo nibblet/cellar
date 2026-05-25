@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { PairingsSection } from "@/components/members/sections/pairings-section";
 import { Divider } from "@/components/primitives";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
@@ -20,7 +21,7 @@ export default async function YouPairingsPage() {
   const displayName = formatMemberName(profile as MemberNameFields);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-5">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">{displayName}</p>
         <h1 className="text-3xl mt-1">Your pairings</h1>
@@ -29,6 +30,6 @@ export default async function YouPairingsPage() {
       <Divider label="Captured together" />
 
       <PairingsSection memberId={auth.user.id} />
-    </main>
+    </AppShell>
   );
 }

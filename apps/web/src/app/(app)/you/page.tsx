@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { MemberBadges } from "@/components/members";
 import { Card, Divider, Voice } from "@/components/primitives";
 import type { BadgeComputeInput } from "@/lib/badges/compute";
@@ -109,7 +110,7 @@ export default async function YouHubPage() {
     : null;
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6 flex flex-col items-center text-center">
         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-tint to-accent/30 border border-accent/40 flex items-center justify-center overflow-hidden mb-3">
           {avatarSignedUrl ? (
@@ -213,7 +214,7 @@ export default async function YouHubPage() {
           <p className="text-sm text-foreground-subtle mt-1">Invites, suggestions, usage.</p>
         </Card>
       ) : null}
-    </main>
+    </AppShell>
   );
 }
 

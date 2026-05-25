@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
@@ -19,7 +20,7 @@ export default async function ProductEditPage({ params }: { params: Params }) {
   if (!product) notFound();
 
   return (
-    <main className="mx-auto max-w-md px-5 py-6 pb-24 flex-1">
+    <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">
           {product.status === "draft" ? "Draft" : "Edit"}
@@ -47,6 +48,6 @@ export default async function ProductEditPage({ params }: { params: Params }) {
           },
         }}
       />
-    </main>
+    </AppShell>
   );
 }
