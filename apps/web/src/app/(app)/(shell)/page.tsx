@@ -385,7 +385,7 @@ async function CatalogBody({
   sort: CatalogSortKey;
 }) {
   const [entries, cellarSnapshot] = await Promise.all([
-    loadCatalogBrowse(supabase, productType, preferences, 100, filters),
+    loadCatalogBrowse(supabase, productType, preferences, 500, filters),
     viewerId ? loadCellarSnapshot(supabase, viewerId) : null,
   ]);
   const signed = await signImagePaths(

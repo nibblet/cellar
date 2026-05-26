@@ -84,9 +84,9 @@ export default async function AdminCatalogPage() {
 
       <Card className="py-4 px-4 text-sm text-foreground-muted space-y-2">
         <p>
-          <strong className="text-foreground font-medium">1. Flag</strong> — set{" "}
-          <code className="text-xs">curation_collapse=Y</code> on sibling rows (rectify script or
-          curation sheet).
+          <strong className="text-foreground font-medium">1. Flag</strong> — tap{" "}
+          <code className="text-xs">Collapse Y/N</code> on any row here, or use the rectify script
+          for bulk restore.
         </p>
         <p>
           <strong className="text-foreground font-medium">2. Preview here</strong> — confirm

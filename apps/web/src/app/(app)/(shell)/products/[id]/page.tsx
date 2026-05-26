@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PenLine } from "lucide-react";
 import { CellarToggle } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
 import { PairsWith } from "@/components/pairing";
@@ -7,6 +9,7 @@ import {
   CaptureConfirmBanner,
   ClubVoice,
   EnrichmentTrigger,
+  ExploreLinks,
   ProductDepthSection,
   ProductHero,
   type ProductHeroImage,
@@ -66,6 +69,13 @@ export default async function ProductDetailPage({
   const wheelVector = (product.wheel_vector ?? null) as WheelVector | null;
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
+
+  const profileResult = userId
+    ? await supabase.from("users").select("role").eq("id", userId).maybeSingle()
+    : null;
+  const isAdmin = profileResult?.data?.role === "admin";
+  const isCreator = (product as { created_by?: string }).created_by === userId;
+  const canEdit = isAdmin || (isCreator && product.status === "draft");
 
   const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
 
@@ -176,7 +186,18 @@ export default async function ProductDetailPage({
             {product.brand}
           </p>
         ) : null}
-        <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>
+        <div className="flex items-start gap-3">
+          <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>
+          {canEdit ? (
+            <Link
+              href={`/products/${product.id}/edit`}
+              className="shrink-0 mt-1 text-foreground-muted hover:text-foreground transition-colors"
+              aria-label="Edit product"
+            >
+              <PenLine className="w-4 h-4" />
+            </Link>
+          ) : null}
+        </div>
         {specs.club_staple === true ? (
           <p className="text-[11px] uppercase tracking-widest text-moss-500 mt-2">Club staple</p>
         ) : null}
@@ -263,6 +284,9 @@ export default async function ProductDetailPage({
           wheelVector={wheelVector}
           isBaseline={isBaseline}
         />
+        {productType === "cigar" ? (
+          <ExploreLinks brand={product.brand ?? null} name={product.name} />
+        ) : null}
         <YouMightAlsoLike products={adjacent} />
       </div>
     </AppShell>

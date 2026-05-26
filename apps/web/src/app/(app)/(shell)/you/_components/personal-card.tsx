@@ -14,12 +14,14 @@ export function PersonalCard({
   thumbs,
   href,
   emptyVoice,
+  insightTeaser,
 }: {
   title: string;
   counts: string | null;
   thumbs: PersonalCardThumb[];
   href: string;
   emptyVoice: string;
+  insightTeaser?: string | null;
 }) {
   return (
     <Link href={href} className="block group">
@@ -54,6 +56,9 @@ export function PersonalCard({
         ) : (
           <Voice className="block mt-3 text-sm">{emptyVoice}</Voice>
         )}
+        {insightTeaser ? (
+          <Voice className="block mt-2 text-[12px] truncate">{`"${insightTeaser}"`}</Voice>
+        ) : null}
       </div>
     </Link>
   );

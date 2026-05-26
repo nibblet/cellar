@@ -5,10 +5,12 @@
  *   pnpm apply:catalog-curation --apply
  *   pnpm apply:catalog-curation --dry-run --tier=1,2
  *   pnpm apply:catalog-curation --apply --tier=1,2 ~/path/to/curation.xlsx
+ *   pnpm apply:catalog-curation --apply data/catalog-curation-audit.xlsx
  *
  * Reads the "Curate" sheet. Updates brand, name, specs, vintages_matter, release_pattern.
+ * products.name = REVIEW_canonical_name ?? proposed_canonical_name (expression-first, same as rectify).
  * REVIEW_keep=N rows are deleted (same FK handling as remove-catalog-tier).
- * REVIEW_collapse=Y rows are reported for collapse-map follow-up (not auto-merged yet).
+ * REVIEW_collapse is written to specs; run generate:collapse-map + collapse:catalog after.
  */
 
 import path from "node:path";
@@ -34,6 +36,7 @@ const VALID_RARITIES = new Set([
 type CurationRow = {
   product_id: string;
   sheet_tier: number | null;
+  proposed_canonical_name: string | null;
   REVIEW_brand: string | null;
   REVIEW_expression: string | null;
   REVIEW_canonical_name: string | null;
@@ -122,6 +125,7 @@ function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
     rows.push({
       product_id: id,
       sheet_tier: tier(get(row, "tier")),
+      proposed_canonical_name: str(get(row, "proposed_canonical_name")),
       REVIEW_brand: str(get(row, "REVIEW_brand")),
       REVIEW_expression: str(get(row, "REVIEW_expression")),
       REVIEW_canonical_name: str(get(row, "REVIEW_canonical_name")),
@@ -142,6 +146,10 @@ function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
     });
   }
   return rows;
+}
+
+function catalogDisplayName(row: CurationRow): string | null {
+  return row.REVIEW_canonical_name ?? row.proposed_canonical_name;
 }
 
 function parseTierFilter(argv: string[]): Set<number> | null {
@@ -245,9 +253,10 @@ async function main() {
     if (row.REVIEW_release_label) specs.curation_release_label = row.REVIEW_release_label;
     specs.curation_collapse = row.REVIEW_collapse ? "Y" : "N";
 
+    const displayName = catalogDisplayName(row);
     const patch = {
       brand: row.REVIEW_brand ?? cur.brand,
-      name: row.REVIEW_canonical_name ?? cur.name,
+      name: displayName ?? cur.name,
       specs,
       vintages_matter: row.REVIEW_vintages_matter,
       release_pattern: row.REVIEW_release_pattern,

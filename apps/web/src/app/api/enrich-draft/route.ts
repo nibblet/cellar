@@ -18,6 +18,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const productId = body?.productId;
+  const force = body?.force === true;
   if (typeof productId !== "string" || !productId) {
     return NextResponse.json({ error: "Missing productId" }, { status: 400 });
   }
@@ -26,6 +27,17 @@ export async function POST(req: Request) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  }
+
+  if (force) {
+    const { data: profile } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", auth.user.id)
+      .maybeSingle();
+    if (profile?.role !== "admin") {
+      return NextResponse.json({ error: "Admin only" }, { status: 403 });
+    }
   }
 
   const { data: product, error } = await supabase
@@ -38,23 +50,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  const { count: reviewCount } = await supabase
-    .from("product_reviews")
-    .select("id", { count: "exact", head: true })
-    .eq("product_id", productId);
-
   const specs = (product.specs ?? {}) as Record<string, unknown>;
   const wheelVector = (product.wheel_vector ?? null) as Record<string, number> | null;
-  const needsEnrichment = productNeedsCatalogEnrichment({
-    productType: product.type as "bourbon" | "cigar",
-    source: product.source,
-    specs,
-    reviewCount: reviewCount ?? 0,
-    hasWheelVector: wheelVector != null && Object.keys(wheelVector).length > 0,
-  });
 
-  if (!needsEnrichment) {
-    return NextResponse.json({ ok: true, skipped: "already enriched" });
+  if (!force) {
+    const { count: reviewCount } = await supabase
+      .from("product_reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", productId);
+
+    const needsEnrichment = productNeedsCatalogEnrichment({
+      productType: product.type as "bourbon" | "cigar",
+      source: product.source,
+      specs,
+      reviewCount: reviewCount ?? 0,
+      hasWheelVector: wheelVector != null && Object.keys(wheelVector).length > 0,
+    });
+
+    if (!needsEnrichment) {
+      return NextResponse.json({ ok: true, skipped: "already enriched" });
+    }
   }
 
   if (!process.env.APIFY_TOKEN) {
@@ -66,10 +81,16 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Enrichment writes product_reviews, products.image_url/specs, and
-    // product-catalog storage — all service-role only under RLS. Auth gate
-    // above ensures only signed-in members can trigger it.
     const admin = createSupabaseAdminClient();
+
+    if (force) {
+      await admin.from("product_reviews").delete().eq("product_id", productId);
+      await admin
+        .from("products")
+        .update({ wheel_vector: null })
+        .eq("id", productId);
+    }
+
     const result = await enrichDraftProduct(
       {
         id: product.id,

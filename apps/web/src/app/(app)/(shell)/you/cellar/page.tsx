@@ -1,7 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
+import { CellarInsightCard } from "@/components/cellar";
 import { CellarSection } from "@/components/members/sections";
 import { Divider } from "@/components/primitives";
+import { ensureCellarInsight } from "@/lib/cellar/insight";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -27,6 +30,10 @@ export default async function YouCellarPage() {
         <h1 className="text-3xl mt-1">Your cellar</h1>
       </header>
 
+      <Suspense fallback={null}>
+        <CellarInsightSection memberId={auth.user.id} />
+      </Suspense>
+
       <Divider label="The shelf" />
 
       <CellarSection
@@ -36,4 +43,11 @@ export default async function YouCellarPage() {
       />
     </AppShell>
   );
+}
+
+async function CellarInsightSection({ memberId }: { memberId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const insight = await ensureCellarInsight(supabase, memberId);
+  if (!insight) return null;
+  return <CellarInsightCard insight={insight} />;
 }

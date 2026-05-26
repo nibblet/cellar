@@ -107,7 +107,18 @@ export async function loadCatalogBrowse(
   if (filters.enrichedOnly) {
     query = query.not("image_url", "is", null);
   }
-  const { data: rows } = await query.order("name", { ascending: true }).limit(limit);
+
+  // Fetch the full catalog (paginated in 1000-row chunks to avoid the
+  // PostgREST default cap). In-memory filtering (tier, preferences, facets)
+  // needs the complete set before we can meaningfully sort + slice.
+  const allRows: ProductRow[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await query.order("name", { ascending: true }).range(from, from + 999);
+    if (error) throw error;
+    if (!data?.length) break;
+    allRows.push(...(data as ProductRow[]));
+  }
+  const rows = allRows;
 
   const products = ((rows ?? []) as ProductRow[]).filter((p) => Boolean(p.name));
   if (products.length === 0) return [];
@@ -188,8 +199,9 @@ export async function loadCatalogBrowse(
     });
   }
 
-  // Sort.
+  // Sort, then cap to the requested limit.
   entries = sortEntries(entries, sort, matchesEnabled);
+  if (limit > 0) entries = entries.slice(0, limit);
 
   return entries.map(
     ({ _rec_count: _r, _tasting_count: _t, _created_at: _c, _specs: _s, ...e }) => e,

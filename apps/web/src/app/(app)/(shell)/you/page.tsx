@@ -6,6 +6,7 @@ import { Card, Divider, Voice } from "@/components/primitives";
 import type { BadgeComputeInput } from "@/lib/badges/compute";
 import { badgesForMember, loadMemberBadges } from "@/lib/badges/load";
 import { nextBadgeForMember } from "@/lib/badges/next";
+import { loadCachedInsight } from "@/lib/cellar/insight";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { formatMemberInitials, type MemberNameFields } from "@/lib/identity";
 import { countMemberPairingSessions, loadMemberPairingSessions } from "@/lib/pairing/sessions";
@@ -27,6 +28,7 @@ export default async function YouHubPage() {
     tastingsCountResult,
     pairingsCount,
     recentPairings,
+    cachedInsight,
   ] = await Promise.all([
     supabase
       .from("users")
@@ -45,6 +47,7 @@ export default async function YouHubPage() {
     supabase.from("tastings").select("id", { count: "exact", head: true }).eq("user_id", me),
     countMemberPairingSessions(supabase, me),
     loadMemberPairingSessions(supabase, me, 3),
+    loadCachedInsight(supabase, me),
   ]);
 
   if (!profileResult.data) redirect("/login");
@@ -109,6 +112,8 @@ export default async function YouHubPage() {
       : `"You lit ${lastTasting.product.name} last."`
     : null;
 
+  const insightTeaser = cachedInsight?.bourbons ?? cachedInsight?.cigars ?? null;
+
   return (
     <AppShell>
       <header className="mb-6 flex flex-col items-center text-center">
@@ -161,6 +166,7 @@ export default async function YouHubPage() {
           thumbs={cellarThumbs}
           href="/you/cellar"
           emptyVoice='"The shelf is bare. Mark a few on hand."'
+          insightTeaser={insightTeaser}
         />
         <PersonalCard
           title="Your tastings"

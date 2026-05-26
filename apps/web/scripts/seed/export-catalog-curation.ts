@@ -245,6 +245,7 @@ function parseArgs(argv: string[]) {
     mergeFromIdx >= 0 && argv[mergeFromIdx + 1]
       ? path.resolve(argv[mergeFromIdx + 1])
       : null;
+  const mergeAllTiers = argv.includes("--merge-all-tiers");
   const outPath = argv.find(
     (a) => a.endsWith(".xlsx") && a !== mergeFrom && !a.startsWith("--"),
   );
@@ -256,6 +257,7 @@ function parseArgs(argv: string[]) {
     outPath: resolvedOut,
     fresh,
     mergeFrom,
+    mergeAllTiers,
     noBackup,
     tierFilter,
   };
@@ -327,8 +329,43 @@ async function fetchReviewMeta(): Promise<
   return byProduct;
 }
 
+function tierSlicePaths(): string[] {
+  const dataDir = path.resolve(__dirname, "../../../../data");
+  const paths: string[] = [];
+  for (let t = 1; t <= 5; t++) {
+    const p = path.join(dataDir, `catalog-curation-tier${t}-review.xlsx`);
+    if (existsSync(p)) paths.push(p);
+  }
+  return paths;
+}
+
+function mergeReviewNonEmpty(
+  base: SavedReview | undefined,
+  overlay: SavedReview,
+): SavedReview {
+  const merged: SavedReview = { ...(base ?? {}) };
+  for (const key of REVIEW_COLUMNS) {
+    const val = overlay[key]?.trim();
+    if (val) merged[key] = val;
+  }
+  return merged;
+}
+
+/** Tier slice edits win, but empty cells must not wipe master/audit yellow columns. */
+async function loadTierReviewOverrides(): Promise<Map<string, SavedReview>> {
+  const merged = new Map<string, SavedReview>();
+  for (const p of tierSlicePaths()) {
+    const chunk = await loadSavedReviews(p, "full");
+    for (const [id, review] of chunk) {
+      merged.set(id, mergeReviewNonEmpty(merged.get(id), review));
+    }
+    console.log(`[export-catalog-curation] tier slice ${path.basename(p)} → ${chunk.size} rows`);
+  }
+  return merged;
+}
+
 async function main() {
-  const { outPath, fresh, mergeFrom, noBackup, tierFilter } = parseArgs(
+  const { outPath, fresh, mergeFrom, mergeAllTiers, noBackup, tierFilter } = parseArgs(
     process.argv.slice(2),
   );
 
@@ -344,6 +381,16 @@ async function main() {
   const savedReviews = mergePath
     ? await loadSavedReviews(mergePath, mergeMode)
     : new Map();
+
+  if (mergeAllTiers) {
+    const tierOverrides = await loadTierReviewOverrides();
+    for (const [id, review] of tierOverrides) {
+      savedReviews.set(id, mergeReviewNonEmpty(savedReviews.get(id), review));
+    }
+    console.log(
+      `[export-catalog-curation] merged tier slices (non-empty cells only) → ${tierOverrides.size} product overrides`,
+    );
+  }
   if (mergePath && !fresh) {
     console.log(
       `[export-catalog-curation] loaded ${savedReviews.size} rows (${mergeMode} merge) from ${mergePath}`,
@@ -433,6 +480,7 @@ async function main() {
     "  Tier exports merge prior yellow columns from the master sheet when present.",
     "  Use --fresh to reset REVIEW_* from script proposals.",
     "  Use --merge-from path.xlsx to merge edits from another file.",
+    "  Use --merge-all-tiers to pull REVIEW_* from data/catalog-curation-tier{N}-review.xlsx.",
     "",
     mergePath
       ? `Merged REVIEW_* from: ${mergePath} (${savedReviews.size} rows in merge source)`

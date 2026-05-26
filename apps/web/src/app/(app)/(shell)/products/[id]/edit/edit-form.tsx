@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
-import { Button, Card } from "@/components/primitives";
+import { useActionState, useState } from "react";
+import { Button, Card, Voice } from "@/components/primitives";
 import type { ProductType } from "@/lib/wheel";
 import { type EditProductState, updateProduct } from "./actions";
 
@@ -25,11 +25,40 @@ type Props = {
     brand: string | null;
     specs: Specs;
   };
+  canReEnrich?: boolean;
 };
 
-export function EditForm({ product }: Props) {
+export function EditForm({ product, canReEnrich }: Props) {
   const [state, action, pending] = useActionState(updateProduct, initial);
   const isCigar = product.type === "cigar";
+  const [enriching, setEnriching] = useState(false);
+  const [enrichResult, setEnrichResult] = useState<{
+    ok?: boolean;
+    error?: string;
+    reviewsWritten?: number;
+  } | null>(null);
+
+  async function handleReEnrich() {
+    setEnriching(true);
+    setEnrichResult(null);
+    try {
+      const res = await fetch("/api/enrich-draft", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ productId: product.id, force: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setEnrichResult({ error: data.error ?? "Failed" });
+      } else {
+        setEnrichResult({ ok: true, reviewsWritten: data.reviewsWritten });
+      }
+    } catch {
+      setEnrichResult({ error: "Network error" });
+    } finally {
+      setEnriching(false);
+    }
+  }
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -96,6 +125,35 @@ export function EditForm({ product }: Props) {
           {pending ? "Saving…" : "Save"}
         </Button>
       </div>
+
+      {canReEnrich ? (
+        <div className="mt-6 pt-6 border-t border-border">
+          <p className="text-xs uppercase tracking-widest text-foreground-subtle mb-3">
+            Catalog enrichment
+          </p>
+          <Voice className="text-sm mb-4">
+            Save first, then re-enrich to pull fresh reviews and specs for the updated name.
+          </Voice>
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={enriching || pending}
+            className="w-full"
+            onClick={handleReEnrich}
+          >
+            {enriching ? "Re-enriching…" : "Re-enrich from web"}
+          </Button>
+          {enrichResult?.ok ? (
+            <p className="text-xs text-moss-500 mt-2 text-center">
+              Done — {enrichResult.reviewsWritten ?? 0} reviews pulled. Return to detail page to see
+              updates.
+            </p>
+          ) : null}
+          {enrichResult?.error ? (
+            <p className="text-xs text-ember-500 mt-2 text-center">{enrichResult.error}</p>
+          ) : null}
+        </div>
+      ) : null}
     </form>
   );
 }

@@ -6,6 +6,7 @@ import { Card, Divider } from "@/components/primitives";
 import { ReleaseVariantChips } from "@/components/product/release-variant-chips";
 import type { CollapseGroup, SoloCollapseFlag } from "@/lib/catalog/collapse-groups";
 import { cn } from "@/lib/utils";
+import { CollapseFlagToggle } from "./collapse-flag-toggle";
 
 type SkippedRow = {
   name: string;
@@ -104,8 +105,13 @@ export function CatalogReviewClient({
               {soloFlags.map(({ product, reason }) => (
                 <li key={product.id}>
                   <Card className="py-3 px-4">
-                    <ProductLink id={product.id} name={product.name} brand={product.brand} />
-                    <p className="text-xs text-foreground-subtle mt-1">{reason}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <ProductLink id={product.id} name={product.name} brand={product.brand} />
+                        <p className="text-xs text-foreground-subtle mt-1">{reason}</p>
+                      </div>
+                      <CollapseFlagToggle productId={product.id} specs={product.specs} />
+                    </div>
                   </Card>
                 </li>
               ))}
@@ -179,31 +185,27 @@ function CollapseGroupCard({ group }: { group: CollapseGroup }) {
 
       <ul className="divide-y divide-border">
         <li className="px-4 py-3">
-          <RowBadge tone="survivor">Keeps</RowBadge>
-          <ProductLink
-            id={group.survivor.id}
-            name={group.survivor.name}
-            brand={group.survivor.brand}
-            className="mt-2"
+          <CatalogProductRow
+            product={group.survivor}
+            badge={<RowBadge tone="survivor">Keeps</RowBadge>}
           />
         </li>
         {group.variants.map(({ product, releaseLabel }) => (
           <li key={product.id} className="px-4 py-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <RowBadge tone="variant">Merges</RowBadge>
-              {releaseLabel ? (
-                <span className="px-2 py-0.5 rounded-full bg-surface-2 text-xs text-foreground-muted border border-border">
-                  {releaseLabel}
-                </span>
-              ) : (
-                <span className="text-xs text-amber-600/90">missing release label</span>
-              )}
-            </div>
-            <ProductLink
-              id={product.id}
-              name={product.name}
-              brand={product.brand}
-              className="mt-2"
+            <CatalogProductRow
+              product={product}
+              badge={
+                <>
+                  <RowBadge tone="variant">Merges</RowBadge>
+                  {releaseLabel ? (
+                    <span className="px-2 py-0.5 rounded-full bg-surface-2 text-xs text-foreground-muted border border-border">
+                      {releaseLabel}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-amber-600/90">missing release label</span>
+                  )}
+                </>
+              }
             />
           </li>
         ))}
@@ -231,6 +233,24 @@ function RowBadge({ tone, children }: { tone: "survivor" | "variant"; children: 
     >
       {children}
     </span>
+  );
+}
+
+function CatalogProductRow({
+  product,
+  badge,
+}: {
+  product: CollapseGroup["survivor"];
+  badge: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 flex-wrap">{badge}</div>
+        <ProductLink id={product.id} name={product.name} brand={product.brand} className="mt-2" />
+      </div>
+      <CollapseFlagToggle productId={product.id} specs={product.specs} />
+    </div>
   );
 }
 

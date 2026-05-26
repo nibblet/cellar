@@ -86,8 +86,12 @@ export function expressionIdentityKey(p: CatalogProductRow): string {
   return `${p.name}::${curated}::${exprType}`;
 }
 
+export function isCollapseFlagged(product: { specs: Record<string, unknown> | null }): boolean {
+  return product.specs?.curation_collapse === "Y" || product.specs?.curation_collapse === true;
+}
+
 function collapseFlag(p: CatalogProductRow): boolean {
-  return p.specs?.curation_collapse === "Y" || p.specs?.curation_collapse === true;
+  return isCollapseFlagged(p);
 }
 
 function survivorScore(p: CatalogProductRow): number {

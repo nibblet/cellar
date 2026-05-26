@@ -19,6 +19,12 @@ export default async function ProductEditPage({ params }: { params: Params }) {
 
   if (!product) notFound();
 
+  const { data: auth } = await supabase.auth.getUser();
+  const { data: profile } = auth.user
+    ? await supabase.from("users").select("role").eq("id", auth.user.id).maybeSingle()
+    : { data: null };
+  const isAdmin = profile?.role === "admin";
+
   return (
     <AppShell>
       <header className="mb-6">
@@ -47,6 +53,7 @@ export default async function ProductEditPage({ params }: { params: Params }) {
             mash_bill?: string;
           },
         }}
+        canReEnrich={isAdmin}
       />
     </AppShell>
   );

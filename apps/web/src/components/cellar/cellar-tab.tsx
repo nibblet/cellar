@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { startTransition, useOptimistic, useState } from "react";
+import { setCellarState } from "@/lib/cellar/actions";
 import { PickPourButton } from "@/components/feed";
 import { Voice } from "@/components/primitives";
 import { cn } from "@/lib/utils";
 
 type CellarFilter = "have" | "want" | "tried";
+type TypeFilter = "all" | "cigar" | "bourbon";
 
 type CellarProduct = {
   product_id: string;
@@ -23,15 +25,31 @@ type CellarTabProps = {
   memberFirstName: string;
 };
 
-/**
- * Tabbed cellar view on a member's profile page.
- * Three filter chips: Have / Want / Tried (default: Have).
- */
 export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: CellarTabProps) {
   const [filter, setFilter] = useState<CellarFilter>("have");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [removedIds, setRemovedIds] = useOptimistic<
+    Record<string, Set<string>>,
+    { filter: CellarFilter; productId: string }
+  >({} as Record<string, Set<string>>, (prev, { filter: f, productId }) => {
+    const key = f;
+    const next = new Set(prev[key]);
+    next.add(productId);
+    return { ...prev, [key]: next };
+  });
 
   const lists: Record<CellarFilter, CellarProduct[]> = { have, want, tried };
-  const current = lists[filter];
+
+  const visibleList = lists[filter]
+    .filter((p) => !removedIds[filter]?.has(p.product_id))
+    .filter((p) => typeFilter === "all" || p.type === typeFilter);
+
+  const typeFilteredList = lists[filter].filter(
+    (p) => !removedIds[filter]?.has(p.product_id),
+  );
+  const cigarCount = typeFilteredList.filter((p) => p.type === "cigar").length;
+  const bourbonCount = typeFilteredList.filter((p) => p.type === "bourbon").length;
+  const hasBothTypes = cigarCount > 0 && bourbonCount > 0;
 
   const emptyMessages: Record<CellarFilter, string> = {
     have: isOwnProfile
@@ -47,6 +65,13 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
 
   const hasHaveItems = have.length >= 1;
 
+  function handleRemove(productId: string) {
+    startTransition(() => {
+      setRemovedIds({ filter, productId });
+      setCellarState(productId, { [filter]: false });
+    });
+  }
+
   return (
     <div>
       {isOwnProfile && hasHaveItems ? (
@@ -61,8 +86,8 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
         </Voice>
       ) : null}
 
-      {/* Filter chips */}
-      <div className="flex items-center gap-2 mb-4">
+      {/* State filter chips: Have / Want / Tried */}
+      <div className="flex items-center gap-2 mb-3">
         {(["have", "want", "tried"] as CellarFilter[]).map((f) => (
           <button
             key={f}
@@ -84,39 +109,97 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
         ))}
       </div>
 
-      {current.length === 0 ? (
+      {/* Type filter: All / Cigars / Bourbons — only shown when both types exist */}
+      {hasBothTypes ? (
+        <div className="flex items-center gap-1.5 mb-4">
+          {([
+            { key: "all" as TypeFilter, label: "All" },
+            { key: "cigar" as TypeFilter, label: `Cigars ${cigarCount}` },
+            { key: "bourbon" as TypeFilter, label: `Bourbons ${bourbonCount}` },
+          ]).map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setTypeFilter(key)}
+              className={cn(
+                "px-2.5 py-0.5 rounded-full text-[11px] tracking-wide transition-colors",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                typeFilter === key
+                  ? "bg-surface-2 text-foreground border border-border"
+                  : "text-foreground-subtle hover:text-foreground-muted",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {visibleList.length === 0 ? (
         <p className="text-sm text-foreground-subtle italic text-center py-4">
-          {emptyMessages[filter]}
+          {typeFilter !== "all"
+            ? `No ${typeFilter === "cigar" ? "cigars" : "bourbons"} in this list.`
+            : emptyMessages[filter]}
         </p>
       ) : (
         <div className="flex flex-col gap-2">
-          {current.map((p) => (
-            <a
+          {visibleList.map((p) => (
+            <div
               key={p.product_id}
-              href={`/products/${p.product_id}`}
               className="flex items-center gap-3 rounded-[12px] border border-border bg-surface px-3.5 py-2.5 hover:bg-surface-2 transition-colors"
             >
-              {p.image_url ? (
-                // biome-ignore lint/performance/noImgElement: public catalog URL, no signing needed
-                <img
-                  src={p.image_url}
-                  alt={p.name}
-                  className="w-9 h-9 rounded-lg object-contain bg-surface-2 shrink-0"
-                />
-              ) : (
-                <div className="w-9 h-9 rounded-lg bg-surface-2 shrink-0 flex items-center justify-center text-[10px] text-foreground-subtle uppercase tracking-widest">
-                  {p.type === "cigar" ? "🚬" : "🥃"}
+              <a
+                href={`/products/${p.product_id}`}
+                className="flex items-center gap-3 flex-1 min-w-0"
+              >
+                {p.image_url ? (
+                  // biome-ignore lint/performance/noImgElement: public catalog URL, no signing needed
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    className="w-9 h-9 rounded-lg object-contain bg-surface-2 shrink-0"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-lg bg-surface-2 shrink-0 flex items-center justify-center text-[10px] text-foreground-subtle uppercase tracking-widest">
+                    {p.type === "cigar" ? "🚬" : "🥃"}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-medium text-foreground truncate">{p.name}</p>
+                  <p className="text-[11px] text-foreground-muted truncate">
+                    {p.brand ?? ""}
+                    {p.brand ? " · " : ""}
+                    <span className="uppercase tracking-widest text-foreground-subtle">
+                      {p.type}
+                    </span>
+                  </p>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-foreground truncate">{p.name}</p>
-                <p className="text-[11px] text-foreground-muted truncate">
-                  {p.brand ?? ""}
-                  {p.brand ? " · " : ""}
-                  <span className="uppercase tracking-widest text-foreground-subtle">{p.type}</span>
-                </p>
-              </div>
-            </a>
+              </a>
+              {isOwnProfile ? (
+                <button
+                  type="button"
+                  onClick={() => handleRemove(p.product_id)}
+                  className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-foreground-subtle hover:text-foreground hover:bg-surface-2 transition-colors"
+                  aria-label={`Remove from ${filter}`}
+                  title={`Remove from ${filter}`}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 4l6 6M10 4l-6 6"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              ) : null}
+            </div>
           ))}
         </div>
       )}
