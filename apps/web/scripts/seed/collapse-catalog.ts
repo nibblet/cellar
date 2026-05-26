@@ -17,6 +17,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { rollUpTraits, type WheelVector } from "@/lib/wheel";
 import { parseReleaseLabel } from "@/lib/tasting/release-label";
+import {
+  KNOWN_RELEASE_LABELS_KEY,
+  labelsFromSpecs,
+  mergeKnownReleaseLabels,
+} from "@/lib/tasting/known-release-labels";
 import { adminClient } from "./lib/supabase-admin";
 
 export {};
@@ -26,10 +31,18 @@ type MapEntry = {
   new_product_id?: string;
   old_name?: string;
   expression_name?: string;
-  release_label: string;
+  release_label: string | null;
+  expression_chip?: string;
   vintages_matter?: boolean;
   release_pattern?: "year" | "batch" | "pick";
 };
+
+function labelFromEntry(entry: MapEntry): string | null {
+  const parsed = parseReleaseLabel(entry.release_label);
+  if (parsed.release_label) return parsed.release_label;
+  const chip = entry.expression_chip?.trim();
+  return chip || null;
+}
 
 const MAP_PATH = resolve(process.cwd(), "../../data/catalog-collapse-map.json");
 
@@ -103,6 +116,7 @@ async function main() {
 
   let applied = 0;
   let failed = 0;
+  const labelsBySurvivor = new Map<string, Set<string>>();
 
   for (const entry of map) {
     const oldId = await resolveProductId(supabase, {
@@ -127,13 +141,23 @@ async function main() {
       continue;
     }
 
-    console.log(`  MERGE ${entry.old_name ?? oldId} → ${entry.expression_name ?? newId} (${entry.release_label})`);
+    console.log(
+      `  MERGE ${entry.old_name ?? oldId} → ${entry.expression_name ?? newId} (${entry.release_label ?? "no label"})`,
+    );
 
     if (entry.vintages_matter != null || entry.release_pattern) {
       expressionMeta.set(newId, {
         vintages_matter: entry.vintages_matter,
         release_pattern: entry.release_pattern,
       });
+    }
+
+    const newIdKey = entry.new_product_id ?? newId;
+    const label = labelFromEntry(entry);
+    if (label && newIdKey) {
+      const bucket = labelsBySurvivor.get(newIdKey) ?? new Set<string>();
+      bucket.add(label);
+      labelsBySurvivor.set(newIdKey, bucket);
     }
 
     if (isDryRun) continue;
@@ -185,6 +209,22 @@ async function main() {
         .eq("id", productId);
     }
     await recomputeWheelVector(supabase, productId);
+  }
+
+  for (const [productId, labels] of labelsBySurvivor) {
+    const resolvedId = await resolveProductId(supabase, { id: productId });
+    if (!resolvedId) continue;
+
+    const { data: row } = await supabase
+      .from("products")
+      .select("specs")
+      .eq("id", resolvedId)
+      .maybeSingle();
+    const specs = { ...((row?.specs as Record<string, unknown> | null) ?? {}) };
+    const merged = mergeKnownReleaseLabels(labelsFromSpecs(specs), [...labels]);
+    specs[KNOWN_RELEASE_LABELS_KEY] = merged;
+
+    await supabase.from("products").update({ specs }).eq("id", resolvedId);
   }
 
   const survivors = new Set(map.map((e) => e.new_product_id).filter(Boolean));

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
-import { Divider, Voice } from "@/components/primitives";
+import { Card, Divider, Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { getWheel, type ProductType } from "@/lib/wheel";
 import { RecommendForm } from "./recommend-form";
 
@@ -12,6 +13,8 @@ type SearchParams = Promise<{
   release_label?: string;
   release_label_source?: string;
   vision_release_label?: string;
+  confirmed?: string;
+  enriching?: string;
 }>;
 
 export default async function RecommendPage({
@@ -22,16 +25,27 @@ export default async function RecommendPage({
   searchParams: SearchParams;
 }) {
   const { id } = await params;
-  const { event, release_label, release_label_source, vision_release_label } =
+  const { event, release_label, release_label_source, vision_release_label, confirmed, enriching } =
     await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, type, name, brand, release_pattern")
+    .select("id, type, name, brand, release_pattern, specs")
     .eq("id", id)
     .maybeSingle();
   if (!product) notFound();
+
+  const { data: memberReleaseRows } = await supabase
+    .from("tastings")
+    .select("release_label")
+    .eq("product_id", product.id)
+    .not("release_label", "is", null);
+
+  const knownReleaseLabels = collectKnownReleaseLabels(
+    (product.specs ?? {}) as Record<string, unknown>,
+    (memberReleaseRows ?? []).map((row) => row.release_label),
+  );
 
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) notFound();
@@ -64,6 +78,16 @@ export default async function RecommendPage({
         {product.brand ? <p className="text-sm text-foreground-muted">{product.brand}</p> : null}
       </header>
 
+      {confirmed || enriching ? (
+        <Card className="mb-6 border border-accent/40 bg-surface">
+          <Voice className="text-base">
+            {enriching
+              ? "Very good, sir. I'm still filling in the details — save your take below, and peek back at the product page when you like."
+              : "Very good, sir. The club has the name — tell us what you thought."}
+          </Voice>
+        </Card>
+      ) : null}
+
       <Voice className="mb-6">
         {existing
           ? "“Care to revise, sir?”"
@@ -86,6 +110,7 @@ export default async function RecommendPage({
             : null
         }
         visionReleaseLabel={vision_release_label ?? null}
+        knownReleaseLabels={knownReleaseLabels}
       />
 
       <Divider label="That's all" />

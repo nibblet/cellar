@@ -90,7 +90,6 @@ export type LineBrandResolution = {
 
 export function normalizeCatalogBrand(brand: string | null): string | null {
   if (!brand) return null;
-  if (brand === "W.L. Weller") return "William Larue Weller";
   if (brand === "Barrell Craft Spirits") return "Barrell";
   return brand;
 }
@@ -220,12 +219,6 @@ export function resolveLineBrand(
   input: NormalizationInput,
   context: NormalizationContext,
 ): LineBrandResolution | null {
-  const catalogBrand = normalizeCatalogBrand(input.brand);
-
-  if (catalogBrand === "William Larue Weller" || input.brand === "W.L. Weller") {
-    return resolveWilliamLarueWeller(input);
-  }
-
   if (input.brand && !DISTILLERY_BUCKETS.has(input.brand)) {
     return null;
   }

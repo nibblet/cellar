@@ -1,45 +1,17 @@
 export type MemberBadgeId =
-  | "first-light"
-  | "first-pour"
-  | "first-smoke"
-  | "tenth-contribution"
   | "founder"
   | "host"
   | "validator"
   | "winstons-choice";
 
 export type MemberBadge = {
-  id: MemberBadgeId;
+  id: string;
   label: string;
   mark: string;
   hint: string;
 };
 
 export const MEMBER_BADGES: Record<MemberBadgeId, MemberBadge> = {
-  "first-light": {
-    id: "first-light",
-    label: "First Light",
-    mark: "1L",
-    hint: "First tasting recommended to NCCC",
-  },
-  "first-pour": {
-    id: "first-pour",
-    label: "First Pour",
-    mark: "1P",
-    hint: "First bourbon tasting logged",
-  },
-  "first-smoke": {
-    id: "first-smoke",
-    label: "First Smoke",
-    mark: "1S",
-    hint: "First cigar tasting logged",
-  },
-  "tenth-contribution": {
-    id: "tenth-contribution",
-    label: "Tenth Contribution",
-    mark: "10",
-    hint: "Ten tastings logged",
-  },
   founder: {
     id: "founder",
     label: "Founder",
@@ -68,11 +40,7 @@ export const MEMBER_BADGES: Record<MemberBadgeId, MemberBadge> = {
 
 export const BADGE_DISPLAY_ORDER: MemberBadgeId[] = [
   "founder",
-  "first-light",
-  "first-smoke",
-  "first-pour",
   "validator",
   "winstons-choice",
   "host",
-  "tenth-contribution",
 ];

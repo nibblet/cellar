@@ -17,8 +17,12 @@ function baseInput(overrides: Partial<BadgeComputeInput> = {}): BadgeComputeInpu
   };
 }
 
+function badgeIds(map: ReturnType<typeof computeMemberBadges>, memberId: string): string[] {
+  return (map.get(memberId) ?? []).map((b) => b.id);
+}
+
 describe("computeMemberBadges", () => {
-  it("awards club-first milestones to the earliest taster", () => {
+  it("awards personal first milestones to each member", () => {
     const map = computeMemberBadges(
       baseInput({
         tastings: [
@@ -50,17 +54,46 @@ describe("computeMemberBadges", () => {
       }),
     );
 
-    expect(map.get("bob")).toContain("first-light");
-    expect(map.get("carl")).toContain("first-smoke");
-    expect(map.get("alice")).toContain("first-pour");
-    expect(map.get("bob")).not.toContain("first-smoke");
+    expect(badgeIds(map, "bob")).toContain("count:light:first");
+    expect(badgeIds(map, "bob")).toContain("count:smoke:first");
+    expect(badgeIds(map, "carl")).toContain("count:smoke:first");
+    expect(badgeIds(map, "alice")).toContain("count:pour:first");
+  });
+
+  it("replaces first badges with tenth milestones and increments by ten", () => {
+    const tenRecommends = Array.from({ length: 10 }, (_, i) => ({
+      user_id: "alice",
+      product_id: `c${i}`,
+      product_type: "cigar" as const,
+      recommend: true,
+      created_at: `2026-03-${String(i + 1).padStart(2, "0")}T00:00:00Z`,
+      event_id: null,
+    }));
+
+    const mapAtTen = computeMemberBadges(baseInput({ tastings: tenRecommends }));
+    expect(badgeIds(mapAtTen, "alice")).toContain("count:light:10");
+    expect(badgeIds(mapAtTen, "alice")).not.toContain("count:light:first");
+    expect(badgeIds(mapAtTen, "alice")).toContain("count:smoke:10");
+
+    const twentyCigars = Array.from({ length: 20 }, (_, i) => ({
+      user_id: "alice",
+      product_id: `c${i}`,
+      product_type: "cigar" as const,
+      recommend: false,
+      created_at: `2026-03-${String((i % 28) + 1).padStart(2, "0")}T00:00:00Z`,
+      event_id: null,
+    }));
+
+    const mapAtTwenty = computeMemberBadges(baseInput({ tastings: twentyCigars }));
+    expect(badgeIds(mapAtTwenty, "alice")).toContain("count:smoke:20");
+    expect(badgeIds(mapAtTwenty, "alice")).not.toContain("count:smoke:10");
   });
 
   it("marks founders within thirty days of the earliest join date", () => {
     const map = computeMemberBadges(baseInput());
-    expect(map.get("alice")).toContain("founder");
-    expect(map.get("bob")).toContain("founder");
-    expect(map.get("carl") ?? []).not.toContain("founder");
+    expect(badgeIds(map, "alice")).toContain("founder");
+    expect(badgeIds(map, "bob")).toContain("founder");
+    expect(badgeIds(map, "carl") ?? []).not.toContain("founder");
   });
 
   it("awards host to members who hosted a meetup", () => {
@@ -69,10 +102,10 @@ describe("computeMemberBadges", () => {
         events: [{ id: "e1", date: "2026-03-01", host_user_id: "bob" }],
       }),
     );
-    expect(map.get("bob")).toContain("host");
+    expect(badgeIds(map, "bob")).toContain("host");
   });
 
-  it("awards tenth contribution at ten tastings", () => {
+  it("awards contribution milestone at ten total tastings", () => {
     const tastings = Array.from({ length: 10 }, (_, i) => ({
       user_id: "alice",
       product_id: `p${i}`,
@@ -83,7 +116,7 @@ describe("computeMemberBadges", () => {
     }));
 
     const map = computeMemberBadges(baseInput({ tastings }));
-    expect(map.get("alice")).toContain("tenth-contribution");
+    expect(badgeIds(map, "alice")).toContain("count:contribution:10");
   });
 
   it("awards validator to the earliest meetup pairing witness", () => {
@@ -130,8 +163,8 @@ describe("computeMemberBadges", () => {
       }),
     );
 
-    expect(map.get("bob")).toContain("validator");
-    expect(map.get("carl") ?? []).not.toContain("validator");
+    expect(badgeIds(map, "bob")).toContain("validator");
+    expect(badgeIds(map, "carl") ?? []).not.toContain("validator");
   });
 
   it("awards winstons choice when a recommend touches a narrated pairing", () => {
@@ -151,6 +184,6 @@ describe("computeMemberBadges", () => {
       }),
     );
 
-    expect(map.get("alice")).toContain("winstons-choice");
+    expect(badgeIds(map, "alice")).toContain("winstons-choice");
   });
 });

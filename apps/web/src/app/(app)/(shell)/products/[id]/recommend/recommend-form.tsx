@@ -18,6 +18,7 @@ type RecommendFormProps = {
   releaseLabel: string | null;
   releaseLabelSource: ReleaseLabelSource | null;
   visionReleaseLabel: string | null;
+  knownReleaseLabels?: string[];
 };
 
 type State = { status: "idle" | "error"; message?: string };
@@ -33,6 +34,7 @@ export function RecommendForm({
   releaseLabel,
   releaseLabelSource,
   visionReleaseLabel,
+  knownReleaseLabels = [],
 }: RecommendFormProps) {
   const [state, action, pending] = useActionState(submitRecommend, initial);
 
@@ -52,6 +54,7 @@ export function RecommendForm({
           releasePattern={releasePattern}
           defaultValue={prior?.release_label ?? releaseLabel}
           visionValue={visionReleaseLabel}
+          suggestions={knownReleaseLabels}
         />
       ) : null}
 
@@ -101,7 +104,7 @@ export function RecommendForm({
           disabled={pending}
           className="w-full"
         >
-          Pass — not for me
+          Just logging it
         </Button>
       </div>
     </form>

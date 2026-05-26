@@ -50,6 +50,7 @@ export class ApifyClient {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(50_000),
     });
     if (!res.ok) {
       const text = await res.text();

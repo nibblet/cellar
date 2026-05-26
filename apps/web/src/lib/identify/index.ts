@@ -135,6 +135,7 @@ async function fetchCandidates(
       .from("products")
       .select("id, name, brand")
       .eq("type", type)
+      .eq("status", "confirmed")
       .ilike("brand", `%${brand.split(/\s+/)[0]}%`)
       .limit(50);
     if (data && data.length > 0) return data;

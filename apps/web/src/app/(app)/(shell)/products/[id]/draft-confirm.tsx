@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { Button, Card, Voice } from "@/components/primitives";
 import { ReleaseLabelInput } from "@/components/product/release-label-input";
-import { EnrichmentTrigger } from "@/components/product/enrichment-trigger";
 import type { ProductType } from "@/lib/wheel";
 import { confirmDraftProduct } from "./draft-actions";
 
@@ -15,8 +14,8 @@ type Props = {
   brand: string | null;
   releasePattern: string | null;
   releaseLabel: string | null;
+  eventId: string | null;
   justCaptured: boolean;
-  needsEnrichment: boolean;
 };
 
 type State = { ok: boolean; error?: string };
@@ -29,39 +28,29 @@ export function DraftConfirmBanner({
   brand,
   releasePattern,
   releaseLabel,
+  eventId,
   justCaptured,
-  needsEnrichment,
 }: Props) {
-  const [state, action, pending] = useActionState(
-    async (_prev: State) => confirmDraftProduct(productId),
-    initial,
-  );
-
-  const shouldBlockEnrich = justCaptured && needsEnrichment;
-  const [enrichReady, setEnrichReady] = useState(!shouldBlockEnrich);
-
-  if (shouldBlockEnrich && !enrichReady) {
-    return (
-      <EnrichmentTrigger
-        productId={productId}
-        productType={productType}
-        needsEnrichment
-        blocking
-        onSettled={() => setEnrichReady(true)}
-      />
-    );
-  }
+  const [state, action, pending] = useActionState(confirmDraftProduct, initial);
 
   const display = [brand, productName].filter(Boolean).join(" ");
   const opener = productType === "cigar" ? "The band reads" : "The label looks like";
 
   return (
     <Card className="mt-5 border border-ember-500/60 bg-surface">
-      <div className="flex flex-col gap-4">
+      <form action={action} className="flex flex-col gap-4">
+        <input type="hidden" name="product_id" value={productId} />
+        {eventId ? <input type="hidden" name="event_id" value={eventId} /> : null}
+
         {justCaptured ? (
-          <Voice className="text-base">
-            {opener} <span className="font-medium not-italic">{display}</span>. Look right?
-          </Voice>
+          <>
+            <Voice className="text-base">
+              New to the catalog — I&apos;ll look this one up while you confirm.
+            </Voice>
+            <Voice className="text-base">
+              {opener} <span className="font-medium not-italic">{display}</span>. Look right?
+            </Voice>
+          </>
         ) : (
           <p className="text-sm text-foreground-muted">
             <span className="text-ember-500 font-medium">Draft.</span> Confirm the details or edit
@@ -75,11 +64,11 @@ export function DraftConfirmBanner({
           </p>
         ) : null}
 
-        {justCaptured && productType === "bourbon" ? (
+        {productType === "bourbon" ? (
           <ReleaseLabelInput releasePattern={releasePattern} visionValue={releaseLabel} />
         ) : null}
 
-        <form action={action} className="flex gap-2">
+        <div className="flex gap-2">
           <Button type="submit" disabled={pending} className="flex-1">
             {pending ? "Confirming…" : "Looks right"}
           </Button>
@@ -89,8 +78,8 @@ export function DraftConfirmBanner({
           >
             Edit
           </Link>
-        </form>
-      </div>
+        </div>
+      </form>
     </Card>
   );
 }

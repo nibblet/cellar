@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { getWheel } from "@/lib/wheel";
 import { PairingTasteForm } from "./pairing-taste-form";
 
@@ -20,7 +21,7 @@ export default async function PairingTastePage({ params }: { params: Params }) {
 
   const { data: products } = await supabase
     .from("products")
-    .select("id, type, name, brand")
+    .select("id, type, name, brand, release_pattern, specs")
     .in("id", [cigarId, bourbonId]);
 
   const cigar = products?.find((p) => p.id === cigarId && p.type === "cigar");
@@ -41,6 +42,17 @@ export default async function PairingTastePage({ params }: { params: Params }) {
 
   const priorCigar = existing?.find((t) => t.product_id === cigarId) ?? null;
   const priorBourbon = existing?.find((t) => t.product_id === bourbonId) ?? null;
+
+  const { data: bourbonReleaseRows } = await supabase
+    .from("tastings")
+    .select("release_label")
+    .eq("product_id", bourbonId)
+    .not("release_label", "is", null);
+
+  const bourbonKnownReleaseLabels = collectKnownReleaseLabels(
+    (bourbon.specs ?? {}) as Record<string, unknown>,
+    (bourbonReleaseRows ?? []).map((row) => row.release_label),
+  );
 
   const cigarLeafLabels = getWheel("cigar").leaves.map((l) => l.label);
   const bourbonLeafLabels = getWheel("bourbon").leaves.map((l) => l.label);
@@ -73,7 +85,13 @@ export default async function PairingTastePage({ params }: { params: Params }) {
 
       <PairingTasteForm
         cigar={{ id: cigar.id, name: cigar.name, brand: cigar.brand }}
-        bourbon={{ id: bourbon.id, name: bourbon.name, brand: bourbon.brand }}
+        bourbon={{
+          id: bourbon.id,
+          name: bourbon.name,
+          brand: bourbon.brand,
+          releasePattern: bourbon.release_pattern ?? null,
+          knownReleaseLabels: bourbonKnownReleaseLabels,
+        }}
         cigarLeafLabels={cigarLeafLabels}
         bourbonLeafLabels={bourbonLeafLabels}
         recentEvents={(events ?? []) as Array<{ id: string; name: string; date: string }>}

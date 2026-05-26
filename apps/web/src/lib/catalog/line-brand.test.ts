@@ -51,6 +51,14 @@ describe("resolveLineBrand", () => {
     });
   });
 
+  it("does not treat W.L. Weller shelf SKUs as BTAC William Larue Weller", () => {
+    const r = resolveLineBrand(
+      { id: "sr", name: "Special Reserve", brand: "W.L. Weller", specs: null },
+      { lineBrandPrefixCounts: new Map() },
+    );
+    expect(r).toBeNull();
+  });
+
   it("collapses WLW BTAC rows as a series", () => {
     const inputs = [
       btInput("w1", "William Larue Weller", { year_made: 2021 }),

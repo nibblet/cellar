@@ -15,7 +15,7 @@ export { badgesForMember, computeMemberBadges };
 
 export async function loadMemberBadges(
   supabase: SupabaseClient,
-): Promise<Map<string, MemberBadgeId[]>> {
+): Promise<Map<string, MemberBadge[]>> {
   const [membersResult, tastingsResult, eventsResult, winstonResult] = await Promise.all([
     supabase.from("users").select("id, joined_at"),
     supabase

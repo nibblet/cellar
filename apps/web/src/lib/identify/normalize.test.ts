@@ -66,6 +66,18 @@ describe("pickBestMatch", () => {
     expect(match?.matched).toBe("name");
   });
 
+  it("matches collapsed bourbon expressions after stripping brand prefix", () => {
+    const bourbons = [
+      { id: "b1", name: "Fusion Series", brand: "Bardstown" },
+      { id: "b2", name: "Rare Breed", brand: "Wild Turkey" },
+    ];
+    const match = pickBestMatch(bourbons, {
+      name: "Bardstown Fusion Series",
+      brand: "Bardstown Bourbon Company",
+    });
+    expect(match?.product.id).toBe("b1");
+  });
+
   it("returns null for an empty candidate list", () => {
     expect(pickBestMatch([], { name: "anything", brand: null })).toBeNull();
   });

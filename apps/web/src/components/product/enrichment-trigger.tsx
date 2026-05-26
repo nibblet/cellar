@@ -14,6 +14,9 @@ type Props = {
   onSettled?: () => void;
 };
 
+/** Client-side ceiling — Apify sync runs can exceed Vercel's 60s function limit. */
+const ENRICH_FETCH_TIMEOUT_MS = 55_000;
+
 /**
  * Fires POST /api/enrich-draft once when a capture-created product still lacks
  * catalog reviews/specs/wheel data. Safe to mount on every product page visit —
@@ -35,6 +38,8 @@ export function EnrichmentTrigger({
     if (!needsEnrichment || firedRef.current) return;
     firedRef.current = true;
     let active = true;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), ENRICH_FETCH_TIMEOUT_MS);
 
     if (blocking) setRunning(true);
 
@@ -42,22 +47,25 @@ export function EnrichmentTrigger({
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ productId }),
+      signal: controller.signal,
     })
       .then(async (res) => {
         if (!res.ok) {
           const body = await res.json().catch(() => null);
           console.warn("[EnrichmentTrigger]", body?.error ?? res.statusText);
           if (active) setFailed(true);
+          return;
         }
+        if (active) router.refresh();
       })
       .catch(() => {
         if (active) setFailed(true);
       })
       .finally(() => {
+        window.clearTimeout(timeout);
         if (!active) return;
         setRunning(false);
         onSettled?.();
-        router.refresh();
       });
 
     return () => {
@@ -66,10 +74,14 @@ export function EnrichmentTrigger({
   }, [needsEnrichment, productId, router, blocking, onSettled]);
 
   if (running) {
-    return <EnrichingState productType={productType} />;
+    return (
+      <Card className="mt-5 border border-accent/40 bg-surface">
+        <EnrichingState productType={productType} />
+      </Card>
+    );
   }
 
-  if (failed && blocking) {
+  if (failed) {
     return (
       <Card className="mt-5 border border-ember-500/40 bg-surface">
         <Voice className="text-base">
@@ -87,14 +99,14 @@ function EnrichingState({ productType }: { productType: ProductType }) {
   const lines =
     productType === "cigar"
       ? [
-          "Reading up on this one…",
+          "Filling in the details…",
           "Pulling reviews from the humidor.",
-          "Almost there. Annotating the band.",
+          "Still working — check back in a moment.",
         ]
       : [
-          "Reading up on this one…",
+          "Filling in the details…",
           "Checking the rickhouse log.",
-          "Almost there. Pouring a neat one.",
+          "Still working — check back in a moment.",
         ];
 
   const [idx, setIdx] = useState(0);
@@ -106,18 +118,16 @@ function EnrichingState({ productType }: { productType: ProductType }) {
   }, [lines.length]);
 
   return (
-    <Card className="mt-5 border border-accent/40 bg-surface">
-      <div className="flex flex-col items-center text-center gap-3 py-2">
-        <Voice className="text-base">{lines[idx]}</Voice>
-        <div
-          role="progressbar"
-          aria-label="Working"
-          aria-busy="true"
-          className="h-1 w-32 rounded-full bg-surface-2 overflow-hidden"
-        >
-          <div className="h-full bg-accent animate-pulse" />
-        </div>
+    <div className="flex flex-col items-center text-center gap-3 py-2">
+      <Voice className="text-base">{lines[idx]}</Voice>
+      <div
+        role="progressbar"
+        aria-label="Working"
+        aria-busy="true"
+        className="h-1 w-32 rounded-full bg-surface-2 overflow-hidden"
+      >
+        <div className="h-full bg-accent animate-pulse" />
       </div>
-    </Card>
+    </div>
   );
 }

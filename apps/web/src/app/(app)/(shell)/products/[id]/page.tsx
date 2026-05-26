@@ -11,10 +11,12 @@ import {
   ProductHero,
   type ProductHeroImage,
   TastingActionSegment,
+  ReleaseVariantChips,
   YouMightAlsoLike,
 } from "@/components/product";
 import { buildClubSaysProse } from "@/lib/aggregation/club-says-prose";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
@@ -129,9 +131,15 @@ export default async function ProductDetailPage({
 
   const isDraft = product.status === "draft";
   const subtitle = composeSubtitle(productType, specs);
+  const releasePattern = (product as { release_pattern?: string | null }).release_pattern ?? null;
+  const knownReleaseLabels = collectKnownReleaseLabels(
+    specs,
+    groupVoice.takes.map((take) => take.release_label),
+  );
   const isBaseline = groupVoice.tag_cloud.length === 0 && wheelVector != null;
   const reviewCount = reviewCountResult.count ?? 0;
   const needsEnrichment = productNeedsCatalogEnrichment({
+    productType,
     source: product.source,
     specs,
     reviewCount,
@@ -173,6 +181,13 @@ export default async function ProductDetailPage({
           <p className="text-[11px] uppercase tracking-widest text-moss-500 mt-2">Club staple</p>
         ) : null}
         {subtitle ? <p className="text-sm text-foreground-muted mt-2">{subtitle}</p> : null}
+        {productType === "bourbon" && knownReleaseLabels.length > 0 ? (
+          <ReleaseVariantChips
+            labels={knownReleaseLabels}
+            releasePattern={releasePattern}
+            className="mt-3"
+          />
+        ) : null}
       </header>
 
       {userId ? (
@@ -189,8 +204,8 @@ export default async function ProductDetailPage({
           brand={product.brand ?? null}
           releasePattern={(product as { release_pattern?: string | null }).release_pattern ?? null}
           releaseLabel={release_label ?? null}
+          eventId={event ?? null}
           justCaptured={Boolean(just_captured)}
-          needsEnrichment={needsEnrichment}
         />
       ) : just_captured ? (
         <CaptureConfirmBanner
@@ -198,13 +213,14 @@ export default async function ProductDetailPage({
           productType={productType}
           productName={product.name}
           brand={product.brand ?? null}
-          releasePattern={(product as { release_pattern?: string | null }).release_pattern ?? null}
+          releasePattern={releasePattern}
           releaseLabel={release_label ?? null}
           eventId={event ?? null}
+          knownReleaseLabels={knownReleaseLabels}
         />
       ) : null}
 
-      {!isDraft && needsEnrichment ? (
+      {needsEnrichment ? (
         <EnrichmentTrigger
           productId={product.id}
           productType={productType}

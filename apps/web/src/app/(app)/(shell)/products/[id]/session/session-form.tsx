@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { ChipInput } from "@/app/(app)/(shell)/products/[id]/recommend/chip-input";
+import { ReleaseLabelInput } from "@/components/product/release-label-input";
 import { Button, Card, Voice } from "@/components/primitives";
 import type { BourbonSessionPhases, CigarSessionPhases } from "@/lib/tasting/merge-session";
 import type { ProductType } from "@/lib/wheel";
@@ -14,6 +15,8 @@ type SessionFormProps = {
   productType: ProductType;
   leafLabels: string[];
   eventId: string | null;
+  releasePattern?: string | null;
+  knownReleaseLabels?: string[];
 };
 
 type State = { status: "idle" | "error"; message?: string };
@@ -31,7 +34,14 @@ const BOURBON_PHASES = [
   { key: "finish", label: "Finish" },
 ] as const;
 
-export function SessionForm({ productId, productType, leafLabels, eventId }: SessionFormProps) {
+export function SessionForm({
+  productId,
+  productType,
+  leafLabels,
+  eventId,
+  releasePattern = null,
+  knownReleaseLabels = [],
+}: SessionFormProps) {
   const [state, action, pending] = useActionState(submitSession, initial);
   const [step, setStep] = useState<"phases" | "finish">("phases");
   const phases = productType === "cigar" ? CIGAR_PHASES : BOURBON_PHASES;
@@ -105,6 +115,13 @@ export function SessionForm({ productId, productType, leafLabels, eventId }: Ses
               : '"The pour has spoken, sir. Recommend it?"'}
           </Voice>
 
+          {productType === "bourbon" ? (
+            <ReleaseLabelInput
+              releasePattern={releasePattern}
+              suggestions={knownReleaseLabels}
+            />
+          ) : null}
+
           <label className="flex items-center gap-2 text-sm text-foreground-muted">
             <input
               type="checkbox"
@@ -142,7 +159,7 @@ export function SessionForm({ productId, productType, leafLabels, eventId }: Ses
               disabled={pending}
               className="w-full"
             >
-              Pass — not for me
+              Just logging it
             </Button>
             <Button
               type="button"

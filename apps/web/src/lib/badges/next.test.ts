@@ -12,13 +12,13 @@ function input(overrides: Partial<BadgeComputeInput> = {}): BadgeComputeInput {
 }
 
 describe("nextBadgeForMember", () => {
-  it("returns first-light for a member with zero tastings when no one has it", () => {
+  it("returns first-light for a member with zero recommends", () => {
     const next = nextBadgeForMember(input(), "alice");
-    expect(next?.badge.id).toBe("first-light");
-    expect(next?.gap).toBe("1 tasting");
+    expect(next?.badge.id).toBe("count:light:first");
+    expect(next?.gap).toBe("1 recommend");
   });
 
-  it("returns tenth-contribution gap based on remaining tastings", () => {
+  it("returns the closest milestone gap across tracks", () => {
     const tastings = Array.from({ length: 4 }, (_, i) => ({
       user_id: "alice",
       product_id: `p${i}`,
@@ -28,26 +28,25 @@ describe("nextBadgeForMember", () => {
       event_id: null,
     }));
     const next = nextBadgeForMember(input({ tastings }), "alice");
-    expect(next?.badge.id).toBe("tenth-contribution");
+    expect(next?.badge.id).toBe("count:light:10");
     expect(next?.gap).toBe("6 to go");
   });
 
-  it("skips first-light if another member already claimed it", () => {
-    const tastings = [
-      {
-        user_id: "bob",
-        product_id: "p1",
-        product_type: "cigar" as const,
-        recommend: true,
-        created_at: "2026-02-01T00:00:00Z",
-        event_id: null,
-      },
-    ];
+  it("prioritizes unstarted tracks over in-progress milestones", () => {
+    const tastings = Array.from({ length: 7 }, (_, i) => ({
+      user_id: "alice",
+      product_id: `c${i}`,
+      product_type: "cigar" as const,
+      recommend: false,
+      created_at: `2026-03-0${i + 1}T00:00:00Z`,
+      event_id: null,
+    }));
     const next = nextBadgeForMember(input({ tastings }), "alice");
-    expect(["first-pour", "first-smoke"]).toContain(next?.badge.id);
+    expect(next?.badge.id).toBe("count:light:first");
+    expect(next?.gap).toBe("1 recommend");
   });
 
-  it("returns null when nothing remains achievable", () => {
+  it("shows the next decade milestone when a track is already at ten", () => {
     const tastings = Array.from({ length: 10 }, (_, i) => ({
       user_id: "alice",
       product_id: `p${i}`,
@@ -57,6 +56,7 @@ describe("nextBadgeForMember", () => {
       event_id: null,
     }));
     const next = nextBadgeForMember(input({ tastings }), "alice");
-    expect(next).toBeNull();
+    expect(next?.badge.id).toBe("count:smoke:10");
+    expect(next?.gap).toBe("5 to go");
   });
 });

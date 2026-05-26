@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Button, Card, Voice } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,40 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [preparingPhoto, setPreparingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const libraryInputRef = useRef<HTMLInputElement>(null);
+
+  async function handlePhotoSelected(file: File | undefined) {
+    const input = photoInputRef.current;
+    if (!file || !input) {
+      setPreview(null);
+      setPhotoError(null);
+      return;
+    }
+
+    setPreparingPhoto(true);
+    setPhotoError(null);
+
+    try {
+      const compressed = await compressPhotoForUpload(file);
+      const transfer = new DataTransfer();
+      transfer.items.add(compressed);
+      input.files = transfer.files;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target?.result as string);
+      reader.readAsDataURL(compressed);
+    } catch {
+      setPreview(null);
+      input.value = "";
+      setPhotoError("Couldn't prepare that photo. Try again.");
+    } finally {
+      setPreparingPhoto(false);
+      if (cameraInputRef.current) cameraInputRef.current.value = "";
+      if (libraryInputRef.current) libraryInputRef.current.value = "";
+    }
+  }
 
   if (pending) {
     return <CapturePendingState type={type} preview={preview} />;
@@ -53,12 +87,42 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
         />
       </fieldset>
 
-      <label
-        htmlFor="photo"
+      <input
+        ref={photoInputRef}
+        id="photo"
+        name="photo"
+        type="file"
+        accept="image/*"
+        required
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(e) => void handlePhotoSelected(e.target.files?.[0])}
+      />
+      <input
+        ref={libraryInputRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(e) => void handlePhotoSelected(e.target.files?.[0])}
+      />
+
+      <div
         className={cn(
           "relative flex flex-col items-center justify-center",
           "aspect-square rounded-[16px] border-2 border-dashed border-border",
-          "bg-surface hover:bg-surface-2 transition-colors cursor-pointer overflow-hidden",
+          "bg-surface overflow-hidden",
         )}
       >
         {preview ? (
@@ -70,51 +134,32 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
           />
         ) : (
           <div className="text-center px-6">
-            <p className="text-xl mb-1 font-display">Tap to capture</p>
+            <p className="text-xl mb-1 font-display">Add a photo</p>
             <p className="text-sm text-foreground-subtle">
               {type === "cigar" ? "Show the band clearly" : "Show the label"}
             </p>
           </div>
         )}
-        <input
-          id="photo"
-          name="photo"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          required
-          className="sr-only"
-          onChange={async (e) => {
-            const input = e.target;
-            const file = input.files?.[0];
-            if (!file) {
-              setPreview(null);
-              setPhotoError(null);
-              return;
-            }
+      </div>
 
-            setPreparingPhoto(true);
-            setPhotoError(null);
-
-            try {
-              const compressed = await compressPhotoForUpload(file);
-              const transfer = new DataTransfer();
-              transfer.items.add(compressed);
-              input.files = transfer.files;
-
-              const reader = new FileReader();
-              reader.onload = (ev) => setPreview(ev.target?.result as string);
-              reader.readAsDataURL(compressed);
-            } catch {
-              setPreview(null);
-              input.value = "";
-              setPhotoError("Couldn't prepare that photo. Try again.");
-            } finally {
-              setPreparingPhoto(false);
-            }
-          }}
-        />
-      </label>
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={pending || preparingPhoto}
+          onClick={() => cameraInputRef.current?.click()}
+        >
+          Take photo
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={pending || preparingPhoto}
+          onClick={() => libraryInputRef.current?.click()}
+        >
+          Choose saved
+        </Button>
+      </div>
 
       {recentEvents.length > 0 ? (
         <label className="flex flex-col gap-1.5">
@@ -166,8 +211,16 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
 function CapturePendingState({ type, preview }: { type: ProductType; preview: string | null }) {
   const lines =
     type === "cigar"
-      ? ["Reading the band…", "Checking the catalog for a match."]
-      : ["Reading the label…", "Checking the catalog for a match."];
+      ? [
+          "Reading the band…",
+          "Checking the catalog for a match.",
+          "Almost there…",
+        ]
+      : [
+          "Reading the label…",
+          "Checking the catalog for a match.",
+          "Almost there…",
+        ];
 
   const [idx, setIdx] = useState(0);
   useEffect(() => {

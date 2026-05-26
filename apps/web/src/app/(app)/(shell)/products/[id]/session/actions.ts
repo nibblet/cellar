@@ -85,6 +85,7 @@ export async function submitSession(_prev: State, formData: FormData): Promise<S
 
   const eventId = (formData.get("event_id") as string | null)?.trim() || null;
   const addToCellar = formData.get("add_to_cellar") === "yes";
+  const releaseLabel = (formData.get("release_label") as string | null)?.trim() || null;
 
   try {
     await saveTasting({
@@ -96,6 +97,8 @@ export async function submitSession(_prev: State, formData: FormData): Promise<S
       chips: merged.chips,
       note: merged.note,
       eventId,
+      releaseLabel,
+      releaseLabelSource: releaseLabel ? "member" : null,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Couldn't save your tasting.";

@@ -46,6 +46,7 @@ export async function POST(req: Request) {
   const specs = (product.specs ?? {}) as Record<string, unknown>;
   const wheelVector = (product.wheel_vector ?? null) as Record<string, number> | null;
   const needsEnrichment = productNeedsCatalogEnrichment({
+    productType: product.type as "bourbon" | "cigar",
     source: product.source,
     specs,
     reviewCount: reviewCount ?? 0,

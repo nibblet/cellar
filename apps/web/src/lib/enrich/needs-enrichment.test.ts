@@ -34,4 +34,28 @@ describe("productNeedsCatalogEnrichment", () => {
       }),
     ).toBe(true);
   });
+
+  it("retries bourbon specs when reviews exist but only label-read fields are filled", () => {
+    expect(
+      productNeedsCatalogEnrichment({
+        productType: "bourbon",
+        source: "ai",
+        specs: { proof: 116.8, distillery: "Wild Turkey", mash_bill: null },
+        reviewCount: 3,
+        hasWheelVector: true,
+      }),
+    ).toBe(true);
+  });
+
+  it("skips bourbon when catalog specs landed from the enrich pass", () => {
+    expect(
+      productNeedsCatalogEnrichment({
+        productType: "bourbon",
+        source: "ai",
+        specs: { proof: 116.8, expression_type: "Barrel Proof", msrp_usd: 50 },
+        reviewCount: 3,
+        hasWheelVector: true,
+      }),
+    ).toBe(false);
+  });
 });

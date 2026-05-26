@@ -13,6 +13,7 @@ type Props = {
   releasePattern: string | null;
   releaseLabel: string | null;
   eventId: string | null;
+  knownReleaseLabels?: string[];
 };
 
 /**
@@ -28,6 +29,7 @@ export function CaptureConfirmBanner({
   releasePattern,
   releaseLabel,
   eventId,
+  knownReleaseLabels = [],
 }: Props) {
   const display = [brand, productName].filter(Boolean).join(" ");
   const opener = productType === "cigar" ? "The band reads" : "The label looks like";
@@ -40,18 +42,21 @@ export function CaptureConfirmBanner({
         className="flex flex-col gap-4"
       >
         {eventId ? <input type="hidden" name="event" value={eventId} /> : null}
+        <input type="hidden" name="confirmed" value="1" />
         <input type="hidden" name="release_label_source" value="vision" />
         {releaseLabel ? (
           <input type="hidden" name="vision_release_label" value={releaseLabel} />
         ) : null}
 
         <Voice className="text-base">
-          {opener} <span className="font-medium not-italic">{display}</span>. Look right?
+          Found it in the catalog. {opener}{" "}
+          <span className="font-medium not-italic">{display}</span>. Look right?
         </Voice>
 
         <ReleaseLabelInput
           releasePattern={releasePattern}
           visionValue={releaseLabel}
+          suggestions={knownReleaseLabels}
         />
 
         <div className="flex gap-2">

@@ -18,6 +18,26 @@ export function normalizeName(input: string): string {
     .trim();
 }
 
+/** Drop a leading brand token so "Bardstown Fusion Series" can match catalog "Fusion Series". */
+export function stripBrandPrefix(brand: string | null, name: string): string {
+  if (!brand) return name;
+  const re = new RegExp(`^${brand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+`, "i");
+  return name.replace(re, "").trim();
+}
+
+/** Strip proof/ABV noise vision often reads into the expression name. */
+export function stripProofFromName(name: string): string {
+  return name
+    .replace(/\s*\(?\s*\d+(?:\.\d+)?\s*(?:°|proof|pro)\.?\s*\)?/gi, " ")
+    .replace(/\s*\(?\s*\d+(?:\.\d+)?\s*%\s*(?:abv|alc\.?\/?vol\.?)?\s*\)?/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function nameForCatalogMatch(name: string, brand: string | null): string {
+  return stripProofFromName(stripBrandPrefix(brand, name));
+}
+
 /**
  * Trigram Jaccard similarity. Works decently for short product names.
  * Returns 0..1 where 1 is identical and 0 is no shared trigrams.
@@ -69,8 +89,11 @@ export function pickBestMatch(
 ): MatchScore | null {
   let best: MatchScore | null = null;
 
+  const extractedName = nameForCatalogMatch(extracted.name, extracted.brand);
+
   for (const candidate of candidates) {
-    const nameScore = trigramSimilarity(extracted.name, candidate.name);
+    const candidateName = nameForCatalogMatch(candidate.name, candidate.brand);
+    const nameScore = trigramSimilarity(extractedName, candidateName);
 
     // If both have a brand, weight a brand match heavily.
     if (extracted.brand && candidate.brand) {

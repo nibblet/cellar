@@ -49,6 +49,7 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
     .map((c) => String(c).trim())
     .filter(Boolean);
   const note = (formData.get("note") as string | null)?.trim() || null;
+  const bourbonReleaseLabel = (formData.get("bourbon_release_label") as string | null)?.trim() || null;
   const eventIdRaw = (formData.get("event_id") as string | null)?.trim() || null;
   const eventId = eventIdRaw && eventIdRaw !== "none" ? eventIdRaw : null;
 
@@ -155,6 +156,8 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
         eventId,
         pairingSessionId,
         photoImageId: bourbonImageId,
+        releaseLabel: bourbonReleaseLabel,
+        releaseLabelSource: bourbonReleaseLabel ? "member" : null,
       }),
     ]);
   } catch (err) {

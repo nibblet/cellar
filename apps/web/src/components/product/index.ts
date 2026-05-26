@@ -6,5 +6,6 @@ export { EnrichmentTrigger } from "./enrichment-trigger";
 export { FactsStrip } from "./facts-strip";
 export { ProductDepthSection } from "./product-depth-section";
 export { ProductHero, type ProductHeroImage } from "./product-hero";
+export { ReleaseVariantChips } from "./release-variant-chips";
 export { TastingActionSegment } from "./tasting-action-segment";
 export { YouMightAlsoLike } from "./you-might-also-like";

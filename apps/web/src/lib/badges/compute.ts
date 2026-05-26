@@ -1,4 +1,10 @@
 import {
+  badgeForCount,
+  countBadgeSortIndex,
+  type CountBadgeTrack,
+  COUNT_BADGE_TRACK_ORDER,
+} from "./count-milestones";
+import {
   BADGE_DISPLAY_ORDER,
   MEMBER_BADGES,
   type MemberBadge,
@@ -38,12 +44,6 @@ export type BadgeComputeInput = {
 };
 
 const FOUNDER_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
-
-function earliestByCreatedAt(rows: BadgeTastingRow[]): string | null {
-  if (rows.length === 0) return null;
-  return rows.reduce((earliest, row) => (row.created_at < earliest.created_at ? row : earliest))
-    .user_id;
-}
 
 function computeFounders(members: BadgeMemberRow[]): Set<string> {
   const founders = new Set<string>();
@@ -133,11 +133,44 @@ function computeWinstonsChoice(
   return winners;
 }
 
-export function computeMemberBadges(input: BadgeComputeInput): Map<string, MemberBadgeId[]> {
-  const byMember = new Map<string, MemberBadgeId[]>();
-  const push = (memberId: string, badge: MemberBadgeId) => {
+export type MemberCountTotals = {
+  recommends: number;
+  cigars: number;
+  bourbons: number;
+  total: number;
+};
+
+export function countTotalsForMember(
+  tastings: BadgeTastingRow[],
+  memberId: string,
+): MemberCountTotals {
+  const memberRows = tastings.filter((t) => t.user_id === memberId);
+  return {
+    recommends: memberRows.filter((t) => t.recommend).length,
+    cigars: memberRows.filter((t) => t.product_type === "cigar").length,
+    bourbons: memberRows.filter((t) => t.product_type === "bourbon").length,
+    total: memberRows.length,
+  };
+}
+
+const TRACK_COUNT_KEY: Record<CountBadgeTrack, keyof MemberCountTotals> = {
+  light: "recommends",
+  smoke: "cigars",
+  pour: "bourbons",
+  contribution: "total",
+};
+
+function badgeSortKey(badge: MemberBadge): number {
+  const staticIndex = BADGE_DISPLAY_ORDER.indexOf(badge.id as MemberBadgeId);
+  if (staticIndex >= 0) return staticIndex;
+  return 100 + countBadgeSortIndex(badge.id);
+}
+
+export function computeMemberBadges(input: BadgeComputeInput): Map<string, MemberBadge[]> {
+  const byMember = new Map<string, MemberBadge[]>();
+  const push = (memberId: string, badge: MemberBadge) => {
     const list = byMember.get(memberId) ?? [];
-    if (!list.includes(badge)) list.push(badge);
+    if (!list.some((b) => b.id === badge.id)) list.push(badge);
     byMember.set(memberId, list);
   };
 
@@ -149,28 +182,21 @@ export function computeMemberBadges(input: BadgeComputeInput): Map<string, Membe
     input.events.map((e) => e.host_user_id).filter((id): id is string => Boolean(id)),
   );
 
-  const counts = new Map<string, number>();
-  for (const row of input.tastings) {
-    counts.set(row.user_id, (counts.get(row.user_id) ?? 0) + 1);
-  }
-
-  const firstLight = earliestByCreatedAt(input.tastings.filter((t) => t.recommend));
-  const firstPour = earliestByCreatedAt(input.tastings.filter((t) => t.product_type === "bourbon"));
-  const firstSmoke = earliestByCreatedAt(input.tastings.filter((t) => t.product_type === "cigar"));
-
   for (const member of input.members) {
-    if (founders.has(member.id)) push(member.id, "founder");
-    if (member.id === firstLight) push(member.id, "first-light");
-    if (member.id === firstPour) push(member.id, "first-pour");
-    if (member.id === firstSmoke) push(member.id, "first-smoke");
-    if ((counts.get(member.id) ?? 0) >= 10) push(member.id, "tenth-contribution");
-    if (hosts.has(member.id)) push(member.id, "host");
-    if (validators.has(member.id)) push(member.id, "validator");
-    if (winstonsChoice.has(member.id)) push(member.id, "winstons-choice");
+    if (founders.has(member.id)) push(member.id, MEMBER_BADGES.founder);
+    if (hosts.has(member.id)) push(member.id, MEMBER_BADGES.host);
+    if (validators.has(member.id)) push(member.id, MEMBER_BADGES.validator);
+    if (winstonsChoice.has(member.id)) push(member.id, MEMBER_BADGES["winstons-choice"]);
+
+    const totals = countTotalsForMember(input.tastings, member.id);
+    for (const track of COUNT_BADGE_TRACK_ORDER) {
+      const badge = badgeForCount(track, totals[TRACK_COUNT_KEY[track]]);
+      if (badge) push(member.id, badge);
+    }
   }
 
   for (const [memberId, badges] of byMember) {
-    badges.sort((a, b) => BADGE_DISPLAY_ORDER.indexOf(a) - BADGE_DISPLAY_ORDER.indexOf(b));
+    badges.sort((a, b) => badgeSortKey(a) - badgeSortKey(b));
     byMember.set(memberId, badges);
   }
 
@@ -178,8 +204,12 @@ export function computeMemberBadges(input: BadgeComputeInput): Map<string, Membe
 }
 
 export function badgesForMember(
-  map: Map<string, MemberBadgeId[]>,
+  map: Map<string, MemberBadge[]>,
   memberId: string,
 ): MemberBadge[] {
-  return (map.get(memberId) ?? []).map((id) => MEMBER_BADGES[id]);
+  return map.get(memberId) ?? [];
+}
+
+export function badgeIdsForMember(map: Map<string, MemberBadge[]>, memberId: string): string[] {
+  return badgesForMember(map, memberId).map((badge) => badge.id);
 }

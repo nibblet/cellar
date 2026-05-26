@@ -1,13 +1,20 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { ChipInput } from "@/app/(app)/(shell)/products/[id]/recommend/chip-input";
+import { ReleaseLabelInput } from "@/components/product/release-label-input";
 import { Button, Card, Divider } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
 import { submitPairingTaste } from "./actions";
 
-type Product = { id: string; name: string; brand: string | null };
+type Product = {
+  id: string;
+  name: string;
+  brand: string | null;
+  releasePattern?: string | null;
+  knownReleaseLabels?: string[];
+};
 type PriorTasting = { recommend: boolean; chips: string[]; note: string | null };
 
 type Props = {
@@ -41,6 +48,40 @@ export function PairingTasteForm({
   const [preview, setPreview] = useState<string | null>(null);
   const [preparingPhoto, setPreparingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const libraryInputRef = useRef<HTMLInputElement>(null);
+
+  async function handlePhotoSelected(file: File | undefined) {
+    const input = photoInputRef.current;
+    if (!file || !input) {
+      setPreview(null);
+      setPhotoError(null);
+      return;
+    }
+
+    setPreparingPhoto(true);
+    setPhotoError(null);
+
+    try {
+      const compressed = await compressPhotoForUpload(file);
+      const transfer = new DataTransfer();
+      transfer.items.add(compressed);
+      input.files = transfer.files;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target?.result as string);
+      reader.readAsDataURL(compressed);
+    } catch {
+      setPreview(null);
+      input.value = "";
+      setPhotoError("Couldn't prepare that photo. Try again.");
+    } finally {
+      setPreparingPhoto(false);
+      if (cameraInputRef.current) cameraInputRef.current.value = "";
+      if (libraryInputRef.current) libraryInputRef.current.value = "";
+    }
+  }
 
   const [cigarRecommend, setCigarRecommend] = useState<"yes" | "no">(
     priorCigar?.recommend === false ? "no" : "yes",
@@ -60,12 +101,42 @@ export function PairingTasteForm({
       <input type="hidden" name="cigar_recommend" value={cigarRecommend} />
       <input type="hidden" name="bourbon_recommend" value={bourbonRecommend} />
 
-      <label
-        htmlFor="photo"
+      <input
+        ref={photoInputRef}
+        id="photo"
+        name="photo"
+        type="file"
+        accept="image/*"
+        required
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(e) => void handlePhotoSelected(e.target.files?.[0])}
+      />
+      <input
+        ref={libraryInputRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(e) => void handlePhotoSelected(e.target.files?.[0])}
+      />
+
+      <div
         className={cn(
           "relative flex flex-col items-center justify-center",
           "aspect-square rounded-[16px] border-2 border-dashed border-border",
-          "bg-surface hover:bg-surface-2 transition-colors cursor-pointer overflow-hidden",
+          "bg-surface overflow-hidden",
         )}
       >
         {preview ? (
@@ -77,49 +148,30 @@ export function PairingTasteForm({
           />
         ) : (
           <div className="text-center px-6">
-            <p className="text-xl mb-1 font-display">Tap to capture</p>
+            <p className="text-xl mb-1 font-display">Add a photo</p>
             <p className="text-sm text-foreground-subtle">Cigar and pour together</p>
           </div>
         )}
-        <input
-          id="photo"
-          name="photo"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          required
-          className="sr-only"
-          onChange={async (e) => {
-            const input = e.target;
-            const file = input.files?.[0];
-            if (!file) {
-              setPreview(null);
-              setPhotoError(null);
-              return;
-            }
+      </div>
 
-            setPreparingPhoto(true);
-            setPhotoError(null);
-
-            try {
-              const compressed = await compressPhotoForUpload(file);
-              const transfer = new DataTransfer();
-              transfer.items.add(compressed);
-              input.files = transfer.files;
-
-              const reader = new FileReader();
-              reader.onload = (ev) => setPreview(ev.target?.result as string);
-              reader.readAsDataURL(compressed);
-            } catch {
-              setPreview(null);
-              input.value = "";
-              setPhotoError("Couldn't prepare that photo. Try again.");
-            } finally {
-              setPreparingPhoto(false);
-            }
-          }}
-        />
-      </label>
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={pending || preparingPhoto}
+          onClick={() => cameraInputRef.current?.click()}
+        >
+          Take photo
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={pending || preparingPhoto}
+          onClick={() => libraryInputRef.current?.click()}
+        >
+          Choose saved
+        </Button>
+      </div>
 
       <ProductSlot
         product={cigar}
@@ -162,6 +214,8 @@ export function PairingTasteForm({
         recommend={bourbonRecommend}
         onRecommendChange={setBourbonRecommend}
         chipPlaceholder="e.g. caramel, oak, rye"
+        releasePattern={bourbon.releasePattern ?? null}
+        knownReleaseLabels={bourbon.knownReleaseLabels ?? []}
       />
 
       <Divider label="Notes on the pairing" />
@@ -215,6 +269,8 @@ function ProductSlot({
   recommend,
   onRecommendChange,
   chipPlaceholder,
+  releasePattern,
+  knownReleaseLabels,
 }: {
   product: Product;
   kindLabel: string;
@@ -224,6 +280,8 @@ function ProductSlot({
   recommend: "yes" | "no";
   onRecommendChange: (value: "yes" | "no") => void;
   chipPlaceholder: string;
+  releasePattern?: string | null;
+  knownReleaseLabels?: string[];
 }) {
   return (
     <section className="flex flex-col gap-3">
@@ -256,6 +314,14 @@ function ProductSlot({
         initial={priorChips}
         placeholder={chipPlaceholder}
       />
+
+      {kindLabel === "bourbon" ? (
+        <ReleaseLabelInput
+          name="bourbon_release_label"
+          releasePattern={releasePattern ?? null}
+          suggestions={knownReleaseLabels ?? []}
+        />
+      ) : null}
     </section>
   );
 }

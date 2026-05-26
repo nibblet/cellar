@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { getWheel, type ProductType } from "@/lib/wheel";
 import { SessionForm } from "./session-form";
 
@@ -22,10 +23,21 @@ export default async function SessionPage({
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, type, name, brand")
+    .select("id, type, name, brand, release_pattern, specs")
     .eq("id", id)
     .maybeSingle();
   if (!product) notFound();
+
+  const { data: memberReleaseRows } = await supabase
+    .from("tastings")
+    .select("release_label")
+    .eq("product_id", product.id)
+    .not("release_label", "is", null);
+
+  const knownReleaseLabels = collectKnownReleaseLabels(
+    (product.specs ?? {}) as Record<string, unknown>,
+    (memberReleaseRows ?? []).map((row) => row.release_label),
+  );
 
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) notFound();
@@ -59,6 +71,8 @@ export default async function SessionPage({
         productType={product.type as ProductType}
         leafLabels={leafLabels}
         eventId={event ?? null}
+        releasePattern={(product as { release_pattern?: string | null }).release_pattern ?? null}
+        knownReleaseLabels={knownReleaseLabels}
       />
 
       <Divider label="That's all" />

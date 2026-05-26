@@ -68,6 +68,7 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
   }
 
   const params = new URLSearchParams({ just_captured: "1" });
+  if (outcome.matched) params.set("catalog_match", "1");
   if (eventId) params.set("event", eventId);
   if (outcome.releaseLabel) params.set("release_label", outcome.releaseLabel);
   if (outcome.releaseLabel) params.set("release_label_source", "vision");
