@@ -53,6 +53,7 @@
     "seed:export-cigar-catalog": "tsx --env-file=.env.local scripts/seed/export-cigar-catalog.ts",
     "seed:apply-bourbon-review": "tsx --env-file=.env.local scripts/seed/apply-bourbon-catalog-review.ts",
     "seed:apply-cigar-review": "tsx --env-file=.env.local scripts/seed/apply-cigar-catalog-review.ts",
+    "backfill:catalog-spine": "tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts",
     "seed:all": "pnpm seed:wheels && pnpm seed:bourbons",
     "admin:set-password": "tsx --env-file=.env.local scripts/admin/set-password.ts"
   },

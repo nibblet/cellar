@@ -117,26 +117,57 @@ Eagle Rare 12→2, 1792 12→7, Maker's Mark 10→4.
   without a curated overlay — expected; these need overlays or a batch-release
   rule. This is precisely why curation, not download, is the lever.
 
-## Proposed production rollout
+## Production migration + backfill (built)
 
-1. **Schema** — promote hierarchy to first-class, queryable columns on `products`
-   (or a small `brands` reference table): `producer`, `brand_family`,
-   `expression`, `release_label`, and booleans `is_core_range` / `discontinued` /
-   `nas`. Replaces runtime inference with stored truth.
-2. **Backfill** — turn the prototype into a one-time matcher that writes those
-   columns and folds duplicate/release rows, preserving each row's
-   `wheel_vector` / reviews / specs. Long tail flagged, not deleted.
-3. **Curate the spine** to the ~30–50 brands a member actually browses (start
-   from the 17 overlays here). Validate mash bills/proof against ModernThirst +
-   brand sites.
-4. **Browse + AI read the hierarchy** — catalog browse groups by `brand_family`,
-   defaults to core range, tucks the long tail behind "all releases"; the pairing
-   engine gets brand/expression for free.
+**Migration** `supabase/migrations/20260527000001_catalog_hierarchy.sql` adds
+queryable columns to `products`: `producer`, `brand_family`, `expression`,
+`release_label`, `is_core_range`, `discontinued`, `nas`, and `catalog_included`.
+`catalog_included` defaults `true`, so applying the migration changes nothing
+until the backfill runs (non-breaking).
 
-Net: tapping "Knob Creek" shows six tidy expressions; the AI reasons over a real
-hierarchy; and we stop writing per-brand restore scripts.
+**Shared classifier** `scripts/seed/lib/spine-match.ts` — single source of truth
+used by both the dry-run prototype and the backfill (`classifyProduct` +
+`planCutback`), so they can't drift.
+
+**Backfill** `scripts/seed/backfill-catalog-spine.ts` resolves every bourbon to
+its spine fields, folds near-duplicates to one survivor per expression, and sets
+`catalog_included`. Nothing is deleted — hidden rows keep all their enrichment.
+
+### The cut-back keep-rule
+
+A row is member-facing (`catalog_included = true`) iff:
+- `specs.in_cobb_collection` is true (a bottle Paul owns — always carried), **or**
+- it's the survivor of a **curated** brand's **core/limited** expression.
+
+Everything else — uncurated long tail, discontinued, non-survivor duplicates — is
+hidden but promotable: flip `catalog_included` to true to add an individual back.
+
+Dry run over the local data (Cobb adds on top in the DB):
+**1,350 bourbons → 62 kept** (curated core/limited survivors), 1,288 hidden.
+Per-brand: Four Roses 34→6, Buffalo Trace 45→3, Wild Turkey 22→6, Elijah Craig
+30→4, 1792 12→7, Knob Creek 14→5, Maker's Mark 10→4.
+
+### Apply steps (manual, per repo convention)
+
+```bash
+# 1. schema (human-reviewed migration)
+supabase db push
+# 2. preview the cut-back against the real DB (reads only)
+pnpm tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts
+# 3. apply once the preview looks right
+pnpm tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts --apply
+```
+
+### Remaining step — browse wiring (not yet done)
+
+`lib/feed/catalog-queries.ts` still selects a flat list. To realize the win it
+must `.eq("catalog_included", true)` and group results by `brand_family` (core
+range first, long tail behind "all releases"). This needs a running app + DB to
+verify, so it's the next change rather than part of this data-layer pass.
 
 ## Scope decision
 
 Mainstream core first — clean the ~30–50 browsed shelf brands; the allocated long
-tail fills in on scan. (Recorded 2026-05-27.)
+tail (incl. famous allocated bottles like William Larue Weller) is hidden but
+one flag-flip from returning. Cobb collection is the spine of what we carry.
+(Recorded 2026-05-27.)
