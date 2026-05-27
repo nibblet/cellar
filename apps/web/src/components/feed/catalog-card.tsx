@@ -54,7 +54,7 @@ export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps
         <div className="px-3.5 py-3 min-w-0 flex items-start gap-2">
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-medium text-foreground truncate leading-snug">
-              {entry.name}
+              {entry.expression ?? entry.name}
             </p>
             <p className="text-[11px] text-foreground-muted truncate mt-0.5">
               {entry.brand ? `${entry.brand} · ` : ""}
