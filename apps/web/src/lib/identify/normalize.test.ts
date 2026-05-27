@@ -1,5 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { normalizeName, pickBestMatch, trigramSimilarity } from "./normalize";
+import { normalizeName, pickBestMatch, stripReleaseNoise, trigramSimilarity } from "./normalize";
+
+describe("stripReleaseNoise", () => {
+  it("removes pick / batch / barrel-code noise", () => {
+    expect(stripReleaseNoise("Single Barrel Select Store Pick Barrel #3405")).toBe(
+      "Single Barrel Select",
+    );
+    expect(stripReleaseNoise("Barrel Proof Batch C923")).toBe("Barrel Proof");
+    expect(stripReleaseNoise("Single Barrel Private Selection")).toBe("Single Barrel");
+    expect(stripReleaseNoise("Single Barrel No. 3403")).toBe("Single Barrel");
+  });
+
+  it("preserves expression words, ages, and year-named expressions", () => {
+    expect(stripReleaseNoise("Single Barrel Select")).toBe("Single Barrel Select");
+    expect(stripReleaseNoise("Barrel Proof")).toBe("Barrel Proof");
+    expect(stripReleaseNoise("12 Year")).toBe("12 Year");
+    expect(stripReleaseNoise("1920 Prohibition Style")).toBe("1920 Prohibition Style");
+  });
+});
 
 describe("normalizeName", () => {
   it("lowercases and trims", () => {
@@ -76,6 +94,18 @@ describe("pickBestMatch", () => {
       brand: "Bardstown Bourbon Company",
     });
     expect(match?.product.id).toBe("b1");
+  });
+
+  it("matches a store pick to its primary expression", () => {
+    const bourbons = [
+      { id: "kc-sbs", name: "Knob Creek Single Barrel Select", brand: "Knob Creek" },
+      { id: "kc-sb", name: "Knob Creek Small Batch", brand: "Knob Creek" },
+    ];
+    const match = pickBestMatch(bourbons, {
+      name: "Knob Creek Single Barrel Select Store Pick Barrel #3405",
+      brand: "Knob Creek",
+    });
+    expect(match?.product.id).toBe("kc-sbs");
   });
 
   it("returns null for an empty candidate list", () => {

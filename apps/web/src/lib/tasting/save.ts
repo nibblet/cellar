@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackMapFromChips, mapChipsAndNoteToWheel } from "@/lib/openai/map-wheel";
 import type { ProductType } from "@/lib/wheel";
 import { backfillProductVectorIfMissing } from "./aggregate";
+import { classifyReleaseKind } from "./release-kind";
 import { parseReleaseLabel, type ReleaseLabelSource } from "./release-label";
 
 const WHEEL_VERSION = "0.1";
@@ -81,6 +82,7 @@ export async function saveTasting(args: SaveTastingArgs): Promise<{ tastingId: s
         release_label: parsed.release_label,
         release_year: parsed.release_year,
         release_label_source: labelSource,
+        release_kind: classifyReleaseKind(parsed.release_label),
       },
       { onConflict: "user_id,product_id,release_label" },
     )

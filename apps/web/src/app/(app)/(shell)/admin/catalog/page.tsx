@@ -2,8 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider, Voice } from "@/components/primitives";
+import { groupIncludedByBrand, type IncludedRow } from "@/lib/catalog/catalog-inclusion";
 import { buildCollapseAnalysis, type CatalogProductRow } from "@/lib/catalog/collapse-groups";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { CatalogInclusionClient } from "./catalog-inclusion-client";
 import { CatalogReviewClient } from "./catalog-review-client";
 
 async function loadBourbons(): Promise<CatalogProductRow[]> {
@@ -27,6 +29,28 @@ async function loadBourbons(): Promise<CatalogProductRow[]> {
   return all;
 }
 
+async function loadIncludedBourbons(): Promise<IncludedRow[]> {
+  const supabase = await createSupabaseServerClient();
+  const all: IncludedRow[] = [];
+
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, name, brand, brand_family, expression")
+      .eq("type", "bourbon")
+      .eq("status", "confirmed")
+      .eq("catalog_included", true)
+      .order("brand_family")
+      .range(from, from + 999);
+
+    if (error) throw error;
+    if (!data?.length) break;
+    all.push(...(data as IncludedRow[]));
+  }
+
+  return all;
+}
+
 export default async function AdminCatalogPage() {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -39,8 +63,9 @@ export default async function AdminCatalogPage() {
     .maybeSingle();
   if (profile?.role !== "admin") redirect("/you");
 
-  const products = await loadBourbons();
+  const [products, included] = await Promise.all([loadBourbons(), loadIncludedBourbons()]);
   const analysis = buildCollapseAnalysis(products);
+  const inclusionGroups = groupIncludedByBrand(included);
 
   return (
     <AppShell>
@@ -79,6 +104,20 @@ export default async function AdminCatalogPage() {
         soloFlags={analysis.soloFlags}
         stats={analysis.stats}
       />
+
+      <Divider label="Member catalog — hide / dedupe" />
+
+      <Card className="mb-4 py-3 px-4">
+        <p className="text-sm text-foreground-muted">
+          The member-facing catalog (<code className="text-xs">catalog_included = true</code>),
+          grouped by brand. "Possible dupe" flags rows whose expression looks like another in the
+          same brand — usually a Cobb row and a bourbonExplorer row for the same bottle. Tap{" "}
+          <strong className="text-foreground font-medium">In catalog</strong> to hide one; it stays
+          in the table and can be promoted back.
+        </p>
+      </Card>
+
+      <CatalogInclusionClient groups={inclusionGroups} total={included.length} />
 
       <Divider label="Workflow" />
 

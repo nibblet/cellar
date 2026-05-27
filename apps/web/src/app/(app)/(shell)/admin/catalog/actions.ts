@@ -66,3 +66,37 @@ export async function setCollapseFlag(
   revalidatePath("/admin/catalog");
   return { status: "ok" };
 }
+
+export type SetCatalogIncludedState = {
+  status: "idle" | "ok" | "error";
+  message?: string;
+};
+
+/** Admin: hide a bourbon from the member-facing catalog, or promote it back. */
+export async function setCatalogIncluded(
+  _prev: SetCatalogIncludedState,
+  formData: FormData,
+): Promise<SetCatalogIncludedState> {
+  const productId = String(formData.get("product_id") ?? "").trim();
+  const includedRaw = String(formData.get("included") ?? "").trim();
+  if (!productId) return { status: "error", message: "Missing product id." };
+  if (includedRaw !== "true" && includedRaw !== "false") {
+    return { status: "error", message: "Invalid included value." };
+  }
+  const included = includedRaw === "true";
+
+  const { supabase, error: authError } = await requireAdminSupabase();
+  if (!supabase) return { status: "error", message: authError };
+
+  const { error: updateError } = await supabase
+    .from("products")
+    .update({ catalog_included: included })
+    .eq("id", productId)
+    .eq("type", "bourbon");
+
+  if (updateError) return { status: "error", message: updateError.message };
+
+  revalidatePath("/admin/catalog");
+  revalidatePath("/");
+  return { status: "ok" };
+}
