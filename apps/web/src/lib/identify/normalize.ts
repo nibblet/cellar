@@ -34,8 +34,31 @@ export function stripProofFromName(name: string): string {
     .trim();
 }
 
+/**
+ * Strip store-pick / private-selection / batch / barrel-code noise so a
+ * specific release matches its primary expression (e.g. "Knob Creek Single
+ * Barrel Select Store Pick Barrel #3405" → "Knob Creek Single Barrel Select").
+ *
+ * Deliberately leaves expression words intact: "Single Barrel", "Barrel Proof",
+ * age numbers, and year-named expressions (Old Forester 1920) are preserved —
+ * only explicit pick phrases and barrel/batch codes are removed.
+ */
+export function stripReleaseNoise(name: string): string {
+  return name
+    .replace(/\b(store|barrel|club|shop)\s+pick\b/gi, " ")
+    .replace(/\bprivate\s+(?:selection|barrel|pick)\b/gi, " ")
+    .replace(/\bhand[-\s]?(?:selected|picked)\b/gi, " ")
+    .replace(/\bselected\s+(?:for|by)\b.*$/gi, " ")
+    .replace(/\bbatch\s*#?\s*[a-z]?\d+[a-z]?\b/gi, " ")
+    .replace(/\bbarrel\s*#?\s*\d+\b/gi, " ")
+    .replace(/\bno\.?\s*\d{2,5}\b/gi, " ")
+    .replace(/#\s*\d+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function nameForCatalogMatch(name: string, brand: string | null): string {
-  return stripProofFromName(stripBrandPrefix(brand, name));
+  return stripReleaseNoise(stripProofFromName(stripBrandPrefix(brand, name)));
 }
 
 /**
