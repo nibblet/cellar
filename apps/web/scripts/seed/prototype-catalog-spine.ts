@@ -15,6 +15,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ExpressionStatus } from "./lib/brand-spine";
+import { readCobbBrandFamilies } from "./lib/cobb-brands";
 import { readCsv } from "./lib/csv";
 import { classifyProduct, planCutback, type SpineInput } from "./lib/spine-match";
 
@@ -45,7 +46,11 @@ type ExprGroup = { canonical: string; status: ExpressionStatus; spirit_type: str
 type BrandGroup = { producer: string; brand_family: string; curated: boolean; expressions: Map<string, ExprGroup> };
 
 async function main() {
-  const filter = process.argv[2]?.toLowerCase();
+  const args = process.argv.slice(2);
+  const cobbArg = args.find((a) => a.startsWith("--cobb="))?.slice("--cobb=".length);
+  const filter = args.find((a) => !a.startsWith("--"))?.toLowerCase();
+  const cobbBrands = cobbArg ? await readCobbBrandFamilies(cobbArg) : new Set<string>();
+  if (cobbArg) console.log(`Cobb collection: opened ${cobbBrands.size} brand families.`);
   const rows = await readCsv<CsvRow>(CSV_PATH);
 
   // Classify + plan the cut-back over all rows.
@@ -63,7 +68,10 @@ async function main() {
       };
       return { raw: r, name, input, fields: classifyProduct(input) };
     });
-  const decisions = planCutback(items.map(({ input, fields }) => ({ input, fields })));
+  const decisions = planCutback(
+    items.map(({ input, fields }) => ({ input, fields })),
+    { extraCobbBrandFamilies: cobbBrands },
+  );
 
   const producers = new Map<string, Map<string, BrandGroup>>();
   let included = 0;

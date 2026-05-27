@@ -46,16 +46,16 @@ Buffalo Trace (Sazerac)
       Stitzel-Weller Blade and Bow 22 year old Release [UNCURATED·bourbon] 92pf · $200 · mash undisclosed · 0/1 kept
           folded 1 rows · releases: 2017
 
-  E.H. Taylor  [auto] — 8 rows → 8 expr, 0 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Seasoned Wood [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Small [UNCURATED·bourbon] 100pf · $40 · mash undisclosed · 0/1 kept
+  E.H. Taylor  [auto] — 8 rows → 8 expr, 8 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Seasoned Wood [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Small [UNCURATED·bourbon] 100pf · $40 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch BOURBON
-      E.H. Taylor Colonel E.H. Taylor Jr. Warehouse C Tornado Surviving [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Cured Oak [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Four Grain [UNCURATED·bourbon] 100pf · $70 · mash Corn, Rye, Wheat, Malted Barley (percentages undisclosed) · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Barrel Proof [UNCURATED·bourbon] 134.4pf · $70 · mash undisclosed · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Single Barrel [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 0/1 kept
-      E.H. Taylor Colonel E.H. Taylor Jr. Old Fashioned Sour Mash [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 0/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Warehouse C Tornado Surviving [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Cured Oak [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Four Grain [UNCURATED·bourbon] 100pf · $70 · mash Corn, Rye, Wheat, Malted Barley (percentages undisclosed) · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Barrel Proof [UNCURATED·bourbon] 134.4pf · $70 · mash undisclosed · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Single Barrel [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 1/1 kept
+      E.H. Taylor Colonel E.H. Taylor Jr. Old Fashioned Sour Mash [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 1/1 kept
 
   Weller  [curated] — 5 rows → 4 expr, 4 kept
       Weller 12 Year [CORE·bourbon] 90pf · $22–$37 · mash undisclosed · 1/2 kept
@@ -70,18 +70,18 @@ Buffalo Trace (Sazerac)
       Pappy Van Winkle 20 year old Family Reserve [UNCURATED·bourbon] 90.4pf · $90 · mash undisclosed · 0/1 kept
       Pappy Van Winkle 23 year old Family Reserve [UNCURATED·bourbon] 95.6pf · $200 · mash undisclosed · 0/1 kept
 
-  Elmer T. Lee  [auto] — 3 rows → 2 expr, 0 kept
-      Elmer T. Lee Single Barrel [UNCURATED·bourbon] 90pf · $25–$30 · mash undisclosed · 0/2 kept
+  Elmer T. Lee  [auto] — 3 rows → 2 expr, 2 kept
+      Elmer T. Lee Single Barrel [UNCURATED·bourbon] 90pf · $25–$30 · mash undisclosed · 1/2 kept
           folded 2 rows
-      Elmer T. Lee Single Barrel Commemorative Edition [UNCURATED·bourbon] 93pf · $35 · mash undisclosed · 0/1 kept
+      Elmer T. Lee Single Barrel Commemorative Edition [UNCURATED·bourbon] 93pf · $35 · mash undisclosed · 1/1 kept
 
   Old Rip Van Winkle  [auto] — 2 rows → 2 expr, 0 kept
       Old Rip Van Winkle [UNCURATED·bourbon] 107pf · $350 · mash undisclosed · 0/1 kept
       Old Rip Van Winkle Van Winkle 18 year old Family Reserve [UNCURATED·bourbon] 105.2pf · $75 · mash undisclosed · 0/1 kept
 
-  Stagg  [auto] — 2 rows → 2 expr, 0 kept
-      Stagg Jr. Barrel Proof [UNCURATED·bourbon] 128.4pf · $50 · mash undisclosed · 0/1 kept
-      Stagg Jr. [UNCURATED·bourbon] 134.4pf · $50 · mash undisclosed · 0/1 kept
+  Stagg  [auto] — 2 rows → 2 expr, 2 kept
+      Stagg Jr. Barrel Proof [UNCURATED·bourbon] 128.4pf · $50 · mash undisclosed · 1/1 kept
+      Stagg Jr. [UNCURATED·bourbon] 134.4pf · $50 · mash undisclosed · 1/1 kept
 
   Hancock's Reserve  [auto] — 2 rows → 2 expr, 0 kept
       Hancock's Reserve Hancock's Single Barrel Reserve [UNCURATED·bourbon] 89pf · $40 · mash undisclosed · 0/1 kept
@@ -254,89 +254,89 @@ Brown-Forman
 Jim Beam (Beam Suntory)
 ────────────────────────────────────────────────────────────────────────────
 
-  Booker's  [auto] — 30 rows → 30 expr, 0 kept
-      Booker's -01 25th Anniversary Batch [UNCURATED·bourbon] 130.8pf · $100 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+  Booker's  [auto] — 30 rows → 30 expr, 30 kept
+      Booker's -01 25th Anniversary Batch [UNCURATED·bourbon] 130.8pf · $100 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2014
-      Booker's -03 Country Ham [UNCURATED·bourbon] 124.8pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -03 Country Ham [UNCURATED·bourbon] 124.8pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2019
-      Booker's Charlie's Batch [UNCURATED·bourbon] 126.6pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Charlie's Batch [UNCURATED·bourbon] 126.6pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2023
-      Booker's -03 Kentucky Chew [UNCURATED·bourbon] 126.8pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -03 Kentucky Chew [UNCURATED·bourbon] 126.8pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2018
-      Booker's -02 Backyard BBQ [UNCURATED·bourbon] 128.8pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -02 Backyard BBQ [UNCURATED·bourbon] 128.8pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2018
-      Booker's -02 Shiny Barrel Batch" [UNCURATED·bourbon] 124pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -02 Shiny Barrel Batch" [UNCURATED·bourbon] 124pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2019
-      Booker's -01 Granny's Batch [UNCURATED·bourbon] 126.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -01 Granny's Batch [UNCURATED·bourbon] 126.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch KENTUCKY
-      Booker's -03 Pigskin Straight [UNCURATED·bourbon] 127.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -03 Pigskin Straight [UNCURATED·bourbon] 127.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch KENTUCKY
-      Booker's -02 Tagalong Straight [UNCURATED·bourbon] 128pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -02 Tagalong Straight [UNCURATED·bourbon] 128pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch KENTUCKY
-      Booker's Ronnie's [UNCURATED·bourbon] 124.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Ronnie's [UNCURATED·bourbon] 124.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 2022-01
-      Booker's Springfield Batch [UNCURATED·bourbon] 124.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Springfield Batch [UNCURATED·bourbon] 124.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 2024-01
-      Booker's 30th Anniversary [UNCURATED·bourbon] 125.8pf · $200 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Booker's -01 Tommy's Batch [UNCURATED·bourbon] 128.4pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's 30th Anniversary [UNCURATED·bourbon] 125.8pf · $200 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Booker's -01 Tommy's Batch [UNCURATED·bourbon] 128.4pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2017
-      Booker's -01 "Kathleen's Batch " [UNCURATED·bourbon] 127.4pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -01 "Kathleen's Batch " [UNCURATED·bourbon] 127.4pf · $70 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2018
-      Booker's -04 Sip Awhile [UNCURATED·bourbon] 128pf · $73 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -04 Sip Awhile [UNCURATED·bourbon] 128pf · $73 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2017
-      Booker's -04 Kitchen Table [UNCURATED·bourbon] 128pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -04 Kitchen Table [UNCURATED·bourbon] 128pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2018
-      Booker's -01 Teresa's Batch [UNCURATED·bourbon] 126pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -01 Teresa's Batch [UNCURATED·bourbon] 126pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2019
-      Booker's -04 Beaten Biscuits' [UNCURATED·bourbon] 126pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -04 Beaten Biscuits' [UNCURATED·bourbon] 126pf · $80 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2019
-      Booker's -01 Donohoe's Straight [UNCURATED·bourbon] 125.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -01 Donohoe's Straight [UNCURATED·bourbon] 125.2pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch KENTUCKY
-      Booker's The Lumberyard Batch [UNCURATED·bourbon] 124.8pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's The Lumberyard Batch [UNCURATED·bourbon] 124.8pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2022
-      Booker's Apprentice Batch [UNCURATED·bourbon] 125.6pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Apprentice Batch [UNCURATED·bourbon] 125.6pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 2023-02
-      Booker's -01 Bluegrass Batch [UNCURATED·bourbon] 128pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -01 Bluegrass Batch [UNCURATED·bourbon] 128pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2016
-      Booker's Pinkie's [UNCURATED·bourbon] 122.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Pinkie's [UNCURATED·bourbon] 122.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 2022-04
-      Booker's -02 Boston Batch [UNCURATED·bourbon] 126.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -02 Boston Batch [UNCURATED·bourbon] 126.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch KENTUCKY
-      Booker's Noe Strangers Batch [UNCURATED·bourbon] 124.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's Noe Strangers Batch [UNCURATED·bourbon] 124.4pf · $90 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 2021-04
-      Booker's [UNCURATED·bourbon] 128.8pf · $50 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's [UNCURATED·bourbon] 128.8pf · $50 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Batch NO
-      Booker's -01 Big Man Small Batch [UNCURATED·bourbon] 128.6pf · $55 · mash 77% Corn, 13% Rye, 10% Malted Barley · 0/1 kept
+      Booker's -01 Big Man Small Batch [UNCURATED·bourbon] 128.6pf · $55 · mash 77% Corn, 13% Rye, 10% Malted Barley · 1/1 kept
           folded 1 rows · releases: 2015
-      Booker's -04 Oven Buster Batch [UNCURATED·bourbon] 127pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -04 Oven Buster Batch [UNCURATED·bourbon] 127pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2015
-      Booker's -02 Blue Knights Batch [UNCURATED·bourbon] 127.4pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -02 Blue Knights Batch [UNCURATED·bourbon] 127.4pf · $75 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2017
-      Booker's -03 Toogie's Invitation [UNCURATED·bourbon] 129pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Booker's -03 Toogie's Invitation [UNCURATED·bourbon] 129pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2016
 
-  Jim Beam  [auto] — 21 rows → 21 expr, 0 kept
-      Jim Beam Distillers' Masterpiece 20 year old [UNCURATED·bourbon] 98pf · $300 · mash undisclosed · 0/1 kept
-      Jim Beam Black 7 year old [UNCURATED·bourbon] 90pf · $25 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Single Barrel [UNCURATED·bourbon] 95pf · $35 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Signature Craft High Rye [UNCURATED·rye] 90pf · $50 · mash undisclosed · 0/1 kept
-      Jim Beam Bonded [UNCURATED·bourbon] 100pf · $23 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Signature Craft 12 year old [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 0/1 kept
-      Jim Beam Signature Six Grain [UNCURATED·bourbon] 89pf · $47 · mash Corn, Rye, Barley, Wheat, Brown Rice, Triticale (percentages undisclosed) · 0/1 kept
-      Jim Beam Harvest Collection Triticale [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 0/1 kept
-      Jim Beam Distiller's Masterpiece Sherry Cask Finished [UNCURATED·bourbon] 100pf · $200 · mash undisclosed · 0/1 kept
-      Jim Beam Old Tub Bottled in Bond [UNCURATED·bourbon] 100pf · $23 · mash 75% corn, 13% rye, 12% malted barley · 0/1 kept
-      Jim Beam Signature Craft Soft Red Wheat [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 0/1 kept
-      Jim Beam Distiller's Cut [UNCURATED·bourbon] 100pf · $23 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Repeal Batch [UNCURATED·bourbon] 86pf · $18 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Signature Craft Rare Spanish Brandy Finish [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 0/1 kept
-      Jim Beam Black 8 year old [UNCURATED·bourbon] 86pf · $22 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
-      Jim Beam Harvest Collection Six Row Barley [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 0/1 kept
-      Jim Beam Devil's Cut [UNCURATED·bourbon] 90pf · $24 · mash 75% corn, 13% rye, 12% malted barley · 0/1 kept
-      Jim Beam Signature Craft Quarter Cask Finished [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 0/1 kept
-      Jim Beam Signature Craft Whole Rolled Oat [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 0/1 kept
-      Jim Beam White Label [UNCURATED·bourbon] 80pf · $16 · mash 75% corn, 13% rye, 12% malted barley · 0/1 kept
-      Jim Beam Double Oak [UNCURATED·bourbon] 86pf · $22 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+  Jim Beam  [auto] — 21 rows → 21 expr, 21 kept
+      Jim Beam Distillers' Masterpiece 20 year old [UNCURATED·bourbon] 98pf · $300 · mash undisclosed · 1/1 kept
+      Jim Beam Black 7 year old [UNCURATED·bourbon] 90pf · $25 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Single Barrel [UNCURATED·bourbon] 95pf · $35 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Signature Craft High Rye [UNCURATED·rye] 90pf · $50 · mash undisclosed · 1/1 kept
+      Jim Beam Bonded [UNCURATED·bourbon] 100pf · $23 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Signature Craft 12 year old [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 1/1 kept
+      Jim Beam Signature Six Grain [UNCURATED·bourbon] 89pf · $47 · mash Corn, Rye, Barley, Wheat, Brown Rice, Triticale (percentages undisclosed) · 1/1 kept
+      Jim Beam Harvest Collection Triticale [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 1/1 kept
+      Jim Beam Distiller's Masterpiece Sherry Cask Finished [UNCURATED·bourbon] 100pf · $200 · mash undisclosed · 1/1 kept
+      Jim Beam Old Tub Bottled in Bond [UNCURATED·bourbon] 100pf · $23 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
+      Jim Beam Signature Craft Soft Red Wheat [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 1/1 kept
+      Jim Beam Distiller's Cut [UNCURATED·bourbon] 100pf · $23 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Repeal Batch [UNCURATED·bourbon] 86pf · $18 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Signature Craft Rare Spanish Brandy Finish [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 1/1 kept
+      Jim Beam Black 8 year old [UNCURATED·bourbon] 86pf · $22 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
+      Jim Beam Harvest Collection Six Row Barley [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 1/1 kept
+      Jim Beam Devil's Cut [UNCURATED·bourbon] 90pf · $24 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
+      Jim Beam Signature Craft Quarter Cask Finished [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 1/1 kept
+      Jim Beam Signature Craft Whole Rolled Oat [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 1/1 kept
+      Jim Beam White Label [UNCURATED·bourbon] 80pf · $16 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
+      Jim Beam Double Oak [UNCURATED·bourbon] 86pf · $22 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
 
   Knob Creek  [curated] — 14 rows → 7 expr, 5 kept
       Knob Creek Single Barrel Select [CORE·bourbon] 120pf · $40–$47 · mash 75% corn, 13% rye, 12% malted barley · 1/3 kept
@@ -358,27 +358,27 @@ Jim Beam (Beam Suntory)
       Hardin's Creek 17 year old Kentucky Series Boston [UNCURATED·bourbon] 110pf · $170 · mash undisclosed · 0/1 kept
       Hardin's Creek Jacob's Well [UNCURATED·bourbon] 108pf · $150 · mash undisclosed · 0/1 kept
 
-  Basil Hayden  [auto] — 4 rows → 4 expr, 0 kept
-      Basil Hayden Toast [UNCURATED·bourbon] 80pf · $50 · mash 63% corn, 27% brown rice, 10% malted barley · 0/1 kept
-      Basil Hayden 's 10 year old [UNCURATED·bourbon] 80pf · $60 · mash 63% corn, 27% rye, 10% malted barley · 0/1 kept
-      Basil Hayden 's [UNCURATED·bourbon] 80pf · $42 · mash 63% corn, 27% rye, 10% malted barley · 0/1 kept
-      Basil Hayden Red Wine Cask Finished [UNCURATED·bourbon] 80pf · $60 · mash 63% corn, 27% rye, 10% malted barley · 0/1 kept
+  Basil Hayden  [auto] — 4 rows → 4 expr, 4 kept
+      Basil Hayden Toast [UNCURATED·bourbon] 80pf · $50 · mash 63% corn, 27% brown rice, 10% malted barley · 1/1 kept
+      Basil Hayden 's 10 year old [UNCURATED·bourbon] 80pf · $60 · mash 63% corn, 27% rye, 10% malted barley · 1/1 kept
+      Basil Hayden 's [UNCURATED·bourbon] 80pf · $42 · mash 63% corn, 27% rye, 10% malted barley · 1/1 kept
+      Basil Hayden Red Wine Cask Finished [UNCURATED·bourbon] 80pf · $60 · mash 63% corn, 27% rye, 10% malted barley · 1/1 kept
 
-  Baker's  [auto] — 3 rows → 3 expr, 0 kept
-      Baker's Single Barrel [UNCURATED·bourbon] 107pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+  Baker's  [auto] — 3 rows → 3 expr, 3 kept
+      Baker's Single Barrel [UNCURATED·bourbon] 107pf · $60 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: Pick No. 00018
-      Baker's 13 year old Single Barrel [UNCURATED·bourbon] 107pf · $130 · mash 77% corn, 13% rye, 10% malted barley · 0/1 kept
+      Baker's 13 year old Single Barrel [UNCURATED·bourbon] 107pf · $130 · mash 77% corn, 13% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2023
-      Baker's [UNCURATED·bourbon] 107pf · $47 · mash 77% Corn, 13% Rye, 10% Malted Barley · 0/1 kept
+      Baker's [UNCURATED·bourbon] 107pf · $47 · mash 77% Corn, 13% Rye, 10% Malted Barley · 1/1 kept
 
-  Little Book  [auto] — 1 rows → 1 expr, 0 kept
-      Little Book Chapter 3 The Road Home [UNCURATED·bourbon] 122.6pf · $125 · mash undisclosed · 0/1 kept
+  Little Book  [auto] — 1 rows → 1 expr, 1 kept
+      Little Book Chapter 3 The Road Home [UNCURATED·bourbon] 122.6pf · $125 · mash undisclosed · 1/1 kept
 
-  Legent  [auto] — 1 rows → 1 expr, 0 kept
-      Legent [UNCURATED·bourbon] 94pf · $35 · mash undisclosed · 0/1 kept
+  Legent  [auto] — 1 rows → 1 expr, 1 kept
+      Legent [UNCURATED·bourbon] 94pf · $35 · mash undisclosed · 1/1 kept
 
-  Old Grand-Dad  [auto] — 1 rows → 1 expr, 0 kept
-      Old Grand-Dad [UNCURATED·bourbon] 80pf · $17 · mash 63% corn, 27% rye, 10% malted barley · 0/1 kept
+  Old Grand-Dad  [auto] — 1 rows → 1 expr, 1 kept
+      Old Grand-Dad [UNCURATED·bourbon] 80pf · $17 · mash 63% corn, 27% rye, 10% malted barley · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Undisclosed
@@ -495,8 +495,8 @@ Bardstown Bourbon Company
       Hirsch The Single Barrel Double Oak [UNCURATED·bourbon] 128pf · $100–$150 · mash 72% Corn, 13% Rye, 15% Malted Barley · 0/2 kept
           folded 2 rows · releases: Batch AHH0723
 
-  Pursuit  [auto] — 1 rows → 1 expr, 0 kept
-      Pursuit United Blended Straight [UNCURATED·bourbon] 108pf · $65 · mash undisclosed · 0/1 kept
+  Pursuit  [auto] — 1 rows → 1 expr, 1 kept
+      Pursuit United Blended Straight [UNCURATED·bourbon] 108pf · $65 · mash undisclosed · 1/1 kept
 
   Kentucky Owl  [auto] — 1 rows → 1 expr, 0 kept
       Kentucky Owl The Wiseman [UNCURATED·bourbon] 100pf · $135 · mash undisclosed · 0/1 kept
@@ -508,53 +508,53 @@ Bardstown Bourbon Company
 Barrell Craft Spirits
 ────────────────────────────────────────────────────────────────────────────
 
-  Barrell Craft  [auto] — 37 rows → 26 expr, 0 kept
-      Barrell Craft Barrell Bourbon [UNCURATED·bourbon] 114.8pf · $80–$90 · mash undisclosed · 0/5 kept
+  Barrell Craft  [auto] — 37 rows → 26 expr, 26 kept
+      Barrell Craft Barrell Bourbon [UNCURATED·bourbon] 114.8pf · $80–$90 · mash undisclosed · 1/5 kept
           folded 5 rows · releases: Batch 011, Batch 005, Batch 004, Batch 006, Batch 022
-      Barrell Craft Barrell Cask-Strength Blend of Straight Bourbons [UNCURATED·bourbon] 106.4pf · $90 · mash undisclosed · 0/4 kept
+      Barrell Craft Barrell Cask-Strength Blend of Straight Bourbons [UNCURATED·bourbon] 106.4pf · $90 · mash undisclosed · 1/4 kept
           folded 4 rows · releases: Batch 021, Batch 026, Batch 023, Batch 016
-      Barrell Craft Barrell Cask-Strength Bourbon [UNCURATED·bourbon] 111.6pf · $90 · mash undisclosed · 0/4 kept
+      Barrell Craft Barrell Cask-Strength Bourbon [UNCURATED·bourbon] 111.6pf · $90 · mash undisclosed · 1/4 kept
           folded 4 rows · releases: Batch 018, Batch 019, Batch 015, Batch 017
-      Barrell Craft Barrell Cask Strength Blend of Straight Bourbons [UNCURATED·bourbon] 113.4pf · $90 · mash undisclosed · 0/2 kept
+      Barrell Craft Barrell Cask Strength Blend of Straight Bourbons [UNCURATED·bourbon] 113.4pf · $90 · mash undisclosed · 1/2 kept
           folded 2 rows · releases: Batch 025, Batch 027
-      Barrell Craft Barrell Vantage [UNCURATED·bourbon] 114.4pf · $90 · mash undisclosed · 0/1 kept
-      Barrell Craft Barrell Cask-Strength Blend of Straight [UNCURATED·bourbon] 115.8pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Vantage [UNCURATED·bourbon] 114.4pf · $90 · mash undisclosed · 1/1 kept
+      Barrell Craft Barrell Cask-Strength Blend of Straight [UNCURATED·bourbon] 115.8pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 029
-      Barrell Craft Barrell 6 year old Cask Strength Blend [UNCURATED·bourbon] 117.6pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell 6 year old Cask Strength Blend [UNCURATED·bourbon] 117.6pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 035
-      Barrell Craft Barrell Bourbon Cask Finish Series: 5 year old Amburana [UNCURATED·bourbon] 116.4pf · $90 · mash undisclosed · 0/1 kept
-      Barrell Craft Spirits [UNCURATED·bourbon] 100.6pf · $250 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Bourbon Cask Finish Series: 5 year old Amburana [UNCURATED·bourbon] 116.4pf · $90 · mash undisclosed · 1/1 kept
+      Barrell Craft Spirits [UNCURATED·bourbon] 100.6pf · $250 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2022
-      Barrell Craft Barrell Blend of Straight Bourbons [UNCURATED·bourbon] 114pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Blend of Straight Bourbons [UNCURATED·bourbon] 114pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 024
-      Barrell Craft Barrell New Year Blend of Straight Bourbons [UNCURATED·bourbon] 114pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell New Year Blend of Straight Bourbons [UNCURATED·bourbon] 114pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2021
-      Barrell Craft Barrell Bourbon Private Release Blend of Straights [UNCURATED·bourbon] 114pf · $110 · mash undisclosed · 0/1 kept
-      Barrell Craft Barrell 15 year old Cask Strength Blend of Straight Bourbons [UNCURATED·bourbon] 105pf · $249 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Bourbon Private Release Blend of Straights [UNCURATED·bourbon] 114pf · $110 · mash undisclosed · 1/1 kept
+      Barrell Craft Barrell 15 year old Cask Strength Blend of Straight Bourbons [UNCURATED·bourbon] 105pf · $249 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2020
-      Barrell Craft Barrell 10 year old Cask-Strength Blend of Straight Bourbons [UNCURATED·bourbon] 106.8pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell 10 year old Cask-Strength Blend of Straight Bourbons [UNCURATED·bourbon] 106.8pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 020
-      Barrell Craft Barrell Cask Strength Blend of Straight [UNCURATED·bourbon] 108.8pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Cask Strength Blend of Straight [UNCURATED·bourbon] 108.8pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 028
-      Barrell Craft Barrell New Year Cask Strength [UNCURATED·bourbon] 115.4pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell New Year Cask Strength [UNCURATED·bourbon] 115.4pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2022
-      Barrell Craft Barrell Bourbon Cask Strength New Year Edition [UNCURATED·bourbon] 113.6pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Bourbon Cask Strength New Year Edition [UNCURATED·bourbon] 113.6pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2023
-      Barrell Craft Barrell Cask Strength [UNCURATED·bourbon] 114.4pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Cask Strength [UNCURATED·bourbon] 114.4pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 036
-      Barrell Craft Barrell Foundation 5 year old Blend of Straights [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 0/1 kept
-      Barrell Craft Barrell Bourbon Cask Strength Blend of Straights [UNCURATED·bourbon] 114.6pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Foundation 5 year old Blend of Straights [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 1/1 kept
+      Barrell Craft Barrell Bourbon Cask Strength Blend of Straights [UNCURATED·bourbon] 114.6pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 34
-      Barrell Craft Barrell Bourbon Cask Finish Series: Mizunara 6 year old blend of straights [UNCURATED·bourbon] 116.4pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Bourbon Cask Finish Series: Mizunara 6 year old blend of straights [UNCURATED·bourbon] 116.4pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 001
-      Barrell Craft Barrell New Year Limited Edition [UNCURATED·bourbon] 111.2pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell New Year Limited Edition [UNCURATED·bourbon] 111.2pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2018
-      Barrell Craft Barrell Bourbon Cask Finish Series: Tale of Two Islands 5 year old Blend of Straights [UNCURATED·bourbon] 118.2pf · $90 · mash undisclosed · 0/1 kept
-      Barrell Craft Barrell New Year Cask Strength Blend of Straights [UNCURATED·bourbon] 113pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Bourbon Cask Finish Series: Tale of Two Islands 5 year old Blend of Straights [UNCURATED·bourbon] 118.2pf · $90 · mash undisclosed · 1/1 kept
+      Barrell Craft Barrell New Year Cask Strength Blend of Straights [UNCURATED·bourbon] 113pf · $90 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2024
-      Barrell Craft Barrell 9 year old Bourbon [UNCURATED·bourbon] 132.8pf · $85 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell 9 year old Bourbon [UNCURATED·bourbon] 132.8pf · $85 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 008
-      Barrell Craft Barrell Armida [UNCURATED·bourbon] 112pf · $90 · mash undisclosed · 0/1 kept
+      Barrell Craft Barrell Armida [UNCURATED·bourbon] 112pf · $90 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Four Roses (Kirin)
@@ -589,14 +589,14 @@ Wild Turkey (Campari)
       Wild Turkey Master's Keep [LIMITED·bourbon] 106pf · $150–$275 · mash 75% corn, 13% rye, 12% malted barley · 1/7 kept
           folded 7 rows
 
-  Russell's Reserve  [curated] — 7 rows → 5 expr, 3 kept
+  Russell's Reserve  [curated] — 7 rows → 5 expr, 5 kept
       Russell's Reserve Single Barrel [CORE·bourbon] 110pf · $50–$60 · mash 75% corn, 13% rye, 12% malted barley · 1/2 kept
           folded 2 rows · releases: Batch SINGLE
       Russell's Reserve 10 Year [CORE·bourbon] 90pf · $37 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
       Russell's Reserve 13 Year [LIMITED·bourbon] 114.8pf · $70 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
-      Russell's Reserve [UNCURATED·bourbon] 114.6pf · $250 · mash 75% corn, 13% rye, 12% malted barley · 0/2 kept
+      Russell's Reserve [UNCURATED·bourbon] 114.6pf · $250 · mash 75% corn, 13% rye, 12% malted barley · 1/2 kept
           folded 2 rows · releases: 2002, 1998
-      Russell's Reserve 16 year old Kentucky Straight [UNCURATED·bourbon] 89.6pf · $250 · mash 75% corn, 13% rye, 12% malted barley · 0/1 kept
+      Russell's Reserve 16 year old Kentucky Straight [UNCURATED·bourbon] 89.6pf · $250 · mash 75% corn, 13% rye, 12% malted barley · 1/1 kept
           folded 1 rows · releases: 2003
 
   Bond & Lillard  [auto] — 2 rows → 2 expr, 0 kept
@@ -607,15 +607,15 @@ Wild Turkey (Campari)
 Lux Row (Luxco)
 ────────────────────────────────────────────────────────────────────────────
 
-  Rebel  [auto] — 8 rows → 6 expr, 0 kept
-      Rebel Yell Single Barrel 10 year old [UNCURATED·bourbon] 100pf · $50–$60 · mash 68% corn, 20% wheat, 12% malted barley · 0/3 kept
+  Rebel  [auto] — 8 rows → 6 expr, 6 kept
+      Rebel Yell Single Barrel 10 year old [UNCURATED·bourbon] 100pf · $50–$60 · mash 68% corn, 20% wheat, 12% malted barley · 1/3 kept
           folded 3 rows · releases: 2018
-      Rebel Yell 10 year old [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 0/1 kept
-      Rebel 100 6 year old [UNCURATED·bourbon] 100pf · $60 · mash 68% corn, 20% wheat, 12% malted barley · 0/1 kept
-      Rebel 10 year old Single Barrel [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 0/1 kept
+      Rebel Yell 10 year old [UNCURATED·bourbon] 100pf · $60 · mash undisclosed · 1/1 kept
+      Rebel 100 6 year old [UNCURATED·bourbon] 100pf · $60 · mash 68% corn, 20% wheat, 12% malted barley · 1/1 kept
+      Rebel 10 year old Single Barrel [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Pick No. 61836
-      Rebel Yell 100 Proof Kentucky Straight [UNCURATED·bourbon] 100pf · $20 · mash undisclosed · 0/1 kept
-      Rebel Yell [UNCURATED·bourbon] 80pf · $13 · mash undisclosed · 0/1 kept
+      Rebel Yell 100 Proof Kentucky Straight [UNCURATED·bourbon] 100pf · $20 · mash undisclosed · 1/1 kept
+      Rebel Yell [UNCURATED·bourbon] 80pf · $13 · mash undisclosed · 1/1 kept
 
   Blood Oath  [auto] — 7 rows → 7 expr, 0 kept
       Blood Oath Pact 3 [UNCURATED·bourbon] 98.6pf · $100 · mash undisclosed · 0/1 kept
@@ -626,17 +626,17 @@ Lux Row (Luxco)
       Blood Oath Pact No. 2 [UNCURATED·bourbon] 98.6pf · $100 · mash undisclosed · 0/1 kept
       Blood Oath Pact No. 1 [UNCURATED·bourbon] 98.6pf · $90 · mash undisclosed · 0/1 kept
 
-  Daviess County  [auto] — 6 rows → 6 expr, 0 kept
-      Daviess County Double Barrel [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 0/1 kept
-      Daviess County 96 Medium Toasted Barrel Finished [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 0/1 kept
-      Daviess County [UNCURATED·bourbon] 96pf · $40 · mash undisclosed · 0/1 kept
-      Daviess County Cabernet Sauvignon Cask-Finished Bourbon [UNCURATED·bourbon] 96pf · $45 · mash undisclosed · 0/1 kept
-      Daviess County French Oak Cask-Finished Bourbon [UNCURATED·bourbon] 96pf · $45 · mash undisclosed · 0/1 kept
-      Daviess County Toasted Barrel Finish Series [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 0/1 kept
+  Daviess County  [auto] — 6 rows → 6 expr, 6 kept
+      Daviess County Double Barrel [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 1/1 kept
+      Daviess County 96 Medium Toasted Barrel Finished [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 1/1 kept
+      Daviess County [UNCURATED·bourbon] 96pf · $40 · mash undisclosed · 1/1 kept
+      Daviess County Cabernet Sauvignon Cask-Finished Bourbon [UNCURATED·bourbon] 96pf · $45 · mash undisclosed · 1/1 kept
+      Daviess County French Oak Cask-Finished Bourbon [UNCURATED·bourbon] 96pf · $45 · mash undisclosed · 1/1 kept
+      Daviess County Toasted Barrel Finish Series [UNCURATED·bourbon] 96pf · $50 · mash undisclosed · 1/1 kept
 
-  Ezra Brooks  [auto] — 2 rows → 2 expr, 0 kept
-      Ezra Brooks Old Ezra 7 year old Barrel Strength [UNCURATED·bourbon] 117pf · $40 · mash 78% corn, 12% malted barley, 10% rye · 0/1 kept
-      Ezra Brooks 99 Special Cask Finished Series Port Wine Cask Finished [UNCURATED·bourbon] 99pf · $35 · mash 78% corn, 10% rye, 12% malted barley · 0/1 kept
+  Ezra Brooks  [auto] — 2 rows → 2 expr, 2 kept
+      Ezra Brooks Old Ezra 7 year old Barrel Strength [UNCURATED·bourbon] 117pf · $40 · mash 78% corn, 12% malted barley, 10% rye · 1/1 kept
+      Ezra Brooks 99 Special Cask Finished Series Port Wine Cask Finished [UNCURATED·bourbon] 99pf · $35 · mash 78% corn, 10% rye, 12% malted barley · 1/1 kept
 
   Lux Row  [auto] — 1 rows → 1 expr, 0 kept
       Lux Row Distillers 12 year old Double Barrel [UNCURATED·bourbon] 118.4pf · $150 · mash undisclosed · 0/1 kept
@@ -682,32 +682,32 @@ Undisclosed / sourced
 MGP
 ────────────────────────────────────────────────────────────────────────────
 
-  MGP  [auto] — 21 rows → 19 expr, 0 kept
-      MGP Remus Repeal Reserve Straight Bourbon [UNCURATED·bourbon] 100pf · $85 · mash undisclosed · 0/2 kept
+  MGP  [auto] — 21 rows → 19 expr, 19 kept
+      MGP Remus Repeal Reserve Straight Bourbon [UNCURATED·bourbon] 100pf · $85 · mash undisclosed · 1/2 kept
           folded 2 rows
-      MGP Remus Repeal Reserve [UNCURATED·bourbon] 100pf · $75–$85 · mash undisclosed · 0/2 kept
+      MGP Remus Repeal Reserve [UNCURATED·bourbon] 100pf · $75–$85 · mash undisclosed · 1/2 kept
           folded 2 rows
-      MGP Tumblin Dice Single Barrel Straight Bourbon [UNCURATED·bourbon] 117.4pf · $60 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
-      MGP Tumblin Dice 11 year old Straight Bourbon [UNCURATED·bourbon] 100pf · $120 · mash undisclosed · 0/1 kept
-      MGP The Ambassador 12 year old Barrel Proof Straight [UNCURATED·bourbon] 105.8pf · $130 · mash undisclosed · 0/1 kept
-      MGP Mic Drop 4 year old Straight [UNCURATED·bourbon] 112.2pf · $65 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
+      MGP Tumblin Dice Single Barrel Straight Bourbon [UNCURATED·bourbon] 117.4pf · $60 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
+      MGP Tumblin Dice 11 year old Straight Bourbon [UNCURATED·bourbon] 100pf · $120 · mash undisclosed · 1/1 kept
+      MGP The Ambassador 12 year old Barrel Proof Straight [UNCURATED·bourbon] 105.8pf · $130 · mash undisclosed · 1/1 kept
+      MGP Mic Drop 4 year old Straight [UNCURATED·bourbon] 112.2pf · $65 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
           folded 1 rows · releases: Batch L19-01
-      MGP Metze's Select [UNCURATED·bourbon] 93pf · $75 · mash undisclosed · 0/1 kept
-      MGP Hirsch The Horizon Straight Bourbon [UNCURATED·bourbon] 92pf · $40 · mash 75% corn, 21% rye, 4% malted barley · 0/1 kept
+      MGP Metze's Select [UNCURATED·bourbon] 93pf · $75 · mash undisclosed · 1/1 kept
+      MGP Hirsch The Horizon Straight Bourbon [UNCURATED·bourbon] 92pf · $40 · mash 75% corn, 21% rye, 4% malted barley · 1/1 kept
           folded 1 rows · releases: Batch AHH0320
-      MGP Proof and Wood 4 year old The Representative Barrel Proof [UNCURATED·bourbon] 115.6pf · $50 · mash 75% corn, 21% rye, 4% malted barley · 0/1 kept
+      MGP Proof and Wood 4 year old The Representative Barrel Proof [UNCURATED·bourbon] 115.6pf · $50 · mash 75% corn, 21% rye, 4% malted barley · 1/1 kept
           folded 1 rows · releases: 2022
-      MGP Tincup 14 year old Fourteener Quandary Peak [UNCURATED·bourbon] 84pf · $70 · mash undisclosed · 0/1 kept
-      MGP Redemption High Rye Straight Bourbon [UNCURATED·rye] 92pf · $30 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
+      MGP Tincup 14 year old Fourteener Quandary Peak [UNCURATED·bourbon] 84pf · $70 · mash undisclosed · 1/1 kept
+      MGP Redemption High Rye Straight Bourbon [UNCURATED·rye] 92pf · $30 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 122
-      MGP Tumblin Dice Straight Bourbon [UNCURATED·bourbon] 100pf · $45 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
-      MGP Tumblin Dice 4 year old Single Barrel Barrel-Proof Straight Bourbon [UNCURATED·bourbon] 115.8pf · $59 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
-      MGP Redemption [UNCURATED·bourbon] 84pf · $29 · mash 75% corn, 21% rye, 4% malted barley · 0/1 kept
-      MGP Redemption High Rye [UNCURATED·rye] 90pf · $29 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
-      MGP Eight & Sand Blended Bourbon [UNCURATED·bourbon] 88pf · $30 · mash undisclosed · 0/1 kept
-      MGP Tincup Fourteener 14 year old [UNCURATED·bourbon] 84pf · $70 · mash undisclosed · 0/1 kept
-      MGP Spirit of America Bourbon [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 0/1 kept
-      MGP Redemption High Rye Bourbon [UNCURATED·rye] 92pf · $25 · mash 60% corn, 36% rye, 4% malted barley · 0/1 kept
+      MGP Tumblin Dice Straight Bourbon [UNCURATED·bourbon] 100pf · $45 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
+      MGP Tumblin Dice 4 year old Single Barrel Barrel-Proof Straight Bourbon [UNCURATED·bourbon] 115.8pf · $59 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
+      MGP Redemption [UNCURATED·bourbon] 84pf · $29 · mash 75% corn, 21% rye, 4% malted barley · 1/1 kept
+      MGP Redemption High Rye [UNCURATED·rye] 90pf · $29 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
+      MGP Eight & Sand Blended Bourbon [UNCURATED·bourbon] 88pf · $30 · mash undisclosed · 1/1 kept
+      MGP Tincup Fourteener 14 year old [UNCURATED·bourbon] 84pf · $70 · mash undisclosed · 1/1 kept
+      MGP Spirit of America Bourbon [UNCURATED·bourbon] 86pf · $40 · mash undisclosed · 1/1 kept
+      MGP Redemption High Rye Bourbon [UNCURATED·rye] 92pf · $25 · mash 60% corn, 36% rye, 4% malted barley · 1/1 kept
           folded 1 rows · releases: Batch 1
 
 ────────────────────────────────────────────────────────────────────────────
@@ -1029,19 +1029,19 @@ New Riff Distilling
 Garrison Brothers
 ────────────────────────────────────────────────────────────────────────────
 
-  Garrison Brothers  [auto] — 8 rows → 8 expr, 0 kept
-      Garrison Brothers Lady Bird [UNCURATED·bourbon] 114pf · $180 · mash undisclosed · 0/1 kept
-      Garrison Brothers Cowboy 8 year old [UNCURATED·bourbon] 134.8pf · $250 · mash undisclosed · 0/1 kept
-      Garrison Brothers Guadalupe Port Cask Finished [UNCURATED·bourbon] 107pf · $150 · mash undisclosed · 0/1 kept
+  Garrison Brothers  [auto] — 8 rows → 8 expr, 8 kept
+      Garrison Brothers Lady Bird [UNCURATED·bourbon] 114pf · $180 · mash undisclosed · 1/1 kept
+      Garrison Brothers Cowboy 8 year old [UNCURATED·bourbon] 134.8pf · $250 · mash undisclosed · 1/1 kept
+      Garrison Brothers Guadalupe Port Cask Finished [UNCURATED·bourbon] 107pf · $150 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2024
-      Garrison Brothers Balmorhea [UNCURATED·bourbon] 115pf · $200 · mash undisclosed · 0/1 kept
-      Garrison Brothers Cowboy [UNCURATED·bourbon] 140.8pf · $250 · mash undisclosed · 0/1 kept
+      Garrison Brothers Balmorhea [UNCURATED·bourbon] 115pf · $200 · mash undisclosed · 1/1 kept
+      Garrison Brothers Cowboy [UNCURATED·bourbon] 140.8pf · $250 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2023
-      Garrison Brothers Small Straight [UNCURATED·bourbon] 94pf · $85 · mash 74% corn, 15% wheat, 11% malted barley · 0/1 kept
+      Garrison Brothers Small Straight [UNCURATED·bourbon] 94pf · $85 · mash 74% corn, 15% wheat, 11% malted barley · 1/1 kept
           folded 1 rows · releases: Batch TEXAS
-      Garrison Brothers Texas Bourbon Fall Release [UNCURATED·bourbon] 94pf · $70 · mash undisclosed · 0/1 kept
+      Garrison Brothers Texas Bourbon Fall Release [UNCURATED·bourbon] 94pf · $70 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2012
-      Garrison Brothers Cowboy Bourbon [UNCURATED·bourbon] 135pf · $199 · mash undisclosed · 0/1 kept
+      Garrison Brothers Cowboy Bourbon [UNCURATED·bourbon] 135pf · $199 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Kentucky Owl
@@ -1063,17 +1063,17 @@ Kentucky Owl
 Willett
 ────────────────────────────────────────────────────────────────────────────
 
-  Willett  [auto] — 7 rows → 7 expr, 0 kept
-      Willett Old Bardstown Bottled in Bond [UNCURATED·bourbon] 100pf · $24 · mash undisclosed · 0/1 kept
-      Willett Rowan's Creek 12 year old [UNCURATED·bourbon] 100pf · $40 · mash undisclosed · 0/1 kept
+  Willett  [auto] — 7 rows → 7 expr, 7 kept
+      Willett Old Bardstown Bottled in Bond [UNCURATED·bourbon] 100pf · $24 · mash undisclosed · 1/1 kept
+      Willett Rowan's Creek 12 year old [UNCURATED·bourbon] 100pf · $40 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 03-59
-      Willett Single Barrel Cask 9 year old [UNCURATED·bourbon] 113.2pf · $65 · mash undisclosed · 0/1 kept
+      Willett Single Barrel Cask 9 year old [UNCURATED·bourbon] 113.2pf · $65 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Pick No. 2504
-      Willett Johnny Drum Private Stock [UNCURATED·bourbon] 101pf · $30 · mash undisclosed · 0/1 kept
-      Willett Noah's Mill [UNCURATED·bourbon] 114.2pf · $50 · mash undisclosed · 0/1 kept
-      Willett Kentucky Vintage [UNCURATED·bourbon] 90pf · $25 · mash undisclosed · 0/1 kept
+      Willett Johnny Drum Private Stock [UNCURATED·bourbon] 101pf · $30 · mash undisclosed · 1/1 kept
+      Willett Noah's Mill [UNCURATED·bourbon] 114.2pf · $50 · mash undisclosed · 1/1 kept
+      Willett Kentucky Vintage [UNCURATED·bourbon] 90pf · $25 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 03-65
-      Willett Pure Kentucky XO [UNCURATED·bourbon] 107pf · $30 · mash undisclosed · 0/1 kept
+      Willett Pure Kentucky XO [UNCURATED·bourbon] 107pf · $30 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 03-20
 
 ────────────────────────────────────────────────────────────────────────────
@@ -1108,17 +1108,17 @@ Rabbit Hole
 Limestone Branch
 ────────────────────────────────────────────────────────────────────────────
 
-  Limestone Branch  [auto] — 7 rows → 6 expr, 0 kept
-      Limestone Branch Yellowstone Limited Edition [UNCURATED·bourbon] 101pf · $100–$105 · mash undisclosed · 0/2 kept
+  Limestone Branch  [auto] — 7 rows → 6 expr, 6 kept
+      Limestone Branch Yellowstone Limited Edition [UNCURATED·bourbon] 101pf · $100–$105 · mash undisclosed · 1/2 kept
           folded 2 rows · releases: 2018, 2015
-      Limestone Branch Yellowstone Limited Edition 7 year old [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 0/1 kept
+      Limestone Branch Yellowstone Limited Edition 7 year old [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2016
-      Limestone Branch Yellowstone 9 year old Limited Edition Kentucky Straight [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 0/1 kept
+      Limestone Branch Yellowstone 9 year old Limited Edition Kentucky Straight [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2019
-      Limestone Branch Yellowstone Limited Edition Tokaji Cask Finished [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 0/1 kept
+      Limestone Branch Yellowstone Limited Edition Tokaji Cask Finished [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2023
-      Limestone Branch Yellowstone Special Finishes Collection Rum Cask Finished [UNCURATED·bourbon] 100pf · $50 · mash undisclosed · 0/1 kept
-      Limestone Branch Yellowstone Limited Edition Armagnac Cask-Finished [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 0/1 kept
+      Limestone Branch Yellowstone Special Finishes Collection Rum Cask Finished [UNCURATED·bourbon] 100pf · $50 · mash undisclosed · 1/1 kept
+      Limestone Branch Yellowstone Limited Edition Armagnac Cask-Finished [UNCURATED·bourbon] 101pf · $100 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: 2020
 
 ────────────────────────────────────────────────────────────────────────────
@@ -1163,12 +1163,12 @@ Laws Whiskey House
 Castle & Key
 ────────────────────────────────────────────────────────────────────────────
 
-  Castle & Key  [auto] — 5 rows → 5 expr, 0 kept
-      Castle & Key Jefferson's Presidential Select 18 year old [UNCURATED·bourbon] 94pf · $110 · mash undisclosed · 0/1 kept
-      Castle & Key Pinhook Bohemian Kentucky Straight [UNCURATED·bourbon] 95pf · $38 · mash 75% Corn, 15% Rye, 10% Malted Barley · 0/1 kept
-      Castle & Key Pinhook Bourbon Country Straight Bourbon [UNCURATED·bourbon] 95.6pf · $37 · mash 75% corn, 15% rye, 10% malted barley · 0/1 kept
-      Castle & Key Pinhook 4 year old Bourbon War Straight Bourbon [UNCURATED·bourbon] 98pf · $45 · mash 75% Corn, 20.5% Rye, 4.5% Malted Barley · 0/1 kept
-      Castle & Key Pinhook Bohemian High Proof [UNCURATED·bourbon] 114.4pf · $50 · mash 75% corn, 15% rye, 10% malted barley · 0/1 kept
+  Castle & Key  [auto] — 5 rows → 5 expr, 5 kept
+      Castle & Key Jefferson's Presidential Select 18 year old [UNCURATED·bourbon] 94pf · $110 · mash undisclosed · 1/1 kept
+      Castle & Key Pinhook Bohemian Kentucky Straight [UNCURATED·bourbon] 95pf · $38 · mash 75% Corn, 15% Rye, 10% Malted Barley · 1/1 kept
+      Castle & Key Pinhook Bourbon Country Straight Bourbon [UNCURATED·bourbon] 95.6pf · $37 · mash 75% corn, 15% rye, 10% malted barley · 1/1 kept
+      Castle & Key Pinhook 4 year old Bourbon War Straight Bourbon [UNCURATED·bourbon] 98pf · $45 · mash 75% Corn, 20.5% Rye, 4.5% Malted Barley · 1/1 kept
+      Castle & Key Pinhook Bohemian High Proof [UNCURATED·bourbon] 114.4pf · $50 · mash 75% corn, 15% rye, 10% malted barley · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Old Elk
@@ -1198,13 +1198,13 @@ Four Gate Whiskey Company
 Angel's Envy (Bacardi)
 ────────────────────────────────────────────────────────────────────────────
 
-  Angel's Envy  [auto] — 5 rows → 5 expr, 0 kept
-      Angel's Envy Tawny Port Wine Barrel-Finished Bourbon [UNCURATED·bourbon] 111.6pf · $250 · mash 72% corn, 18% rye, 10% malted barley · 0/1 kept
-      Angel's Envy Port Finished Cask Strength [UNCURATED·bourbon] 118.2pf · $230 · mash 72% corn, 18% rye, 10% malted barley · 0/1 kept
+  Angel's Envy  [auto] — 5 rows → 5 expr, 5 kept
+      Angel's Envy Tawny Port Wine Barrel-Finished Bourbon [UNCURATED·bourbon] 111.6pf · $250 · mash 72% corn, 18% rye, 10% malted barley · 1/1 kept
+      Angel's Envy Port Finished Cask Strength [UNCURATED·bourbon] 118.2pf · $230 · mash 72% corn, 18% rye, 10% malted barley · 1/1 kept
           folded 1 rows · releases: 2023
-      Angel's Envy Mizunara Oak Cask-Finished Kentucky Straight [UNCURATED·bourbon] 97.8pf · $350 · mash 72% corn, 18% rye, 10% malted barley · 0/1 kept
-      Angel's Envy Rye [UNCURATED·rye] 100pf · $70 · mash 95% rye, 5% malted barley · 0/1 kept
-      Angel's Envy Madeira Cask Finished [UNCURATED·bourbon] 100pf · $230 · mash 72% corn, 18% rye, 10% malted barley · 0/1 kept
+      Angel's Envy Mizunara Oak Cask-Finished Kentucky Straight [UNCURATED·bourbon] 97.8pf · $350 · mash 72% corn, 18% rye, 10% malted barley · 1/1 kept
+      Angel's Envy Rye [UNCURATED·rye] 100pf · $70 · mash 95% rye, 5% malted barley · 1/1 kept
+      Angel's Envy Madeira Cask Finished [UNCURATED·bourbon] 100pf · $230 · mash 72% corn, 18% rye, 10% malted barley · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Kentucky Bourbon
@@ -1311,13 +1311,13 @@ High West
 Kentucky Peerless Distilling Co.
 ────────────────────────────────────────────────────────────────────────────
 
-  Kentucky Peerless  [auto] — 4 rows → 4 expr, 0 kept
-      Kentucky Peerless Peerless High Rye [UNCURATED·rye] 110.6pf · $160 · mash undisclosed · 0/1 kept
+  Kentucky Peerless  [auto] — 4 rows → 4 expr, 4 kept
+      Kentucky Peerless Peerless High Rye [UNCURATED·rye] 110.6pf · $160 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Batch 170921108
-      Kentucky Peerless Double Oak [UNCURATED·bourbon] 108.8pf · $85 · mash undisclosed · 0/1 kept
-      Kentucky Peerless Double Oak II Single Barrel [UNCURATED·bourbon] 108pf · $35 · mash undisclosed · 0/1 kept
+      Kentucky Peerless Double Oak [UNCURATED·bourbon] 108.8pf · $85 · mash undisclosed · 1/1 kept
+      Kentucky Peerless Double Oak II Single Barrel [UNCURATED·bourbon] 108pf · $35 · mash undisclosed · 1/1 kept
           folded 1 rows · releases: Pick No. 15071
-      Kentucky Peerless Straight Bourbon [UNCURATED·bourbon] 109.8pf · $70 · mash undisclosed · 0/1 kept
+      Kentucky Peerless Straight Bourbon [UNCURATED·bourbon] 109.8pf · $70 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Filibuster
@@ -1817,9 +1817,9 @@ Blue Note
 New Riff
 ────────────────────────────────────────────────────────────────────────────
 
-  New Riff  [auto] — 2 rows → 2 expr, 0 kept
-      New Riff Kentucky Straight Single Barrel Bourbon [UNCURATED·bourbon] 113pf · $50 · mash 65% corn, 30% rye, 5% malted barley · 0/1 kept
-      New Riff 8 year old [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 0/1 kept
+  New Riff  [auto] — 2 rows → 2 expr, 2 kept
+      New Riff Kentucky Straight Single Barrel Bourbon [UNCURATED·bourbon] 113pf · $50 · mash 65% corn, 30% rye, 5% malted barley · 1/1 kept
+      New Riff 8 year old [UNCURATED·bourbon] 100pf · $70 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Leiper's Fork
@@ -1833,9 +1833,9 @@ Leiper's Fork
 Heaven's Door Spirits
 ────────────────────────────────────────────────────────────────────────────
 
-  Heaven's Door  [auto] — 2 rows → 2 expr, 0 kept
-      Heaven's Door Master Blender's Edition Redbreast Finish [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 0/1 kept
-      Heaven's Door [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 0/1 kept
+  Heaven's Door  [auto] — 2 rows → 2 expr, 2 kept
+      Heaven's Door Master Blender's Edition Redbreast Finish [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 1/1 kept
+      Heaven's Door [UNCURATED·bourbon] 90pf · $50 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Old Dominick
@@ -1980,9 +1980,9 @@ Koval
 Jeptha Creed
 ────────────────────────────────────────────────────────────────────────────
 
-  Jeptha Creed  [auto] — 2 rows → 2 expr, 0 kept
-      Jeptha Creed Bottled In Bond Rye Bourbon [UNCURATED·rye] 100pf · $50 · mash 75% Bloody Butcher Corn, 20% Malted Rye, 5% Malted Barley · 0/1 kept
-      Jeptha Creed Four Grain Straight Bourbon [UNCURATED·bourbon] 98pf · $50 · mash 70% Corn, 15% Malted Rye, 10% Malted Wheat, 5% Malted Barley · 0/1 kept
+  Jeptha Creed  [auto] — 2 rows → 2 expr, 2 kept
+      Jeptha Creed Bottled In Bond Rye Bourbon [UNCURATED·rye] 100pf · $50 · mash 75% Bloody Butcher Corn, 20% Malted Rye, 5% Malted Barley · 1/1 kept
+      Jeptha Creed Four Grain Straight Bourbon [UNCURATED·bourbon] 98pf · $50 · mash 70% Corn, 15% Malted Rye, 10% Malted Wheat, 5% Malted Barley · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Litchfield
@@ -2091,9 +2091,9 @@ Vapor
 Spirits of French Lick
 ────────────────────────────────────────────────────────────────────────────
 
-  Spirits of French Lick  [auto] — 2 rows → 2 expr, 0 kept
-      Spirits of French Lick The Wheater Straight Bourbon [UNCURATED·bourbon] 90pf · $45 · mash undisclosed · 0/1 kept
-      Spirits of French Lick Lee W. Sinclair Four Grain Straight Bourbon [UNCURATED·bourbon] 90pf · $45 · mash 60% Corn, 17% Wheat, 13% Oats, 10% Caramel Malt · 0/1 kept
+  Spirits of French Lick  [auto] — 2 rows → 2 expr, 2 kept
+      Spirits of French Lick The Wheater Straight Bourbon [UNCURATED·bourbon] 90pf · $45 · mash undisclosed · 1/1 kept
+      Spirits of French Lick Lee W. Sinclair Four Grain Straight Bourbon [UNCURATED·bourbon] 90pf · $45 · mash 60% Corn, 17% Wheat, 13% Oats, 10% Caramel Malt · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Coppersea Distilling
@@ -2195,8 +2195,8 @@ Doc Swinson's
 Heaven's Door
 ────────────────────────────────────────────────────────────────────────────
 
-  Heaven's Door  [auto] — 1 rows → 1 expr, 0 kept
-      Heaven's Door 10 year old Decade Series [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 0/1 kept
+  Heaven's Door  [auto] — 1 rows → 1 expr, 1 kept
+      Heaven's Door 10 year old Decade Series [UNCURATED·bourbon] 100pf · $100 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Rare Character
@@ -2287,8 +2287,8 @@ Ammunition
 WhistlePig
 ────────────────────────────────────────────────────────────────────────────
 
-  WhistlePig  [auto] — 1 rows → 1 expr, 0 kept
-      WhistlePig PiggyBack 6 year old [UNCURATED·bourbon] 100pf · $50 · mash undisclosed · 0/1 kept
+  WhistlePig  [auto] — 1 rows → 1 expr, 1 kept
+      WhistlePig PiggyBack 6 year old [UNCURATED·bourbon] 100pf · $50 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Old Pepper
@@ -2358,8 +2358,8 @@ Conecuh Ridge
 Ugly Dog
 ────────────────────────────────────────────────────────────────────────────
 
-  Ugly Dog  [auto] — 1 rows → 1 expr, 0 kept
-      Ugly Dog 12 year old Distiller's Cache Single Barrel [UNCURATED·bourbon] 94pf · $90 · mash undisclosed · 0/1 kept
+  Ugly Dog  [auto] — 1 rows → 1 expr, 1 kept
+      Ugly Dog 12 year old Distiller's Cache Single Barrel [UNCURATED·bourbon] 94pf · $90 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Bhakta Spirits
@@ -2400,8 +2400,8 @@ MGP Ingredients
 Journeyman
 ────────────────────────────────────────────────────────────────────────────
 
-  Journeyman  [auto] — 1 rows → 1 expr, 0 kept
-      Journeyman Distillery Featherbone [UNCURATED·bourbon] 90pf · $50 · mash 70% corn, 25% wheat, 5% rye · 0/1 kept
+  Journeyman  [auto] — 1 rows → 1 expr, 1 kept
+      Journeyman Distillery Featherbone [UNCURATED·bourbon] 90pf · $50 · mash 70% corn, 25% wheat, 5% rye · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Three Chord
@@ -2415,8 +2415,8 @@ Three Chord
 Boone County Distilling Co.
 ────────────────────────────────────────────────────────────────────────────
 
-  Boone County  [auto] — 1 rows → 1 expr, 0 kept
-      Boone County Distilling Eighteen 33 10 year old [UNCURATED·bourbon] 90.8pf · $53 · mash undisclosed · 0/1 kept
+  Boone County  [auto] — 1 rows → 1 expr, 1 kept
+      Boone County Distilling Eighteen 33 10 year old [UNCURATED·bourbon] 90.8pf · $53 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 New England Distilling
@@ -2930,8 +2930,8 @@ Wigle Whiskey
 American Freedom
 ────────────────────────────────────────────────────────────────────────────
 
-  American Freedom  [auto] — 1 rows → 1 expr, 0 kept
-      American Freedom Horse Soldier Barrel Strength [UNCURATED·bourbon] 111pf · $80 · mash undisclosed · 0/1 kept
+  American Freedom  [auto] — 1 rows → 1 expr, 1 kept
+      American Freedom Horse Soldier Barrel Strength [UNCURATED·bourbon] 111pf · $80 · mash undisclosed · 1/1 kept
 
 ────────────────────────────────────────────────────────────────────────────
 Glenmore
