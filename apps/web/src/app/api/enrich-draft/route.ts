@@ -8,7 +8,9 @@
  */
 
 import { NextResponse } from "next/server";
-import { enrichDraftProduct, productNeedsCatalogEnrichment } from "@/lib/enrich";
+import OpenAI from "openai";
+import { ApifyClient } from "@/lib/enrich/apify-client";
+import { enrichDraftProduct, enrichProductFromWeb, productNeedsCatalogEnrichment } from "@/lib/enrich";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -19,6 +21,7 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const productId = body?.productId;
   const force = body?.force === true;
+  const imageOnly = body?.imageOnly === true;
   if (typeof productId !== "string" || !productId) {
     return NextResponse.json({ error: "Missing productId" }, { status: 400 });
   }
@@ -29,7 +32,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Not signed in" }, { status: 401 });
   }
 
-  if (force) {
+  if (force || imageOnly) {
     const { data: profile } = await supabase
       .from("users")
       .select("role")
@@ -53,7 +56,7 @@ export async function POST(req: Request) {
   const specs = (product.specs ?? {}) as Record<string, unknown>;
   const wheelVector = (product.wheel_vector ?? null) as Record<string, number> | null;
 
-  if (!force) {
+  if (!force && !imageOnly) {
     const { count: reviewCount } = await supabase
       .from("product_reviews")
       .select("id", { count: "exact", head: true })
@@ -78,6 +81,41 @@ export async function POST(req: Request) {
       { error: "Catalog enrichment is not configured (APIFY_TOKEN missing)" },
       { status: 503 },
     );
+  }
+
+  if (imageOnly) {
+    try {
+      const admin = createSupabaseAdminClient();
+      const apify = new ApifyClient(process.env.APIFY_TOKEN);
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      await admin.from("products").update({ image_url: null }).eq("id", productId);
+
+      const result = await enrichProductFromWeb(
+        {
+          id: product.id,
+          type: product.type as "bourbon" | "cigar",
+          name: product.name,
+          brand: product.brand,
+          line: product.line ?? null,
+        },
+        { apify, openai, supabase: admin },
+        { imageOnly: true },
+      );
+
+      return NextResponse.json({
+        ok: true,
+        imageUrl: result.imageUrl,
+        apifyError: result.apifyError,
+        mirrorError: result.mirrorError,
+      });
+    } catch (err) {
+      console.error("[api/enrich-draft] imageOnly:", (err as Error).message);
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Image re-fetch failed" },
+        { status: 500 },
+      );
+    }
   }
 
   try {

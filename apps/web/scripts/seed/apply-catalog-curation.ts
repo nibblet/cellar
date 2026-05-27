@@ -1,14 +1,14 @@
 /**
  * Apply hand-edited catalog curation review back to Supabase.
  *
- *   pnpm apply:catalog-curation --dry-run
- *   pnpm apply:catalog-curation --apply
+ *   pnpm apply:catalog-curation --dry-run ../../data/catalog-curation-export-2026-05-27.xlsx
+ *   pnpm apply:catalog-curation --apply ../../data/your-edited-export.xlsx
  *   pnpm apply:catalog-curation --dry-run --tier=1,2
  *   pnpm apply:catalog-curation --apply --tier=1,2 ~/path/to/curation.xlsx
  *   pnpm apply:catalog-curation --apply data/catalog-curation-audit.xlsx
  *
  * Reads the "Curate" sheet. Updates brand, name, specs, vintages_matter, release_pattern.
- * products.name = REVIEW_canonical_name ?? proposed_canonical_name (expression-first, same as rectify).
+ * products.name = REVIEW_canonical_name when set, else unchanged (proposed_* is export-only).
  * REVIEW_keep=N rows are deleted (same FK handling as remove-catalog-tier).
  * REVIEW_collapse is written to specs; run generate:collapse-map + collapse:catalog after.
  */
@@ -19,10 +19,6 @@ import ExcelJS from "exceljs";
 import { adminClient } from "./lib/supabase-admin";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_XLSX = path.resolve(
-  __dirname,
-  "../../../../data/catalog-curation-review.xlsx",
-);
 
 const VALID_RARITIES = new Set([
   "everyday",
@@ -91,6 +87,68 @@ function yn(v: unknown, defaultValue = false): boolean {
   return defaultValue;
 }
 
+/** Spec keys the apply script may write — compare only these, not enrichment fields (proof, mash_bill, …). */
+const CURATED_SPEC_KEYS = [
+  "distillery",
+  "whiskey_type",
+  "expression_type",
+  "spirit_type",
+  "curated_expression",
+  "age_label",
+  "year_made",
+  "tier",
+  "tier_source",
+  "availability_rarity",
+  "curation_notes",
+  "curation_release_label",
+  "curation_collapse",
+] as const;
+
+function normReleasePattern(v: string | null | undefined): string | null {
+  const s = v?.trim();
+  return s || null;
+}
+
+function normSpecField(key: string, value: unknown): unknown {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (key === "curation_collapse") {
+    return value === true || value === "Y" ? "Y" : "N";
+  }
+  if (key === "year_made" || key === "tier") {
+    const n = typeof value === "number" ? value : Number.parseFloat(String(value));
+    return Number.isFinite(n) ? n : undefined;
+  }
+  return value;
+}
+
+/** Empty REVIEW cell on a curation sheet means remove this spec key (user cleared the yellow cell). */
+function applyReviewSpec(
+  specs: Record<string, unknown>,
+  specKey: string,
+  value: string | null,
+  clearable: boolean,
+) {
+  if (value) {
+    specs[specKey] = value;
+  } else if (clearable) {
+    delete specs[specKey];
+  }
+}
+
+function curatedSpecsEqual(
+  next: Record<string, unknown>,
+  cur: Record<string, unknown> | null,
+): boolean {
+  const base = cur ?? {};
+  for (const key of CURATED_SPEC_KEYS) {
+    const a = normSpecField(key, next[key]);
+    const b = normSpecField(key, base[key]);
+    if (a === undefined && b === undefined) continue;
+    if (JSON.stringify(a) !== JSON.stringify(b)) return false;
+  }
+  return true;
+}
+
 function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
   const ws = wb.getWorksheet("Curate");
   if (!ws) throw new Error('Missing "Curate" sheet');
@@ -148,8 +206,19 @@ function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
   return rows;
 }
 
-function catalogDisplayName(row: CurationRow): string | null {
-  return row.REVIEW_canonical_name ?? row.proposed_canonical_name;
+function describePatchDiff(
+  cur: { brand: string | null; name: string; specs: Record<string, unknown> | null; vintages_matter: boolean; release_pattern: string | null },
+  patch: { brand: string | null; name: string; specs: Record<string, unknown>; vintages_matter: boolean; release_pattern: string | null },
+): string {
+  const parts: string[] = [];
+  if (patch.brand !== cur.brand) parts.push("brand");
+  if (patch.name !== cur.name) parts.push("name");
+  if (patch.vintages_matter !== cur.vintages_matter) parts.push("vintages_matter");
+  if (normReleasePattern(patch.release_pattern) !== normReleasePattern(cur.release_pattern)) {
+    parts.push("release_pattern");
+  }
+  if (!curatedSpecsEqual(patch.specs, cur.specs)) parts.push("specs");
+  return parts.join(", ") || "unknown";
 }
 
 function parseTierFilter(argv: string[]): Set<number> | null {
@@ -181,9 +250,16 @@ async function main() {
   const apply = process.argv.includes("--apply");
   const dryRun = !apply;
   const tierFilter = parseTierFilter(process.argv);
-  const xlsxPath = process.argv.find((a) => a.endsWith(".xlsx"))
-    ? path.resolve(process.argv.find((a) => a.endsWith(".xlsx"))!)
-    : DEFAULT_XLSX;
+  const xlsxArg = process.argv.find((a) => a.endsWith(".xlsx"));
+  if (!xlsxArg) {
+    console.error(
+      "[apply-catalog-curation] Pass the spreadsheet you edited:\n" +
+        "  pnpm apply:catalog-curation --dry-run ../../data/catalog-curation-export-YYYY-MM-DD.xlsx\n" +
+        "  pnpm apply:catalog-curation --apply ../../data/your-edited-export.xlsx",
+    );
+    process.exit(1);
+  }
+  const xlsxPath = path.resolve(xlsxArg);
 
   console.log(`[apply-catalog-curation] ${dryRun ? "DRY RUN" : "APPLY"} ← ${xlsxPath}`);
   if (tierFilter) {
@@ -224,10 +300,11 @@ async function main() {
   const collapseRows = updates.filter((r) => r.REVIEW_collapse);
 
   let changed = 0;
+  let skipMissing = 0;
   for (const row of updates) {
     const cur = existing.get(row.product_id);
     if (!cur) {
-      console.warn(`  skip missing ${row.product_id}`);
+      skipMissing += 1;
       continue;
     }
 
@@ -238,25 +315,24 @@ async function main() {
     };
 
     setSpec("distillery", row.REVIEW_distillery);
-    setSpec("whiskey_type", row.REVIEW_whiskey_type);
-    setSpec("expression_type", row.REVIEW_expression_type);
-    setSpec("spirit_type", row.REVIEW_spirit_type);
-    if (row.REVIEW_expression) setSpec("curated_expression", row.REVIEW_expression);
-    if (row.REVIEW_age) setSpec("age_label", row.REVIEW_age);
+    applyReviewSpec(specs, "whiskey_type", row.REVIEW_whiskey_type, true);
+    applyReviewSpec(specs, "expression_type", row.REVIEW_expression_type, true);
+    applyReviewSpec(specs, "spirit_type", row.REVIEW_spirit_type, true);
+    applyReviewSpec(specs, "curated_expression", row.REVIEW_expression, true);
+    applyReviewSpec(specs, "age_label", row.REVIEW_age, true);
     if (row.REVIEW_year_made != null) setSpec("year_made", row.REVIEW_year_made);
     if (row.REVIEW_tier != null) {
       specs.tier = row.REVIEW_tier;
       specs.tier_source = "curation";
     }
     if (row.REVIEW_rarity) specs.availability_rarity = row.REVIEW_rarity;
-    if (row.REVIEW_notes) specs.curation_notes = row.REVIEW_notes;
-    if (row.REVIEW_release_label) specs.curation_release_label = row.REVIEW_release_label;
+    applyReviewSpec(specs, "curation_notes", row.REVIEW_notes, true);
+    applyReviewSpec(specs, "curation_release_label", row.REVIEW_release_label, true);
     specs.curation_collapse = row.REVIEW_collapse ? "Y" : "N";
 
-    const displayName = catalogDisplayName(row);
     const patch = {
       brand: row.REVIEW_brand ?? cur.brand,
-      name: displayName ?? cur.name,
+      name: row.REVIEW_canonical_name ?? cur.name,
       specs,
       vintages_matter: row.REVIEW_vintages_matter,
       release_pattern: row.REVIEW_release_pattern,
@@ -266,14 +342,15 @@ async function main() {
       patch.brand === cur.brand &&
       patch.name === cur.name &&
       patch.vintages_matter === cur.vintages_matter &&
-      patch.release_pattern === cur.release_pattern &&
-      JSON.stringify(specs) === JSON.stringify(cur.specs ?? {});
+      normReleasePattern(patch.release_pattern) === normReleasePattern(cur.release_pattern) &&
+      curatedSpecsEqual(specs, cur.specs);
 
     if (same) continue;
 
     changed += 1;
+    const fields = describePatchDiff(cur, patch);
     console.log(
-      `  UPDATE ${cur.name.slice(0, 40)} → brand=${patch.brand ?? "?"} name=${patch.name.slice(0, 40)}`,
+      `  UPDATE [${fields}] ${cur.name.slice(0, 36)} → ${patch.name.slice(0, 36)}`,
     );
     if (!dryRun) {
       const { error } = await supa.from("products").update(patch).eq("id", row.product_id);
@@ -281,8 +358,14 @@ async function main() {
     }
   }
 
+  if (skipMissing > 0) {
+    console.warn(
+      `[apply-catalog-curation] ${skipMissing} rows skipped (product_id not in DB — collapsed/deleted or stale spreadsheet). Re-export: pnpm export:catalog-curation ../../data/catalog-curation-audit.xlsx --merge-from <your-edits.xlsx>`,
+    );
+  }
+
   console.log(
-    `[apply-catalog-curation] updates=${changed} deletes=${deletes.length} collapse_flagged=${collapseRows.length}`,
+    `[apply-catalog-curation] updates=${changed} deletes=${deletes.length} collapse_flagged=${collapseRows.length} skip_missing=${skipMissing}`,
   );
 
   if (collapseRows.length) {

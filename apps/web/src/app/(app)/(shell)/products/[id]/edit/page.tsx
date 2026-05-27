@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { Voice } from "@/components/primitives";
+import { PhotoManager, type MemberPhoto } from "@/components/product";
+import { signImagePaths } from "@/lib/feed/queries";
+import { formatMemberName } from "@/lib/identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType } from "@/lib/wheel";
 import { EditForm } from "./edit-form";
@@ -13,7 +16,7 @@ export default async function ProductEditPage({ params }: { params: Params }) {
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, type, name, brand, specs, status, created_by")
+    .select("id, type, name, brand, image_url, specs, status, created_by")
     .eq("id", id)
     .maybeSingle();
 
@@ -24,6 +27,39 @@ export default async function ProductEditPage({ params }: { params: Params }) {
     ? await supabase.from("users").select("role").eq("id", auth.user.id).maybeSingle()
     : { data: null };
   const isAdmin = profile?.role === "admin";
+
+  let memberPhotos: MemberPhoto[] = [];
+  if (isAdmin) {
+    type ImageRow = {
+      id: string;
+      image_url: string;
+      contributor: { name_first: string; name_last_initial: string } | null;
+    };
+    const { data: images } = await supabase
+      .from("product_images")
+      .select(
+        "id, image_url, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+      )
+      .eq("product_id", id)
+      .order("created_at", { ascending: false });
+
+    const rows = (images as unknown as ImageRow[] | null) ?? [];
+    const signedMap = await signImagePaths(
+      supabase,
+      rows.map((r) => r.image_url),
+    );
+    memberPhotos = rows
+      .map((r) => {
+        const url = signedMap.get(r.image_url);
+        if (!url) return null;
+        return {
+          id: r.id,
+          url,
+          contributor: r.contributor ? formatMemberName(r.contributor) : null,
+        };
+      })
+      .filter((x): x is MemberPhoto => x !== null);
+  }
 
   return (
     <AppShell>
@@ -55,6 +91,14 @@ export default async function ProductEditPage({ params }: { params: Params }) {
         }}
         canReEnrich={isAdmin}
       />
+
+      {isAdmin ? (
+        <PhotoManager
+          productId={product.id}
+          catalogUrl={product.image_url}
+          memberPhotos={memberPhotos}
+        />
+      ) : null}
     </AppShell>
   );
 }
