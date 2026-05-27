@@ -5,6 +5,7 @@ export { DepthAffordance } from "./depth-affordance";
 export { EnrichmentTrigger } from "./enrichment-trigger";
 export { ExploreLinks } from "./explore-links";
 export { FactsStrip } from "./facts-strip";
+export { PhotoManager, type MemberPhoto } from "./photo-manager";
 export { ProductDepthSection } from "./product-depth-section";
 export { ProductHero, type ProductHeroImage } from "./product-hero";
 export { ReleaseVariantChips } from "./release-variant-chips";

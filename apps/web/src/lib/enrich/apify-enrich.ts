@@ -60,6 +60,8 @@ export type EnrichOptions = {
   maxResults?: number;
   /** Skip the image-mirror + DB writes; useful for dry-run inspection. */
   dryRun?: boolean;
+  /** Only fetch and mirror the image — skip review extraction entirely. */
+  imageOnly?: boolean;
 };
 
 /**
@@ -134,7 +136,7 @@ export async function enrichProductFromWeb(
     }
   }
 
-  if (enrichment.reviews.length) {
+  if (!opts.imageOnly && enrichment.reviews.length) {
     const rows = enrichment.reviews.map((r) => ({
       product_id: product.id,
       source: r.source,

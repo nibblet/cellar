@@ -8,7 +8,7 @@ Everything here derives from one source: the logo. A monocle-less unicorn in a s
 
 ## 1. Principles
 
-**Confident, not loud.** Brass accents do the work of color. Type does the work of hierarchy. No gradients, no neon, no pastels.
+**Confident, not loud.** Brass accents do the work of color. Type does the work of hierarchy. No loud chromatic hero gradients, no neon, no pastels. Subtle ambient depth (lamplight radial, moss validated tint) is permitted when it reads as material, not decoration.
 
 **Library, not museum.** Warm and inviting. The app should feel like the room the club meets in, not a curator's display case.
 
@@ -90,6 +90,14 @@ Mobile gutters: 20px (one-thumb territory). Cards inset 16px internally.
 
 Touch targets: 44×44 minimum. Primary CTAs are 56px tall — meant to be tapped from a recliner, half-buzzed.
 
+### Page background
+
+The app canvas is not a flat fill — it reads as aged paper in lamplight.
+
+- **Dot grid** — 16px spacing (`--pattern-size`), `--foreground-subtle` at `--pattern-opacity` (0.035 dark / 0.055 light). Fixed attachment; visible in gutters and between cards, not through opaque surfaces.
+- **Lamplight radial** — soft `--accent` wash from top center at `--lamplight-opacity` (0.04). Reads as warm overhead light in the club room.
+- Implemented on `body` in `globals.css`. Cards remain fully opaque; the pattern never shows through content.
+
 ---
 
 ## 5. Component primitives
@@ -111,11 +119,36 @@ Touch targets: 44×44 minimum. Primary CTAs are 56px tall — meant to be tapped
 
 ### Cards
 
-`--paper-100` background. 1px `--paper-200` border. 16px radius (slightly softer than buttons). 16px internal padding. Drop shadow is **a single hairline below**, not a gaussian blur:
+Three tiers. Content cards are **solid**, never frosted.
+
+**Static `Card`** — default for settings, copy blocks, sheet list items.
+
+- `--paper-100` / `--surface` background. 1px `--paper-200` / `--border`. 16px radius. 16px internal padding.
+- Drop shadow is **a single hairline below**, not a gaussian blur:
 
 ```css
 box-shadow: 0 1px 0 rgba(26, 22, 19, 0.06);
 ```
+
+**Interactive card** — tappable tiles (Personal hub cards, Find Your Next, Pairings suggestions). Export: `interactiveCardClassName`.
+
+- Same solid surface as static Card at rest.
+- **Hover / group-hover:** surface lifts one step (`--surface-2`), hairline shadow deepens, **2px brass left border** appears (`--accent`).
+- **Active (touch):** `scale(0.99)` — subtle press feedback on iPhone.
+- Use inside `<Link className="group">` or on `<button>` directly.
+
+**Validated card** — club-validated pairings only. Export: `validatedCardClassName`.
+
+- Extends interactive card behavior.
+- Rest: moss left border (`--moss-600`), faint moss tint gradient (`from-surface to-moss-600/5`).
+- Hover: moss border strengthens, tint slightly deepens.
+
+**Glass / blur** — reserved for floating chrome and photo overlays only:
+
+- Bottom nav (`backdrop-blur` over scrolling content)
+- Badge pills on hero photos (feed, cellar controls)
+
+Do **not** use glassmorphism on content cards.
 
 ### Dividers — the etched section breaks
 
@@ -270,7 +303,7 @@ Each accent has exactly one job. No re-using brass for status, no re-using ember
 - **Exact illustration assets for Winston's variants** — initial set landed 2026-05-22 (`apps/web/public/winston/`). Surface assignments locked in `planning/nccc-roadmap.md` Tier 3 #10.
 - ~~**Final mascot name**~~ — locked 2026-05-22 as **Winston**.
 - **Icon set delivery** — sketched in spec here, drawn later.
-- **Onboarding visual treatment** — the first time someone opens the app should feel like opening a leather-bound book. TBD.
+- ~~**Onboarding visual treatment**~~ — locked 2026-05-25. 3-step `/welcome` sequence, no bottom nav, leather-bound book feel. See `docs/superpowers/specs/2026-05-25-first-run-onboarding-design.md`.
 - **Animation specifics for the "reveal"** — the photo-to-ID transition is the signature interaction. Worth a dedicated prototype.
 
 ---

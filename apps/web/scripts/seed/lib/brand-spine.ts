@@ -165,6 +165,10 @@ const b = (canonical: string, status: CoreExpression["status"], pattern: RegExp,
   ({ canonical, status, pattern, spirit_type: "bourbon", ...extra });
 
 export const CORE_RANGES: Record<string, CoreExpression[]> = {
+  "Baker's": [
+    b("Single Barrel 13 Year", "core", /\b13\b/i),
+    b("Single Barrel 7 Year", "core", /single barrel|\b7\s*year\b/i),
+  ],
   "Knob Creek": [
     b("25th Anniversary", "discontinued", /25th anniversary/i),
     b("Quarter Oak", "discontinued", /quarter oak/i),
@@ -274,11 +278,19 @@ export const CORE_RANGES: Record<string, CoreExpression[]> = {
   "Old Forester": [
     b("Birthday Bourbon", "limited", /birthday/i),
     b("117 Series", "limited", /117/i),
+    b("150th Anniversary", "limited", /150th/i),
+    b("President's Choice", "limited", /president/i),
     b("1920 Prohibition Style", "core", /1920/i, { proof: 115 }),
     b("1910 Old Fine Whisky", "core", /1910/i, { proof: 93 }),
     b("1897 Bottled in Bond", "core", /1897/i, { proof: 100 }),
     b("1870 Original Batch", "core", /1870/i, { proof: 90 }),
+    b("King Ranch", "limited", /king ranch/i),
+    b("Single Barrel", "core", /single barrel/i),
+    b("Statesman", "core", /statesman/i),
+    b("Signature", "core", /signature/i),
+    b("Repeal Bourbon", "core", /repeal/i),
     b("Rye", "core", /\brye\b/i, { spirit_type: "rye" }),
-    b("86 Proof", "core", /./, { proof: 86 }),
+    // Entry-level bottle only — never use `/./` here; it matches every name.
+    b("86 Proof", "core", /^old forester\s*$|\b86\s*proof\b/i, { proof: 86 }),
   ],
 };

@@ -23,11 +23,11 @@ What's actually on `main` vs. what was planned. ✅ = shipped, 🟡 = partial / 
 | 4 — Product detail | 🟡 | Face complete: group voice, recommend bar, member takes, tag cloud, Pairs With, Facts, Construction panel. Depth view (pure SVG radar) ships. **Per-member adjustments + moss consensus shape NOT shipped.** |
 | 5 — Feed/Members/Events | 🟡 | All three pages + 4-tab center-FAB nav. Feed tabbed (For You / Cigars / Bourbons). Member profile now has Tastings / Cellar tabs. Preferences + FOR YOU badge shipped. |
 | 5.5 — The Cellar | ✅ | `member_saves` table (have/want/tried), `setCellarState` action, `CellarToggle` on product detail, compact controls on catalog cards, capture follow-up prompt, member profile Cellar tab, `/shelf` redirect, cellar bias wired into Daily Pour. 177 unit tests. |
-| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Winston prose, cache, `/pairings/[cigar]/[bourbon]` page, Pairs With. **Pick My Pour** (cellar-driven on-demand pick) shipped. Two-card redesign + "Suggest another" NOT shipped. |
-| 7 — Polish / admin | 🟡 | Settings, sign-out, admin invites, product edit, logo, recap card, Winston illustration variants. Education library NOT shipped. **WS4 You hub shipped 2026-05-24** — `/you` hub with badge hero, personal Cellar/Tastings cards, unified `/you/settings` (avatar + display name), `/you/cellar` + `/you/tastings`, redirects from `/settings`, `/shelf`, `/members/[me]`. |
-| 8 — Daily Pour | ✅ | Home-page hero, deterministic FNV-1a pick, preference + cellar bias, Winston voice, moss club-validated badge, prose cache on home. **Pick My Pour** secondary action on hero + Cellar tab. |
+| 6 — Pairing engine | 🟡 | 8 rules, scoring, group validation, Winston prose, cache, `/pairings/[cigar]/[bourbon]` page, Pairs With. **Pick My Pour** (cellar-driven on-demand pick) shipped. **WS3 Capture-a-Pairing shipped 2026-05-24** — catalog picker, `pairing_sessions` join model, `/you/pairings`, moss cache sync on dual-recommend captures. |
+| 7 — Polish / admin | 🟡 | Settings, sign-out, admin invites, product edit, logo, recap card, Winston illustration variants. Education library NOT shipped. **WS4 You hub shipped 2026-05-24** — `/you` hub with badge hero, personal Cellar/Tastings cards, unified `/you/settings` (avatar + display name), `/you/cellar` + `/you/tastings`, redirects from `/settings`, `/shelf`, `/members/[me]`. **WS5+2 face refresh shipped 2026-05-24** — Winston Club Says prose, segmented tasting actions, inline depth, catalog filter polish. |
+| 8 — Daily Pour | ✅ | Home-page hero, deterministic FNV-1a pick, preference + cellar bias, Winston voice, moss club-validated badge, prose cache on home. **WS1 Find Your Next shipped 2026-05-24** — trio below Daily Pour (Today's Pairing / Pour / Smoke sheets, cellar-first). Pick My Pour removed from home hero; still on Cellar tab. |
 
-**Tests:** 233 unit tests passing (wheel math, pairing rules, scoring, identity, preference derivation + matching, cellar mutex + bias, pick-pour selector, session merge, badges next + hero variant).
+**Tests:** 242 unit tests passing (wheel math, pairing rules, scoring, identity, preference derivation + matching, cellar mutex + bias, pick-pour selector, session merge, badges next + hero variant, find-next merge, pairing picker filter).
 
 **Catalog state — as of 2026-05-22 enrichment run:**
 
@@ -681,17 +681,19 @@ Winston-voiced articles: glossary, "what are thirds?", "what's a mashbill?", pai
   Badges are flavor, not competition. They surface what someone has
   contributed; they don't rank members against each other.
 
-#### 17. First-run onboarding screen — **🟡 in flight 2026-05-22**
-A one-time "meet Winston, here's the club" screen shown after a new member completes accept-invite. Lives at `/welcome` and is reached automatically when the auth callback creates a brand-new `users` row.
+#### 17. First-run onboarding sequence — **✅ shipped 2026-05-25**
 
-**Scope:**
-- Hero illustration: `winston-library.png` (full library scene with owl-Archivist + Winston pouring a dram).
-- Winston intro line in `<Voice />`: a single welcoming sentence using the member's first name.
-- Three short orienting lines: what NCCC is, how a recommend works, why preferences matter.
-- Brass primary: **Step into the lounge** → `/`.
-- One-shot: not gated by a DB flag in v1 (the callback only routes here on the leg that created the profile). Direct visits to `/welcome` still work — it's a static page, harmless to revisit.
+A 3-step first-run flow at `/welcome`, gated by `users.onboarding_completed_at`. Reached after accept-invite (both auth paths). Spec: `docs/superpowers/specs/2026-05-25-first-run-onboarding-design.md`.
 
-**Out of scope:** preference capture on this screen (Settings already has it; we don't want the first impression to be a form). No "tour" overlays on the real app — the lounge speaks for itself.
+**As built:**
+- Step 1 — Meet Winston (`winston-library.png`, personalized `<Voice />`).
+- Step 2 — How NCCC works (snap/recommend, club voice, Cellar + preferences).
+- Step 3 — Nav map (Lounge / Capture / Members / Pairings / You) + three exit CTAs: Capture, Preferences (`/you/settings#preferences`), Explore lounge.
+- `(shell)` layout redirects incomplete members to `/welcome`; welcome runs without bottom nav.
+- Auth fix: immediate signup (Case A) now routes to `/welcome` alongside email-confirm callback.
+- Backfill migration sets `onboarding_completed_at = joined_at` for existing members.
+
+**Out of scope:** preference capture on welcome, overlay tours, in-app replay.
 
 #### 16. ~~Center-FAB nav redesign~~ — **✅ shipped UX-2**
 Bottom nav now has the four-tab + center-FAB shape. Brass Capture FAB

@@ -12,6 +12,7 @@ function entry(over: Partial<CatalogEntry> & { product_id: string }): CatalogEnt
     hero_image_path: null,
     catalog_image_url: null,
     matches_preferences: false,
+    subtitle: null,
     ...over,
   };
 }

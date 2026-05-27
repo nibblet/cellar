@@ -53,13 +53,17 @@ export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps
 
         <div className="px-3.5 py-3 min-w-0 flex items-start gap-2">
           <div className="flex-1 min-w-0">
+            {entry.brand_family ?? entry.brand ? (
+              <p className="text-[10px] uppercase tracking-widest text-foreground-subtle truncate mb-0.5">
+                {entry.brand_family ?? entry.brand}
+              </p>
+            ) : null}
             <p className="text-[15px] font-medium text-foreground truncate leading-snug">
-              {entry.expression ?? entry.name}
+              {entry.name}
             </p>
-            <p className="text-[11px] text-foreground-muted truncate mt-0.5">
-              {entry.brand ? `${entry.brand} · ` : ""}
-              <span className="uppercase tracking-widest text-foreground-subtle">{entry.type}</span>
-            </p>
+            {entry.subtitle ? (
+              <p className="text-[11px] text-foreground-muted truncate mt-0.5">{entry.subtitle}</p>
+            ) : null}
           </div>
           {cellarState != null ? (
             <div className="shrink-0 mt-0.5">

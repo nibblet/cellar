@@ -2,8 +2,8 @@
  * Export bourbon catalog for hand curation — brand, expression, canonical name,
  * age, release year, tier, distillery.
  *
- *   pnpm export:catalog-curation
- *   pnpm export:catalog-curation ~/Downloads/curation.xlsx
+ *   pnpm export:catalog-from-db                   # new dated file — never overwrites
+ *   pnpm export:catalog-curation ~/Downloads/curation.xlsx --overwrite
  *   pnpm export:catalog-curation --fresh          # ignore existing REVIEW_* edits
  *   pnpm export:catalog-curation --merge-from ~/Downloads/my-edits.xlsx
  *   pnpm export:catalog-curation --tier=3
@@ -29,11 +29,19 @@ import { tierSortKey } from "./lib/enrich-order";
 import { adminClient } from "./lib/supabase-admin";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_OUT = path.resolve(
-  __dirname,
-  "../../../../data/catalog-curation-review.xlsx",
-);
-const DEFAULT_MASTER = DEFAULT_OUT;
+const DATA_DIR = path.resolve(__dirname, "../../../../data");
+const LEGACY_MASTER = path.resolve(DATA_DIR, "catalog-curation-review.xlsx");
+
+function nextExportPath(): string {
+  const day = new Date().toISOString().slice(0, 10);
+  let n = 0;
+  for (;;) {
+    const suffix = n === 0 ? "" : `-${n}`;
+    const candidate = path.join(DATA_DIR, `catalog-curation-export-${day}${suffix}.xlsx`);
+    if (!existsSync(candidate)) return candidate;
+    n += 1;
+  }
+}
 
 function defaultTierOutPath(tier: number): string {
   return path.resolve(
@@ -238,6 +246,7 @@ function parseTierFilter(argv: string[]): Set<number> | null {
 
 function parseArgs(argv: string[]) {
   const fresh = argv.includes("--fresh");
+  const overwrite = argv.includes("--overwrite");
   const noBackup = argv.includes("--no-backup");
   const tierFilter = parseTierFilter(argv);
   const mergeFromIdx = argv.indexOf("--merge-from");
@@ -246,21 +255,29 @@ function parseArgs(argv: string[]) {
       ? path.resolve(argv[mergeFromIdx + 1])
       : null;
   const mergeAllTiers = argv.includes("--merge-all-tiers");
-  const outPath = argv.find(
+  const outArg = argv.find(
     (a) => a.endsWith(".xlsx") && a !== mergeFrom && !a.startsWith("--"),
   );
-  let resolvedOut = outPath ? path.resolve(outPath) : DEFAULT_OUT;
-  if (!outPath && tierFilter?.size === 1) {
+  const explicitOut = Boolean(outArg);
+  let resolvedOut = outArg ? path.resolve(outArg) : nextExportPath();
+  if (!outArg && tierFilter?.size === 1) {
     resolvedOut = defaultTierOutPath([...tierFilter][0]!);
   }
   return {
     outPath: resolvedOut,
+    explicitOut,
+    overwrite,
     fresh,
     mergeFrom,
     mergeAllTiers,
     noBackup,
     tierFilter,
   };
+}
+
+function curationCollapseFlag(specs: Record<string, unknown> | null): "Y" | "N" {
+  const v = specs?.curation_collapse;
+  return v === "Y" || v === true ? "Y" : "N";
 }
 
 function defaultReviewRow(
@@ -272,23 +289,23 @@ function defaultReviewRow(
   rarity: string,
 ): SavedReview {
   return {
-    REVIEW_brand: p.canonical_brand ?? r.brand ?? "",
-    REVIEW_expression: specStr(specs, "curated_expression") || p.expression_label || "",
+    REVIEW_brand: r.brand ?? "",
+    REVIEW_expression: specStr(specs, "curated_expression") ?? "",
     REVIEW_canonical_name: r.name,
-    REVIEW_age: cleanup.ageLabel ?? ageDisplay(specs),
+    REVIEW_age: specStr(specs, "age_label") || ageDisplay(specs) || "",
     REVIEW_year_made: tier !== "" ? String(specNum(specs, "year_made") || "") : "",
-    REVIEW_release_label: p.release_label ?? cleanup.releaseLabel ?? "",
+    REVIEW_release_label: specStr(specs, "curation_release_label") ?? "",
     REVIEW_tier: tier !== "" ? String(tier) : "",
     REVIEW_distillery: specStr(specs, "distillery"),
     REVIEW_whiskey_type: specStr(specs, "whiskey_type"),
-    REVIEW_spirit_type: p.spirit_type ?? "",
+    REVIEW_spirit_type: specStr(specs, "spirit_type") ?? "",
     REVIEW_expression_type: specStr(specs, "expression_type"),
     REVIEW_rarity: specStr(specs, "availability_rarity") || rarity,
-    REVIEW_vintages_matter: "N",
-    REVIEW_release_pattern: p.release_pattern ?? cleanup.releasePattern ?? "",
-    REVIEW_collapse: p.collapse ? "Y" : "N",
+    REVIEW_vintages_matter: r.vintages_matter ? "Y" : "N",
+    REVIEW_release_pattern: r.release_pattern ?? "",
+    REVIEW_collapse: curationCollapseFlag(specs),
     REVIEW_keep: "Y",
-    REVIEW_notes: "",
+    REVIEW_notes: specStr(specs, "curation_notes") ?? "",
   };
 }
 
@@ -365,16 +382,24 @@ async function loadTierReviewOverrides(): Promise<Map<string, SavedReview>> {
 }
 
 async function main() {
-  const { outPath, fresh, mergeFrom, mergeAllTiers, noBackup, tierFilter } = parseArgs(
-    process.argv.slice(2),
-  );
+  const { outPath, explicitOut, overwrite, fresh, mergeFrom, mergeAllTiers, noBackup, tierFilter } =
+    parseArgs(process.argv.slice(2));
+
+  if (explicitOut && existsSync(outPath) && !overwrite) {
+    console.error(
+      `[export-catalog-curation] Refusing to overwrite ${outPath}\n` +
+        "  Use a new path, or pass --overwrite (creates .backup-* first).\n" +
+        "  For a safe DB snapshot with no path: pnpm export:catalog-from-db",
+    );
+    process.exit(1);
+  }
 
   const mergePath =
     mergeFrom ??
-    (!fresh && existsSync(outPath)
+    (!fresh && !explicitOut && existsSync(outPath)
       ? outPath
-      : !fresh && tierFilter && existsSync(DEFAULT_MASTER)
-        ? DEFAULT_MASTER
+      : !fresh && tierFilter && existsSync(LEGACY_MASTER)
+        ? LEGACY_MASTER
         : null);
   const mergeMode: "full" | "edited-only" = "full";
 
@@ -402,7 +427,7 @@ async function main() {
     }
   }
 
-  if (!noBackup && existsSync(outPath) && !fresh) {
+  if (!noBackup && explicitOut && overwrite && existsSync(outPath)) {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
     const backupPath = outPath.replace(/\.xlsx$/i, `.backup-${stamp}.xlsx`);
     copyFileSync(outPath, backupPath);
@@ -460,7 +485,14 @@ async function main() {
 
   const readme = wb.addWorksheet("README");
   const instructions = [
-    "Catalog Curation Review — two-phase workflow",
+    "Catalog curation — export → edit → apply",
+    "",
+    "1. Export from DB (new file each time, never overwrites):",
+    "     pnpm export:catalog-from-db",
+    "2. Edit yellow REVIEW_* columns in the exported .xlsx only.",
+    "3. Apply back to Supabase:",
+    "     pnpm apply:catalog-curation --dry-run ../../data/catalog-curation-export-….xlsx",
+    "     pnpm apply:catalog-curation --apply ../../data/catalog-curation-export-….xlsx",
     "",
     "Phase 1 — NAME (yellow REVIEW_* columns):",
     "  REVIEW_canonical_name = collapse target (e.g. Belle Meade).",
