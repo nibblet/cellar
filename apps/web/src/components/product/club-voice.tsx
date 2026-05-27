@@ -1,5 +1,5 @@
-import { MemberTakes, RecommendBar, TagCloud } from "@/components/group-voice";
-import { Card, Voice } from "@/components/primitives";
+import { MemberTakes, RecommendBar } from "@/components/group-voice";
+import { Card } from "@/components/primitives";
 import type { GroupVoice, MemberTake } from "@/lib/aggregation/group-voice";
 import type { ProductType } from "@/lib/wheel";
 
@@ -8,46 +8,25 @@ type ClubVoiceProps = {
   groupVoice: GroupVoice;
   otherTakes: MemberTake[];
   myTake: MemberTake | undefined;
-  winstonProse: string | null;
 };
 
-/**
- * Single editorial container for everything the club has said about this
- * product. Replaces the original stack of three separate Cards (recommend
- * bar / takes / your tasting) with one panel that uses hairline rules as
- * internal section breaks — the etched divider is reserved for chapter
- * changes, not the variations within a chapter.
- */
 export function ClubVoice({
   productType,
   groupVoice,
   otherTakes,
   myTake,
-  winstonProse,
 }: ClubVoiceProps) {
   return (
     <Card className="px-5 py-5">
-      {winstonProse ? <Voice className="block mb-4 text-base">{winstonProse}</Voice> : null}
-
       <RecommendBar
         productType={productType}
         recommendCount={groupVoice.recommend_count}
         memberCount={groupVoice.member_count}
       />
 
-      {groupVoice.tag_cloud.length > 0 ? (
-        <>
-          <Hairline />
-          <TagCloud entries={groupVoice.tag_cloud} />
-        </>
-      ) : null}
-
       {otherTakes.length > 0 ? (
         <>
           <Hairline />
-          <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-3">
-            What the members noted
-          </p>
           <MemberTakes takes={otherTakes} />
         </>
       ) : null}
@@ -63,14 +42,9 @@ export function ClubVoice({
 }
 
 function Hairline() {
-  return <div className="my-5 h-px bg-border" aria-hidden="true" />;
+  return <div className="my-4 h-px bg-border" aria-hidden="true" />;
 }
 
-/**
- * Your tasting notes — chips + note only. The recommend state is already
- * communicated by the lit icon in RecommendBar above; repeating "You recommend
- * this." as a sentence is redundant. This block carries what only you said.
- */
 function YourNotes({ take }: { take: MemberTake }) {
   return (
     <div>

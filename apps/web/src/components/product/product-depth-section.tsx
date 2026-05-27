@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Divider } from "@/components/primitives";
 import { buildTagCloud, type TagCloudEntry } from "@/lib/aggregation/group-voice";
 import type { ProductType, WheelVector } from "@/lib/wheel";
@@ -50,56 +54,77 @@ export function ProductDepthSection({
   wheelVector,
   isBaseline,
 }: ProductDepthSectionProps) {
+  const [open, setOpen] = useState(false);
   const flavorEntries =
     tagCloud.length > 0 ? tagCloud : buildTagCloud(productType, wheelVector ? [wheelVector] : []);
 
   return (
     <>
-      <Divider label="Construction" />
-      <ConstructionPanel productType={productType} specs={specs} productName={productName} />
-
-      <div className="mt-3">
-        <FactsStrip
-          productType={productType}
-          specs={specs}
-          excludeKeys={
-            productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full"
+      >
+        <Divider
+          label={
+            <span className="inline-flex items-center gap-1.5">
+              Details
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+              />
+            </span>
           }
         />
-      </div>
+      </button>
 
-      <ReviewersSay specs={specs} />
+      {open ? (
+        <div className="animate-in fade-in slide-in-from-top-1 duration-200">
+          <ConstructionPanel productType={productType} specs={specs} productName={productName} />
 
-      <Divider label="Flavor profile" />
+          <div className="mt-3">
+            <FactsStrip
+              productType={productType}
+              specs={specs}
+              excludeKeys={
+                productType === "cigar" ? CIGAR_CONSTRUCTION_KEYS : BOURBON_CONSTRUCTION_KEYS
+              }
+            />
+          </div>
 
-      {flavorEntries.length > 0 ? (
-        <>
-          <dl className="space-y-3">
-            {groupByCategory(flavorEntries).map((group) => (
-              <div
-                key={group.category_id}
-                className="grid grid-cols-[88px,1fr] gap-3 items-baseline"
-              >
-                <dt className="text-[11px] uppercase tracking-widest text-foreground-subtle">
-                  {group.category_label}
-                </dt>
-                <dd className="text-base leading-relaxed text-foreground break-words">
-                  {group.entries.map((e) => e.label).join(" · ")}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          {isBaseline ? (
-            <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-4">
-              Catalog baseline · Fills in as the club weighs in
+          <ReviewersSay specs={specs} />
+
+          <Divider label="Flavor profile" />
+
+          {flavorEntries.length > 0 ? (
+            <>
+              <dl className="space-y-3">
+                {groupByCategory(flavorEntries).map((group) => (
+                  <div
+                    key={group.category_id}
+                    className="grid grid-cols-[88px,1fr] gap-3 items-baseline"
+                  >
+                    <dt className="text-[11px] uppercase tracking-widest text-foreground-subtle">
+                      {group.category_label}
+                    </dt>
+                    <dd className="text-base leading-relaxed text-foreground break-words">
+                      {group.entries.map((e) => e.label).join(" · ")}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              {isBaseline ? (
+                <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-4">
+                  Catalog baseline · Fills in as the club weighs in
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <p className="text-sm text-foreground-subtle">
+              No tastings logged yet — the profile fills in as the club weighs in.
             </p>
-          ) : null}
-        </>
-      ) : (
-        <p className="text-sm text-foreground-subtle">
-          No tastings logged yet — the profile fills in as the club weighs in.
-        </p>
-      )}
+          )}
+        </div>
+      ) : null}
     </>
   );
 }

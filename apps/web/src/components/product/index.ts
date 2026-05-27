@@ -9,4 +9,5 @@ export { ProductDepthSection } from "./product-depth-section";
 export { ProductHero, type ProductHeroImage } from "./product-hero";
 export { ReleaseVariantChips } from "./release-variant-chips";
 export { TastingActionSegment } from "./tasting-action-segment";
+export { WinstonTastingNote } from "./winston-tasting-note";
 export { YouMightAlsoLike } from "./you-might-also-like";

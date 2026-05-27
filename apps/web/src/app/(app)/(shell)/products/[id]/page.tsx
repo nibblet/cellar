@@ -1,10 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PenLine } from "lucide-react";
 import { CellarToggle } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
 import { PairsWith } from "@/components/pairing";
-import { Divider } from "@/components/primitives";
+import { Card, Divider } from "@/components/primitives";
 import {
   CaptureConfirmBanner,
   ClubVoice,
@@ -15,9 +16,10 @@ import {
   type ProductHeroImage,
   TastingActionSegment,
   ReleaseVariantChips,
+  WinstonTastingNote,
   YouMightAlsoLike,
 } from "@/components/product";
-import { buildClubSaysProse } from "@/lib/aggregation/club-says-prose";
+import type { GroupVoice } from "@/lib/aggregation/group-voice";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
 import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
@@ -26,8 +28,10 @@ import { ZERO_ROW } from "@/lib/cellar/types";
 import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
+import type { AdjacentProduct } from "@/lib/similarity/suggest-adjacent";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
+import { ensureWinstonProse } from "@/lib/product/ensure-winston-prose";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ProductType, WheelVector } from "@/lib/wheel";
 import { DraftConfirmBanner } from "./draft-confirm";
@@ -99,7 +103,6 @@ export default async function ProductDetailPage({
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
-  const winstonProse = buildClubSaysProse(groupVoice, myTake);
 
   const validatedFlags = await Promise.all(
     pairings.map(async (c) => {
@@ -249,15 +252,35 @@ export default async function ProductDetailPage({
         />
       ) : null}
 
-      <Divider label="The club says" />
+      <Suspense fallback={<WinstonSkeleton />}>
+        <WinstonSection
+          productId={product.id}
+          productType={productType}
+          productName={product.name}
+          brand={product.brand ?? null}
+          specs={specs}
+          wheelVector={wheelVector}
+          groupVoice={groupVoice}
+          adjacent={adjacent}
+          userId={userId}
+        />
+      </Suspense>
 
-      <ClubVoice
-        productType={productType}
-        groupVoice={groupVoice}
-        otherTakes={otherTakes}
-        myTake={myTake}
-        winstonProse={winstonProse}
-      />
+      <div className="mt-6">
+        <Divider label="The club says" />
+        <ClubVoice
+          productType={productType}
+          groupVoice={groupVoice}
+          otherTakes={otherTakes}
+          myTake={myTake}
+        />
+      </div>
+
+      {userId ? (
+        <div className="mt-6">
+          <TastingActionSegment productId={product.id} hasTasting={Boolean(myTake)} event={event} />
+        </div>
+      ) : null}
 
       <div className="mt-6">
         <Divider label="Pairs with" />
@@ -269,12 +292,6 @@ export default async function ProductDetailPage({
         />
       </div>
 
-      {userId ? (
-        <div className="mt-6">
-          <TastingActionSegment productId={product.id} hasTasting={Boolean(myTake)} event={event} />
-        </div>
-      ) : null}
-
       <div className="mt-8" id="depth">
         <ProductDepthSection
           productType={productType}
@@ -284,12 +301,71 @@ export default async function ProductDetailPage({
           wheelVector={wheelVector}
           isBaseline={isBaseline}
         />
-        {productType === "cigar" ? (
-          <ExploreLinks brand={product.brand ?? null} name={product.name} />
-        ) : null}
-        <YouMightAlsoLike products={adjacent} />
       </div>
+
+      {productType === "cigar" ? (
+        <div className="mt-6">
+          <ExploreLinks brand={product.brand ?? null} name={product.name} />
+        </div>
+      ) : null}
+
+      <YouMightAlsoLike products={adjacent} />
     </AppShell>
+  );
+}
+
+type WinstonSectionProps = {
+  productId: string;
+  productType: ProductType;
+  productName: string;
+  brand: string | null;
+  specs: Record<string, unknown>;
+  wheelVector: WheelVector | null;
+  groupVoice: GroupVoice;
+  adjacent: AdjacentProduct[];
+  userId: string | null;
+};
+
+async function WinstonSection({
+  productId,
+  productType,
+  productName,
+  brand,
+  specs,
+  wheelVector,
+  groupVoice,
+  adjacent,
+  userId,
+}: WinstonSectionProps) {
+  const supabase = await createSupabaseServerClient();
+  const text = await ensureWinstonProse(
+    supabase,
+    { id: productId, type: productType, name: productName, brand, specs, wheel_vector: wheelVector },
+    groupVoice,
+    adjacent,
+    userId,
+  );
+  if (!text) return null;
+  return (
+    <>
+      <Divider label="Winston\u2019s take" />
+      <WinstonTastingNote text={text} />
+    </>
+  );
+}
+
+function WinstonSkeleton() {
+  return (
+    <>
+      <Divider label="Winston\u2019s take" />
+      <Card className="px-5 py-5">
+        <div className="space-y-2.5 animate-pulse">
+          <div className="h-[17px] bg-surface-2 rounded w-full" />
+          <div className="h-[17px] bg-surface-2 rounded w-11/12" />
+          <div className="h-[17px] bg-surface-2 rounded w-9/12" />
+        </div>
+      </Card>
+    </>
   );
 }
 
@@ -302,10 +378,14 @@ function composeSubtitle(productType: ProductType, specs: Record<string, unknown
     if (typeof specs.strength === "string" && specs.strength) tokens.push(specs.strength);
     if (typeof specs.country === "string" && specs.country) tokens.push(specs.country);
   } else {
-    if (typeof specs.age_label === "string" && specs.age_label) tokens.push(specs.age_label);
-    if (typeof specs.proof === "number") tokens.push(`${specs.proof}°`);
-    if (typeof specs.style_family === "string" && specs.style_family)
-      tokens.push(specs.style_family);
+    if (typeof specs.age_label === "string" && specs.age_label) {
+      const age = specs.age_label;
+      const needsSuffix = /^\d+(\.\d+)?$/.test(age);
+      tokens.push(needsSuffix ? `${age}yr` : age);
+    }
+    if (typeof specs.proof === "number") tokens.push(`${specs.proof} proof`);
+    if (typeof specs.expression_type === "string" && specs.expression_type)
+      tokens.push(specs.expression_type);
   }
   return tokens.length > 0 ? tokens.join(" · ") : null;
 }

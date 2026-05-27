@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
+
 type DividerProps = {
-  label: string;
+  label: ReactNode;
 };
 
 /**

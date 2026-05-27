@@ -27,6 +27,14 @@ export default async function AdminHubPage() {
       <div className="flex flex-col gap-3">
         <Card>
           <Link
+            href="/admin/meetup"
+            className="block text-base text-foreground hover:text-foreground-muted"
+          >
+            Next meetup →
+          </Link>
+        </Card>
+        <Card>
+          <Link
             href="/admin/catalog"
             className="block text-base text-foreground hover:text-foreground-muted"
           >
