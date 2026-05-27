@@ -23,6 +23,7 @@ import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import {
   type CatalogFilters,
   type CatalogSortKey,
+  groupCatalogByBrand,
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
@@ -407,28 +408,63 @@ async function CatalogBody({
           </Voice>
         </Card>
       ) : (
-        <div className="flex flex-col gap-3">
-          {entries.map((entry) => {
-            const cellarState = cellarSnapshot
-              ? {
-                  have: cellarSnapshot.have.has(entry.product_id),
-                  want: cellarSnapshot.want.has(entry.product_id),
-                  tried: cellarSnapshot.tried.has(entry.product_id),
-                }
-              : ZERO_ROW;
-            return (
-              <CatalogCard
-                key={entry.product_id}
-                entry={entry}
-                signedHero={
-                  entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-                }
-                cellarState={viewerId ? cellarState : null}
-              />
-            );
-          })}
-        </div>
+        <CatalogList
+          entries={entries}
+          grouped={productType === "bourbon"}
+          signed={signed}
+          cellarSnapshot={cellarSnapshot}
+          showCellar={Boolean(viewerId)}
+        />
       )}
     </>
   );
+}
+
+function CatalogList({
+  entries,
+  grouped,
+  signed,
+  cellarSnapshot,
+  showCellar,
+}: {
+  entries: Awaited<ReturnType<typeof loadCatalogBrowse>>;
+  grouped: boolean;
+  signed: Map<string, string>;
+  cellarSnapshot: Awaited<ReturnType<typeof loadCellarSnapshot>> | null;
+  showCellar: boolean;
+}) {
+  const renderCard = (entry: (typeof entries)[number]) => {
+    const cellarState = cellarSnapshot
+      ? {
+          have: cellarSnapshot.have.has(entry.product_id),
+          want: cellarSnapshot.want.has(entry.product_id),
+          tried: cellarSnapshot.tried.has(entry.product_id),
+        }
+      : ZERO_ROW;
+    return (
+      <CatalogCard
+        key={entry.product_id}
+        entry={entry}
+        signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
+        cellarState={showCellar ? cellarState : null}
+      />
+    );
+  };
+
+  // Bourbons cluster under their brand family (etched divider per brand);
+  // cigars and any un-grouped tail render flat.
+  if (grouped) {
+    return (
+      <div className="flex flex-col gap-3">
+        {groupCatalogByBrand(entries).map((group) => (
+          <section key={group.brand_family ?? "_ungrouped"} className="flex flex-col gap-3">
+            {group.brand_family ? <Divider label={group.brand_family} /> : null}
+            {group.entries.map(renderCard)}
+          </section>
+        ))}
+      </div>
+    );
+  }
+
+  return <div className="flex flex-col gap-3">{entries.map(renderCard)}</div>;
 }
