@@ -129,11 +129,34 @@ function survivorScore(s: Scored): number {
   return n;
 }
 
+export type CutbackOptions = {
+  /**
+   * Brand families to open up beyond the curated set — typically derived from
+   * the Cobb collection. Any item already flagged `inCobb` adds its own
+   * brand_family automatically; this is for callers that know the Cobb brands
+   * out-of-band (e.g. the prototype reading the Cobb xlsx).
+   */
+  extraCobbBrandFamilies?: Iterable<string>;
+};
+
 /**
  * Decide catalog inclusion for a set of products. Grouped by expression
  * (ignoring release label) so each expression yields one survivor.
+ *
+ * A row is kept member-facing iff:
+ *   - Paul owns it (inCobb), or
+ *   - it's the survivor of its expression, isn't discontinued, and its brand is
+ *     either a curated mainstream brand (core/limited) OR a brand the club
+ *     engages with (in the Cobb collection). Cobb brands open their whole
+ *     lineup, not just the single owned bottle.
  */
-export function planCutback(items: Array<{ input: SpineInput; fields: SpineFields }>): Map<number, CutbackDecision> {
+export function planCutback(
+  items: Array<{ input: SpineInput; fields: SpineFields }>,
+  opts: CutbackOptions = {},
+): Map<number, CutbackDecision> {
+  const cobbBrands = new Set<string>(opts.extraCobbBrandFamilies ?? []);
+  for (const it of items) if (it.input.inCobb) cobbBrands.add(it.fields.brand_family);
+
   const groups = new Map<string, Scored[]>();
   items.forEach((it, idx) => {
     const key = `${it.fields.brand_family}::${it.fields.expression}`;
@@ -147,6 +170,7 @@ export function planCutback(items: Array<{ input: SpineInput; fields: SpineField
     const survivor = [...group].sort((a, b) => survivorScore(b) - survivorScore(a))[0];
     for (const s of group) {
       const isSurvivor = s.idx === survivor.idx;
+      const inCobbBrand = cobbBrands.has(s.fields.brand_family);
       let include = false;
       let reason: string;
       if (s.input.inCobb) {
@@ -156,13 +180,14 @@ export function planCutback(items: Array<{ input: SpineInput; fields: SpineField
         reason = "duplicate of survivor (hidden, promotable)";
       } else if (s.fields.discontinued) {
         reason = "discontinued (hidden, promotable)";
-      } else if (!s.fields.curated) {
-        reason = "uncurated long tail (hidden, promotable)";
-      } else if (s.fields.status === "core" || s.fields.status === "limited") {
+      } else if (inCobbBrand) {
+        include = true;
+        reason = "Cobb-collection brand — lineup opened";
+      } else if (s.fields.curated && (s.fields.status === "core" || s.fields.status === "limited")) {
         include = true;
         reason = `curated ${s.fields.status} expression`;
       } else {
-        reason = "not in core range (hidden, promotable)";
+        reason = "uncurated long tail (hidden, promotable)";
       }
       decisions.set(s.idx, { include, survivor: isSurvivor, reason });
     }

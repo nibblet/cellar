@@ -137,24 +137,35 @@ its spine fields, folds near-duplicates to one survivor per expression, and sets
 
 A row is member-facing (`catalog_included = true`) iff:
 - `specs.in_cobb_collection` is true (a bottle Paul owns — always carried), **or**
-- it's the survivor of a **curated** brand's **core/limited** expression.
+- it's the survivor of its expression, isn't discontinued, and its brand is
+  either a **curated mainstream** brand (core/limited) **or a brand the club
+  engages with** (present in the Cobb collection). Cobb brands open their whole
+  deduped lineup, not just the single owned bottle.
 
-Everything else — uncurated long tail, discontinued, non-survivor duplicates — is
-hidden but promotable: flip `catalog_included` to true to add an individual back.
+Everything else — long tail of brands nobody touches, discontinued, non-survivor
+duplicates — is hidden but promotable: flip `catalog_included` to add one back.
 
-Dry run over the local data (Cobb adds on top in the DB):
-**1,350 bourbons → 62 kept** (curated core/limited survivors), 1,288 hidden.
-Per-brand: Four Roses 34→6, Buffalo Trace 45→3, Wild Turkey 22→6, Elijah Craig
-30→4, 1792 12→7, Knob Creek 14→5, Maker's Mark 10→4.
+The Cobb brand set is derived from rows already flagged `in_cobb_collection`;
+`--cobb=<xlsx>` adds more in case the Cobb seed hasn't run yet. The shared helper
+`lib/cobb-brands.ts` resolves the xlsx through the same classifier so its
+brand_family names line up with the products table.
+
+Dry run over the local data (Cobb adds owned bottles on top in the DB):
+- curated-only (first cut): **62 kept** — too aggressive.
+- **+ Cobb's 65 brands opened: 246 kept**, 1,104 hidden. This is the chosen cut.
 
 ### Apply steps (manual, per repo convention)
 
 ```bash
 # 1. schema (human-reviewed migration)
 supabase db push
-# 2. preview the cut-back against the real DB (reads only)
+# 2. (if not already) flag the bottles Paul owns
+pnpm seed:cobb-whiskey scripts/seed/data/private/cobb-whiskey.xlsx
+# 3. preview the cut-back against the real DB (reads only)
 pnpm tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts
-# 3. apply once the preview looks right
+#    …or open brands straight from the xlsx without re-seeding:
+pnpm tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts --cobb=<path-to-cobb.xlsx>
+# 4. apply once the preview looks right (add --cobb=… if used above)
 pnpm tsx --env-file=.env.local scripts/seed/backfill-catalog-spine.ts --apply
 ```
 

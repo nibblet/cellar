@@ -16,6 +16,7 @@
  * Requires NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (via --env-file).
  */
 
+import { readCobbBrandFamilies } from "./lib/cobb-brands";
 import { classifyProduct, planCutback, type SpineInput } from "./lib/spine-match";
 import { adminClient } from "./lib/supabase-admin";
 
@@ -29,6 +30,7 @@ type ProductRow = {
 };
 
 const APPLY = process.argv.includes("--apply");
+const COBB_XLSX = process.argv.find((a) => a.startsWith("--cobb="))?.slice("--cobb=".length);
 
 async function fetchAllBourbons(supabase: ReturnType<typeof adminClient>): Promise<ProductRow[]> {
   const rows: ProductRow[] = [];
@@ -91,7 +93,17 @@ async function main() {
     const input = toInput(p);
     return { p, input, fields: classifyProduct(input) };
   });
-  const decisions = planCutback(items.map(({ input, fields }) => ({ input, fields })));
+
+  // Open up the catalog to the brands the club engages with. The set is derived
+  // from rows already flagged in_cobb_collection; --cobb=<xlsx> adds more in case
+  // the Cobb seed hasn't been run yet.
+  const extraCobbBrandFamilies = COBB_XLSX ? await readCobbBrandFamilies(COBB_XLSX) : new Set<string>();
+  if (COBB_XLSX) console.log(`Cobb xlsx: opened ${extraCobbBrandFamilies.size} brand families.`);
+
+  const decisions = planCutback(
+    items.map(({ input, fields }) => ({ input, fields })),
+    { extraCobbBrandFamilies },
+  );
 
   const patches = items.map(({ p, fields }, idx) => {
     const dec = decisions.get(idx);
