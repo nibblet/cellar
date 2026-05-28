@@ -439,6 +439,7 @@ function CatalogList({
           have: cellarSnapshot.have.has(entry.product_id),
           want: cellarSnapshot.want.has(entry.product_id),
           tried: cellarSnapshot.tried.has(entry.product_id),
+          loved: cellarSnapshot.loved.has(entry.product_id),
         }
       : ZERO_ROW;
     return (

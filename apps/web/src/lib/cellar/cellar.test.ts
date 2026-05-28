@@ -13,18 +13,19 @@ describe("applyPatch", () => {
       have: false,
       want: false,
       tried: true,
+      loved: false,
     });
   });
 
   it("have=true clears want", () => {
-    const current = { have: false, want: true, tried: false };
+    const current = { have: false, want: true, tried: false, loved: false };
     const next = applyPatch(current, { have: true });
     expect(next.have).toBe(true);
     expect(next.want).toBe(false);
   });
 
   it("want=true clears have", () => {
-    const current = { have: true, want: false, tried: true };
+    const current = { have: true, want: false, tried: true, loved: false };
     const next = applyPatch(current, { want: true });
     expect(next.want).toBe(true);
     expect(next.have).toBe(false);
@@ -38,22 +39,53 @@ describe("applyPatch", () => {
   });
 
   it("have=true does not downgrade tried that was already true", () => {
-    const current = { have: false, want: false, tried: true };
+    const current = { have: false, want: false, tried: true, loved: false };
     const next = applyPatch(current, { have: true });
     expect(next.tried).toBe(true);
   });
 
   it("tried can be set to false independently of have/want", () => {
-    const current = { have: false, want: false, tried: true };
+    const current = { have: false, want: false, tried: true, loved: false };
     const next = applyPatch(current, { tried: false });
     expect(next.tried).toBe(false);
     expect(next.have).toBe(false);
   });
 
   it("have and want cannot both end up true — want patch wins via patch order", () => {
-    const next = applyPatch({ have: true, want: false, tried: true }, { want: true });
+    const next = applyPatch({ have: true, want: false, tried: true, loved: false }, { want: true });
     expect(next.have).toBe(false);
     expect(next.want).toBe(true);
+  });
+
+  it("loved=true implies tried=true even when tried was false", () => {
+    const next = applyPatch(ZERO_ROW, { loved: true });
+    expect(next.loved).toBe(true);
+    expect(next.tried).toBe(true);
+  });
+
+  it("tried stays true while loved is set (cannot un-try a loved product)", () => {
+    const current = { have: false, want: false, tried: true, loved: true };
+    const next = applyPatch(current, { tried: false });
+    expect(next.tried).toBe(true);
+    expect(next.loved).toBe(true);
+  });
+
+  it("unloving leaves tried intact", () => {
+    const current = { have: false, want: false, tried: true, loved: true };
+    const next = applyPatch(current, { loved: false });
+    expect(next.loved).toBe(false);
+    expect(next.tried).toBe(true);
+  });
+
+  it("loving does not touch have or want", () => {
+    const next = applyPatch(
+      { have: false, want: true, tried: false, loved: false },
+      { loved: true },
+    );
+    expect(next.want).toBe(true);
+    expect(next.have).toBe(false);
+    expect(next.loved).toBe(true);
+    expect(next.tried).toBe(true);
   });
 });
 
@@ -67,9 +99,10 @@ describe("isZeroRow", () => {
   });
 
   it("returns false when any flag is set", () => {
-    expect(isZeroRow({ have: false, want: false, tried: true })).toBe(false);
-    expect(isZeroRow({ have: true, want: false, tried: false })).toBe(false);
-    expect(isZeroRow({ have: false, want: true, tried: false })).toBe(false);
+    expect(isZeroRow({ have: false, want: false, tried: true, loved: false })).toBe(false);
+    expect(isZeroRow({ have: true, want: false, tried: false, loved: false })).toBe(false);
+    expect(isZeroRow({ have: false, want: true, tried: false, loved: false })).toBe(false);
+    expect(isZeroRow({ have: false, want: false, tried: false, loved: true })).toBe(false);
   });
 });
 
@@ -92,6 +125,7 @@ const snapshot = (opts: {
     ...(opts.cigarTried ? ["cigar-1"] : []),
     ...(opts.bourbonTried ? ["bourbon-1"] : []),
   ]),
+  loved: new Set(),
 });
 
 describe("applyCellarBias", () => {

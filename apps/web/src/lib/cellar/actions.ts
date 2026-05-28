@@ -23,7 +23,7 @@ export async function setCellarState(productId: string, patch: CellarPatch): Pro
 
   const { data: existing } = await supabase
     .from("member_saves")
-    .select("have, want, tried")
+    .select("have, want, tried, loved")
     .eq("member_id", memberId)
     .eq("product_id", productId)
     .maybeSingle();
@@ -33,6 +33,7 @@ export async function setCellarState(productId: string, patch: CellarPatch): Pro
         have: Boolean((existing as CellarRow).have),
         want: Boolean((existing as CellarRow).want),
         tried: Boolean((existing as CellarRow).tried),
+        loved: Boolean((existing as CellarRow).loved),
       }
     : ZERO_ROW;
 
@@ -56,6 +57,15 @@ export async function setCellarState(productId: string, patch: CellarPatch): Pro
   revalidatePath(`/products/${productId}`);
   revalidatePath(`/members/${memberId}`);
   revalidatePath("/");
+}
+
+/**
+ * Toggle the caller's private `loved` signal for one product.
+ * Loving implies tried (enforced in applyPatch). Thin wrapper over
+ * setCellarState so the love affordance has a single-purpose call site.
+ */
+export async function setLoved(productId: string, loved: boolean): Promise<void> {
+  await setCellarState(productId, { loved });
 }
 
 /**

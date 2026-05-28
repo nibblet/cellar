@@ -13,14 +13,19 @@ export async function loadCellarRow(
 ): Promise<CellarRow> {
   const { data } = await supabase
     .from("member_saves")
-    .select("have, want, tried")
+    .select("have, want, tried, loved")
     .eq("member_id", memberId)
     .eq("product_id", productId)
     .maybeSingle();
 
   if (!data) return ZERO_ROW;
   const row = data as CellarRow;
-  return { have: Boolean(row.have), want: Boolean(row.want), tried: Boolean(row.tried) };
+  return {
+    have: Boolean(row.have),
+    want: Boolean(row.want),
+    tried: Boolean(row.tried),
+    loved: Boolean(row.loved),
+  };
 }
 
 /**
@@ -33,7 +38,7 @@ export async function loadCellarSnapshot(
 ): Promise<CellarSnapshot> {
   const { data } = await supabase
     .from("member_saves")
-    .select("product_id, have, want, tried")
+    .select("product_id, have, want, tried, loved")
     .eq("member_id", memberId);
 
   if (!data || data.length === 0) return EMPTY_SNAPSHOT;
@@ -42,6 +47,7 @@ export async function loadCellarSnapshot(
     have: new Set<string>(),
     want: new Set<string>(),
     tried: new Set<string>(),
+    loved: new Set<string>(),
   };
 
   for (const row of data as Array<{
@@ -49,10 +55,12 @@ export async function loadCellarSnapshot(
     have: boolean;
     want: boolean;
     tried: boolean;
+    loved: boolean;
   }>) {
     if (row.have) snapshot.have.add(row.product_id);
     if (row.want) snapshot.want.add(row.product_id);
     if (row.tried) snapshot.tried.add(row.product_id);
+    if (row.loved) snapshot.loved.add(row.product_id);
   }
 
   return snapshot;
@@ -65,7 +73,7 @@ export async function loadCellarSnapshot(
 export async function loadCellarProducts(
   supabase: SupabaseClient,
   memberId: string,
-  filter: "have" | "want" | "tried",
+  filter: "have" | "want" | "tried" | "loved",
 ): Promise<
   Array<{
     product_id: string;

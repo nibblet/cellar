@@ -51,6 +51,12 @@ export function CellarCardControls({ productId, initialState }: CellarCardContro
       <IconButton active={state.want} label="Want" onClick={(e) => toggle("want", e)}>
         <WantIcon active={state.want} />
       </IconButton>
+      {/* Loved — heart, only once tried */}
+      {state.tried && (
+        <IconButton active={state.loved} label="Love" onClick={(e) => toggle("loved", e)}>
+          <HeartIcon active={state.loved} />
+        </IconButton>
+      )}
     </div>
   );
 }
@@ -120,6 +126,22 @@ function HaveIcon({ active }: { active: boolean }) {
         strokeLinejoin="round"
         fill={active ? "currentColor" : "none"}
         fillOpacity={active ? 0.2 : 0}
+      />
+    </svg>
+  );
+}
+
+function HeartIcon({ active }: { active: boolean }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M8 13.5S2.5 10 2.5 6.2A2.7 2.7 0 018 4.6a2.7 2.7 0 015.5 1.6C13.5 10 8 13.5 8 13.5z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill={active ? "currentColor" : "none"}
+        fillOpacity={active ? 0.25 : 0}
       />
     </svg>
   );
