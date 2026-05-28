@@ -417,6 +417,95 @@ Each phase is a complete, deployable slice. Don't move to phase N+1 until phase 
 
 ---
 
+### Phase 8 — Personal taste recommendations (Cellar utility) (2–3 evenings)
+
+**Goal:** Turn the Cellar from passive storage into a personal advisor. Each member's own loves + cellar + stated preferences drive a private "what should I try next" surface. This is individual utility — nothing here is club-facing. No dislikes; signal is positives-only by two strengths.
+
+**Signal model (locked):**
+- `tried` → weak positive (≈0.3)
+- `loved` → strong positive (≈1.0)
+- `member_preferences` (strengths/wrappers/styles/proof bands) → layered in as a boost + cold-start fallback
+- No negative signal. Absence is the only "no."
+
+Each sub-phase below is an independent, deployable slice. They share one scoring core, so ship them in order — the math compounds.
+
+#### 8.0 — The `loved` signal (do this first)
+
+- [ ] Migration: add `loved boolean not null default false` to `member_saves`.
+- [ ] App-code invariant: `loved` implies `tried` (same pattern as "have implies tried"). `loved` is private — it never feeds `tastings.recommend` or any club-facing aggregate.
+- [ ] Cellar UI: a love tap on tried items (a filled-ember heart, distinct from the recommend icon). Per design system, ember is for lit-recommend icons only — confirm the love affordance reads as personal, not club-recommend, before shipping the icon.
+- [ ] Server action `setLoved(productId, boolean)` with RLS so a member can only love their own saves.
+
+**Tests:**
+- Unit: `loved` ⇒ `tried` invariant enforcement.
+- Unit: RLS — a member cannot set `loved` on another member's save.
+- E2E: love a tried product, reload, state persists, no club-facing change.
+
+**Definition of done:** I can tap "love" on a bottle I've tried; it's visibly mine-only; the club voice on that product is unchanged.
+
+#### 8.1 — Try Next (discovery feed)
+
+- [ ] `lib/taste/vector.ts`: build a per-member, per-type `tasteVector` = normalize( Σ signalWeight × product.trait_vector ) over the member's tried/loved products. Same 10-trait space the pairing engine uses — reuse helpers from `lib/pairing/`, do not fork the similarity math.
+- [ ] Layer preferences: boost candidates matching `member_preferences` (strength/wrapper/style/proof). When the taste vector is thin (few trieds, zero loves), fall back to preferences alone (cold start).
+- [ ] `lib/taste/recommend.ts`: score all `confirmed` products of the type by similarity to the taste vector, exclude anything already in the member's cellar (have/want/tried), return top 3 per type. Cache per member (mirror the `pairings_cache` pattern — a `taste_recommendations_cache` or reuse `cellar_insight` storage).
+- [ ] Winston prose per pick (GPT-5 mini, cached): one line on *why* it fits ("leans the sweet, woody profile you keep coming back to").
+- [ ] UI: **"TRY NEXT"** section on the Cellar page (etched divider), 3 cigars + 3 bourbons.
+
+**Tests:**
+- Unit: taste-vector math (weighted sum, normalization, weak-vs-strong weighting).
+- Unit: exclusion of in-cellar products; cold-start fallback to preferences.
+- Unit: cigar/bourbon kept strictly within-type.
+- E2E: love two bourbons, see a sensible third surface in Try Next.
+
+**Definition of done:** Having loved Barrell Dovetail + Seagrass, my Try Next shows barrel-finished/sweet-woody bourbons I haven't had, each with a one-line Winston rationale.
+
+#### 8.2 — Want-list re-rank (shopping order)
+
+- [ ] Reuse 8.1's scorer against the member's `want` list instead of the full catalog.
+- [ ] Cellar UI: sort the Want list by palate fit (best match first), with a subtle "best match for you" marker on the top item. Keep it a re-sort, not a new screen.
+
+**Tests:**
+- Unit: want-list ordering given a taste vector.
+- E2E: wishlist reorders to put the strongest palate match on top.
+
+**Definition of done:** My wishlist is no longer chronological — it's a "buy this next" order driven by my own taste.
+
+#### 8.3 — Shelf-aware pairings (pour from what I own)
+
+- [ ] Constrain `lib/pairing/engine.ts` candidate set to the member's `have` shelf via an option (e.g. `candidatePool: 'shelf'`), rather than the whole catalog.
+- [ ] Product/pairing UI: "Best pour on *your* shelf" — given a cigar, surface the top bourbon you actually own (and vice versa). Falls back to catalog pairings when the shelf is empty.
+
+**Tests:**
+- Unit: pairing engine restricted to a supplied candidate pool returns only shelf products.
+- E2E: with two bourbons on the shelf, a cigar's "on your shelf" pour picks the better-matching one.
+
+**Definition of done:** Standing at my humidor, a cigar's pairing card recommends a bottle I can pour right now, not one I'd have to go buy.
+
+#### 8.4 — Palate mirror (taste in a sentence)
+
+- [ ] Extend the existing `cellar_insight` cache (`20260526000001_cellar_insight.sql`) to summarize the taste vector + preferences into one Winston line: *"You lean sweet, woody, full-proof — barrel-finished ryes are your lane."*
+- [ ] Recompute the insight when loves/trieds/preferences change (or lazily on Cellar view, cached).
+- [ ] UI: a single Winston line at the top of the Cellar.
+
+**Tests:**
+- Unit: taste-vector → dominant-traits summarizer (deterministic trait selection before prose).
+- E2E: insight line updates after a new love is added.
+
+**Definition of done:** Opening my Cellar, Winston reflects my palate back in one accurate sentence that matches what I actually love.
+
+#### 8.5 — Calibrated discovery (anti-echo)
+
+- [ ] Discovery rule: alongside the closest matches, surface one *adjacent* pick that fills a gap in `member_preferences` but still scores plausibly on the taste vector ("you've never had a wheated bourbon, but it's in your lane").
+- [ ] Mark it visibly as a stretch pick so it reads as intentional, not a mismatch.
+
+**Tests:**
+- Unit: gap detection from preferences; adjacency scoring keeps stretch picks within a sane similarity band.
+- E2E: a member with a narrow history gets exactly one labeled stretch pick.
+
+**Definition of done:** Try Next doesn't just echo what I already drink — it nudges me toward one calibrated new direction per refresh.
+
+---
+
 ## Cross-cutting concerns
 
 ### Testing strategy
@@ -500,3 +589,4 @@ Phase 0 is unblocked. Ready to start.
 ---
 
 *v1.0 · 2026-05-20 · Living document; will evolve as we hit reality.*
+*v1.1 · 2026-05-28 · Added Phase 8 — Personal taste recommendations (Cellar utility).*
