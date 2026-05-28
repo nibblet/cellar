@@ -322,6 +322,8 @@ Each phase is a complete, deployable slice. Don't move to phase N+1 until phase 
 
 **Definition of done:** A complete tasting takes 3 taps (shutter, confirm, recommend). With chips + note: 5 taps + a few words typed. The wheel vector lands in Postgres within a few seconds.
 
+**Parked enhancement — flavor-by-thirds (revisit when iterating on tasting):** cigars evolve first → second → final third. An *optional* depth layer would let a member tag flavor chips per third (no timer, no numeric strength meter — those conflict with the no-sliders rule and the 3-tap principle). Richer per-third chips produce a better `wheel_vector`, which in turn sharpens Phase 8 recommendations. Keep it opt-in so the fast path stays fast. Inspiration: competitor "smoke session" screens — take the thirds idea, leave the stopwatch.
+
 ---
 
 ### Phase 4 — Product detail (group voice) — the destination screen (2 evenings)
@@ -486,12 +488,14 @@ Each sub-phase below is an independent, deployable slice. They share one scoring
 - [ ] Extend the existing `cellar_insight` cache (`20260526000001_cellar_insight.sql`) to summarize the taste vector + preferences into one Winston line: *"You lean sweet, woody, full-proof — barrel-finished ryes are your lane."*
 - [ ] Recompute the insight when loves/trieds/preferences change (or lazily on Cellar view, cached).
 - [ ] UI: a single Winston line at the top of the Cellar.
+- [ ] **Personal "your numbers" block (private, understated, opt-in to expand):** beneath the Winston line on `/you`, a small descriptive-only stats strip — brands tried, countries, most-logged flavor, an "adventurousness" variety score (breadth of types/wrappers/styles tried). **Descriptive, never evaluative:** no ratings, no 1–100 scores, no "avg rating", no timer-derived stats. Frame it self-deprecatingly in Winston's voice ("for the geeks — don't read too much into it") and keep it collapsed/secondary so the app doesn't drift toward a gamified tracker. Inspiration: competitor "Stats & Insights" screen — take the descriptive trivia, drop every number that judges a product.
 
 **Tests:**
 - Unit: taste-vector → dominant-traits summarizer (deterministic trait selection before prose).
+- Unit: personal-stats derivation (counts, variety/adventurousness score) from cellar + tastings; assert no rating/score field is ever produced.
 - E2E: insight line updates after a new love is added.
 
-**Definition of done:** Opening my Cellar, Winston reflects my palate back in one accurate sentence that matches what I actually love.
+**Definition of done:** Opening my Cellar, Winston reflects my palate back in one accurate sentence that matches what I actually love, with an optional, understated "your numbers" strip on `/you` for the geek in me — and not a single product score in sight.
 
 #### 8.5 — Calibrated discovery (anti-echo)
 
@@ -503,6 +507,27 @@ Each sub-phase below is an independent, deployable slice. They share one scoring
 - E2E: a member with a narrow history gets exactly one labeled stretch pick.
 
 **Definition of done:** Try Next doesn't just echo what I already drink — it nudges me toward one calibrated new direction per refresh.
+
+---
+
+### Phase 9 — Maker & distillery pages (1–2 evenings)
+
+**Goal:** A tappable page for the people behind the product — cigar maker / bourbon distillery — with background, the club's catalog from that house, and a house-style read derived from our own flavor data. Turns brand names from dead text into a place to explore.
+
+**Approach:** AI-generated, cached, admin-editable. Reuse the existing LLM-text caching pattern (`winston_prose`, `cellar_insight`) rather than building a scraper — accuracy gaps are covered by an admin edit field, and the blurb is framed as Winston's take, not an authoritative fact sheet.
+
+- [ ] Migration: a `makers` table (or extend the `catalog_hierarchy` grouping) keyed by brand/distillery, with `blurb`, `blurb_source` (ai|manual), `country`, `website`, `updated_by`, timestamps.
+- [ ] `app/(app)/(shell)/makers/[id]/page.tsx` — server component: header (name, country, website), Winston blurb, and the club's products from this house.
+- [ ] **House-style read (the on-brand hook):** aggregate the `trait_vector` / `wheel_vector` across the maker's products into a one-line silent-wheel summary — *"Confidenciaal leans medium-full: cedar, leather, cocoa."* This uses our existing wheel infrastructure (no sliders, tag-cloud/prose only) so the page feels like NCCC, not a generic brand directory.
+- [ ] Cross-link: product detail's brand/line text becomes a link to the maker page.
+- [ ] Admin: edit/regenerate a maker blurb; flips `blurb_source` to `manual` when hand-edited so regeneration won't clobber it.
+
+**Tests:**
+- Unit: house-style aggregator (maker's product vectors → dominant traits), deterministic before prose.
+- Unit: blurb cache read/generate/regenerate; manual edits are not overwritten by regeneration.
+- E2E: tap a brand on product detail → land on the maker page → see blurb + house style + the club's cigars from that house.
+
+**Definition of done:** Tapping "Confidenciaal" on a product opens a maker page with a Winston blurb, Honduras + website, the club's logged Confidenciaal cigars, and a one-line house-style read pulled from our own flavor wheel — editable by an admin when the AI gets a fact wrong.
 
 ---
 
@@ -590,3 +615,4 @@ Phase 0 is unblocked. Ready to start.
 
 *v1.0 · 2026-05-20 · Living document; will evolve as we hit reality.*
 *v1.1 · 2026-05-28 · Added Phase 8 — Personal taste recommendations (Cellar utility).*
+*v1.2 · 2026-05-28 · Added Phase 9 — Maker & distillery pages; folded personal "your numbers" into 8.4; parked flavor-by-thirds under Phase 3.*
