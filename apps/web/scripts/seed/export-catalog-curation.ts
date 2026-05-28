@@ -8,6 +8,8 @@
  *   pnpm export:catalog-curation --merge-from ~/Downloads/my-edits.xlsx
  *   pnpm export:catalog-curation --tier=3
  *   pnpm export:catalog-curation --tier=3 --merge-from data/catalog-curation-review.xlsx
+ *   pnpm export:catalog-curation --visible-only
+ *   pnpm export:catalog-from-db --visible-only   # dated visible-only snapshot
  *
  * Re-exporting **copies yellow REVIEW_* verbatim** from the merge source (by
  * product_id). Reference + proposed_* columns always refresh from the DB/script.
@@ -32,12 +34,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(__dirname, "../../../../data");
 const LEGACY_MASTER = path.resolve(DATA_DIR, "catalog-curation-review.xlsx");
 
-function nextExportPath(): string {
+function nextExportPath(visibleOnly: boolean): string {
   const day = new Date().toISOString().slice(0, 10);
+  const stem = visibleOnly ? `catalog-curation-visible-export-${day}` : `catalog-curation-export-${day}`;
   let n = 0;
   for (;;) {
     const suffix = n === 0 ? "" : `-${n}`;
-    const candidate = path.join(DATA_DIR, `catalog-curation-export-${day}${suffix}.xlsx`);
+    const candidate = path.join(DATA_DIR, `${stem}${suffix}.xlsx`);
     if (!existsSync(candidate)) return candidate;
     n += 1;
   }
@@ -64,6 +67,11 @@ type ProductRow = NormalizationInput & {
   status: string;
   vintages_matter: boolean;
   release_pattern: string | null;
+  catalog_included: boolean;
+  brand_family: string | null;
+  expression: string | null;
+  is_core_range: boolean;
+  producer: string | null;
 };
 
 function specStr(specs: Record<string, unknown> | null, key: string): string {
@@ -86,16 +94,19 @@ function ageDisplay(specs: Record<string, unknown> | null): string {
   return specStr(specs, "aging_period_years");
 }
 
-async function fetchProducts(): Promise<ProductRow[]> {
+async function fetchProducts(visibleOnly: boolean): Promise<ProductRow[]> {
   const supa = adminClient();
   const all: ProductRow[] = [];
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await supa
+    let q = supa
       .from("products")
-      .select("id, name, brand, image_url, status, specs, vintages_matter, release_pattern")
+      .select(
+        "id, name, brand, image_url, status, specs, vintages_matter, release_pattern, catalog_included, brand_family, expression, is_core_range, producer",
+      )
       .eq("type", "bourbon")
-      .eq("status", "confirmed")
-      .range(from, from + 999);
+      .eq("status", "confirmed");
+    if (visibleOnly) q = q.eq("catalog_included", true);
+    const { data, error } = await q.range(from, from + 999);
     if (error) throw error;
     if (!data?.length) break;
     all.push(...(data as ProductRow[]));
@@ -248,6 +259,7 @@ function parseArgs(argv: string[]) {
   const fresh = argv.includes("--fresh");
   const overwrite = argv.includes("--overwrite");
   const noBackup = argv.includes("--no-backup");
+  const visibleOnly = argv.includes("--visible-only");
   const tierFilter = parseTierFilter(argv);
   const mergeFromIdx = argv.indexOf("--merge-from");
   const mergeFrom =
@@ -259,8 +271,8 @@ function parseArgs(argv: string[]) {
     (a) => a.endsWith(".xlsx") && a !== mergeFrom && !a.startsWith("--"),
   );
   const explicitOut = Boolean(outArg);
-  let resolvedOut = outArg ? path.resolve(outArg) : nextExportPath();
-  if (!outArg && tierFilter?.size === 1) {
+  let resolvedOut = outArg ? path.resolve(outArg) : nextExportPath(visibleOnly);
+  if (!outArg && tierFilter?.size === 1 && !visibleOnly) {
     resolvedOut = defaultTierOutPath([...tierFilter][0]!);
   }
   return {
@@ -272,6 +284,7 @@ function parseArgs(argv: string[]) {
     mergeAllTiers,
     noBackup,
     tierFilter,
+    visibleOnly,
   };
 }
 
@@ -382,8 +395,17 @@ async function loadTierReviewOverrides(): Promise<Map<string, SavedReview>> {
 }
 
 async function main() {
-  const { outPath, explicitOut, overwrite, fresh, mergeFrom, mergeAllTiers, noBackup, tierFilter } =
-    parseArgs(process.argv.slice(2));
+  const {
+    outPath,
+    explicitOut,
+    overwrite,
+    fresh,
+    mergeFrom,
+    mergeAllTiers,
+    noBackup,
+    tierFilter,
+    visibleOnly,
+  } = parseArgs(process.argv.slice(2));
 
   if (explicitOut && existsSync(outPath) && !overwrite) {
     console.error(
@@ -434,7 +456,16 @@ async function main() {
     console.log(`[export-catalog-curation] backup → ${backupPath}`);
   }
 
-  const [products, reviews] = await Promise.all([fetchProducts(), fetchReviewMeta()]);
+  const [products, reviews] = await Promise.all([
+    fetchProducts(visibleOnly),
+    fetchReviewMeta(),
+  ]);
+
+  if (visibleOnly) {
+    console.log(
+      `[export-catalog-curation] visible-only (catalog_included=true): ${products.length} bourbons`,
+    );
+  }
 
   const normContext = buildNormalizationContext(products);
 
@@ -513,7 +544,9 @@ async function main() {
     "  Use --fresh to reset REVIEW_* from script proposals.",
     "  Use --merge-from path.xlsx to merge edits from another file.",
     "  Use --merge-all-tiers to pull REVIEW_* from data/catalog-curation-tier{N}-review.xlsx.",
+    "  Use --visible-only to export member-facing catalog (catalog_included=true) only.",
     "",
+    visibleOnly ? "Scope: catalog_included=true (member-facing) only" : "Scope: all confirmed bourbons",
     mergePath
       ? `Merged REVIEW_* from: ${mergePath} (${savedReviews.size} rows in merge source)`
       : "No prior REVIEW_* merge (new export or --fresh).",
@@ -530,6 +563,11 @@ async function main() {
 
   const headers = [
     "product_id",
+    "catalog_included",
+    "brand_family",
+    "expression",
+    "is_core_range",
+    "producer",
     "tier",
     "distillery",
     "brand",
@@ -597,6 +635,11 @@ async function main() {
 
     ws.addRow([
       r.id,
+      r.catalog_included === false ? "N" : "Y",
+      r.brand_family ?? "",
+      r.expression ?? "",
+      r.is_core_range ? "Y" : "N",
+      r.producer ?? "",
       tier,
       specStr(specs, "distillery"),
       r.brand ?? "",

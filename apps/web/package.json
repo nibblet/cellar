@@ -29,6 +29,7 @@
     "audit:bourbon-enrichment": "tsx --env-file=.env.local scripts/seed/audit-bourbon-enrichment.ts",
     "export:catalog-normalization": "tsx --env-file=.env.local scripts/seed/export-catalog-normalization.ts",
     "export:catalog-from-db": "tsx --env-file=.env.local scripts/seed/export-catalog-curation.ts --fresh",
+    "export:catalog-visible": "tsx --env-file=.env.local scripts/seed/export-catalog-curation.ts --visible-only --fresh",
     "export:catalog-curation": "tsx --env-file=.env.local scripts/seed/export-catalog-curation.ts",
     "merge:curation-tiers": "tsx --env-file=.env.local scripts/seed/merge-curation-tier-reviews.ts",
     "export:catalog-audit": "tsx --env-file=.env.local scripts/seed/export-catalog-audit.ts",

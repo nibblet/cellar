@@ -29,6 +29,19 @@ const VALID_RARITIES = new Set([
   "discontinued",
 ]);
 
+/** Spreadsheet sometimes uses tier display labels — map to availability axis. */
+function parseReviewRarity(raw: string | null): { value: string | null; clear: boolean } {
+  if (!raw) return { value: null, clear: false };
+  const key = raw.trim().toLowerCase();
+  if (VALID_RARITIES.has(key)) return { value: key, clear: false };
+  if (key === "common") return { value: "everyday", clear: false };
+  if (key === "uncommon") return { value: null, clear: true };
+  if (key === "rare") return { value: "allocated", clear: false };
+  throw new Error(
+    `invalid REVIEW_rarity "${raw}" — use everyday | seasonal | allocated | lottery | secondary-only | discontinued (not common/uncommon/rare)`,
+  );
+}
+
 type CurationRow = {
   product_id: string;
   sheet_tier: number | null;
@@ -45,6 +58,7 @@ type CurationRow = {
   REVIEW_spirit_type: string | null;
   REVIEW_expression_type: string | null;
   REVIEW_rarity: string | null;
+  REVIEW_rarity_clear: boolean;
   REVIEW_vintages_matter: boolean;
   REVIEW_release_pattern: string | null;
   REVIEW_collapse: boolean;
@@ -169,9 +183,14 @@ function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
     const id = str(get(row, "product_id"));
     if (!id) continue;
 
-    const rarity = str(get(row, "REVIEW_rarity"));
-    if (rarity && !VALID_RARITIES.has(rarity)) {
-      throw new Error(`Row ${r}: invalid REVIEW_rarity "${rarity}"`);
+    let REVIEW_rarity: string | null = null;
+    let REVIEW_rarity_clear = false;
+    try {
+      const parsed = parseReviewRarity(str(get(row, "REVIEW_rarity")));
+      REVIEW_rarity = parsed.value;
+      REVIEW_rarity_clear = parsed.clear;
+    } catch (e) {
+      throw new Error(`Row ${r}: ${e instanceof Error ? e.message : String(e)}`);
     }
 
     const reviewTier = tier(get(row, "REVIEW_tier"));
@@ -195,7 +214,8 @@ function parseCurateSheet(wb: ExcelJS.Workbook): CurationRow[] {
       REVIEW_whiskey_type: str(get(row, "REVIEW_whiskey_type")),
       REVIEW_spirit_type: str(get(row, "REVIEW_spirit_type")),
       REVIEW_expression_type: str(get(row, "REVIEW_expression_type")),
-      REVIEW_rarity: rarity,
+      REVIEW_rarity,
+      REVIEW_rarity_clear,
       REVIEW_vintages_matter: yn(get(row, "REVIEW_vintages_matter")),
       REVIEW_release_pattern: pattern,
       REVIEW_collapse: yn(get(row, "REVIEW_collapse")),
@@ -325,7 +345,8 @@ async function main() {
       specs.tier = row.REVIEW_tier;
       specs.tier_source = "curation";
     }
-    if (row.REVIEW_rarity) specs.availability_rarity = row.REVIEW_rarity;
+    if (row.REVIEW_rarity_clear) delete specs.availability_rarity;
+    else if (row.REVIEW_rarity) specs.availability_rarity = row.REVIEW_rarity;
     applyReviewSpec(specs, "curation_notes", row.REVIEW_notes, true);
     applyReviewSpec(specs, "curation_release_label", row.REVIEW_release_label, true);
     specs.curation_collapse = row.REVIEW_collapse ? "Y" : "N";

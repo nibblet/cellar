@@ -348,7 +348,7 @@ async function WinstonSection({
   if (!text) return null;
   return (
     <>
-      <Divider label="Winston\u2019s take" />
+      <Divider label="Winston's take" />
       <WinstonTastingNote text={text} />
     </>
   );
@@ -357,7 +357,7 @@ async function WinstonSection({
 function WinstonSkeleton() {
   return (
     <>
-      <Divider label="Winston\u2019s take" />
+      <Divider label="Winston's take" />
       <Card className="px-5 py-5">
         <div className="space-y-2.5 animate-pulse">
           <div className="h-[17px] bg-surface-2 rounded w-full" />
