@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
       </header>
 
       <Voice className="text-center mb-8">
-        "Forgotten the passphrase? Happens to the best of us, sir."
+        "Forgotten the passphrase? Happens to the best of us."
       </Voice>
 
       <ResetForm />

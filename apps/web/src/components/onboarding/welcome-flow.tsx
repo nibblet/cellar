@@ -94,8 +94,8 @@ export function WelcomeFlow({ firstName }: Props) {
           </header>
 
           <Voice className="text-center mb-8">
-            &ldquo;A pleasure to have you, {firstName}. The shelves are stocked and the
-            leather&apos;s warm. Step in.&rdquo;
+            &ldquo;Glad you walked over, {firstName}. Gas lamps are on, chair&apos;s open on
+            the porch. Come sit.&rdquo;
           </Voice>
 
           <Button type="button" size="large" className="w-full" onClick={() => setStep(2)}>
@@ -160,7 +160,7 @@ export function WelcomeFlow({ firstName }: Props) {
           </ul>
 
           <Voice className="text-center mb-6">
-            &ldquo;The night is yours, {firstName}. Where shall we begin?&rdquo;
+            &ldquo;Your night, {firstName}. Where do we start?&rdquo;
           </Voice>
 
           <Button

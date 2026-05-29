@@ -48,7 +48,7 @@ export default async function AdminInvitesPage() {
       </header>
 
       <Voice className="block mb-6">
-        "One-shot links, sir. Send only to those you'd buy a round for."
+        "One-shot links. Send only to those you'd buy a round for."
       </Voice>
 
       <InviteCard origin={origin} />

@@ -1,7 +1,7 @@
-import { Suspense } from "react";
+import { PenLine } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PenLine } from "lucide-react";
+import { Suspense } from "react";
 import { CellarToggle } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
 import { PairsWith } from "@/components/pairing";
@@ -14,25 +14,27 @@ import {
   ProductDepthSection,
   ProductHero,
   type ProductHeroImage,
-  TastingActionSegment,
   ReleaseVariantChips,
+  TastingActionSegment,
   WinstonTastingNote,
   YouMightAlsoLike,
 } from "@/components/product";
 import type { GroupVoice } from "@/lib/aggregation/group-voice";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
-import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import { composeProductSubtitle } from "@/lib/catalog/product-subtitle";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
 import { signImagePaths } from "@/lib/feed/queries";
-import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
+import { loadOrComputeTopPairings, suggestShelfPairing } from "@/lib/pairing/engine";
+import { checkGroupValidation } from "@/lib/pairing/group-validation";
+import { mergePairsWith } from "@/lib/pairing/merge-pairs-with";
+import { ensureWinstonProse } from "@/lib/product/ensure-winston-prose";
+import { RerollWinstonButton } from "./reroll-winston-button";
 import type { AdjacentProduct } from "@/lib/similarity/suggest-adjacent";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
-import { checkGroupValidation } from "@/lib/pairing/group-validation";
-import { ensureWinstonProse } from "@/lib/product/ensure-winston-prose";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import type { ProductType, WheelVector } from "@/lib/wheel";
 import { DraftConfirmBanner } from "./draft-confirm";
 
@@ -83,23 +85,30 @@ export default async function ProductDetailPage({
 
   const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
 
-  const [groupVoice, pairings, adjacent, imagesResult, reviewCountResult] = await Promise.all([
-    loadGroupVoice(supabase, id, productType),
-    loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: 45 }),
-    suggestAdjacentProducts(supabase, id, { limit: 3 }),
-    supabase
-      .from("product_images")
-      .select(
-        "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
-      )
-      .eq("product_id", id)
-      .order("is_hero", { ascending: false })
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("product_reviews")
-      .select("id", { count: "exact", head: true })
-      .eq("product_id", id),
-  ]);
+  const pairingMinScore = 45;
+  const [groupVoice, catalogPairings, shelfPick, adjacent, imagesResult, reviewCountResult] =
+    await Promise.all([
+      loadGroupVoice(supabase, id, productType),
+      loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: pairingMinScore }),
+      userId
+        ? suggestShelfPairing(supabase, userId, id, { minScore: pairingMinScore })
+        : Promise.resolve(null),
+      suggestAdjacentProducts(supabase, id, { limit: 3 }),
+      supabase
+        .from("product_images")
+        .select(
+          "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+        )
+        .eq("product_id", id)
+        .order("is_hero", { ascending: false })
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("product_reviews")
+        .select("id", { count: "exact", head: true })
+        .eq("product_id", id),
+    ]);
+
+  const pairings = mergePairsWith(shelfPick, catalogPairings);
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
@@ -245,11 +254,7 @@ export default async function ProductDetailPage({
       ) : null}
 
       {needsEnrichment ? (
-        <EnrichmentTrigger
-          productId={product.id}
-          productType={productType}
-          needsEnrichment
-        />
+        <EnrichmentTrigger productId={product.id} productType={productType} needsEnrichment />
       ) : null}
 
       <Suspense fallback={<WinstonSkeleton />}>
@@ -265,6 +270,7 @@ export default async function ProductDetailPage({
           userId={userId}
         />
       </Suspense>
+      {isAdmin ? <RerollWinstonButton productId={product.id} /> : null}
 
       <div className="mt-6">
         <Divider label="The club says" />
@@ -340,7 +346,14 @@ async function WinstonSection({
   const supabase = await createSupabaseServerClient();
   const text = await ensureWinstonProse(
     supabase,
-    { id: productId, type: productType, name: productName, brand, specs, wheel_vector: wheelVector },
+    {
+      id: productId,
+      type: productType,
+      name: productName,
+      brand,
+      specs,
+      wheel_vector: wheelVector,
+    },
     groupVoice,
     adjacent,
     userId,
@@ -368,4 +381,3 @@ function WinstonSkeleton() {
     </>
   );
 }
-

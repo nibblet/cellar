@@ -12,6 +12,8 @@ import { dominantTraits } from "./vector";
 
 const CANDIDATE_LIMIT = 500;
 const TYPES = TASTE_TYPES;
+// Bump when scoring inputs or candidate filters change so cached picks rebuild.
+const SIGNAL_VERSION = "v2-catalog-included";
 
 type ProductRow = {
   id: string;
@@ -42,7 +44,10 @@ function computeSignalHash(
     b: [...preferences.bourbon_styles].sort(),
     p: [...preferences.bourbon_proof_bands].sort(),
   });
-  return createHash("sha256").update(`${ids}|${prefs}`).digest("hex").slice(0, 16);
+  return createHash("sha256")
+    .update(`${SIGNAL_VERSION}|${ids}|${prefs}`)
+    .digest("hex")
+    .slice(0, 16);
 }
 
 async function loadCachedRecommendations(

@@ -62,8 +62,8 @@ export default async function SessionPage({
 
       <Voice className="mb-6">
         {product.type === "cigar"
-          ? '"Take it in thirds, sir — or skip ahead whenever you like."'
-          : '"Nose, palate, finish — at your pace, sir."'}
+          ? '"Take it in thirds — or skip ahead whenever you like."'
+          : '"Nose, palate, finish — at your pace."'}
       </Voice>
 
       <SessionForm

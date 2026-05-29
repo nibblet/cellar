@@ -10,7 +10,7 @@ export function buildClubSaysProse(
   const { member_count, recommend_count, tag_cloud } = groupVoice;
 
   if (member_count === 0) {
-    return "No one's weighed in yet, sir. Be the first.";
+    return "No one's weighed in yet. Be the first.";
   }
 
   const parts: string[] = [];

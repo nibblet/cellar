@@ -34,7 +34,7 @@ export function PreferencesForm({ initial }: { initial: MemberPreferences }) {
   return (
     <form action={formAction} className="space-y-5">
       <Voice className="block">
-        "Tell me what you reach for, sir. I'll lean your way — never the other."
+        "Tell me what you reach for. I'll lean your way — never the other."
       </Voice>
 
       <ChipGroup
@@ -78,7 +78,7 @@ export function PreferencesForm({ initial }: { initial: MemberPreferences }) {
           Catalog shelf
         </p>
         <p className="text-xs text-foreground-subtle leading-relaxed mb-4">
-          How far up the allocation ladder the Cigars and Bourbons lists reach, sir.
+          How far up the allocation ladder the Cigars and Bourbons lists reach.
         </p>
         <label className="block">
           <span className="text-sm text-foreground block mb-3">
