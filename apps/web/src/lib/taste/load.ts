@@ -140,6 +140,9 @@ async function rebuild(
       .from("products")
       .select("id, type, name, brand, image_url, specs, trait_vector")
       .eq("status", "confirmed")
+      // Never recommend the de-listed long tail. Cigars default true, so this
+      // only trims hidden bourbons — same cut-back the member-facing browse uses.
+      .eq("catalog_included", true)
       .limit(CANDIDATE_LIMIT),
   ]);
 

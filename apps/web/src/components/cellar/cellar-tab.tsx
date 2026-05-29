@@ -1,9 +1,9 @@
 "use client";
 
 import { startTransition, useOptimistic, useState } from "react";
-import { setCellarState } from "@/lib/cellar/actions";
 import { PickPourButton } from "@/components/feed";
 import { Voice } from "@/components/primitives";
+import { setCellarState } from "@/lib/cellar/actions";
 import { cn } from "@/lib/utils";
 
 type CellarFilter = "have" | "want" | "tried";
@@ -21,13 +21,22 @@ type CellarTabProps = {
   have: CellarProduct[];
   want: CellarProduct[];
   tried: CellarProduct[];
+  lovedProductIds: string[];
   isOwnProfile: boolean;
   memberFirstName: string;
 };
 
-export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: CellarTabProps) {
+export function CellarTab({
+  have,
+  want,
+  tried,
+  lovedProductIds,
+  isOwnProfile,
+  memberFirstName,
+}: CellarTabProps) {
   const [filter, setFilter] = useState<CellarFilter>("have");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [lovedIds, setLovedIds] = useState<Set<string>>(() => new Set(lovedProductIds));
   const [removedIds, setRemovedIds] = useOptimistic<
     Record<string, Set<string>>,
     { filter: CellarFilter; productId: string }
@@ -44,9 +53,7 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
     .filter((p) => !removedIds[filter]?.has(p.product_id))
     .filter((p) => typeFilter === "all" || p.type === typeFilter);
 
-  const typeFilteredList = lists[filter].filter(
-    (p) => !removedIds[filter]?.has(p.product_id),
-  );
+  const typeFilteredList = lists[filter].filter((p) => !removedIds[filter]?.has(p.product_id));
   const cigarCount = typeFilteredList.filter((p) => p.type === "cigar").length;
   const bourbonCount = typeFilteredList.filter((p) => p.type === "bourbon").length;
   const hasBothTypes = cigarCount > 0 && bourbonCount > 0;
@@ -69,6 +76,23 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
     startTransition(() => {
       setRemovedIds({ filter, productId });
       setCellarState(productId, { [filter]: false });
+    });
+  }
+
+  // Love is a private signal and implies tried, so it only appears on the
+  // member's own Have / Tried lists (both are already tried).
+  const canLove = isOwnProfile && (filter === "have" || filter === "tried");
+
+  function handleToggleLove(productId: string) {
+    const next = !lovedIds.has(productId);
+    setLovedIds((prev) => {
+      const updated = new Set(prev);
+      if (next) updated.add(productId);
+      else updated.delete(productId);
+      return updated;
+    });
+    startTransition(() => {
+      setCellarState(productId, { loved: next });
     });
   }
 
@@ -112,11 +136,11 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
       {/* Type filter: All / Cigars / Bourbons — only shown when both types exist */}
       {hasBothTypes ? (
         <div className="flex items-center gap-1.5 mb-4">
-          {([
+          {[
             { key: "all" as TypeFilter, label: "All" },
             { key: "cigar" as TypeFilter, label: `Cigars ${cigarCount}` },
             { key: "bourbon" as TypeFilter, label: `Bourbons ${bourbonCount}` },
-          ]).map(({ key, label }) => (
+          ].map(({ key, label }) => (
             <button
               key={key}
               type="button"
@@ -175,6 +199,34 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
                   </p>
                 </div>
               </a>
+              {canLove ? (
+                <button
+                  type="button"
+                  onClick={() => handleToggleLove(p.product_id)}
+                  className={cn(
+                    "shrink-0 w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-surface-2",
+                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent",
+                    lovedIds.has(p.product_id)
+                      ? "text-ember-500"
+                      : "text-foreground-subtle hover:text-foreground",
+                  )}
+                  aria-label={lovedIds.has(p.product_id) ? "Remove love" : "Love"}
+                  aria-pressed={lovedIds.has(p.product_id)}
+                  title="Love"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path
+                      d="M8 13.5S2.5 10 2.5 6.2A2.7 2.7 0 018 4.6a2.7 2.7 0 015.5 1.6C13.5 10 8 13.5 8 13.5z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill={lovedIds.has(p.product_id) ? "currentColor" : "none"}
+                      fillOpacity={lovedIds.has(p.product_id) ? 0.25 : 0}
+                    />
+                  </svg>
+                </button>
+              ) : null}
               {isOwnProfile ? (
                 <button
                   type="button"
@@ -183,13 +235,7 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
                   aria-label={`Remove from ${filter}`}
                   title={`Remove from ${filter}`}
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    aria-hidden="true"
-                  >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                     <path
                       d="M4 4l6 6M10 4l-6 6"
                       stroke="currentColor"

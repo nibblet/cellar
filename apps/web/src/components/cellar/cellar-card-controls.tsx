@@ -51,9 +51,14 @@ export function CellarCardControls({ productId, initialState }: CellarCardContro
       <IconButton active={state.want} label="Want" onClick={(e) => toggle("want", e)}>
         <WantIcon active={state.want} />
       </IconButton>
-      {/* Loved — heart, only once tried */}
+      {/* Loved — heart, only once tried. Ember (personal), not brass. */}
       {state.tried && (
-        <IconButton active={state.loved} label="Love" onClick={(e) => toggle("loved", e)}>
+        <IconButton
+          active={state.loved}
+          activeClassName="text-ember-500"
+          label="Love"
+          onClick={(e) => toggle("loved", e)}
+        >
           <HeartIcon active={state.loved} />
         </IconButton>
       )}
@@ -66,11 +71,13 @@ function IconButton({
   label,
   onClick,
   children,
+  activeClassName = "text-accent",
 }: {
   active: boolean;
   label: string;
   onClick: (e: React.MouseEvent) => void;
   children: React.ReactNode;
+  activeClassName?: string;
 }) {
   return (
     <button
@@ -81,7 +88,7 @@ function IconButton({
       className={cn(
         "w-8 h-8 flex items-center justify-center rounded-full transition-colors",
         "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent",
-        active ? "text-accent" : "text-paper-50/70 hover:text-paper-50",
+        active ? activeClassName : "text-paper-50/70 hover:text-paper-50",
       )}
       title={label}
     >

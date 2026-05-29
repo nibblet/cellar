@@ -67,15 +67,31 @@ export async function loadShelfProducts(
     .from("member_saves")
     .select("product_id, products!inner(id, name, brand, type, specs)")
     .eq("member_id", memberId)
-    .eq("have", true);
+    .eq("have", true)
+    // Mirror the member-facing catalog cut-back: don't count the hidden
+    // long tail. Cigars default catalog_included=true, so this only trims
+    // de-listed bourbons.
+    .eq("products.catalog_included", true);
 
   if (!data) return [];
 
   type JoinedRow = {
     product_id: string;
     products:
-      | { id: string; name: string; brand: string | null; type: string; specs: Record<string, unknown> | null }
-      | Array<{ id: string; name: string; brand: string | null; type: string; specs: Record<string, unknown> | null }>;
+      | {
+          id: string;
+          name: string;
+          brand: string | null;
+          type: string;
+          specs: Record<string, unknown> | null;
+        }
+      | Array<{
+          id: string;
+          name: string;
+          brand: string | null;
+          type: string;
+          specs: Record<string, unknown> | null;
+        }>;
   };
 
   return (data as unknown as JoinedRow[]).map((row) => {
@@ -136,7 +152,12 @@ export async function generateCellarInsight(
   const haveHash = computeHaveHash(products.map((p) => p.product_id));
 
   if (products.length === 0) {
-    return { bourbons: null, cigars: null, generated_at: new Date().toISOString(), have_hash: haveHash };
+    return {
+      bourbons: null,
+      cigars: null,
+      generated_at: new Date().toISOString(),
+      have_hash: haveHash,
+    };
   }
 
   const userMessage = buildUserMessage(products);
@@ -219,10 +240,7 @@ export async function ensureCellarInsight(
   try {
     const insight = await generateCellarInsight(products, supabase, memberId);
 
-    await supabase
-      .from("users")
-      .update({ cellar_insight: insight })
-      .eq("id", memberId);
+    await supabase.from("users").update({ cellar_insight: insight }).eq("id", memberId);
 
     return insight;
   } catch (err) {
