@@ -1,0 +1,117 @@
+[
+  {
+    "old_product_id": "9c46557e-9cf2-45e5-b421-8d68da4be96a",
+    "new_product_id": "3c0d5c68-9ba4-43ee-97ea-f44bb8b12911",
+    "old_name": "Backbone Decade Down Anniversary Edition",
+    "expression_name": "Backbone Decade Down Anniversary Edition",
+    "release_label": "2022",
+    "vintages_matter": false,
+    "release_pattern": "year"
+  },
+  {
+    "old_product_id": "51d8feca-4146-4a7e-9735-7a434a0339ee",
+    "new_product_id": "4b7593a1-7bb4-443c-a284-a0344ced6a17",
+    "old_name": "Barrell Bourbon",
+    "expression_name": "Barrell Bourbon",
+    "release_label": "Batch 024",
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "d037ec72-5d2a-41bd-bb0e-f2e510e19766",
+    "new_product_id": "d00a1447-60a9-48d5-97a9-9f5117010d3d",
+    "old_name": "Bib & Tucker",
+    "expression_name": "Bib & Tucker",
+    "release_label": "#2",
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "8496cbf4-ad2a-4be2-9820-ad1ddafa14c1",
+    "new_product_id": "d00a1447-60a9-48d5-97a9-9f5117010d3d",
+    "old_name": "Bib & Tucker",
+    "expression_name": "Bib & Tucker",
+    "release_label": "#22",
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "bb2021f2-b82c-4438-8b4b-8e5447fb635b",
+    "new_product_id": "d00a1447-60a9-48d5-97a9-9f5117010d3d",
+    "old_name": "Bib & Tucker",
+    "expression_name": "Bib & Tucker",
+    "release_label": "2014",
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "44db8ff6-935d-496a-9043-7f89940877d5",
+    "new_product_id": "1c1a77f0-020c-4028-b7f9-d2e79176a9cc",
+    "old_name": "Birthday Bourbon",
+    "expression_name": "Birthday Bourbon",
+    "release_label": "2019",
+    "vintages_matter": false,
+    "release_pattern": "year"
+  },
+  {
+    "old_product_id": "7db1a4b6-d38a-4128-b94f-13f9ce6a568b",
+    "new_product_id": "6d438a3d-6f15-4f1a-9436-864b6b8cb4e7",
+    "old_name": "Buffalo Trace",
+    "expression_name": "Buffalo Trace",
+    "release_label": null,
+    "vintages_matter": false
+  },
+  {
+    "old_product_id": "f1a4c982-e254-4e61-bee8-6a1371bd22c8",
+    "new_product_id": "724c339c-fa7c-4050-bfd8-29dbd450b7a5",
+    "old_name": "Discovery Series",
+    "expression_name": "Discovery Series",
+    "release_label": null,
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "4ceec793-8a51-43f6-854a-5020a277b2dc",
+    "new_product_id": "1b432c5b-a574-49d5-b25a-06810e943111",
+    "old_name": "High West American Prairie",
+    "expression_name": "High West American Prairie",
+    "release_label": "Batch #1",
+    "vintages_matter": false,
+    "release_pattern": "batch"
+  },
+  {
+    "old_product_id": "23a75b77-97b3-4f57-860a-76d2fd245a9f",
+    "new_product_id": "f71462ed-076d-4734-8a93-0f27fd228e65",
+    "old_name": "Hillrock Solera Aged Bourbon",
+    "expression_name": "Hillrock Solera Aged Bourbon",
+    "release_label": null,
+    "vintages_matter": false
+  },
+  {
+    "old_product_id": "ededd874-5ebc-47ba-a79f-66867b258721",
+    "new_product_id": "3f8b9d39-b349-435d-acd0-94546856f7b1",
+    "old_name": "Jefferson's Ocean Aged at Sea",
+    "expression_name": "Jefferson's Ocean Aged at Sea",
+    "release_label": "2022",
+    "vintages_matter": false,
+    "release_pattern": "year"
+  },
+  {
+    "old_product_id": "e81216e4-96b5-4f8e-a494-13955cfb4d2f",
+    "new_product_id": "4d1b1cce-d7c5-424e-b795-cd7786f5fddc",
+    "old_name": "Remus Repeal Reserve",
+    "expression_name": "Remus Repeal Reserve",
+    "release_label": "2023",
+    "vintages_matter": false,
+    "release_pattern": "year"
+  },
+  {
+    "old_product_id": "c870615f-e95f-4b4f-9af8-3496f9460722",
+    "new_product_id": "9f367b78-e695-4c2d-bcb9-8e8491cef5dd",
+    "old_name": "Woodford Reserve Master's Collection",
+    "expression_name": "Woodford Reserve Master's Collection",
+    "release_label": "2005",
+    "vintages_matter": false,
+    "release_pattern": "year"
+  }
+]

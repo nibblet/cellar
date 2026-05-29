@@ -1,0 +1,262 @@
+{
+  "generated_at": "2026-05-27T12:17:46.683Z",
+  "skipped": [
+    {
+      "name": "1897 (1897::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Angel's Envy Cask Strength (Angel's Envy Cask Strength::Cask Strength::Cask Strength)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Backbone Bourbon Uncut (Backbone Bourbon Uncut::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Barrell Bourbon Cask Strength (Barrell Bourbon Cask Strength::Bourbon Cask Strength::Cask Strength)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Blade and Bow (Blade and Bow::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Booker's Bourbon (Booker's Bourbon::::Small Batch)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Bowman Brothers (Bowman Brothers::::Cask Strength)",
+      "reason": "no rows flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Bulleit Blenders Select (Bulleit Blenders Select::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Contradiction Bourbon (Contradiction Bourbon::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Copper & Kings Bourbon (Copper & Kings Bourbon::American Apple Brandy Cask Finished Blend::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Cowboy Bourbon (Cowboy Bourbon::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Doc.52 (Doc.52::::Straight Bourbon)",
+      "reason": "no rows flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Eagle Rare 17 Yr (Eagle Rare 17 Yr::Antique Collection::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Elijah Craig (Elijah Craig::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Elijah Craig Barrel Proof (Elijah Craig Barrel Proof::::Small Batch)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Elijah Craig Toasted Barrel (Elijah Craig Toasted Barrel::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Evan Williams Single Barrel (Evan Williams Single Barrel::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Ezra Brooks Old Ezra 7 (Ezra Brooks Old Ezra 7::::Barrel Strength)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Four Roses (Four Roses::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Four Roses Limited Edition Single Barrel (Four Roses Limited Edition Single Barrel::Limited Edition::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Four Roses Limited Edition Small Batch (Four Roses Limited Edition Small Batch::::Small Batch)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Four Roses Mariage Collection (Four Roses Mariage Collection::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "George Dickel (George Dickel::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Grain to Glass (Grain to Glass::::Straight Bourbon)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Hard Truth (Hard Truth::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Hardin's Creek (Hardin's Creek::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Heaven's Door (Heaven's Door::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Hotel Tango (Hotel Tango::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Jefferson's Presidential Select (Jefferson's Presidential Select::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Jimmy Red Bottled in Bond (Jimmy Red Bottled in Bond::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "King of Kentucky (King of Kentucky::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Knob Creek (Knob Creek::::Straight Bourbon)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Koval (Koval::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Larceny Barrel Proof (Larceny Barrel Proof::::Barrel Proof)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Michter's 10 Yr (Michter's 10 Yr::::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Michter's 20 Yr (Michter's 20 Yr::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Old Bones Reserve (Old Bones Reserve::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Old Fitzgerald (Old Fitzgerald::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Old Hickory (Old Hickory::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Orphan Barrel Rhetoric (Orphan Barrel Rhetoric::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Pinhook Bohemian (Pinhook Bohemian::::Straight Bourbon)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "RD One Small Batch (RD One Small Batch::ouble Finished in Oak and Maple Barrels::)",
+      "reason": "no rows flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Redwood Empire Grizzly Beast (Redwood Empire Grizzly Beast::::Bottled-in-Bond)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Remus Gatsby Reserve 15 year old Cask Strength (Remus Gatsby Reserve 15 year old Cask Strength::::Cask Strength)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Remus Repeal Reserve (Remus Repeal Reserve::::Straight Bourbon)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Russell's Reserve (Russell's Reserve::::Barrel Proof)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Stagg Jr. Barrel Proof (Stagg Jr. Barrel Proof::::Barrel Proof)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "The Wiseman (The Wiseman::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Widow Jane Lucky Thirteen (Widow Jane Lucky Thirteen::::)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Wilderness Trail Single Barrel (Wilderness Trail Single Barrel::Bottled-in-Bond::Single Barrel)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 2
+    },
+    {
+      "name": "Yellowstone Limited Edition (Yellowstone Limited Edition::Limited Edition::Limited Edition)",
+      "reason": "only one row flagged curation_collapse=Y",
+      "productCount": 3
+    }
+  ],
+  "entries": 13,
+  "groups": 11
+}
