@@ -26,9 +26,8 @@ import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
 import { signImagePaths } from "@/lib/feed/queries";
-import { loadOrComputeTopPairings, suggestShelfPairing } from "@/lib/pairing/engine";
+import { loadOrComputeTopPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
-import { mergePairsWith } from "@/lib/pairing/merge-pairs-with";
 import { ensureWinstonProse } from "@/lib/product/ensure-winston-prose";
 import { RerollWinstonButton } from "./reroll-winston-button";
 import type { AdjacentProduct } from "@/lib/similarity/suggest-adjacent";
@@ -85,30 +84,23 @@ export default async function ProductDetailPage({
 
   const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
 
-  const pairingMinScore = 45;
-  const [groupVoice, catalogPairings, shelfPick, adjacent, imagesResult, reviewCountResult] =
-    await Promise.all([
-      loadGroupVoice(supabase, id, productType),
-      loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: pairingMinScore }),
-      userId
-        ? suggestShelfPairing(supabase, userId, id, { minScore: pairingMinScore })
-        : Promise.resolve(null),
-      suggestAdjacentProducts(supabase, id, { limit: 3 }),
-      supabase
-        .from("product_images")
-        .select(
-          "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
-        )
-        .eq("product_id", id)
-        .order("is_hero", { ascending: false })
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("product_reviews")
-        .select("id", { count: "exact", head: true })
-        .eq("product_id", id),
-    ]);
-
-  const pairings = mergePairsWith(shelfPick, catalogPairings);
+  const [groupVoice, pairings, adjacent, imagesResult, reviewCountResult] = await Promise.all([
+    loadGroupVoice(supabase, id, productType),
+    loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: 45 }),
+    suggestAdjacentProducts(supabase, id, { limit: 3 }),
+    supabase
+      .from("product_images")
+      .select(
+        "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+      )
+      .eq("product_id", id)
+      .order("is_hero", { ascending: false })
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("product_reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", id),
+  ]);
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
