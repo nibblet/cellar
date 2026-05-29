@@ -11,6 +11,8 @@ import { buildTasteVector, dominantTraits, type TasteSignal } from "./vector";
 
 const CANDIDATE_LIMIT = 500;
 const TYPES: ProductType[] = ["cigar", "bourbon"];
+// Bump when scoring inputs or candidate filters change so cached picks rebuild.
+const SIGNAL_VERSION = "v2-catalog-included";
 
 type ProductRow = {
   id: string;
@@ -41,7 +43,10 @@ function computeSignalHash(
     b: [...preferences.bourbon_styles].sort(),
     p: [...preferences.bourbon_proof_bands].sort(),
   });
-  return createHash("sha256").update(`${ids}|${prefs}`).digest("hex").slice(0, 16);
+  return createHash("sha256")
+    .update(`${SIGNAL_VERSION}|${ids}|${prefs}`)
+    .digest("hex")
+    .slice(0, 16);
 }
 
 async function loadCachedRecommendations(
@@ -140,6 +145,7 @@ async function rebuild(
       .from("products")
       .select("id, type, name, brand, image_url, specs, trait_vector")
       .eq("status", "confirmed")
+      .eq("catalog_included", true)
       .limit(CANDIDATE_LIMIT),
   ]);
 

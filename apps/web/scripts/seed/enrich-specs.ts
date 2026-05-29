@@ -7,12 +7,22 @@
  *   pnpm seed:enrich-specs --type bourbon --limit 100
  *   pnpm seed:enrich-specs --type bourbon --limit 100 --order updated
  *   pnpm seed:enrich-specs --type cigar --limit 5 --dry-run
+ *   pnpm seed:enrich-specs --type bourbon --limit 100 --catalog-only
+ *
+ * Flags:
+ *   --catalog-only   only catalog_included=true (member-facing / REVIEW_keep=Y)
+ *   --keep           alias for --catalog-only
  */
 
 import { mkdirSync, appendFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import OpenAI from "openai";
 import { extractAndMergeSpecs } from "@/lib/enrich/specs-enrich";
+import {
+  type EnrichCatalogScope,
+  enrichCatalogScopeLabel,
+  parseEnrichCatalogScope,
+} from "./lib/enrich-catalog-scope";
 import {
   type EnrichOrder,
   parseEnrichOrder,
@@ -26,6 +36,7 @@ type Args = {
   limit: number;
   dryRun: boolean;
   order: EnrichOrder;
+  catalogScope: EnrichCatalogScope;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -42,6 +53,7 @@ function parseArgs(argv: string[]): Args {
     limit: Number(arg("limit") ?? 5),
     dryRun: argv.includes("--dry-run"),
     order: parseEnrichOrder(argv, type),
+    catalogScope: parseEnrichCatalogScope(argv),
   };
 }
 
@@ -63,7 +75,7 @@ async function main() {
   mkdirSync(dirname(audit), { recursive: true });
 
   console.log(
-    `[enrich-specs] type=${args.type} limit=${args.limit} order=${args.order} dryRun=${args.dryRun}`,
+    `[enrich-specs] type=${args.type} limit=${args.limit} order=${args.order} scope=${enrichCatalogScopeLabel(args.catalogScope)} dryRun=${args.dryRun}`,
   );
   console.log(`[enrich-specs] audit log → ${audit}`);
 
@@ -73,6 +85,9 @@ async function main() {
     .from("products")
     .select("id, type, name, brand, specs, product_reviews!inner(text)")
     .eq("type", args.type);
+  if (args.catalogScope === "catalog-only") {
+    query = query.eq("catalog_included", true);
+  }
 
   if (args.order === "updated") {
     query = query.order("updated_at", { ascending: false });

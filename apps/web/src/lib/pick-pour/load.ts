@@ -3,8 +3,11 @@ import { applyCellarBias } from "@/lib/cellar/bias";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import type { CellarSnapshot } from "@/lib/cellar/types";
 import { compareCandidatesForSelection, type DailyPourCandidate } from "@/lib/daily-pour/load";
-import { scorePair } from "@/lib/pairing/score";
+import { rankPairingCandidates } from "@/lib/pairing/engine";
+import { loadProductTypes, splitIdsByProductType } from "@/lib/products/split-by-type";
 import type { TraitVector } from "@/lib/wheel";
+
+export { loadProductTypes, splitIdsByProductType };
 
 const MAX_CIGARS = 10;
 
@@ -14,22 +17,6 @@ export function isHaveShelfPair(
   have: Set<string>,
 ): boolean {
   return have.has(candidate.cigar_id) && have.has(candidate.bourbon_id);
-}
-
-type ProductTypeRow = { id: string; type: string };
-
-/** Split product ids into cigar vs bourbon lists (stable name order). */
-export function splitIdsByProductType(rows: ProductTypeRow[]): {
-  cigars: string[];
-  bourbons: string[];
-} {
-  const cigars: string[] = [];
-  const bourbons: string[] = [];
-  for (const row of rows) {
-    if (row.type === "cigar") cigars.push(row.id);
-    else if (row.type === "bourbon") bourbons.push(row.id);
-  }
-  return { cigars, bourbons };
 }
 
 /**
@@ -57,21 +44,6 @@ export async function loadPickPourCandidates(
   );
 
   return candidates.filter((c) => isHaveShelfPair(c, cellar.have));
-}
-
-async function loadProductTypes(
-  supabase: SupabaseClient,
-  ids: Set<string>,
-): Promise<ProductTypeRow[]> {
-  if (ids.size === 0) return [];
-
-  // Match the Cellar tab: any saved product counts, not just confirmed catalog rows.
-  const { data } = await supabase
-    .from("products")
-    .select("id, type")
-    .in("id", [...ids]);
-
-  return (data as ProductTypeRow[] | null) ?? [];
 }
 
 async function buildPairsFromSets(
@@ -174,6 +146,7 @@ async function scoreBestBourbonInSet(
     id: string;
     name: string;
     brand: string | null;
+    type: string;
     trait_vector: TraitVector | null;
   };
 
@@ -181,7 +154,7 @@ async function scoreBestBourbonInSet(
     supabase.from("products").select("trait_vector").eq("id", cigarId).maybeSingle(),
     supabase
       .from("products")
-      .select("id, name, brand, trait_vector")
+      .select("id, name, brand, type, trait_vector")
       .in("id", [...bourbonIds])
       .not("trait_vector", "is", null),
   ]);
@@ -189,20 +162,24 @@ async function scoreBestBourbonInSet(
   const cigarVec = (cigar as { trait_vector: TraitVector | null } | null)?.trait_vector;
   if (!cigarVec) return null;
 
-  let best: BourbonMatch | null = null;
-  for (const b of (bourbons as ProductVec[] | null) ?? []) {
-    if (!b.trait_vector || !bourbonIds.has(b.id)) continue;
-    const { score } = scorePair(cigarVec, b.trait_vector);
-    if (!best || score > best.score) {
-      best = {
-        bourbon_id: b.id,
-        bourbon_name: b.name,
-        bourbon_brand: b.brand,
-        score,
-        club_validated: false,
-      };
-    }
-  }
+  const rankable = ((bourbons as ProductVec[] | null) ?? [])
+    .filter((b) => b.trait_vector && bourbonIds.has(b.id))
+    .map((b) => ({
+      id: b.id,
+      name: b.name,
+      brand: b.brand,
+      type: "bourbon" as const,
+      trait_vector: b.trait_vector as TraitVector,
+    }));
 
-  return best;
+  const top = rankPairingCandidates("cigar", cigarVec, rankable, { limit: 1, minScore: 0 })[0];
+  if (!top) return null;
+
+  return {
+    bourbon_id: top.product_id,
+    bourbon_name: top.name,
+    bourbon_brand: top.brand,
+    score: top.score,
+    club_validated: false,
+  };
 }
