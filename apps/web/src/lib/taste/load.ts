@@ -4,13 +4,14 @@ import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import type { MemberPreferences } from "@/lib/preferences/types";
 import type { ProductType, TraitVector } from "@/lib/wheel";
+import { loadTasteByType, TASTE_TYPES } from "./context";
 import { generateRationales, type RationalePick, type TasteProfile } from "./rationale";
 import { recommendForType, type TasteCandidate } from "./recommend";
 import type { TasteRecommendations, TryNextPick } from "./types";
-import { buildTasteVector, dominantTraits, type TasteSignal } from "./vector";
+import { dominantTraits } from "./vector";
 
 const CANDIDATE_LIMIT = 500;
-const TYPES: ProductType[] = ["cigar", "bourbon"];
+const TYPES = TASTE_TYPES;
 
 type ProductRow = {
   id: string;
@@ -58,19 +59,6 @@ async function loadCachedRecommendations(
   return raw;
 }
 
-function buildSignals(
-  rows: ProductRow[],
-  lovedIds: ReadonlySet<string>,
-  type: ProductType,
-): TasteSignal[] {
-  const signals: TasteSignal[] = [];
-  for (const row of rows) {
-    if (row.type !== type || !row.trait_vector) continue;
-    signals.push({ traitVector: row.trait_vector, loved: lovedIds.has(row.id) });
-  }
-  return signals;
-}
-
 function toPicks(scored: ReturnType<typeof recommendForType>): TryNextPick[] {
   return scored.map((s) => ({
     product_id: s.candidate.id,
@@ -116,7 +104,7 @@ export async function ensureTasteRecommendations(
   if (cached && cached.signal_hash === signalHash) return cached;
 
   try {
-    return await rebuild(supabase, memberId, snapshot, preferences, triedLovedIds, signalHash);
+    return await rebuild(supabase, memberId, snapshot, preferences, signalHash);
   } catch (err) {
     console.warn("[taste-recommendations] rebuild failed:", err);
     return cached ?? EMPTY_RECOMMENDATIONS(signalHash);
@@ -128,14 +116,11 @@ async function rebuild(
   memberId: string,
   snapshot: Awaited<ReturnType<typeof loadCellarSnapshot>>,
   preferences: MemberPreferences,
-  triedLovedIds: string[],
   signalHash: string,
 ): Promise<TasteRecommendations> {
-  // Signal products (the member's tried/loved) and the confirmed catalog.
-  const [signalRows, candidateRows] = await Promise.all([
-    triedLovedIds.length > 0
-      ? supabase.from("products").select("id, type, trait_vector").in("id", triedLovedIds)
-      : Promise.resolve({ data: [] as Array<Pick<ProductRow, "id" | "type" | "trait_vector">> }),
+  // Per-type taste vectors (member's tried/loved) and the confirmed catalog.
+  const [byType, candidateRows] = await Promise.all([
+    loadTasteByType(supabase, snapshot),
     supabase
       .from("products")
       .select("id, type, name, brand, image_url, specs, trait_vector")
@@ -146,9 +131,6 @@ async function rebuild(
       .limit(CANDIDATE_LIMIT),
   ]);
 
-  const signalProducts = (signalRows.data ?? []) as Array<
-    Pick<ProductRow, "id" | "type" | "trait_vector">
-  >;
   const candidates = ((candidateRows.data ?? []) as ProductRow[]).map(
     (r): TasteCandidate => ({
       id: r.id,
@@ -175,8 +157,7 @@ async function rebuild(
   };
 
   for (const type of TYPES) {
-    const signals = buildSignals(signalProducts as ProductRow[], snapshot.loved, type);
-    const tasteVector = buildTasteVector(signals);
+    const { tasteVector, signals } = byType[type];
     const scored = recommendForType({
       type,
       tasteVector,

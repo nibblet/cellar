@@ -22,6 +22,7 @@ type CellarTabProps = {
   want: CellarProduct[];
   tried: CellarProduct[];
   lovedProductIds: string[];
+  wantBestMatchId?: string | null;
   isOwnProfile: boolean;
   memberFirstName: string;
 };
@@ -31,6 +32,7 @@ export function CellarTab({
   want,
   tried,
   lovedProductIds,
+  wantBestMatchId,
   isOwnProfile,
   memberFirstName,
 }: CellarTabProps) {
@@ -189,6 +191,11 @@ export function CellarTab({
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
+                  {filter === "want" && wantBestMatchId === p.product_id ? (
+                    <span className="inline-block mb-0.5 px-1.5 py-px rounded-full border border-border text-[9px] uppercase tracking-widest text-foreground-subtle">
+                      Best match for you
+                    </span>
+                  ) : null}
                   <p className="text-[14px] font-medium text-foreground truncate">{p.name}</p>
                   <p className="text-[11px] text-foreground-muted truncate">
                     {p.brand ?? ""}
