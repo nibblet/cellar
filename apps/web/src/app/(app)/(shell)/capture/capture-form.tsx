@@ -62,8 +62,8 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
 
   const voiceLine =
     type === "cigar"
-      ? "Hold the band steady, sir. I'll do the rest."
-      : "Hold the label steady, sir. I'll do the rest.";
+      ? "Hold the band steady. I'll do the rest."
+      : "Hold the label steady. I'll do the rest.";
 
   return (
     <form action={action} className="flex flex-col gap-6">

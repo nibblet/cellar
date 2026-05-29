@@ -41,7 +41,7 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
         {pour.rationale ? (
           <Voice className="block mt-2 mb-3">"{pour.rationale}"</Voice>
         ) : (
-          <Voice className="block mt-2 mb-3">"A measured match, sir."</Voice>
+          <Voice className="block mt-2 mb-3">"A measured match — the wheels agree."</Voice>
         )}
 
         <div className="space-y-1.5">

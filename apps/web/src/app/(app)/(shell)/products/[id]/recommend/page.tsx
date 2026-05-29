@@ -82,17 +82,17 @@ export default async function RecommendPage({
         <Card className="mb-6 border border-accent/40 bg-surface">
           <Voice className="text-base">
             {enriching
-              ? "Very good, sir. I'm still filling in the details — save your take below, and peek back at the product page when you like."
-              : "Very good, sir. The club has the name — tell us what you thought."}
+              ? "Good. I'm still filling in the details — save your take below, and check back at the product page when you like."
+              : "Good. The club has the name — tell us what you thought."}
           </Voice>
         </Card>
       ) : null}
 
       <Voice className="mb-6">
         {existing
-          ? "“Care to revise, sir?”"
+          ? "“Care to revise?”"
           : product.type === "cigar"
-            ? "“What stood out, sir?”"
+            ? "“What stood out?”"
             : "“How is the pour treating you?”"}
       </Voice>
 

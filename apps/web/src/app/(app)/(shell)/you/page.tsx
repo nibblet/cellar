@@ -173,7 +173,7 @@ export default async function YouHubPage() {
           counts={tastingsCountStr}
           thumbs={tastingThumbs}
           href="/you/tastings"
-          emptyVoice='"Nothing logged yet, sir. Open the humidor."'
+          emptyVoice='"Nothing logged yet. Snap something next time you light up."'
         />
         <PersonalCard
           title="Your pairings"

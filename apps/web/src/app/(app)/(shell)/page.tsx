@@ -334,7 +334,7 @@ async function FeedList({
         ) : null}
         <Card className="flex flex-col items-center text-center">
           <Winston variant="bust" size={96} className="mb-4 rounded-full" />
-          <Voice className="block mb-4">"Nothing logged yet, sir. The night is young."</Voice>
+          <Voice className="block mb-4">"Porch is empty so far tonight. Pour something — let's see where it sits."</Voice>
           <Link href="/capture" className="block w-full">
             <Button size="large" className="w-full">
               Open the humidor
@@ -403,8 +403,8 @@ async function CatalogBody({
         <Card className="text-center">
           <Voice className="block">
             {(preferences?.max_catalog_tier ?? 2) < CATALOG_TIER_CEILING
-              ? '"Nothing on the shelf matching those terms, sir — try broadening the filter or the allocation slider in Settings."'
-              : '"Nothing on the shelf matching those terms, sir. Try broadening the filter."'}
+              ? '"Nothing in the catalog under those terms. Widen the filter, or stretch the allocation in Settings."'
+              : '"Nothing in the catalog under those terms. Widen the filter."'}
           </Voice>
         </Card>
       ) : (

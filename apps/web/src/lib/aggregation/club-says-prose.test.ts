@@ -15,7 +15,7 @@ function voice(overrides: Partial<GroupVoice> = {}): GroupVoice {
 describe("buildClubSaysProse", () => {
   it("returns empty-state copy when no tastings", () => {
     expect(buildClubSaysProse(voice(), undefined)).toBe(
-      "No one's weighed in yet, sir. Be the first.",
+      "No one's weighed in yet. Be the first.",
     );
   });
 

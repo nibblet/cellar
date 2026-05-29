@@ -103,7 +103,7 @@ export default async function PairingsIndexPage() {
           {recommendedButNoPairs ? (
             <>
               <Voice className="block mb-3">
-                "Your shelf is set, sir, but Winston hasn't taken the measure of these yet. A few
+                "I've got the names but not the measure of these yet. A few
                 more notes and the matches will come."
               </Voice>
               <Link href="/" className="text-sm text-accent hover:text-accent-hover underline">
@@ -113,7 +113,7 @@ export default async function PairingsIndexPage() {
           ) : (
             <>
               <Voice className="block mb-3">
-                "Recommend a cigar or pour first, sir. Winston works from your shelf."
+                "Recommend a cigar or a pour first — I work from what you've actually tasted."
               </Voice>
               <Link
                 href="/capture"

@@ -111,8 +111,8 @@ export function SessionForm({
         <>
           <Voice className="text-sm">
             {productType === "cigar"
-              ? '"Session complete, sir. Shall we tell the club?"'
-              : '"The pour has spoken, sir. Recommend it?"'}
+              ? '"Session complete. Shall we tell the club?"'
+              : '"The pour has spoken. Recommend it?"'}
           </Voice>
 
           {productType === "bourbon" ? (
@@ -183,7 +183,7 @@ function SessionHelp({ productType }: { productType: ProductType }) {
       <details className="text-sm text-foreground-muted">
         <summary className="cursor-pointer hover:text-foreground">What are thirds?</summary>
         <Voice className="block mt-2 text-sm">
-          "A cigar evolves as you smoke it, sir. The first third is the opening — what you taste
+          "A cigar evolves as you smoke it. The first third is the opening — what you taste
           right away. The second is where the blend settles. The final third is the close, often the
           boldest. Skip any phase you like; chips are optional throughout."
         </Voice>
@@ -198,7 +198,7 @@ function SessionHelp({ productType }: { productType: ProductType }) {
       </summary>
       <Voice className="block mt-2 text-sm">
         "Nose is what you smell before the sip. Palate is the taste on the tongue. Finish is what
-        lingers after. Take your time — or skip straight to the end if you're in a hurry, sir."
+        lingers after. Take your time — or skip straight to the end if you're in a hurry."
       </Voice>
     </details>
   );

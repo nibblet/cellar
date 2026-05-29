@@ -24,7 +24,7 @@ export default async function UpdatePasswordPage() {
       </header>
 
       <Voice className="text-center mb-8">
-        "A fresh one, sir. Choose something you'll remember."
+        "A fresh one. Choose something you'll remember."
       </Voice>
 
       <UpdateForm />
