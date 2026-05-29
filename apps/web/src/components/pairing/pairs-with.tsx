@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Card } from "@/components/primitives";
-import type { PairingCandidate } from "@/lib/pairing/engine";
+import type { PairsWithEntry } from "@/lib/pairing/merge-pairs-with";
 import type { ProductType } from "@/lib/wheel";
 
 type PairsWithProps = {
   sourceType: ProductType;
   sourceId: string;
-  candidates: PairingCandidate[];
+  candidates: PairsWithEntry[];
   validatedPairs: Set<string>; // set of candidate product_ids that are group-validated
 };
 
@@ -42,7 +42,14 @@ export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: 
                   : "hover:bg-surface-2 transition-colors"
               }
             >
-              <div className="flex items-baseline justify-between gap-3">
+              {c.source === "cellar" ? (
+                <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
+                  On your shelf
+                </p>
+              ) : null}
+              <div
+                className={`flex items-baseline justify-between gap-3${c.source === "cellar" ? " mt-1" : ""}`}
+              >
                 <div className="min-w-0">
                   <p className="text-base text-foreground truncate">{c.name}</p>
                   {c.brand ? (

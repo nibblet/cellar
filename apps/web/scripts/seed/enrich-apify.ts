@@ -15,7 +15,9 @@
  *   --order     created | tier | name        (default: tier for bourbon, created for cigar)
  *   --dry-run   no DB writes, audit only     (default false)
  *   --max       results per Apify query      (default 3)
- *   --backfill  re-process products whose image_url points outside Supabase
+ *   --backfill       re-process products whose image_url points outside Supabase
+ *   --catalog-only   only catalog_included=true (member-facing / REVIEW_keep=Y)
+ *   --keep           alias for --catalog-only
  */
 
 import { mkdirSync, appendFileSync } from "node:fs";
@@ -27,6 +29,11 @@ import {
   buildSearchQuery,
   enrichProductFromWeb,
 } from "@/lib/enrich/apify-enrich";
+import {
+  type EnrichCatalogScope,
+  enrichCatalogScopeLabel,
+  parseEnrichCatalogScope,
+} from "./lib/enrich-catalog-scope";
 import { type EnrichOrder, parseEnrichOrder, sortByTier } from "./lib/enrich-order";
 import { adminClient } from "./lib/supabase-admin";
 
@@ -37,6 +44,7 @@ type Args = {
   max: number;
   backfill: boolean;
   order: EnrichOrder;
+  catalogScope: EnrichCatalogScope;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -55,6 +63,7 @@ function parseArgs(argv: string[]): Args {
     backfill: argv.includes("--backfill"),
     max: Number(arg("max") ?? 3),
     order: parseEnrichOrder(argv, type),
+    catalogScope: parseEnrichCatalogScope(argv),
   };
 }
 
@@ -80,7 +89,7 @@ async function main() {
   mkdirSync(dirname(audit), { recursive: true });
 
   console.log(
-    `[enrich-apify] type=${args.type} limit=${args.limit} order=${args.order} dryRun=${args.dryRun}`,
+    `[enrich-apify] type=${args.type} limit=${args.limit} order=${args.order} scope=${enrichCatalogScopeLabel(args.catalogScope)} dryRun=${args.dryRun}`,
   );
   console.log(`[enrich-apify] audit log → ${audit}`);
 
@@ -88,6 +97,9 @@ async function main() {
     .from("products")
     .select("id, type, name, brand, line, specs")
     .eq("type", args.type);
+  if (args.catalogScope === "catalog-only") {
+    query = query.eq("catalog_included", true);
+  }
   if (args.backfill) {
     query = query.not("image_url", "ilike", "%supabase.co/storage%");
   } else {

@@ -88,6 +88,10 @@ export async function loadCellarProducts(
     .select("product_id, products!inner(id, name, brand, type, image_url)")
     .eq("member_id", memberId)
     .eq(filter, true)
+    // Hide rows whose product was dropped in the catalog cut-back so the cellar
+    // doesn't surface duplicates between a kept canonical and an excluded twin.
+    .eq("products.catalog_included", true)
+    .eq("products.status", "confirmed")
     .order("updated_at", { ascending: false });
 
   if (!data) return [];
