@@ -58,7 +58,7 @@ export default async function AdminSuggestionsPage() {
         </p>
       </header>
 
-      <Voice className="block mb-6">"The mailbag from the club, sir."</Voice>
+      <Voice className="block mb-6">"The mailbag from the club."</Voice>
 
       <Divider label="Inbox" />
 

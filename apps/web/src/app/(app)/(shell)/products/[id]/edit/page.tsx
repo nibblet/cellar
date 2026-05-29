@@ -71,7 +71,7 @@ export default async function ProductEditPage({ params }: { params: Params }) {
       </header>
 
       <Voice className="block mb-6">
-        "Tidy up what I got wrong, sir. I'll remember for next time."
+        "Tidy up what I got wrong. I'll remember for next time."
       </Voice>
 
       <EditForm

@@ -56,7 +56,7 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
       ? '"The shelf is bare. Add what you\'re pouring tonight."'
       : `"${memberFirstName} hasn't stocked the shelf yet."`,
     want: isOwnProfile
-      ? '"Nothing on the wishlist yet, sir. Tap Want on any product to start one."'
+      ? '"Nothing on the wishlist yet. Tap Want on any product to start one."'
       : `"${memberFirstName}'s wishlist is empty."`,
     tried: isOwnProfile
       ? '"No history yet. Recommend something to NCCC and it will appear here."'
@@ -82,7 +82,7 @@ export function CellarTab({ have, want, tried, isOwnProfile, memberFirstName }: 
 
       {isOwnProfile && !hasHaveItems ? (
         <Voice className="block mb-4 text-sm">
-          "Stock the shelf first, sir — then I'll pick from what you have."
+          "Stock the cellar first — then I'll pick from what you have."
         </Voice>
       ) : null}
 

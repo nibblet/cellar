@@ -11,7 +11,7 @@ export async function PairingsSection({ memberId }: { memberId: string }) {
     return (
       <Card>
         <Voice className="block text-sm">
-          "No pairings captured yet, sir. Pick a cigar and a pour from the catalog."
+          "No pairings captured yet. Pick a cigar and a pour from the catalog."
         </Voice>
       </Card>
     );

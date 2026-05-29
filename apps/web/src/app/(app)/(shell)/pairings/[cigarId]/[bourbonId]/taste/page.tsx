@@ -81,7 +81,7 @@ export default async function PairingTastePage({ params }: { params: Params }) {
         </h1>
       </header>
 
-      <Voice className="mb-6">"One photo of the pair, sir — I'll log both."</Voice>
+      <Voice className="mb-6">"One photo of the pair — I'll log both."</Voice>
 
       <PairingTasteForm
         cigar={{ id: cigar.id, name: cigar.name, brand: cigar.brand }}

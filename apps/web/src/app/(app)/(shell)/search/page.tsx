@@ -140,12 +140,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
       {!hasQuery ? (
         <Voice className="block text-center mt-2">
           {showingTooShort
-            ? "A few more letters, sir."
-            : "Search by name or brand — anything on the shelves."}
+            ? "A few more letters."
+            : "Search by name or brand — anything in the catalog."}
         </Voice>
       ) : results.length === 0 ? (
         <div className="text-center mt-2">
-          <Voice className="block mb-3">"Nothing on the shelf by that name."</Voice>
+          <Voice className="block mb-3">"Nothing in the catalog by that name."</Voice>
           <p className="text-sm text-foreground-muted">
             <Link href="/capture" className="text-accent hover:underline">
               Snap a photo

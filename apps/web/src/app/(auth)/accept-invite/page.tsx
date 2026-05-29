@@ -27,7 +27,7 @@ export default async function AcceptInvitePage({ searchParams }: { searchParams:
           <h1 className="text-4xl mb-2">NCCC</h1>
         </header>
         <Voice className="text-center">
-          "This invitation isn't valid, sir. Perhaps a member can send you a fresh one."
+          "This invitation's gone flat. Ask whoever sent it for a fresh one."
         </Voice>
       </AppShell>
     );
@@ -44,7 +44,7 @@ export default async function AcceptInvitePage({ searchParams }: { searchParams:
       </header>
 
       <Voice className="text-center mb-8">
-        "A pleasure to have you. Sign in below and your seat will be ready."
+        "Glad you walked over. Sign in — I'll pull a chair onto the porch."
       </Voice>
 
       <AcceptInviteForm token={token} />

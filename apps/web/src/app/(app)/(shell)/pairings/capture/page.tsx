@@ -32,7 +32,7 @@ export default async function PairingCapturePage({ searchParams }: { searchParam
       </header>
 
       <Voice className="mb-4 block text-sm">
-        "Name the cigar and the pour, sir — one photo will do for both."
+        "Name the cigar and the pour — one photo will do for both."
       </Voice>
 
       <PairingCapturePicker cigars={cigars} bourbons={bourbons} initialCigarId={initialCigarId} />
