@@ -111,13 +111,16 @@ Personal skill: `~/.cursor/skills/nccc-pairing/SKILL.md`
 | Tool | Use when |
 |------|----------|
 | `tonights_pick` | "What should we smoke tonight?" — daily cigar+bourbon (feed Daily Pour logic) |
+| `suggest_try_next` | "What should I buy?" — palate-based cigars + bourbons to hunt |
+| `get_my_cellar` | "What's on my shelf?" — Have / Want / Tried / Loved lists |
+| `get_club_feed` | "What has the club been into?" — recent tastings and pairings |
 | `recommend` | User names a product — one shot for pair or similar |
 | `search_products` | Resolve a name to catalog UUIDs |
 | `get_product` | Club voice, specs, flavor tags |
 | `suggest_pairings` | Cross-category cigar↔bourbon |
 | `suggest_similar` | Same-category, tier-aware alternatives |
 
-Optional `member_email` biases pairings toward the member's **Have** shelf.
+Member-specific tools (`tonights_pick`, `suggest_try_next`, `get_my_cellar`) require `member_email`.
 
 ---
 

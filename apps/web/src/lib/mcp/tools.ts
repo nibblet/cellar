@@ -1,13 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
-import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { loadCellarProducts, loadCellarSnapshot } from "@/lib/cellar/load";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
+import { loadFeed, type FeedItem } from "@/lib/feed/queries";
 import { type PairingCandidate, suggestPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation, type GroupValidation } from "@/lib/pairing/group-validation";
 import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
+import { loadMemberTasteContext } from "@/lib/taste/context";
+import { ensureTasteRecommendations } from "@/lib/taste/load";
 import type { ProductType } from "@/lib/wheel";
 import { resolveProductByQuery } from "./resolve-product";
 
@@ -41,6 +44,17 @@ async function resolveMemberIdByEmail(
   const { data } = await supabase.auth.admin.listUsers({ perPage: 1000 });
   const user = data.users.find((u) => u.email?.toLowerCase() === normalized);
   return user?.id ?? null;
+}
+
+async function requireMemberIdByEmail(
+  supabase: SupabaseClient,
+  email: string,
+): Promise<McpToolResult<string>> {
+  const memberId = await resolveMemberIdByEmail(supabase, email);
+  if (!memberId) {
+    return failure(`No NCCC member found for ${email.trim()}.`);
+  }
+  return success(memberId);
 }
 
 export type SearchProductsInput = {
@@ -451,5 +465,218 @@ export async function mcpTonightsPick(
       rationale,
       on_your_shelf: onYourShelf,
     },
+  });
+}
+
+export type CellarShelf = "have" | "want" | "tried" | "loved";
+
+export type CellarProduct = {
+  product_id: string;
+  name: string;
+  brand: string | null;
+  type: ProductType;
+};
+
+export type GetMyCellarInput = {
+  member_email: string;
+  shelf?: CellarShelf | "all";
+};
+
+export type GetMyCellarResult = {
+  counts: Record<CellarShelf, number>;
+  shelves: Partial<Record<CellarShelf, CellarProduct[]>>;
+};
+
+const CELLAR_SHELVES: CellarShelf[] = ["have", "want", "tried", "loved"];
+
+export async function mcpGetMyCellar(
+  supabase: SupabaseClient,
+  input: GetMyCellarInput,
+): Promise<McpToolResult<GetMyCellarResult>> {
+  const memberResult = await requireMemberIdByEmail(supabase, input.member_email);
+  if (!memberResult.ok) return memberResult;
+
+  const shelvesToLoad =
+    input.shelf && input.shelf !== "all" ? [input.shelf] : CELLAR_SHELVES;
+
+  const loaded = await Promise.all(
+    shelvesToLoad.map(async (shelf) => {
+      const products = await loadCellarProducts(supabase, memberResult.data, shelf);
+      return {
+        shelf,
+        products: products.map((p) => ({
+          product_id: p.product_id,
+          name: p.name,
+          brand: p.brand,
+          type: p.type as ProductType,
+        })),
+      };
+    }),
+  );
+
+  const snapshot = await loadCellarSnapshot(supabase, memberResult.data);
+  const counts: Record<CellarShelf, number> = {
+    have: snapshot.have.size,
+    want: snapshot.want.size,
+    tried: snapshot.tried.size,
+    loved: snapshot.loved.size,
+  };
+
+  const shelves: Partial<Record<CellarShelf, CellarProduct[]>> = {};
+  for (const { shelf, products } of loaded) {
+    shelves[shelf] = products;
+  }
+
+  return success({ counts, shelves });
+}
+
+export type SuggestTryNextInput = {
+  member_email: string;
+  type?: ProductType | "all";
+};
+
+export type TryNextPickResult = {
+  product_id: string;
+  name: string;
+  brand: string | null;
+  rationale: string;
+};
+
+export type SuggestTryNextResult = {
+  generated_at: string;
+  warm: Record<ProductType, boolean>;
+  cigars: TryNextPickResult[];
+  bourbons: TryNextPickResult[];
+};
+
+/** Palate-based buy list — same Try Next logic as the cellar page. */
+export async function mcpSuggestTryNext(
+  supabase: SupabaseClient,
+  input: SuggestTryNextInput,
+): Promise<McpToolResult<SuggestTryNextResult>> {
+  const memberResult = await requireMemberIdByEmail(supabase, input.member_email);
+  if (!memberResult.ok) return memberResult;
+
+  const [recommendations, taste] = await Promise.all([
+    ensureTasteRecommendations(supabase, memberResult.data),
+    loadMemberTasteContext(supabase, memberResult.data),
+  ]);
+
+  const mapPick = (p: {
+    product_id: string;
+    name: string;
+    brand: string | null;
+    rationale: string;
+  }): TryNextPickResult => ({
+    product_id: p.product_id,
+    name: p.name,
+    brand: p.brand,
+    rationale: p.rationale,
+  });
+
+  const cigars =
+    input.type === "bourbon" ? [] : recommendations.cigars.map(mapPick);
+  const bourbons =
+    input.type === "cigar" ? [] : recommendations.bourbons.map(mapPick);
+
+  return success({
+    generated_at: recommendations.generated_at,
+    warm: {
+      cigar: taste.byType.cigar.warm,
+      bourbon: taste.byType.bourbon.warm,
+    },
+    cigars,
+    bourbons,
+  });
+}
+
+export type GetClubFeedInput = {
+  limit?: number;
+  product_type?: ProductType;
+  recommends_only?: boolean;
+};
+
+export type ClubFeedEntry =
+  | {
+      kind: "tasting";
+      member: string;
+      created_at: string;
+      recommend: boolean;
+      chips: string[];
+      note: string | null;
+      product_id: string;
+      product_name: string;
+      product_brand: string | null;
+      product_type: ProductType;
+      event_name: string | null;
+    }
+  | {
+      kind: "pairing";
+      member: string;
+      created_at: string;
+      recommend: boolean;
+      chips: string[];
+      note: string | null;
+      cigar_id: string;
+      cigar_name: string;
+      cigar_brand: string | null;
+      bourbon_id: string;
+      bourbon_name: string;
+      bourbon_brand: string | null;
+      event_name: string | null;
+    };
+
+export type GetClubFeedResult = {
+  entries: ClubFeedEntry[];
+};
+
+function toClubFeedEntry(item: FeedItem): ClubFeedEntry {
+  if (item.kind === "pairing") {
+    return {
+      kind: "pairing",
+      member: item.display_name,
+      created_at: item.created_at,
+      recommend: item.recommend,
+      chips: item.chips,
+      note: item.note,
+      cigar_id: item.cigar_id,
+      cigar_name: item.cigar_name,
+      cigar_brand: item.cigar_brand,
+      bourbon_id: item.bourbon_id,
+      bourbon_name: item.bourbon_name,
+      bourbon_brand: item.bourbon_brand,
+      event_name: item.event_name,
+    };
+  }
+
+  return {
+    kind: "tasting",
+    member: item.display_name,
+    created_at: item.created_at,
+    recommend: item.recommend,
+    chips: item.chips,
+    note: item.note,
+    product_id: item.product_id,
+    product_name: item.product_name,
+    product_brand: item.product_brand,
+    product_type: item.product_type,
+    event_name: item.event_name,
+  };
+}
+
+export async function mcpGetClubFeed(
+  supabase: SupabaseClient,
+  input: GetClubFeedInput,
+): Promise<McpToolResult<GetClubFeedResult>> {
+  const limit = Math.min(input.limit ?? 10, 25);
+  const items = await loadFeed(supabase, {
+    limit,
+    productType: input.product_type,
+  });
+
+  const filtered = input.recommends_only ? items.filter((i) => i.recommend) : items;
+
+  return success({
+    entries: filtered.slice(0, limit).map(toClubFeedEntry),
   });
 }

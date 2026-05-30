@@ -4,11 +4,14 @@ import { z } from "zod";
 import { NCCC_MCP_INSTRUCTIONS } from "@/lib/mcp/constants";
 import { formatMcpToolResult } from "@/lib/mcp/format-result";
 import {
+  mcpGetClubFeed,
+  mcpGetMyCellar,
   mcpGetProduct,
   mcpRecommend,
   mcpSearchProducts,
   mcpSuggestPairings,
   mcpSuggestSimilar,
+  mcpSuggestTryNext,
   mcpTonightsPick,
 } from "@/lib/mcp/tools";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -18,6 +21,7 @@ export const maxDuration = 60;
 const readOnly = { readOnlyHint: true, idempotentHint: true } as const;
 
 const productTypeSchema = z.enum(["cigar", "bourbon", "all"]);
+const cellarShelfSchema = z.enum(["have", "want", "tried", "loved", "all"]);
 
 const handler = createMcpHandler(
   (server) => {
@@ -153,6 +157,79 @@ const handler = createMcpHandler(
     );
 
     server.registerTool(
+      "get_my_cellar",
+      {
+        title: "Get my cellar",
+        description:
+          "List a member's cellar shelves (Have, Want, Tried, Loved) with product names. Requires member_email. Use shelf=have when pairing from what's on hand.",
+        inputSchema: {
+          member_email: z.string().email().describe("Member email — returns only that member's cellar."),
+          shelf: cellarShelfSchema
+            .optional()
+            .describe("Single shelf to return, or all (default)."),
+        },
+        annotations: readOnly,
+      },
+      async ({ member_email, shelf }) => {
+        const supabase = createSupabaseAdminClient();
+        return formatMcpToolResult(await mcpGetMyCellar(supabase, { member_email, shelf }));
+      },
+    );
+
+    server.registerTool(
+      "suggest_try_next",
+      {
+        title: "Suggest try next",
+        description:
+          "Palate-based buy list for a member — cigars and bourbons to hunt next, with Winston rationales. Same logic as the cellar Try Next section. Requires member_email. May take longer on first call while recommendations are generated.",
+        inputSchema: {
+          member_email: z.string().email().describe("Member email for personalized picks."),
+          type: productTypeSchema
+            .optional()
+            .describe("Filter to cigar, bourbon, or all (default)."),
+        },
+        annotations: readOnly,
+      },
+      async ({ member_email, type }) => {
+        const supabase = createSupabaseAdminClient();
+        return formatMcpToolResult(await mcpSuggestTryNext(supabase, { member_email, type }));
+      },
+    );
+
+    server.registerTool(
+      "get_club_feed",
+      {
+        title: "Get club feed",
+        description:
+          "Recent club activity — tastings and pairing captures, newest first. Use when the member asks what NCCC has been into lately.",
+        inputSchema: {
+          limit: z
+            .number()
+            .int()
+            .min(1)
+            .max(25)
+            .optional()
+            .describe("Max entries. Defaults to 10."),
+          product_type: z
+            .enum(["cigar", "bourbon"])
+            .optional()
+            .describe("Filter to cigar or bourbon tastings only."),
+          recommends_only: z
+            .boolean()
+            .optional()
+            .describe("When true, only entries the member recommended to NCCC."),
+        },
+        annotations: readOnly,
+      },
+      async ({ limit, product_type, recommends_only }) => {
+        const supabase = createSupabaseAdminClient();
+        return formatMcpToolResult(
+          await mcpGetClubFeed(supabase, { limit, product_type, recommends_only }),
+        );
+      },
+    );
+
+    server.registerTool(
       "recommend",
       {
         title: "Recommend",
@@ -180,6 +257,48 @@ const handler = createMcpHandler(
           await mcpRecommend(supabase, { query, intent, type, member_email }),
         );
       },
+    );
+
+    server.registerPrompt(
+      "try-next",
+      {
+        title: "Try next",
+        description: "Ask what cigars or bourbons to buy based on palate.",
+        argsSchema: {
+          email: z.string().email().describe("Member email."),
+        },
+      },
+      ({ email }) => ({
+        messages: [
+          {
+            role: "user" as const,
+            content: {
+              type: "text" as const,
+              text: `What should I try next based on my palate? Use suggest_try_next for ${email}.`,
+            },
+          },
+        ],
+      }),
+    );
+
+    server.registerPrompt(
+      "club-pulse",
+      {
+        title: "Club pulse",
+        description: "Ask what the club has been recommending lately.",
+        argsSchema: {},
+      },
+      () => ({
+        messages: [
+          {
+            role: "user" as const,
+            content: {
+              type: "text" as const,
+              text: "What has NCCC been into lately? Use get_club_feed with recommends_only=true.",
+            },
+          },
+        ],
+      }),
     );
 
     server.registerPrompt(
@@ -258,7 +377,7 @@ const handler = createMcpHandler(
     instructions: NCCC_MCP_INSTRUCTIONS,
     serverInfo: {
       name: "nccc-pairing",
-      version: "1.1.0",
+      version: "1.2.0",
     },
   },
   {
