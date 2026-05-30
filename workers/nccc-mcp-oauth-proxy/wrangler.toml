@@ -1,0 +1,11 @@
+name = "nccc-mcp-oauth-proxy"
+main = "src/index.ts"
+compatibility_date = "2025-04-01"
+
+# Public URL of the NCCC MCP server (Vercel).
+[vars]
+UPSTREAM_MCP_URL = "https://nccc-six.vercel.app/api/mcp"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "ae1cda56d4b846ccbe9673ec986cdd01"
