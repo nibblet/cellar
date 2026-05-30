@@ -49,8 +49,8 @@ None.
 None.
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
+- [x] Build passes
+- [x] Lint passes
 - [ ] Authenticated user navigates to `/` — layout renders normally, no redirect
 - [ ] Unauthenticated user navigates to `/` — redirected to `/login` at the layout level (not leaking through to the page)
 - [ ] Onboarding redirect still works for a user whose `onboarding_completed_at` is null

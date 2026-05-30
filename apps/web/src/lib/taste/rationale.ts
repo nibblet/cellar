@@ -106,7 +106,7 @@ export async function generateRationales(
 
   try {
     const completion = await openai().chat.completions.create({
-      model: MODELS.prose,
+      model: MODELS.json,
       reasoning_effort: "minimal",
       response_format: { type: "json_object" },
       messages: [
@@ -120,11 +120,11 @@ export async function generateRationales(
     void logUsage(supabase, {
       user_id: userId,
       provider: "openai",
-      model: MODELS.prose,
+      model: MODELS.json,
       operation: "taste-rationale",
       units_in: tokensIn,
       units_out: tokensOut,
-      cost_usd: estimateCost(MODELS.prose, tokensIn, tokensOut),
+      cost_usd: estimateCost(MODELS.json, tokensIn, tokensOut),
       metadata: { pick_count: picks.length, cold_start: profile.coldStart },
     });
 

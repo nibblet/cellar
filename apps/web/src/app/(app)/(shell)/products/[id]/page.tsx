@@ -25,6 +25,8 @@ import { composeProductSubtitle } from "@/lib/catalog/product-subtitle";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
+import { formatMemberName } from "@/lib/identity";
+import { makerSlug } from "@/lib/makers/slug";
 import { signImagePaths } from "@/lib/feed/queries";
 import { loadOrComputeTopPairings, suggestShelfPairing } from "@/lib/pairing/engine";
 import { checkGroupValidation } from "@/lib/pairing/group-validation";
@@ -139,9 +141,7 @@ export default async function ProductDetailPage({
     .map((r) => {
       const url = signedMap.get(r.image_url);
       if (!url) return null;
-      const contributor = r.contributor
-        ? `${r.contributor.name_first} ${r.contributor.name_last_initial}`
-        : null;
+      const contributor = r.contributor ? formatMemberName(r.contributor) : null;
       return { url, contributor };
     })
     .filter((x): x is ProductHeroImage => x !== null);
@@ -194,9 +194,12 @@ export default async function ProductDetailPage({
 
       <header className="mt-6">
         {product.brand ? (
-          <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-2">
+          <Link
+            href={`/makers/${makerSlug(product.brand)}`}
+            className="block py-1 text-[11px] uppercase tracking-widest text-foreground-subtle mb-2 hover:text-foreground transition-colors"
+          >
             {product.brand}
-          </p>
+          </Link>
         ) : null}
         <div className="flex items-start gap-3">
           <h1 className="text-[28px] leading-[1.1] tracking-tight">{product.name}</h1>

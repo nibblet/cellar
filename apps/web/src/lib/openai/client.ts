@@ -21,4 +21,5 @@ export const MODELS = {
   vision: "gpt-5-mini",
   mapper: "gpt-5-nano",
   prose: "gpt-5-mini",
+  json: "gpt-5-nano",
 } as const;

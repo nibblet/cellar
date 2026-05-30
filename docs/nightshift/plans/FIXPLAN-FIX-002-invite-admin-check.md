@@ -66,8 +66,8 @@ None.
 None.
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
+- [x] Build passes
+- [x] Lint passes
 - [ ] As admin: creating an invite still works — token appears
 - [ ] As admin: revoking an invite still works
 - [ ] (Manual / test): calling `createInvite` as a non-admin returns `{ status: "error", message: "Not authorized." }` rather than a DB error

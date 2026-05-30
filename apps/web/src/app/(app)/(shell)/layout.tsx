@@ -6,10 +6,12 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export default async function ShellLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) redirect("/login");
+
   const { data: profile } = await supabase
     .from("users")
     .select("onboarding_completed_at")
-    .eq("id", auth.user?.id ?? "")
+    .eq("id", auth.user.id)
     .maybeSingle();
 
   if (profile && needsOnboarding(profile)) {

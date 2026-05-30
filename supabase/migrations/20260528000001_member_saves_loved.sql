@@ -9,7 +9,7 @@
 -- policies (insert/update/delete own) already restrict who can set it.
 
 alter table public.member_saves
-  add column loved boolean not null default false;
+  add column if not exists loved boolean not null default false;
 
 -- Per-member lookup of loved products (drives the personal taste vector).
-create index member_saves_loved_idx on public.member_saves (member_id) where loved;
+create index if not exists member_saves_loved_idx on public.member_saves (member_id) where loved;

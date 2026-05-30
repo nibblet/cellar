@@ -7,10 +7,11 @@ Maturity: seed → exploring → planned → ready → parked
 ## Category 1 — Enhance Existing
 
 ### [IDEA-001] Cellar-aware "Tonight's Pick" Winston line on Cellar page header
-- **Status:** planned
+- **Status:** done
 - **Category:** enhance
 - **Seeded:** 2026-05-30
 - **Last Updated:** 2026-05-30
+- **Done:** 2026-05-30
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-001-tonights-pick.md`
 - **Summary:** Surface a Winston one-liner above the cellar page that nominates a specific pairing from the member's Have shelf for tonight — e.g. "For a Thursday in May: that Oliva Serie V with the Weller 12." Built on existing `selectPickPour` + `selectDailyPour` logic; no new AI call needed (deterministic pick, short prose template).
@@ -35,10 +36,11 @@ Maturity: seed → exploring → planned → ready → parked
 ## Category 2 — New Feature or Integration
 
 ### [IDEA-003] Phase 9 — Maker & Distillery pages
-- **Status:** planned
+- **Status:** done
 - **Category:** new
 - **Seeded:** 2026-05-30
 - **Last Updated:** 2026-05-30
+- **Done:** 2026-05-30
 - **Priority:** P1
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-003-maker-pages.md`
 - **Summary:** Tappable maker/distillery pages keyed by brand name. Each page shows a Winston blurb (AI-generated, admin-editable), country/region, the club's catalog from that house, and a one-line house-style read derived from aggregated `trait_vector` across the maker's products. Turns dead brand text on product detail into an explorable surface. Fully specced in `planning/nccc-implementation-plan.md` Phase 9.

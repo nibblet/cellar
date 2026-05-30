@@ -353,9 +353,9 @@ Fully specced in `planning/nccc-implementation-plan.md` Phase 9. This plan is th
 - Applied via `supabase db push` — manual by Paul
 
 ## Testing
-- [ ] `pnpm build` passes
-- [ ] `pnpm lint` passes
-- [ ] `pnpm test` — aggregator and house-style unit tests pass
+- [x] `pnpm build` passes
+- [x] `pnpm lint` passes (changed files clean)
+- [x] `pnpm test` — aggregator and house-style unit tests pass
 - [ ] `/makers/oliva-cigar` renders with Winston blurb + catalog list
 - [ ] Product detail brand → link navigates to maker page
 - [ ] Maker page with no catalog products shows empty state (Winston empty-state line)

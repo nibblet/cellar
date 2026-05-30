@@ -1,13 +1,18 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CellarInsightCard, TryNext } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
 import { CellarSection } from "@/components/members/sections";
-import { Divider } from "@/components/primitives";
+import { Divider, Voice } from "@/components/primitives";
 import { ensureCellarInsight } from "@/lib/cellar/insight";
+import { todayKey } from "@/lib/daily-pour/select";
 import { formatMemberName, type MemberNameFields } from "@/lib/identity";
+import { loadPickPourCandidates } from "@/lib/pick-pour/load";
+import { selectPickPour } from "@/lib/pick-pour/select";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ensureTasteRecommendations } from "@/lib/taste";
+import { cn } from "@/lib/utils";
 
 export default async function YouCellarPage() {
   const supabase = await createSupabaseServerClient();
@@ -32,6 +37,10 @@ export default async function YouCellarPage() {
       </header>
 
       <Suspense fallback={null}>
+        <TonightsPickSection memberId={auth.user.id} />
+      </Suspense>
+
+      <Suspense fallback={null}>
         <CellarInsightSection memberId={auth.user.id} />
       </Suspense>
 
@@ -47,6 +56,50 @@ export default async function YouCellarPage() {
         isOwnProfile={true}
       />
     </AppShell>
+  );
+}
+
+async function TonightsPickSection({ memberId }: { memberId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const candidates = await loadPickPourCandidates(supabase, memberId);
+  const pick = selectPickPour({ memberId, date: todayKey(), rollIndex: 0 }, candidates);
+  if (!pick) return null;
+
+  const { data: products } = await supabase
+    .from("products")
+    .select("id, name, brand, type")
+    .in("id", [pick.cigar_id, pick.bourbon_id]);
+
+  type ProductRow = { id: string; name: string; brand: string | null; type: string };
+  const rows = (products as ProductRow[] | null) ?? [];
+  if (rows.length < 2) return null;
+
+  const cigar = rows.find((p) => p.type === "cigar");
+  const bourbon = rows.find((p) => p.type === "bourbon");
+  if (!cigar || !bourbon) return null;
+
+  const cigarDisplay = cigar.brand ? `${cigar.brand} ${cigar.name}` : cigar.name;
+  const bourbonDisplay = bourbon.brand ? `${bourbon.brand} ${bourbon.name}` : bourbon.name;
+
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const day = days[new Date().getUTCDay()];
+  const line = `"For a ${day} on the porch: ${cigarDisplay} with the ${bourbonDisplay}."`;
+
+  return (
+    <section className="mb-5">
+      <Divider label="Tonight's pick" />
+      <Voice className="block mb-2">{line}</Voice>
+      <Link
+        href={`/pairings/${pick.cigar_id}/${pick.bourbon_id}`}
+        className={cn(
+          "inline-flex items-center justify-center gap-2 rounded-[12px] transition-colors",
+          "h-12 px-5 text-base",
+          "bg-surface text-foreground-muted border border-border hover:bg-surface-2",
+        )}
+      >
+        See the pairing →
+      </Link>
+    </section>
   );
 }
 

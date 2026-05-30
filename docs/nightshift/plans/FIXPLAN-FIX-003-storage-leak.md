@@ -63,7 +63,7 @@ None.
 None.
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
+- [x] Build passes
+- [x] Lint passes
 - [ ] Happy path capture still works (file stays in storage after success)
 - [ ] (Manual simulation): if you temporarily break createSignedUrl (e.g., pass a bad bucket name), confirm the file is removed from storage rather than left behind

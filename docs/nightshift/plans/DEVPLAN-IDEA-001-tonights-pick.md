@@ -89,8 +89,8 @@ This closes a UX gap: members land on the cellar page to see their shelf, but th
 - Both hit `member_saves` (own-only RLS) and `products` (all-members read).
 
 ## Testing
-- [ ] `pnpm build` passes
-- [ ] `pnpm lint` passes
+- [x] `pnpm build` passes
+- [x] `pnpm lint` passes (changed files clean; repo has pre-existing lint debt)
 - [ ] Member with ≥1 cigar and ≥1 bourbon on Have shelf: Tonight's Pick section appears
 - [ ] Member with only cigars (or only bourbons) on shelf: section absent, no error
 - [ ] Member with empty shelf: section absent

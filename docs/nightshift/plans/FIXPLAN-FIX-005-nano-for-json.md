@@ -75,9 +75,9 @@ None.
 None — `usage_logs` records whatever model string is passed, no schema constraint.
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
-- [ ] `pnpm test` passes
+- [x] Build passes
+- [x] Lint passes
+- [x] `pnpm test` passes
 - [ ] Navigate to `/you/cellar` as a member with items on their have shelf — cellar insight regenerates (or serves from cache) without error
 - [ ] Navigate to `/you/cellar` as a member who has tried some products — Try Next rationale lines appear
 - [ ] `usage_logs` table (if accessible) shows `gpt-5-nano` for `cellar-insight` and `taste-rationale` operations after the next regeneration

@@ -166,7 +166,7 @@ export async function generateCellarInsight(
   const userMessage = buildUserMessage(products);
 
   const completion = await openai().chat.completions.create({
-    model: MODELS.prose,
+    model: MODELS.json,
     reasoning_effort: "minimal",
     response_format: { type: "json_object" },
     messages: [
@@ -181,11 +181,11 @@ export async function generateCellarInsight(
   void logUsage(supabase, {
     user_id: userId,
     provider: "openai",
-    model: MODELS.prose,
+    model: MODELS.json,
     operation: "cellar-insight",
     units_in: tokensIn,
     units_out: tokensOut,
-    cost_usd: estimateCost(MODELS.prose, tokensIn, tokensOut),
+    cost_usd: estimateCost(MODELS.json, tokensIn, tokensOut),
     metadata: { product_count: products.length },
   });
 

@@ -50,6 +50,7 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
     .createSignedUrl(storagePath, 300); // 5 minutes is plenty
 
   if (signedError || !signed) {
+    void supabase.storage.from(BUCKET).remove([storagePath]);
     return { status: "error", message: `Could not sign URL: ${signedError?.message}` };
   }
 
@@ -63,6 +64,7 @@ export async function submitCapture(_prev: State, formData: FormData): Promise<S
       expectedType: type,
     });
   } catch (err) {
+    void supabase.storage.from(BUCKET).remove([storagePath]);
     const message = err instanceof Error ? err.message : "Identification failed.";
     return { status: "error", message };
   }

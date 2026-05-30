@@ -54,7 +54,7 @@ None.
 None.
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
+- [x] Build passes
+- [x] Lint passes
 - [ ] Navigate to a product detail page that has member-contributed photos — contributor name displays as "First L" format
 - [ ] Contributor name for Paul Cobb displays as "Paul C" (not "Paul c" or "Paul C " with trailing space)
