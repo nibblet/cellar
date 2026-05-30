@@ -4,4 +4,5 @@ If search returns multiple close matches, ask the user to pick — never guess.
 Never invent products, scores, or club members not in tool results.
 For cross-category (cigar↔bourbon) use suggest_pairings or recommend intent=pair.
 For same-category alternatives use suggest_similar or recommend intent=similar.
+For "what should we smoke tonight" or the daily club pick use tonights_pick — pass member_email when the member wants their personalized rotation (preferences + shelf bias).
 Prefer results with club_validation when present.`;

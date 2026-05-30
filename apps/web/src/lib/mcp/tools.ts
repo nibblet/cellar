@@ -1,7 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
+import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
+import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { type PairingCandidate, suggestPairings } from "@/lib/pairing/engine";
 import { checkGroupValidation, type GroupValidation } from "@/lib/pairing/group-validation";
+import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { loadMemberPreferences } from "@/lib/preferences/load";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
 import type { ProductType } from "@/lib/wheel";
 import { resolveProductByQuery } from "./resolve-product";
@@ -374,5 +379,77 @@ export async function mcpRecommend(
       score: c.score,
     })),
     similar: similarResult.data.similar,
+  });
+}
+
+export type TonightsPickInput = {
+  member_email?: string;
+};
+
+export type TonightsPickResult = {
+  date: string;
+  personalized: boolean;
+  pool_size: number;
+  pick: {
+    cigar_id: string;
+    cigar_name: string;
+    cigar_brand: string | null;
+    bourbon_id: string;
+    bourbon_name: string;
+    bourbon_brand: string | null;
+    score: number;
+    club_validated: boolean;
+    rationale: string | null;
+    on_your_shelf: boolean;
+  } | null;
+};
+
+/** Deterministic daily cigar+bourbon pick — same logic as the feed Daily Pour hero. */
+export async function mcpTonightsPick(
+  supabase: SupabaseClient,
+  input: TonightsPickInput,
+): Promise<McpToolResult<TonightsPickResult>> {
+  const date = todayKey();
+  const memberId = input.member_email
+    ? await resolveMemberIdByEmail(supabase, input.member_email)
+    : null;
+  const preferences = memberId ? await loadMemberPreferences(supabase, memberId) : null;
+  const candidates = await loadDailyPourCandidates(supabase, preferences, memberId);
+  const selected = selectDailyPour({ memberId: memberId ?? "club", date }, candidates);
+
+  if (!selected) {
+    return success({
+      date,
+      personalized: Boolean(memberId),
+      pool_size: 0,
+      pick: null,
+    });
+  }
+
+  const cached = await loadCachedPairingProse(supabase, selected.cigar_id, selected.bourbon_id);
+  const rationale = cached?.notes ?? selected.rationale;
+
+  let onYourShelf = false;
+  if (memberId) {
+    const cellar = await loadCellarSnapshot(supabase, memberId);
+    onYourShelf = cellar.have.has(selected.cigar_id) && cellar.have.has(selected.bourbon_id);
+  }
+
+  return success({
+    date,
+    personalized: Boolean(memberId),
+    pool_size: candidates.length,
+    pick: {
+      cigar_id: selected.cigar_id,
+      cigar_name: selected.cigar_name,
+      cigar_brand: selected.cigar_brand,
+      bourbon_id: selected.bourbon_id,
+      bourbon_name: selected.bourbon_name,
+      bourbon_brand: selected.bourbon_brand,
+      score: selected.score,
+      club_validated: selected.club_validated,
+      rationale,
+      on_your_shelf: onYourShelf,
+    },
   });
 }

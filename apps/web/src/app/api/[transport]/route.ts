@@ -9,6 +9,7 @@ import {
   mcpSearchProducts,
   mcpSuggestPairings,
   mcpSuggestSimilar,
+  mcpTonightsPick,
 } from "@/lib/mcp/tools";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -129,6 +130,29 @@ const handler = createMcpHandler(
     );
 
     server.registerTool(
+      "tonights_pick",
+      {
+        title: "Tonight's pick",
+        description:
+          "Deterministic cigar+bourbon pairing for today (UTC), same rotation as the NCCC feed Daily Pour. Pass member_email to apply taste preferences and cellar shelf bias; omit for the club-wide pool. Returns null pick when the candidate pool is empty.",
+        inputSchema: {
+          member_email: z
+            .string()
+            .email()
+            .optional()
+            .describe(
+              "Member email for a personalized daily pick (preferences + Have-shelf bias). Omit for club-wide suggestion.",
+            ),
+        },
+        annotations: readOnly,
+      },
+      async ({ member_email }) => {
+        const supabase = createSupabaseAdminClient();
+        return formatMcpToolResult(await mcpTonightsPick(supabase, { member_email }));
+      },
+    );
+
+    server.registerTool(
       "recommend",
       {
         title: "Recommend",
@@ -156,6 +180,34 @@ const handler = createMcpHandler(
           await mcpRecommend(supabase, { query, intent, type, member_email }),
         );
       },
+    );
+
+    server.registerPrompt(
+      "tonights-pick",
+      {
+        title: "Tonight's pick",
+        description: "Ask for today's cigar+bourbon pairing suggestion from NCCC.",
+        argsSchema: {
+          email: z
+            .string()
+            .email()
+            .optional()
+            .describe("Optional member email for a personalized pick."),
+        },
+      },
+      ({ email }) => ({
+        messages: [
+          {
+            role: "user" as const,
+            content: {
+              type: "text" as const,
+              text: email
+                ? `What's tonight's pick for me (${email})? Use tonights_pick with my email.`
+                : "What's tonight's pick for the club? Use tonights_pick.",
+            },
+          },
+        ],
+      }),
     );
 
     server.registerPrompt(
@@ -206,7 +258,7 @@ const handler = createMcpHandler(
     instructions: NCCC_MCP_INSTRUCTIONS,
     serverInfo: {
       name: "nccc-pairing",
-      version: "1.0.0",
+      version: "1.1.0",
     },
   },
   {
