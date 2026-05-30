@@ -53,7 +53,7 @@ export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps
 
         <div className="px-3.5 py-3 min-w-0 flex items-start gap-2">
           <div className="flex-1 min-w-0">
-            {entry.brand_family ?? entry.brand ? (
+            {(entry.brand_family ?? entry.brand) ? (
               <p className="text-[10px] uppercase tracking-widest text-foreground-subtle truncate mb-0.5">
                 {entry.brand_family ?? entry.brand}
               </p>

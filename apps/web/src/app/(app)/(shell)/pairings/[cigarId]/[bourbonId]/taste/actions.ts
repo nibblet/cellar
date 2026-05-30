@@ -2,6 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
+import { createDraftProduct } from "@/lib/identify";
 import { syncPairingValidationCache } from "@/lib/pairing/sync-validation-cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { saveTasting } from "@/lib/tasting/save";
@@ -12,44 +13,36 @@ type State = { status: "idle" | "error"; message?: string };
 const BUCKET = "product-photos";
 
 /**
- * "Tasted this pairing" submission. One photo, two tastings — one cigar, one
- * bourbon — sharing a pairing_session_id so the feed can render them linked
- * later. Skips vision identification: we already know both products.
+ * Pairing capture save. One photo, two tastings sharing pairing_session_id.
+ * Accepts pre-uploaded photo_storage_path (photo-first flow) or a File upload.
  */
 export async function submitPairingTaste(_prev: State, formData: FormData): Promise<State> {
-  const cigarId = String(formData.get("cigar_id") ?? "");
-  const bourbonId = String(formData.get("bourbon_id") ?? "");
-  if (!cigarId || !bourbonId) {
+  const cigarIdRaw = String(formData.get("cigar_id") ?? "");
+  const bourbonIdRaw = String(formData.get("bourbon_id") ?? "");
+  if (!cigarIdRaw || !bourbonIdRaw) {
     return { status: "error", message: "Missing pairing context." };
   }
 
-  const cigarRecommendRaw = String(formData.get("cigar_recommend") ?? "");
-  const bourbonRecommendRaw = String(formData.get("bourbon_recommend") ?? "");
-  if (
-    (cigarRecommendRaw !== "yes" && cigarRecommendRaw !== "no") ||
-    (bourbonRecommendRaw !== "yes" && bourbonRecommendRaw !== "no")
-  ) {
-    return { status: "error", message: "Pick yes or no for both halves of the pairing." };
+  const recommendRaw = String(formData.get("recommend") ?? "");
+  if (recommendRaw !== "yes" && recommendRaw !== "no") {
+    return { status: "error", message: "Pick recommend or just logging for this pairing." };
   }
+  const recommend = recommendRaw === "yes";
 
-  const photo = formData.get("photo");
-  if (!(photo instanceof File) || photo.size === 0) {
-    return { status: "error", message: "Add a photo of the pairing." };
-  }
-  if (photo.size > 4 * 1024 * 1024) {
-    return { status: "error", message: "Photo too large (4 MB max)." };
-  }
-
-  const cigarChips = formData
-    .getAll("cigar_chips")
+  const chips = formData
+    .getAll("pairing_chips")
+    .concat(formData.getAll("cigar_chips"))
+    .concat(formData.getAll("bourbon_chips"))
     .map((c) => String(c).trim())
     .filter(Boolean);
-  const bourbonChips = formData
-    .getAll("bourbon_chips")
-    .map((c) => String(c).trim())
-    .filter(Boolean);
+
+  const uniqueChips = [...new Set(chips)];
+
   const note = (formData.get("note") as string | null)?.trim() || null;
-  const bourbonReleaseLabel = (formData.get("bourbon_release_label") as string | null)?.trim() || null;
+  const bourbonReleaseLabel =
+    (formData.get("bourbon_release_label") as string | null)?.trim() || null;
+  const visionReleaseLabel =
+    (formData.get("vision_release_label") as string | null)?.trim() || null;
   const eventIdRaw = (formData.get("event_id") as string | null)?.trim() || null;
   const eventId = eventIdRaw && eventIdRaw !== "none" ? eventIdRaw : null;
 
@@ -57,33 +50,84 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return { status: "error", message: "You're not signed in." };
 
-  // Verify both products exist and are the expected types.
+  let cigarId = cigarIdRaw;
+  let bourbonId = bourbonIdRaw;
+
   const { data: products } = await supabase
     .from("products")
-    .select("id, type")
+    .select("id, type, name, brand, specs")
     .in("id", [cigarId, bourbonId]);
-  const cigar = products?.find((p) => p.id === cigarId && p.type === "cigar");
-  const bourbon = products?.find((p) => p.id === bourbonId && p.type === "bourbon");
+
+  let cigar = products?.find((p) => p.id === cigarId && p.type === "cigar");
+  let bourbon = products?.find((p) => p.id === bourbonId && p.type === "bourbon");
+
+  if (!cigar) {
+    const name = (formData.get("cigar_extracted_name") as string | null)?.trim();
+    if (!name) {
+      return { status: "error", message: "Pick a cigar from the catalog." };
+    }
+    cigarId = await createDraftProduct(supabase, auth.user.id, "cigar", {
+      name,
+      brand: (formData.get("cigar_extracted_brand") as string | null)?.trim() || null,
+      specs: {},
+    });
+    const { data: row } = await supabase
+      .from("products")
+      .select("id, type, name, brand, specs")
+      .eq("id", cigarId)
+      .single();
+    cigar = row ?? undefined;
+  }
+
+  if (!bourbon) {
+    const name = (formData.get("bourbon_extracted_name") as string | null)?.trim();
+    if (!name) {
+      return { status: "error", message: "Pick a bourbon from the catalog." };
+    }
+    bourbonId = await createDraftProduct(supabase, auth.user.id, "bourbon", {
+      name,
+      brand: (formData.get("bourbon_extracted_brand") as string | null)?.trim() || null,
+      specs: {},
+    });
+    const { data: row } = await supabase
+      .from("products")
+      .select("id, type, name, brand, specs")
+      .eq("id", bourbonId)
+      .single();
+    bourbon = row ?? undefined;
+  }
+
   if (!cigar || !bourbon) {
     return { status: "error", message: "Couldn't find both products for this pairing." };
   }
 
-  // Upload the photo once. Both product_images rows point at the same
-  // storage path so the file lives in storage exactly once.
-  const ext = guessExtension(photo.type) ?? "jpg";
-  const storagePath = `${auth.user.id}/${randomUUID()}.${ext}`;
+  const storagePathInput = (formData.get("photo_storage_path") as string | null)?.trim() || null;
+  const photo = formData.get("photo");
 
-  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, photo, {
-    contentType: photo.type || "image/jpeg",
-    upsert: false,
-  });
-  if (uploadError) {
-    return { status: "error", message: `Upload failed: ${uploadError.message}` };
+  let storagePath: string;
+
+  if (storagePathInput) {
+    if (!storagePathInput.startsWith(`${auth.user.id}/`)) {
+      return { status: "error", message: "Invalid photo reference." };
+    }
+    storagePath = storagePathInput;
+  } else if (photo instanceof File && photo.size > 0) {
+    if (photo.size > 4 * 1024 * 1024) {
+      return { status: "error", message: "Photo too large (4 MB max)." };
+    }
+    const ext = guessExtension(photo.type) ?? "jpg";
+    storagePath = `${auth.user.id}/${randomUUID()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, photo, {
+      contentType: photo.type || "image/jpeg",
+      upsert: false,
+    });
+    if (uploadError) {
+      return { status: "error", message: `Upload failed: ${uploadError.message}` };
+    }
+  } else {
+    return { status: "error", message: "Add a photo of the pairing." };
   }
 
-  // Create one product_images row per product. They share the image_url so a
-  // future feed renderer can detect the pairing-photo case by joining the
-  // two tastings via pairing_session_id and noting the matching paths.
   const { data: images, error: imagesError } = await supabase
     .from("product_images")
     .insert([
@@ -99,6 +143,7 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
       },
     ])
     .select("id, product_id");
+
   if (imagesError || !images || images.length !== 2) {
     return {
       status: "error",
@@ -138,8 +183,8 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
         userId: auth.user.id,
         productId: cigarId,
         productType: "cigar" as ProductType,
-        recommend: cigarRecommendRaw === "yes",
-        chips: cigarChips,
+        recommend,
+        chips: uniqueChips,
         note,
         eventId,
         pairingSessionId,
@@ -150,14 +195,15 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
         userId: auth.user.id,
         productId: bourbonId,
         productType: "bourbon" as ProductType,
-        recommend: bourbonRecommendRaw === "yes",
-        chips: bourbonChips,
+        recommend,
+        chips: uniqueChips,
         note,
         eventId,
         pairingSessionId,
         photoImageId: bourbonImageId,
         releaseLabel: bourbonReleaseLabel,
-        releaseLabelSource: bourbonReleaseLabel ? "member" : null,
+        releaseLabelSource: bourbonReleaseLabel ? "member" : visionReleaseLabel ? "vision" : null,
+        visionReleaseLabel,
       }),
     ]);
   } catch (err) {
@@ -165,12 +211,12 @@ export async function submitPairingTaste(_prev: State, formData: FormData): Prom
     return { status: "error", message };
   }
 
-  if (cigarRecommendRaw === "yes" && bourbonRecommendRaw === "yes") {
+  if (recommend) {
     void syncPairingValidationCache(supabase, cigarId, bourbonId);
   }
 
-  // Land back on the pairing page with a confirmation cue.
-  redirect(`/pairings/${cigarId}/${bourbonId}?just_tasted=1`);
+  const params = new URLSearchParams({ just_saved_pairing: "1", pair_cigar: cigarId, pair_bourbon: bourbonId });
+  redirect(`/?${params.toString()}`);
 }
 
 function guessExtension(mime: string): string | null {

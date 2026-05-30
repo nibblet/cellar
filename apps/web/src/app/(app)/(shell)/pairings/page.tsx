@@ -10,7 +10,7 @@ import {
   validatedCardClassName,
 } from "@/components/primitives";
 import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
-import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { loadCachedPairingProse, decodeRationaleText } from "@/lib/pairing/prose-cache";
 import { pairingTierLabel } from "@/lib/pairing/tier";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
@@ -103,8 +103,8 @@ export default async function PairingsIndexPage() {
           {recommendedButNoPairs ? (
             <>
               <Voice className="block mb-3">
-                "I've got the names but not the measure of these yet. A few
-                more notes and the matches will come."
+                "I've got the names but not the measure of these yet. A few more notes and the
+                matches will come."
               </Voice>
               <Link href="/" className="text-sm text-accent hover:text-accent-hover underline">
                 Back to the lounge →
@@ -190,6 +190,7 @@ async function loadRecommendations(
 
 function ValidatedCard({ entry }: { entry: ValidatedCacheRow }) {
   if (!entry.cigar || !entry.bourbon) return null;
+  const prose = entry.rationale_text ? decodeRationaleText(entry.rationale_text) : null;
   return (
     <Link href={`/pairings/${entry.cigar_id}/${entry.bourbon_id}`} className="block group">
       <div className={cn(validatedCardClassName, "px-4 py-4")}>
@@ -208,10 +209,8 @@ function ValidatedCard({ entry }: { entry: ValidatedCacheRow }) {
         <p className="text-base text-foreground truncate group-hover:text-accent transition-colors">
           {entry.bourbon.name}
         </p>
-        {entry.rationale_text ? (
-          <p className="text-sm text-foreground-muted italic mt-2 line-clamp-2">
-            "{entry.rationale_text}"
-          </p>
+        {prose?.notes ? (
+          <p className="text-sm text-foreground-muted italic mt-2 line-clamp-2">"{prose.notes}"</p>
         ) : null}
       </div>
     </Link>

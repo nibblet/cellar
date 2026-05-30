@@ -1,7 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { identifyProductFromImage } from "@/lib/openai/identify";
 import type { ProductType } from "@/lib/wheel";
-import { type CandidateProduct, pickBestMatch } from "./normalize";
+import { createDraftProduct } from "./draft";
+import { matchExtractedToCatalog } from "./match";
+
+export { createDraftProduct } from "./draft";
+export type { CatalogMatchResult } from "./match";
+export { matchExtractedToCatalog } from "./match";
+export type { PairIdentifyHalf, PairIdentifyResult } from "./pair";
+export { identifyPairFromImage } from "./pair";
 
 export type IdentifyOutcome = {
   productId: string;
@@ -22,9 +29,6 @@ type OrchestrateArgs = {
   storagePath: string;
   expectedType: ProductType;
 };
-
-const MATCH_THRESHOLD_WITH_BRAND = 0.55;
-const MATCH_THRESHOLD_NAME_ONLY = 0.7;
 
 /**
  * Photo-identify orchestration:
@@ -49,9 +53,6 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     userId,
   });
 
-  // The capture toggle is an explicit member choice — it drives catalog lookup,
-  // specs schema, and the recommend flavor wheel. Vision can misread bottles as
-  // cigars (dark labels, glass shapes); don't let that override the toggle.
   const finalType = expectedType;
   if (extracted.type !== expectedType) {
     console.warn(
@@ -59,50 +60,15 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     );
   }
 
-  // Pull a candidate list. pg_trgm makes the brand-side filter cheap.
-  const candidates = await fetchCandidates(supabase, finalType, extracted.brand);
+  const match = await matchExtractedToCatalog(supabase, finalType, extracted);
 
-  let matchedProductId: string | null = null;
-  let matched = false;
-
-  if (candidates.length > 0) {
-    const best = pickBestMatch(candidates, { name: extracted.name, brand: extracted.brand });
-    if (best) {
-      const threshold =
-        best.matched === "name+brand" ? MATCH_THRESHOLD_WITH_BRAND : MATCH_THRESHOLD_NAME_ONLY;
-      if (best.score >= threshold) {
-        matchedProductId = best.product.id;
-        matched = true;
-      }
-    }
-  }
-
+  let matchedProductId = match.productId;
+  const matched = match.matched;
   let needsEnrichment = false;
 
   if (!matchedProductId) {
-    const { data: created, error } = await supabase
-      .from("products")
-      .insert({
-        type: finalType,
-        name: extracted.name,
-        brand: extracted.brand,
-        specs: extracted.specs,
-        status: "draft",
-        source: "ai",
-        created_by: userId,
-      })
-      .select("id")
-      .single();
-
-    if (error || !created) {
-      throw new Error(`Failed to create draft product: ${error?.message ?? "no row returned"}`);
-    }
-    matchedProductId = created.id;
+    matchedProductId = await createDraftProduct(supabase, userId, finalType, extracted);
     needsEnrichment = true;
-  }
-
-  if (!matchedProductId) {
-    throw new Error("Unreachable: product id should be set by this point.");
   }
 
   await supabase.from("product_images").insert({
@@ -111,43 +77,11 @@ export async function identifyAndPersist(args: OrchestrateArgs): Promise<Identif
     contributed_by: userId,
   });
 
-  const releaseLabel =
-    finalType === "bourbon" ? (extracted.release_label?.trim() || null) : null;
-
   return {
     productId: matchedProductId,
     matched,
-    confidence: extracted.confidence,
+    confidence: match.confidence,
     needsEnrichment,
-    releaseLabel,
+    releaseLabel: match.releaseLabel,
   };
-}
-
-async function fetchCandidates(
-  supabase: SupabaseClient,
-  type: ProductType,
-  brand: string | null,
-): Promise<CandidateProduct[]> {
-  // Brand-side prefilter when we have one. Even a partial brand match cuts the
-  // candidate set from thousands to dozens, making client-side scoring cheap.
-  if (brand) {
-    const { data } = await supabase
-      .from("products")
-      .select("id, name, brand")
-      .eq("type", type)
-      .eq("status", "confirmed")
-      .ilike("brand", `%${brand.split(/\s+/)[0]}%`)
-      .limit(50);
-    if (data && data.length > 0) return data;
-  }
-
-  // Fallback: pull a small slice and let trigram scoring handle it.
-  const { data } = await supabase
-    .from("products")
-    .select("id, name, brand")
-    .eq("type", type)
-    .eq("status", "confirmed")
-    .limit(200);
-
-  return data ?? [];
 }

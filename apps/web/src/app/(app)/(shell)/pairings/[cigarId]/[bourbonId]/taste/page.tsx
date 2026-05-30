@@ -1,19 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
+import { PairingTasteFormCollapsed } from "@/components/pairing/pairing-taste-form-collapsed";
 import { Voice } from "@/components/primitives";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
-import { getWheel } from "@/lib/wheel";
-import { PairingTasteForm } from "./pairing-taste-form";
-
 type Params = Promise<{ cigarId: string; bourbonId: string }>;
 
 /**
- * "Tasted this pairing" capture flow. Skips vision identification — we
- * already know both products from the route. Member shoots one photo, scores
- * each half with chips + a recommend toggle, optionally writes a shared note
- * about how they worked together; submit creates two linked tastings.
+ * "Tasted this pairing" from pair detail — catalog IDs known; photo + collapsed taste.
  */
 export default async function PairingTastePage({ params }: { params: Params }) {
   const { cigarId, bourbonId } = await params;
@@ -31,18 +26,6 @@ export default async function PairingTastePage({ params }: { params: Params }) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) notFound();
 
-  // If the member has already tasted either side, prefill that half so they
-  // can revise rather than start over. We don't lock the form on existing
-  // tastings — they're free to update either or both.
-  const { data: existing } = await supabase
-    .from("tastings")
-    .select("product_id, recommend, chips, note")
-    .eq("user_id", auth.user.id)
-    .in("product_id", [cigarId, bourbonId]);
-
-  const priorCigar = existing?.find((t) => t.product_id === cigarId) ?? null;
-  const priorBourbon = existing?.find((t) => t.product_id === bourbonId) ?? null;
-
   const { data: bourbonReleaseRows } = await supabase
     .from("tastings")
     .select("release_label")
@@ -53,9 +36,6 @@ export default async function PairingTastePage({ params }: { params: Params }) {
     (bourbon.specs ?? {}) as Record<string, unknown>,
     (bourbonReleaseRows ?? []).map((row) => row.release_label),
   );
-
-  const cigarLeafLabels = getWheel("cigar").leaves.map((l) => l.label);
-  const bourbonLeafLabels = getWheel("bourbon").leaves.map((l) => l.label);
 
   const { data: events } = await supabase
     .from("events")
@@ -81,34 +61,15 @@ export default async function PairingTastePage({ params }: { params: Params }) {
         </h1>
       </header>
 
-      <Voice className="mb-6">"One photo of the pair — I'll log both."</Voice>
+      <Voice className="mb-6">"One photo of the pair — then tell us how it sat."</Voice>
 
-      <PairingTasteForm
+      <PairingTasteFormCollapsed
         cigar={{ id: cigar.id, name: cigar.name, brand: cigar.brand }}
-        bourbon={{
-          id: bourbon.id,
-          name: bourbon.name,
-          brand: bourbon.brand,
-          releasePattern: bourbon.release_pattern ?? null,
-          knownReleaseLabels: bourbonKnownReleaseLabels,
-        }}
-        cigarLeafLabels={cigarLeafLabels}
-        bourbonLeafLabels={bourbonLeafLabels}
+        bourbon={{ id: bourbon.id, name: bourbon.name, brand: bourbon.brand }}
         recentEvents={(events ?? []) as Array<{ id: string; name: string; date: string }>}
-        priorCigar={
-          priorCigar
-            ? { recommend: priorCigar.recommend, chips: priorCigar.chips, note: priorCigar.note }
-            : null
-        }
-        priorBourbon={
-          priorBourbon
-            ? {
-                recommend: priorBourbon.recommend,
-                chips: priorBourbon.chips,
-                note: priorBourbon.note,
-              }
-            : null
-        }
+        bourbonReleasePattern={bourbon.release_pattern ?? null}
+        bourbonKnownReleaseLabels={bourbonKnownReleaseLabels}
+        requirePhotoUpload
       />
     </AppShell>
   );

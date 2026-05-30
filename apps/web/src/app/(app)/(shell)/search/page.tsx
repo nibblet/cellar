@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PhotoFrame, PhotoPlaceholder, SearchInput } from "@/components/feed";
 import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
+import { sanitizeCatalogQuery, searchCatalogProducts } from "@/lib/catalog/search";
 import { signImagePaths } from "@/lib/feed/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
@@ -30,20 +31,10 @@ function parseTypeFilter(raw: string | undefined): TypeFilter {
   return "all";
 }
 
-// Sanitize the search term so it can't break the PostgREST .or() filter
-// syntax. Allow letters, digits, spaces, and a handful of name-friendly
-// punctuation; everything else becomes a space.
-function sanitizeQuery(input: string): string {
-  return input
-    .replace(/[^a-zA-Z0-9 .'\-&]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   const { q: qRaw, type: typeRaw } = await searchParams;
   const rawQuery = (qRaw ?? "").slice(0, 80);
-  const sanitized = sanitizeQuery(rawQuery);
+  const sanitized = sanitizeCatalogQuery(rawQuery);
   const typeFilter = parseTypeFilter(typeRaw);
 
   const supabase = await createSupabaseServerClient();
@@ -52,16 +43,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   const signedByProduct = new Map<string, string>();
 
   if (sanitized.length >= 2) {
-    let query = supabase
-      .from("products")
-      .select("id, name, brand, type")
-      .eq("status", "confirmed")
-      .or(`name.ilike.%${sanitized}%,brand.ilike.%${sanitized}%`)
-      .order("name", { ascending: true })
-      .limit(60);
-    if (typeFilter !== "all") query = query.eq("type", typeFilter);
-    const { data } = await query;
-    results = (data as ResultRow[] | null) ?? [];
+    results = await searchCatalogProducts(supabase, {
+      query: sanitized,
+      type: typeFilter,
+      limit: 60,
+    });
 
     if (results.length > 0) {
       const productIds = results.map((r) => r.id);

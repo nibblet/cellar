@@ -105,6 +105,10 @@ export async function ensurePairingProse(
  * payloads start with `{` after trimming — and fall back to treating the
  * whole string as legacy `notes`.
  */
+export function decodeRationaleText(raw: string): PairingProse {
+  return decodeCachedProse(raw);
+}
+
 function decodeCachedProse(raw: string): PairingProse {
   const trimmed = raw.trim();
   if (trimmed.startsWith("{")) {

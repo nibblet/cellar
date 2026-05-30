@@ -6,26 +6,16 @@ export type PickerProduct = {
   brand: string | null;
 };
 
-export async function loadPickerProducts(
+export async function loadPickerProductById(
   supabase: SupabaseClient,
-  productType: "cigar" | "bourbon",
-  limit = 120,
-): Promise<PickerProduct[]> {
+  productId: string,
+): Promise<PickerProduct | null> {
   const { data } = await supabase
     .from("products")
     .select("id, name, brand")
-    .eq("type", productType)
+    .eq("id", productId)
     .eq("status", "confirmed")
-    .order("name")
-    .limit(limit);
+    .maybeSingle();
 
-  return (data as PickerProduct[] | null) ?? [];
-}
-
-export function filterPickerProducts(products: PickerProduct[], query: string): PickerProduct[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return products;
-  return products.filter(
-    (p) => p.name.toLowerCase().includes(q) || (p.brand?.toLowerCase().includes(q) ?? false),
-  );
+  return (data as PickerProduct | null) ?? null;
 }

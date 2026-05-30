@@ -12,14 +12,17 @@ import {
   FindYourNextHero,
   FindYourNextSkeleton,
   MeetupCard,
+  PairingFeedCard,
   TastingCard,
 } from "@/components/feed";
 import { AppShell } from "@/components/layout/app-shell";
+import { PairingDraftEnrichment } from "@/components/pairing/pairing-draft-enrichment";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
+import { loadEnrichmentJobsForProducts } from "@/lib/enrich/enrichment-jobs";
 import {
   type CatalogFilters,
   type CatalogSortKey,
@@ -65,6 +68,9 @@ type SearchParams = Promise<{
   club?: string;
   enriched?: string;
   sort?: string;
+  just_saved_pairing?: string;
+  pair_cigar?: string;
+  pair_bourbon?: string;
 }>;
 
 function parseTab(raw: string | undefined): FeedTab {
@@ -153,6 +159,9 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
   const sp = await searchParams;
   const tab = parseTab(sp.tab);
   const { filters, sort } = parseFilters(sp);
+  const pairingSaved = sp.just_saved_pairing === "1";
+  const pairCigarId = sp.pair_cigar?.trim() || null;
+  const pairBourbonId = sp.pair_bourbon?.trim() || null;
 
   return (
     <AppShell>
@@ -163,7 +172,14 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
       <FeedTabs active={tab} />
 
       <Suspense fallback={<FeedBodySkeleton />}>
-        <FeedBody tab={tab} filters={filters} sort={sort} />
+        <FeedBody
+          tab={tab}
+          filters={filters}
+          sort={sort}
+          pairingSaved={pairingSaved}
+          pairCigarId={pairCigarId}
+          pairBourbonId={pairBourbonId}
+        />
       </Suspense>
     </AppShell>
   );
@@ -173,10 +189,16 @@ async function FeedBody({
   tab,
   filters,
   sort,
+  pairingSaved,
+  pairCigarId,
+  pairBourbonId,
 }: {
   tab: FeedTab;
   filters: CatalogFilters;
   sort: CatalogSortKey;
+  pairingSaved: boolean;
+  pairCigarId: string | null;
+  pairBourbonId: string | null;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -199,7 +221,14 @@ async function FeedBody({
           </Suspense>
         ) : null}
         <Suspense fallback={<FeedBodySkeleton />}>
-          <FeedList supabase={supabase} viewerId={viewerId} preferences={preferences} />
+          <FeedList
+            supabase={supabase}
+            viewerId={viewerId}
+            preferences={preferences}
+            pairingSaved={pairingSaved}
+            pairCigarId={pairCigarId}
+            pairBourbonId={pairBourbonId}
+          />
         </Suspense>
       </>
     );
@@ -263,11 +292,22 @@ async function FeedList({
   supabase,
   viewerId,
   preferences,
+  pairingSaved,
+  pairCigarId,
+  pairBourbonId,
 }: {
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
   viewerId: string | null;
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
+  pairingSaved: boolean;
+  pairCigarId: string | null;
+  pairBourbonId: string | null;
 }) {
+  const enrichmentJobs =
+    pairingSaved && pairCigarId && pairBourbonId
+      ? await loadEnrichmentJobsForProducts(supabase, [pairCigarId, pairBourbonId])
+      : [];
+
   const today = new Date().toISOString().slice(0, 10);
 
   const [entries, upcomingResult, lastResult] = await Promise.all([
@@ -296,11 +336,23 @@ async function FeedList({
   if (matchesEnabled && preferences) {
     for (const e of entries) {
       if (e.user_id === viewerId) continue;
-      const matches = productMatchesPreferences(
-        { type: e.product_type, specs: e.product_specs },
-        preferences,
-      );
-      if (matches) forYouByEntry.set(e.tasting_id, true);
+      if (e.kind === "pairing") {
+        const cigarMatch = productMatchesPreferences(
+          { type: "cigar", specs: e.cigar_specs },
+          preferences,
+        );
+        const bourbonMatch = productMatchesPreferences(
+          { type: "bourbon", specs: e.bourbon_specs },
+          preferences,
+        );
+        if (cigarMatch && bourbonMatch) forYouByEntry.set(e.tasting_id, true);
+      } else {
+        const matches = productMatchesPreferences(
+          { type: e.product_type, specs: e.product_specs },
+          preferences,
+        );
+        if (matches) forYouByEntry.set(e.tasting_id, true);
+      }
     }
   }
 
@@ -327,6 +379,15 @@ async function FeedList({
   if (entries.length === 0) {
     return (
       <>
+        {pairingSaved ? (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
+              <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
+              Pairing saved
+            </div>
+          </div>
+        ) : null}
+        {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
         {upcoming || last ? (
           <div className="mb-4">
             <MeetupCard upcoming={upcoming} last={last} />
@@ -334,7 +395,9 @@ async function FeedList({
         ) : null}
         <Card className="flex flex-col items-center text-center">
           <Winston variant="bust" size={96} className="mb-4 rounded-full" />
-          <Voice className="block mb-4">"Porch is empty so far tonight. Pour something — let's see where it sits."</Voice>
+          <Voice className="block mb-4">
+            "Porch is empty so far tonight. Pour something — let's see where it sits."
+          </Voice>
           <Link href="/capture" className="block w-full">
             <Button size="large" className="w-full">
               Open the humidor
@@ -347,20 +410,42 @@ async function FeedList({
 
   return (
     <>
+      {pairingSaved ? (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
+            <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
+            Pairing saved
+          </div>
+        </div>
+      ) : null}
+      {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
       {upcoming || last ? (
         <div className="mb-4">
           <MeetupCard upcoming={upcoming} last={last} />
         </div>
       ) : null}
       <div className="flex flex-col gap-3">
-        {entries.map((entry) => (
-          <TastingCard
-            key={entry.tasting_id}
-            entry={entry}
-            signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
-            forYou={forYouByEntry.get(entry.tasting_id) ?? false}
-          />
-        ))}
+        {entries.map((entry) =>
+          entry.kind === "pairing" ? (
+            <PairingFeedCard
+              key={entry.pairing_session_id}
+              entry={entry}
+              signedHero={
+                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+              }
+              forYou={forYouByEntry.get(entry.tasting_id) ?? false}
+            />
+          ) : (
+            <TastingCard
+              key={entry.tasting_id}
+              entry={entry}
+              signedHero={
+                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+              }
+              forYou={forYouByEntry.get(entry.tasting_id) ?? false}
+            />
+          ),
+        )}
       </div>
       <Divider label="That's all" />
       <p className="text-sm text-foreground-subtle text-center">

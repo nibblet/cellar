@@ -12,7 +12,7 @@ type NavItem = {
   match: (pathname: string) => boolean;
 };
 
-// Final shape (UX-2, 2026-05-20): [Lounge] [Members] [⊕ Capture] [Pairings] [You]
+// Final shape (UX-2, 2026-05-20): [Lounge] [Pairings] [⊕ Capture] [Members] [You]
 // Meetups moved off the primary nav into the You section per roadmap.
 const SIDE_ITEMS: NavItem[] = [
   {
@@ -22,16 +22,16 @@ const SIDE_ITEMS: NavItem[] = [
     match: (p) => p === "/",
   },
   {
-    href: "/members",
-    label: "Members",
-    icon: Users,
-    match: (p) => p.startsWith("/members"),
-  },
-  {
     href: "/pairings",
     label: "Pairings",
     icon: Sparkles,
     match: (p) => p.startsWith("/pairings"),
+  },
+  {
+    href: "/members",
+    label: "Members",
+    icon: Users,
+    match: (p) => p.startsWith("/members"),
   },
   {
     href: "/you",

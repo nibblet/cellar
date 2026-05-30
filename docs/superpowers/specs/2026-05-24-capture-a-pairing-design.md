@@ -6,11 +6,12 @@
 
 Members capture cigar + bourbon together in one flow:
 
-1. **Pairings tab** — brass **Capture a pairing** opens catalog picker (`/pairings/capture`).
-2. Pick cigar, then bourbon → **Tasted this pairing** form (`/pairings/[cigar]/[bourbon]/taste`).
-3. One photo, per-product recommend + chips, shared pairing note, optional meetup tag.
+1. **Pairings tab** — brass **Capture a pairing** opens photo-first flow (`/pairings/capture`).
+2. One photo → parallel vision (cigar + bourbon) → confirm or change via catalog search.
+3. Collapsed pairing taste: one recommend, optional chips + pairing note, optional meetup.
 4. Submit creates `pairing_sessions` row + two linked tastings (`pairing_session_id` FK).
-5. When both halves are recommended, `pairings_cache.is_group_validated` syncs (moss surfaces).
+5. Lounge feed renders one **pairing card** per session (not two tasting cards).
+6. When both halves are recommended, `pairings_cache.is_group_validated` syncs (moss surfaces).
 
 Also reachable from pairing detail **Tasted this pairing** (existing CTA).
 
@@ -19,11 +20,11 @@ Also reachable from pairing detail **Tasted this pairing** (existing CTA).
 | Surface | Change |
 |---|---|
 | `/pairings` | Capture CTA at top |
-| `/pairings/capture` | Two-step catalog picker |
+| `/pairings/capture` | Photo-first identify + confirm; catalog picker fallback |
 | `/you` | **Your pairings** Personal card |
 | `/you/pairings` | Full list of captured pairings |
 
-Feed dual-card rendering remains deferred (ui-refresh-v2).
+Lounge feed groups by `pairing_session_id` into a single pairing card (shipped).
 
 ## Schema
 

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { FeedEntry } from "@/lib/feed/queries";
+import type { FeedTastingEntry } from "@/lib/feed/queries";
 import { PhotoFrame, PhotoPlaceholder } from "./photo-frame";
 
 type TastingCardProps = {
-  entry: FeedEntry;
+  entry: FeedTastingEntry;
   signedHero: string | null;
   forYou?: boolean;
 };

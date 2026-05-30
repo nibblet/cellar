@@ -1,4 +1,4 @@
-import { TastingCard } from "@/components/feed";
+import { PairingFeedCard, TastingCard } from "@/components/feed";
 import { Card, Divider } from "@/components/primitives";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -17,13 +17,16 @@ export async function TastingsSection({
     entries.map((e) => e.hero_image_path),
   );
 
-  const total = entries.length;
+  const tastingCount = entries.reduce(
+    (n, e) => n + (e.kind === "pairing" ? 2 : 1),
+    0,
+  );
   const recommended = entries.filter((e) => e.recommend).length;
 
   return (
     <>
       <p className="text-sm text-foreground-muted mb-4">
-        {total} tasting{total === 1 ? "" : "s"}
+        {tastingCount} tasting{tastingCount === 1 ? "" : "s"}
         {recommended > 0 ? ` · ${recommended} recommended` : ""}
       </p>
 
@@ -37,15 +40,25 @@ export async function TastingsSection({
         </Card>
       ) : (
         <div className="flex flex-col gap-3">
-          {entries.map((entry) => (
-            <TastingCard
-              key={entry.tasting_id}
-              entry={entry}
-              signedHero={
-                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-              }
-            />
-          ))}
+          {entries.map((entry) =>
+            entry.kind === "pairing" ? (
+              <PairingFeedCard
+                key={entry.pairing_session_id}
+                entry={entry}
+                signedHero={
+                  entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+                }
+              />
+            ) : (
+              <TastingCard
+                key={entry.tasting_id}
+                entry={entry}
+                signedHero={
+                  entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
+                }
+              />
+            ),
+          )}
         </div>
       )}
     </>
