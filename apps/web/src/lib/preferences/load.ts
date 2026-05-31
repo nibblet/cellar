@@ -15,7 +15,6 @@ type Row = {
   cigar_wrappers: string[] | null;
   bourbon_styles: string[] | null;
   bourbon_proof_bands: string[] | null;
-  hide_rare: boolean | null;
   max_catalog_tier: number | null;
 };
 
@@ -31,7 +30,7 @@ export async function loadMemberPreferences(
   const { data } = await supabase
     .from("member_preferences")
     .select(
-      "cigar_strengths, cigar_wrappers, bourbon_styles, bourbon_proof_bands, hide_rare, max_catalog_tier",
+      "cigar_strengths, cigar_wrappers, bourbon_styles, bourbon_proof_bands, max_catalog_tier",
     )
     .eq("user_id", userId)
     .maybeSingle();
@@ -57,7 +56,6 @@ function normalizeMaxCatalogTier(row: Row): number {
   ) {
     return row.max_catalog_tier;
   }
-  if (row.hide_rare === false) return CATALOG_TIER_CEILING;
   return DEFAULT_MAX_CATALOG_TIER;
 }
 
