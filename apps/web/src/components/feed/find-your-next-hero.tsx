@@ -7,6 +7,7 @@ import {
   cardFocusClassName,
   Divider,
   interactiveCardClassName,
+  Voice,
 } from "@/components/primitives";
 import type {
   FindNextMode,
@@ -17,9 +18,9 @@ import type {
 import { cn } from "@/lib/utils";
 
 const MODE_LABELS: Record<FindNextMode, { title: string; subtitle: string }> = {
-  pairing: { title: "Today's pairing", subtitle: "Cigar + bourbon" },
-  pour: { title: "Today's pour", subtitle: "From your shelf or catalog" },
-  smoke: { title: "Today's smoke", subtitle: "From your shelf or catalog" },
+  pairing: { title: "From your shelf", subtitle: "Cigar + bourbon you can make now" },
+  pour: { title: "Reach for a pour", subtitle: "Shelf first, then catalog" },
+  smoke: { title: "Reach for a smoke", subtitle: "Shelf first, then catalog" },
 };
 
 const INTERACTIVE_TILE = cn(interactiveCardClassName, cardFocusClassName);
@@ -40,7 +41,7 @@ export function FindYourNextHero({ suggestions }: FindYourNextHeroProps) {
 
   return (
     <div className="mb-4">
-      <Divider label="Find your next" />
+      <Divider label="What to reach for" />
 
       <div className="mt-3 flex flex-col gap-2">
         <PairingHeroTile
@@ -198,7 +199,27 @@ function FindNextSheet({
   );
 }
 
-function SourceBadge({ source }: { source: "cellar" | "catalog" }) {
+function SourceBadge({
+  source,
+  suggestionKind,
+}: {
+  source: "cellar" | "catalog";
+  suggestionKind?: "try_tonight" | "hunt_next";
+}) {
+  if (suggestionKind === "try_tonight") {
+    return (
+      <span className="text-[10px] uppercase tracking-widest text-foreground-subtle">
+        Try tonight
+      </span>
+    );
+  }
+  if (suggestionKind === "hunt_next") {
+    return (
+      <span className="text-[10px] uppercase tracking-widest text-foreground-subtle">
+        Hunt next
+      </span>
+    );
+  }
   return (
     <span className="text-[10px] uppercase tracking-widest text-foreground-subtle">
       {source === "cellar" ? "On your shelf" : "From the catalog"}
@@ -210,7 +231,8 @@ function PairingList({ items }: { items: FindNextPairSuggestion[] }) {
   if (items.length === 0) {
     return (
       <p className="text-sm text-foreground-subtle italic">
-        Stock your Have shelf with a cigar and a bourbon, or browse the catalog tabs below.
+        Mark a cigar and a bourbon on your Have shelf to see pairs you can make now — or browse the
+        catalog tabs below for inspiration.
       </p>
     );
   }
@@ -249,21 +271,35 @@ function PairingList({ items }: { items: FindNextPairSuggestion[] }) {
 function ProductList({ items }: { items: FindNextProductSuggestion[] }) {
   if (items.length === 0) {
     return (
-      <p className="text-sm text-foreground-subtle italic">
-        Mark a few on your Have shelf, or set taste preferences in You → Settings.
-      </p>
+      <Voice className="block text-sm text-foreground-subtle italic">
+        Mark bottles you own to see shelf picks — until then, set taste preferences in You →
+        Settings and we'll fill this from the catalog.
+      </Voice>
     );
   }
 
+  const hasCellar = items.some((i) => i.source === "cellar");
+
   return (
     <div className="flex flex-col gap-3">
+      {!hasCellar ? (
+        <p className="text-xs text-foreground-subtle mb-1">
+          Mark bottles you own to see shelf picks — until then, here's what fits your palate from
+          the catalog.
+        </p>
+      ) : null}
       {items.map((item) => (
         <Link key={item.product_id} href={`/products/${item.product_id}`} className="block">
           <Card className="hover:bg-surface-2 transition-colors">
-            <SourceBadge source={item.source} />
+            <SourceBadge source={item.source} suggestionKind={item.suggestion_kind} />
             <p className="text-base text-foreground mt-1 truncate">
               {productHeadline(item.name, item.brand)}
             </p>
+            {item.rationale ? (
+              <p className="text-sm text-foreground-muted italic mt-1 line-clamp-2">
+                {item.rationale}
+              </p>
+            ) : null}
           </Card>
         </Link>
       ))}

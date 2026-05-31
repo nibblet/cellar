@@ -122,6 +122,12 @@ Personal skill: `~/.cursor/skills/nccc-pairing/SKILL.md`
 
 Member-specific tools (`tonights_pick`, `suggest_try_next`, `get_my_cellar`) require `member_email`.
 
+### Store aisle prompt (Claude on your phone)
+
+> I'm looking at **[product name]**. What similar options are in the same tier, and what cigar should I pair with it?
+
+Claude should call `recommend` with `intent: "pair"` and `suggest_similar` with `match_tier: true`, passing your `member_email` when shelf context matters.
+
 ---
 
 ## Local verification (Vercel MCP direct)

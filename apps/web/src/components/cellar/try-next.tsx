@@ -8,15 +8,16 @@ type TryNextProps = {
 };
 
 /**
- * The TRY NEXT block on the member's own cellar — taste-ranked picks they
- * don't yet own, each with Winston's one-line read on why it fits. Cards are
- * navigational only; no accent, per the single-primary-action rule.
+ * Worth hunting — taste-ranked picks the member doesn't yet own.
  */
 export function TryNext({ cigars, bourbons }: TryNextProps) {
   if (cigars.length === 0 && bourbons.length === 0) return null;
 
   return (
     <section className="mb-5">
+      <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-2">
+        Worth hunting
+      </p>
       <Voice className="block text-sm mb-4">
         "Going off what you keep reaching for — a few you haven't poured yet."
       </Voice>

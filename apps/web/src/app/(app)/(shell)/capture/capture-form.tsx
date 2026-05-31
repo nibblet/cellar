@@ -1,15 +1,17 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { PairingCaptureFlow } from "@/components/pairing/pairing-capture-flow";
 import { Button, Card, Voice } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
+import type { ProductType } from "@/lib/wheel";
 import { submitCapture } from "./actions";
 
 type State = { status: "idle" | "error"; message?: string };
 const initial: State = { status: "idle" };
 
-type ProductType = "cigar" | "bourbon";
+type CaptureMode = ProductType | "both";
 
 type CaptureFormProps = {
   recentEvents: Array<{ id: string; name: string; date: string }>;
@@ -17,7 +19,7 @@ type CaptureFormProps = {
 
 export function CaptureForm({ recentEvents }: CaptureFormProps) {
   const [state, action, pending] = useActionState(submitCapture, initial);
-  const [type, setType] = useState<ProductType>("cigar");
+  const [mode, setMode] = useState<CaptureMode>("cigar");
   const [preview, setPreview] = useState<string | null>(null);
   const [preparingPhoto, setPreparingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -57,34 +59,51 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
   }
 
   if (pending) {
-    return <CapturePendingState type={type} preview={preview} />;
+    return <CapturePendingState mode={mode} preview={preview} />;
+  }
+
+  if (mode === "both") {
+    return (
+      <div className="flex flex-col gap-6">
+        <Voice className="text-center mb-2">
+          One photo of the pair — I'll name the cigar and the pour.
+        </Voice>
+        <fieldset className="grid grid-cols-3 gap-1.5 p-1 bg-surface border border-border rounded-[12px]">
+          <legend className="sr-only">What are you tasting?</legend>
+          <ModeOption label="Cigar" selected={false} onSelect={() => setMode("cigar")} />
+          <ModeOption label="Bourbon" selected={false} onSelect={() => setMode("bourbon")} />
+          <ModeOption label="Both" selected onSelect={() => setMode("both")} />
+        </fieldset>
+        <PairingCaptureFlow
+          recentEvents={recentEvents}
+          bourbonReleasePattern={null}
+          bourbonKnownReleaseLabels={[]}
+          initialCigar={null}
+        />
+      </div>
+    );
   }
 
   const voiceLine =
-    type === "cigar"
+    mode === "cigar"
       ? "Hold the band steady. I'll do the rest."
       : "Hold the label steady. I'll do the rest.";
 
   return (
     <form action={action} className="flex flex-col gap-6">
-      <input type="hidden" name="type" value={type} />
+      <input type="hidden" name="type" value={mode} />
 
       <Voice className="text-center mb-2">{voiceLine}</Voice>
 
-      <fieldset className="grid grid-cols-2 gap-2 p-1 bg-surface border border-border rounded-[12px]">
+      <fieldset className="grid grid-cols-3 gap-1.5 p-1 bg-surface border border-border rounded-[12px]">
         <legend className="sr-only">What are you tasting?</legend>
-        <TypeOption
-          value="cigar"
-          label="Cigar"
-          selected={type === "cigar"}
-          onSelect={() => setType("cigar")}
-        />
-        <TypeOption
-          value="bourbon"
+        <ModeOption label="Cigar" selected={mode === "cigar"} onSelect={() => setMode("cigar")} />
+        <ModeOption
           label="Bourbon"
-          selected={type === "bourbon"}
-          onSelect={() => setType("bourbon")}
+          selected={mode === "bourbon"}
+          onSelect={() => setMode("bourbon")}
         />
+        <ModeOption label="Both" selected={false} onSelect={() => setMode("both")} />
       </fieldset>
 
       <input
@@ -136,7 +155,7 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
           <div className="text-center px-6">
             <p className="text-xl mb-1 font-display">Add a photo</p>
             <p className="text-sm text-foreground-subtle">
-              {type === "cigar" ? "Show the band clearly" : "Show the label"}
+              {mode === "cigar" ? "Show the band clearly" : "Show the label"}
             </p>
           </div>
         )}
@@ -208,19 +227,11 @@ export function CaptureForm({ recentEvents }: CaptureFormProps) {
  * (~15-20s) — just vision identify + match + draft creation. Catalog
  * enrichment narration takes over on the product detail page.
  */
-function CapturePendingState({ type, preview }: { type: ProductType; preview: string | null }) {
+function CapturePendingState({ mode, preview }: { mode: CaptureMode; preview: string | null }) {
   const lines =
-    type === "cigar"
-      ? [
-          "Reading the band…",
-          "Checking the catalog for a match.",
-          "Almost there…",
-        ]
-      : [
-          "Reading the label…",
-          "Checking the catalog for a match.",
-          "Almost there…",
-        ];
+    mode === "cigar"
+      ? ["Reading the band…", "Checking the catalog for a match.", "Almost there…"]
+      : ["Reading the label…", "Checking the catalog for a match.", "Almost there…"];
 
   const [idx, setIdx] = useState(0);
   useEffect(() => {
@@ -255,12 +266,11 @@ function CapturePendingState({ type, preview }: { type: ProductType; preview: st
   );
 }
 
-function TypeOption({
+function ModeOption({
   label,
   selected,
   onSelect,
 }: {
-  value: ProductType;
   label: string;
   selected: boolean;
   onSelect: () => void;
@@ -271,7 +281,7 @@ function TypeOption({
       onClick={onSelect}
       aria-pressed={selected}
       className={cn(
-        "h-11 rounded-[10px] text-base font-medium transition-colors",
+        "h-11 rounded-[10px] text-sm font-medium transition-colors",
         selected
           ? "bg-accent text-ink-900"
           : "bg-transparent text-foreground-muted hover:bg-surface-2",

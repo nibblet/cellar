@@ -1,5 +1,7 @@
+export { BrandFamilyDivider } from "./brand-family-divider";
 export { CatalogCard } from "./catalog-card";
 export { CatalogFilterControls } from "./catalog-filter-controls";
+export { CatalogViewToggle, type CatalogView } from "./catalog-view-toggle";
 export { DailyPourCard } from "./daily-pour-card";
 export { DailyPourSkeleton } from "./daily-pour-skeleton";
 export { FeedBodySkeleton } from "./feed-body-skeleton";

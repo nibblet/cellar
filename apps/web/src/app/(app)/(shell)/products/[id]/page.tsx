@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CellarToggle } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
-import { PairsWith } from "@/components/pairing";
 import { Card, Divider } from "@/components/primitives";
 import {
   CaptureConfirmBanner,
@@ -16,8 +15,8 @@ import {
   type ProductHeroImage,
   ReleaseVariantChips,
   TastingActionSegment,
+  WinstonSuggests,
   WinstonTastingNote,
-  YouMightAlsoLike,
 } from "@/components/product";
 import type { GroupVoice } from "@/lib/aggregation/group-voice";
 import { loadGroupVoice } from "@/lib/aggregation/group-voice";
@@ -25,20 +24,18 @@ import { composeProductSubtitle } from "@/lib/catalog/product-subtitle";
 import { loadCellarRow } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { productNeedsCatalogEnrichment } from "@/lib/enrich/needs-enrichment";
+import { signImagePaths } from "@/lib/feed/queries";
 import { formatMemberName } from "@/lib/identity";
 import { makerSlug } from "@/lib/makers/slug";
-import { signImagePaths } from "@/lib/feed/queries";
-import { loadOrComputeTopPairings, suggestShelfPairing } from "@/lib/pairing/engine";
-import { checkGroupValidation } from "@/lib/pairing/group-validation";
-import { mergePairsWith } from "@/lib/pairing/merge-pairs-with";
 import { ensureWinstonProse } from "@/lib/product/ensure-winston-prose";
-import { RerollWinstonButton } from "./reroll-winston-button";
 import type { AdjacentProduct } from "@/lib/similarity/suggest-adjacent";
 import { suggestAdjacentProducts } from "@/lib/similarity/suggest-adjacent";
+import { loadProductSuggestions } from "@/lib/suggestions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { collectKnownReleaseLabels } from "@/lib/tasting/known-release-labels";
 import type { ProductType, WheelVector } from "@/lib/wheel";
 import { DraftConfirmBanner } from "./draft-confirm";
+import { RerollWinstonButton } from "./reroll-winston-button";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{
@@ -46,7 +43,6 @@ type SearchParams = Promise<{
   just_saved?: string;
   event?: string;
   release_label?: string;
-  release_label_source?: string;
 }>;
 
 export default async function ProductDetailPage({
@@ -57,8 +53,7 @@ export default async function ProductDetailPage({
   searchParams: SearchParams;
 }) {
   const { id } = await params;
-  const { just_captured, just_saved, event, release_label, release_label_source } =
-    await searchParams;
+  const { just_captured, just_saved, event, release_label } = await searchParams;
 
   const supabase = await createSupabaseServerClient();
 
@@ -86,46 +81,30 @@ export default async function ProductDetailPage({
   const canEdit = isAdmin || (isCreator && product.status === "draft");
 
   const cellarRow = userId ? await loadCellarRow(supabase, userId, id) : ZERO_ROW;
+  const productOnShelf = cellarRow.have;
 
-  const pairingMinScore = 45;
-  const [groupVoice, catalogPairings, shelfPick, adjacent, imagesResult, reviewCountResult] =
-    await Promise.all([
-      loadGroupVoice(supabase, id, productType),
-      loadOrComputeTopPairings(supabase, id, { limit: 3, minScore: pairingMinScore }),
-      userId
-        ? suggestShelfPairing(supabase, userId, id, { minScore: pairingMinScore })
-        : Promise.resolve(null),
-      suggestAdjacentProducts(supabase, id, { limit: 3 }),
-      supabase
-        .from("product_images")
-        .select(
-          "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
-        )
-        .eq("product_id", id)
-        .order("is_hero", { ascending: false })
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("product_reviews")
-        .select("id", { count: "exact", head: true })
-        .eq("product_id", id),
-    ]);
-
-  const pairings = mergePairsWith(shelfPick, catalogPairings);
+  const [groupVoice, suggestions, adjacent, imagesResult, reviewCountResult] = await Promise.all([
+    loadGroupVoice(supabase, id, productType),
+    userId
+      ? loadProductSuggestions(supabase, id, userId)
+      : loadProductSuggestions(supabase, id, null),
+    suggestAdjacentProducts(supabase, id, { limit: 3 }),
+    supabase
+      .from("product_images")
+      .select(
+        "image_url, is_hero, created_at, contributor:users!product_images_contributed_by_fkey(name_first, name_last_initial)",
+      )
+      .eq("product_id", id)
+      .order("is_hero", { ascending: false })
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("product_reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", id),
+  ]);
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
   const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
-
-  const validatedFlags = await Promise.all(
-    pairings.map(async (c) => {
-      const validated = await checkGroupValidation(
-        supabase,
-        productType === "cigar" ? id : c.product_id,
-        productType === "cigar" ? c.product_id : id,
-      );
-      return validated ? c.product_id : null;
-    }),
-  );
-  const validatedPairs = new Set(validatedFlags.filter((x): x is string => x !== null));
 
   type ImageRow = {
     image_url: string;
@@ -291,15 +270,14 @@ export default async function ProductDetailPage({
         </div>
       ) : null}
 
-      <div className="mt-6">
-        <Divider label="Pairs with" />
-        <PairsWith
+      {suggestions ? (
+        <WinstonSuggests
           sourceType={productType}
-          sourceId={id}
-          candidates={pairings}
-          validatedPairs={validatedPairs}
+          suggestions={suggestions}
+          justCaptured={Boolean(just_captured)}
+          productOnShelf={productOnShelf}
         />
-      </div>
+      ) : null}
 
       <div className="mt-8" id="depth">
         <ProductDepthSection
@@ -317,8 +295,6 @@ export default async function ProductDetailPage({
           <ExploreLinks brand={product.brand ?? null} name={product.name} />
         </div>
       ) : null}
-
-      <YouMightAlsoLike products={adjacent} />
     </AppShell>
   );
 }

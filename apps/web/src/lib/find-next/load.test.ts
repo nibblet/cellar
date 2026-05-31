@@ -47,6 +47,7 @@ describe("mergeProductSuggestions", () => {
     name: id,
     brand: null,
     product_type: "bourbon",
+    suggestion_kind: source === "cellar" ? "try_tonight" : "hunt_next",
   });
 
   it("cellar first, catalog fills, dedupes", () => {

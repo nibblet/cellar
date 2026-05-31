@@ -61,8 +61,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-006 — Unused `release_label_source` variable in product detail page
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-05-31
+- **Fixed:** 2026-05-31
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-006-unused-release-label-source.md`
 - **File:** `apps/web/src/app/(app)/(shell)/products/[id]/page.tsx` line 60
 - **Summary:** `release_label_source` is destructured from `searchParams` but never read. Causes a `noUnusedVariables` Biome lint error. No functional impact. One-line fix: remove from destructure (and optionally from the `SearchParams` type).
@@ -71,8 +72,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-007 — `mcpGetClubFeed` `recommends_only` filter under-delivers results
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-05-31
+- **Fixed:** 2026-05-31
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-007-club-feed-recommends-only.md`
 - **File:** `apps/web/src/lib/mcp/tools.ts` function `mcpGetClubFeed`
 - **Summary:** When `recommends_only: true`, the function fetches `limit` items from the DB and filters client-side. If recent tastings are mostly non-recommends, the returned set can be far fewer than the requested `limit`. Fix: oversample (5×, capped at 100) when this filter is active so there's headroom after filtering.
@@ -81,8 +83,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-008 — Maker page `house_style` uses reserved moss color
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-05-31
+- **Fixed:** 2026-05-31
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-008-maker-house-style-moss-color.md`
 - **File:** `apps/web/src/app/(app)/(shell)/makers/[slug]/page.tsx` line 61
 - **Summary:** The AI-derived `house_style` summary line is rendered in `text-moss-500`. Moss is reserved by the design system for "club has tested this" pairing validation signals. House style is not a club-validated designation — it's an AI aggregate of the maker's product trait vectors. Using moss here falsely implies club endorsement. Fix: swap to `text-foreground-subtle`.

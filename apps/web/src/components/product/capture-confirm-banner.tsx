@@ -70,6 +70,13 @@ export function CaptureConfirmBanner({
             Edit
           </Link>
         </div>
+
+        <Link
+          href={`/?tab=${productType === "cigar" ? "cigars" : "bourbons"}`}
+          className="text-sm text-foreground-muted hover:text-foreground text-center"
+        >
+          Not quite right? Browse the catalog
+        </Link>
       </form>
     </Card>
   );

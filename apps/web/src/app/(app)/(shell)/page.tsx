@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { NCCCLogo, Winston } from "@/components/brand";
+import { MakerSummaryList } from "@/components/makers/maker-summary-list";
 import {
+  BrandFamilyDivider,
   CatalogCard,
   CatalogFilterControls,
-  DailyPourCard,
-  DailyPourSkeleton,
+  CatalogViewToggle,
+  type CatalogView,
   FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
@@ -20,8 +22,6 @@ import { PairingDraftEnrichment } from "@/components/pairing/pairing-draft-enric
 import { Button, Card, Divider, Voice } from "@/components/primitives";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
-import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
-import { selectDailyPour, todayKey } from "@/lib/daily-pour/select";
 import { loadEnrichmentJobsForProducts } from "@/lib/enrich/enrichment-jobs";
 import {
   type CatalogFilters,
@@ -31,7 +31,7 @@ import {
 } from "@/lib/feed/catalog-queries";
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { loadFindNextSuggestions } from "@/lib/find-next/load";
-import { loadCachedPairingProse } from "@/lib/pairing/prose-cache";
+import { loadMakerSummaries } from "@/lib/makers/browse";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -40,7 +40,11 @@ import type {
   CigarStrength,
   CigarWrapperBucket,
 } from "@/lib/preferences/types";
-import { CATALOG_TIER_CEILING, hasAnyPreferences } from "@/lib/preferences/types";
+import {
+  CATALOG_TIER_CEILING,
+  DEFAULT_MAX_CATALOG_TIER,
+  hasAnyPreferences,
+} from "@/lib/preferences/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type MeetupEvent = {
@@ -53,6 +57,7 @@ type MeetupEvent = {
 
 type SearchParams = Promise<{
   tab?: string;
+  view?: string;
   // Cigar filters
   strength?: string;
   wrappers?: string;
@@ -76,6 +81,10 @@ type SearchParams = Promise<{
 function parseTab(raw: string | undefined): FeedTab {
   if (raw === "cigars" || raw === "bourbons") return raw;
   return "for-you";
+}
+
+function parseCatalogView(raw: string | undefined): CatalogView {
+  return raw === "makers" || raw === "brands" ? "makers" : "products";
 }
 
 const VALID_STRENGTHS = new Set(["mild", "mild-medium", "medium", "medium-full", "full"]);
@@ -158,6 +167,7 @@ function parseFilters(sp: Awaited<SearchParams>): {
 export default async function FeedPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams;
   const tab = parseTab(sp.tab);
+  const catalogView = parseCatalogView(sp.view);
   const { filters, sort } = parseFilters(sp);
   const pairingSaved = sp.just_saved_pairing === "1";
   const pairCigarId = sp.pair_cigar?.trim() || null;
@@ -174,6 +184,7 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
       <Suspense fallback={<FeedBodySkeleton />}>
         <FeedBody
           tab={tab}
+          catalogView={catalogView}
           filters={filters}
           sort={sort}
           pairingSaved={pairingSaved}
@@ -187,6 +198,7 @@ export default async function FeedPage({ searchParams }: { searchParams: SearchP
 
 async function FeedBody({
   tab,
+  catalogView,
   filters,
   sort,
   pairingSaved,
@@ -194,6 +206,7 @@ async function FeedBody({
   pairBourbonId,
 }: {
   tab: FeedTab;
+  catalogView: CatalogView;
   filters: CatalogFilters;
   sort: CatalogSortKey;
   pairingSaved: boolean;
@@ -209,15 +222,8 @@ async function FeedBody({
     return (
       <>
         {viewerId ? (
-          <Suspense
-            fallback={
-              <>
-                <DailyPourSkeleton />
-                <FindYourNextSkeleton />
-              </>
-            }
-          >
-            <LoungeHeroSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
+          <Suspense fallback={<FindYourNextSkeleton />}>
+            <FindYourNextSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
           </Suspense>
         ) : null}
         <Suspense fallback={<FeedBodySkeleton />}>
@@ -238,40 +244,13 @@ async function FeedBody({
     <CatalogBody
       supabase={supabase}
       viewerId={viewerId}
+      catalogTab={tab}
+      catalogView={catalogView}
       productType={tab === "cigars" ? "cigar" : "bourbon"}
       preferences={preferences}
       filters={filters}
       sort={sort}
     />
-  );
-}
-
-async function LoungeHeroSection({
-  supabase,
-  viewerId,
-  preferences,
-}: {
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
-  viewerId: string;
-  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
-}) {
-  const candidates = await loadDailyPourCandidates(supabase, preferences, viewerId);
-  const pour = selectDailyPour({ memberId: viewerId, date: todayKey() }, candidates);
-
-  if (pour) {
-    const cached = await loadCachedPairingProse(supabase, pour.cigar_id, pour.bourbon_id);
-    if (cached?.notes) {
-      pour.rationale = cached.notes;
-    }
-  }
-
-  return (
-    <div className="mb-4">
-      {pour ? <DailyPourCard pour={pour} /> : null}
-      <Suspense fallback={<FindYourNextSkeleton />}>
-        <FindYourNextSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
-      </Suspense>
-    </div>
   );
 }
 
@@ -458,6 +437,8 @@ async function FeedList({
 async function CatalogBody({
   supabase,
   viewerId,
+  catalogTab,
+  catalogView,
   productType,
   preferences,
   filters,
@@ -465,11 +446,29 @@ async function CatalogBody({
 }: {
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
   viewerId: string | null;
+  catalogTab: "cigars" | "bourbons";
+  catalogView: CatalogView;
   productType: "cigar" | "bourbon";
   preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
   filters: CatalogFilters;
   sort: CatalogSortKey;
 }) {
+  if (catalogView === "makers") {
+    const maxCatalogTier = preferences?.max_catalog_tier ?? DEFAULT_MAX_CATALOG_TIER;
+    const summaries = await loadMakerSummaries(supabase, productType, maxCatalogTier);
+    const emptyMessage =
+      productType === "cigar"
+        ? '"No cigar brands in the catalog yet."'
+        : '"No bourbon brands in the catalog yet."';
+
+    return (
+      <>
+        <CatalogViewToggle tab={catalogTab} activeView="makers" />
+        <MakerSummaryList summaries={summaries} emptyMessage={emptyMessage} />
+      </>
+    );
+  }
+
   const [entries, cellarSnapshot] = await Promise.all([
     loadCatalogBrowse(supabase, productType, preferences, 500, filters),
     viewerId ? loadCellarSnapshot(supabase, viewerId) : null,
@@ -481,7 +480,7 @@ async function CatalogBody({
 
   return (
     <>
-      {/* Filter + sort controls — client component, reads/writes URL params */}
+      <CatalogViewToggle tab={catalogTab} activeView="products" />
       <CatalogFilterControls productType={productType} activeFilters={filters} activeSort={sort} />
 
       {entries.length === 0 ? (
@@ -544,7 +543,7 @@ function CatalogList({
       <div className="flex flex-col gap-3">
         {groupCatalogByBrand(entries).map((group) => (
           <section key={group.brand_family ?? "_ungrouped"} className="flex flex-col gap-3">
-            {group.brand_family ? <Divider label={group.brand_family} /> : null}
+            {group.brand_family ? <BrandFamilyDivider group={group} /> : null}
             {group.entries.map(renderCard)}
           </section>
         ))}

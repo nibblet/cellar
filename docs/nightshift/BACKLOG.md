@@ -35,7 +35,7 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-005] Makers browse page — `/makers` list
-- **Status:** planned
+- **Status:** done
 - **Category:** enhance
 - **Seeded:** 2026-05-31
 - **Last Updated:** 2026-05-31
@@ -44,6 +44,7 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** A `/makers` list page grouped by type (cigar makers / distilleries) showing all brands in the catalog with product counts and house style. Currently maker pages are only reachable by tapping a brand on product detail — there's no front door. Completes the Phase 9 investment.
 - **Night Notes:**
   - 2026-05-31: Seeded and immediately promoted to `planned`. Phase 9 detail pages exist but browsing to them requires knowing which product to tap first. This is pure DB aggregation — no AI cost, 1.5–2 hours of work, high discoverability payoff.
+  - 2026-05-31: Shipped — `/makers` index, in-tab `view=makers` on Cigars/Bourbons, filter-sheet links, clickable bourbon brand-family dividers.
 
 ---
 

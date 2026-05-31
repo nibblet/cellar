@@ -10,6 +10,7 @@ import { Button, Card, Voice } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
 import { PairingCapturePicker } from "./pairing-capture-picker";
+import { PairingQuickRecommendForm } from "./pairing-quick-recommend-form";
 import { PairingTasteFormCollapsed } from "./pairing-taste-form-collapsed";
 import { ProductPickerSection } from "./product-picker-section";
 
@@ -191,15 +192,19 @@ export function PairingCaptureFlow({
           </Card>
         ) : null}
 
-        <Button
-          type="button"
-          size="large"
-          className="w-full"
-          disabled={!canContinue}
-          onClick={() => setStep("taste")}
-        >
-          Continue
-        </Button>
+        {canContinue ? (
+          <PairingQuickRecommendForm
+            cigarId={cigar.productId}
+            bourbonId={bourbon.productId}
+            photoStoragePath={storagePath}
+            cigarExtractedName={cigar.extractedName}
+            cigarExtractedBrand={cigar.extractedBrand}
+            bourbonExtractedName={bourbon.extractedName}
+            bourbonExtractedBrand={bourbon.extractedBrand}
+            visionReleaseLabel={bourbon.releaseLabel}
+            onAddNotes={() => setStep("taste")}
+          />
+        ) : null}
       </div>
     );
   }

@@ -10,7 +10,7 @@ import {
   validatedCardClassName,
 } from "@/components/primitives";
 import { loadOrComputeTopPairings, type PairingCandidate } from "@/lib/pairing/engine";
-import { loadCachedPairingProse, decodeRationaleText } from "@/lib/pairing/prose-cache";
+import { decodeRationaleText, loadCachedPairingProse } from "@/lib/pairing/prose-cache";
 import { pairingTierLabel } from "@/lib/pairing/tier";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
@@ -88,13 +88,13 @@ export default async function PairingsIndexPage() {
         <Winston variant="bust" size={64} className="mb-2 rounded-full" />
         <h1 className="text-3xl">Pairings</h1>
         <p className="text-sm tracking-widest uppercase text-foreground-subtle mt-1">
-          Winston's matches
+          Your matches
         </p>
       </header>
 
-      <Link href="/pairings/capture" className="block mb-6">
-        <Button size="large" className="w-full">
-          Capture a pairing
+      <Link href="/capture" className="block mb-6">
+        <Button size="large" variant="secondary" className="w-full">
+          Log a pairing
         </Button>
       </Link>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import type { CatalogFilters, CatalogSortKey } from "@/lib/feed/catalog-queries";
@@ -207,7 +208,7 @@ function FilterSheet({
         </label>
       </section>
 
-      <BrandFilter activeFilters={activeFilters} onUpdate={onUpdate} />
+      <BrandFilter productType={productType} activeFilters={activeFilters} onUpdate={onUpdate} />
 
       {productType === "cigar" ? (
         <CigarFilters activeFilters={activeFilters} onUpdate={onUpdate} />
@@ -339,17 +340,30 @@ function CigarFilters({
 }
 
 function BrandFilter({
+  productType,
   activeFilters,
   onUpdate,
 }: {
+  productType: ProductType;
   activeFilters: CatalogFilters;
   onUpdate: (u: Record<string, string | null>) => void;
 }) {
+  const catalogTab = productType === "cigar" ? "cigars" : "bourbons";
+  const browseLabel = productType === "cigar" ? "Browse cigar brands" : "Browse bourbon brands";
+
   return (
     <section>
-      <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
-        Brand / maker
-      </p>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
+          Brand / maker
+        </p>
+        <Link
+          href={`/?tab=${catalogTab}&view=brands`}
+          className="text-[10px] uppercase tracking-widest text-foreground-muted hover:text-foreground transition-colors shrink-0"
+        >
+          {browseLabel} →
+        </Link>
+      </div>
       <input
         type="search"
         defaultValue={activeFilters.brand ?? ""}

@@ -58,7 +58,7 @@ export default async function MakerPage({ params }: { params: Params }) {
           </a>
         ) : null}
         {maker.house_style ? (
-          <p className="text-[11px] uppercase tracking-widest text-moss-500 mt-2">
+          <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-2">
             {maker.house_style}
           </p>
         ) : null}

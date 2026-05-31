@@ -36,6 +36,7 @@
     "apply:catalog-curation": "tsx --env-file=.env.local scripts/seed/apply-catalog-curation.ts",
     "export:catalog-fixup": "tsx --env-file=.env.local scripts/seed/export-catalog-fixup.ts",
     "apply:catalog-fixup": "tsx --env-file=.env.local scripts/seed/apply-catalog-fixup.ts",
+    "apply:keep-catalog-fixes": "tsx --env-file=.env.local scripts/seed/apply-keep-catalog-fixes.ts",
     "remove:catalog-tier": "tsx --env-file=.env.local scripts/seed/remove-catalog-tier.ts",
     "clear:stale-enrichment-pending": "tsx --env-file=.env.local scripts/seed/clear-stale-enrichment-pending.ts",
     "repair:after-dedupe": "tsx --env-file=.env.local scripts/seed/repair-after-dedupe.ts",

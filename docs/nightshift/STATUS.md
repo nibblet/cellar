@@ -8,7 +8,7 @@ Last updated: 2026-05-31 (Nightshift run)
 
 **Phase 8 complete, Phase 9 partial.**
 
-Phase 8 (taste recommendations, cellar, Want re-ranking, Winston voice rewrite) is fully done. Phase 9 (Maker & Distillery pages) landed as of 2026-05-30: maker detail pages exist at `/makers/[slug]`. A browse list at `/makers` is still missing (IDEA-005, planned).
+Phase 8 (taste recommendations, cellar, Want re-ranking, Winston voice rewrite) is fully done. Phase 9 (Maker & Distillery pages) is complete as of 2026-05-31: maker detail at `/makers/[slug]`, browse index at `/makers`, and in-tab houses browse on Cigars / Bourbons (`view=makers`).
 
 An MCP server (`/api/[transport]`) and a Cloudflare OAuth proxy worker (`workers/nccc-mcp-oauth-proxy/`) were added, exposing 9 Claude tools to external AI clients.
 
@@ -126,18 +126,18 @@ Tested with Vitest.
 - Winston rationale lines per Try Next pick: GPT-5 nano call, 6 picks → 6 lines (switched from mini as of 2026-05-30).
 - **Tonight's Pick** (IDEA-001): `TonightsPickSection` on the cellar page — deterministic daily pick from Have shelf, rendered as a Winston voice line linking to the pairing page. Zero AI cost.
 
-### Maker Pages — Phase 9 (partial)
+### Maker Pages — Phase 9
 - `makers` table: slug, name, type, country, website, blurb (Winston prose), blurb_source, house_style, updated_at trigger.
 - `ensureMaker()`: upsert-on-first-view — aggregates `trait_vector` across maker's products, derives `house_style` line, generates Winston blurb via GPT-5 mini on first render (cached in DB thereafter).
 - `resolveMakerIdentity()`: looks up by slug, falls back to scanning products if not yet in `makers` table.
 - Maker detail page at `/makers/[slug]`: header (name, country, website, house_style), Winston blurb, catalog section.
 - Admin blurb edit + regenerate (guarded with `requireAdminUserId`).
 - Brand name on product detail is now a link → `/makers/[makerSlug(brand)]`.
-- **Missing**: `/makers` browse list (IDEA-005, planned).
+- Browse: `/makers` index (`?type=cigar|bourbon`), `/?tab=cigars|bourbons&view=makers`, filter-sheet + contextual links, clickable bourbon `brand_family` dividers → maker page.
 
 ### Feed
 - `for-you` tab: Daily Pour card (deterministic from Have shelf), Find Your Next (Apify-enriched), tasting cards + pairing cards
-- `cigars` / `bourbons` tabs: catalog browse with filters (strength, wrapper, proof, style, brand, club-only, enriched-only) and sorts
+- `cigars` / `bourbons` tabs: product catalog or houses view (`view=makers`); filters (strength, wrapper, proof, style, brand, club-only, enriched-only) and sorts on products view
 - `forYou` flag per feed card: member preference match
 
 ### Pairing

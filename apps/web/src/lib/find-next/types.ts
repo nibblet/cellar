@@ -22,6 +22,8 @@ export type FindNextProductSuggestion = {
   name: string;
   brand: string | null;
   product_type: "cigar" | "bourbon";
+  suggestion_kind: "try_tonight" | "hunt_next";
+  rationale?: string;
 };
 
 export type FindNextSuggestions = {

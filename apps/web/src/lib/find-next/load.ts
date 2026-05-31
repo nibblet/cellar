@@ -2,9 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { loadPickPourCandidates } from "@/lib/pick-pour/load";
-import { productMatchesPreferences } from "@/lib/preferences/match";
-import type { MemberPreferences } from "@/lib/preferences/types";
-import { hasAnyPreferences } from "@/lib/preferences/types";
+import { cosineSimilarity } from "@/lib/similarity/cosine";
+import { loadTasteByType } from "@/lib/taste/context";
+import { ensureTasteRecommendations } from "@/lib/taste/load";
+import type { ProductType, TraitVector } from "@/lib/wheel";
 import {
   FIND_NEXT_LIMIT,
   type FindNextPairSuggestion,
@@ -18,9 +19,6 @@ export function pairKey(cigarId: string, bourbonId: string): string {
   return `${cigarId}:${bourbonId}`;
 }
 
-/**
- * Merge cellar-first pairs with catalog pairs, deduped, capped at limit.
- */
 export function mergePairSuggestions(
   cellar: FindNextPairSuggestion[],
   catalog: FindNextPairSuggestion[],
@@ -61,12 +59,12 @@ export function mergeProductSuggestions(
 export async function loadFindNextSuggestions(
   supabase: SupabaseClient,
   memberId: string,
-  preferences: MemberPreferences | null,
+  preferences: import("@/lib/preferences/types").MemberPreferences | null,
 ): Promise<FindNextSuggestions> {
   const [pairing, pour, smoke] = await Promise.all([
     loadPairingSuggestions(supabase, memberId, preferences),
-    loadProductSuggestions(supabase, memberId, preferences, "bourbon"),
-    loadProductSuggestions(supabase, memberId, preferences, "cigar"),
+    loadProductSuggestions(supabase, memberId, "bourbon"),
+    loadProductSuggestions(supabase, memberId, "cigar"),
   ]);
 
   return { pairing, pour, smoke };
@@ -75,7 +73,7 @@ export async function loadFindNextSuggestions(
 async function loadPairingSuggestions(
   supabase: SupabaseClient,
   memberId: string,
-  preferences: MemberPreferences | null,
+  preferences: import("@/lib/preferences/types").MemberPreferences | null,
 ): Promise<FindNextPairSuggestion[]> {
   const [cellarRaw, catalogRaw] = await Promise.all([
     loadPickPourCandidates(supabase, memberId),
@@ -118,10 +116,15 @@ async function loadPairingSuggestions(
 async function loadProductSuggestions(
   supabase: SupabaseClient,
   memberId: string,
-  preferences: MemberPreferences | null,
-  productType: "cigar" | "bourbon",
+  productType: ProductType,
 ): Promise<FindNextProductSuggestion[]> {
-  const cellar = await loadCellarSnapshot(supabase, memberId);
+  const [cellar, recommendations] = await Promise.all([
+    loadCellarSnapshot(supabase, memberId),
+    ensureTasteRecommendations(supabase, memberId),
+  ]);
+
+  const tasteByType = await loadTasteByType(supabase, cellar);
+  const tasteVector = tasteByType[productType].tasteVector;
 
   const haveIds = [...cellar.have];
   let cellarProducts: FindNextProductSuggestion[] = [];
@@ -129,58 +132,49 @@ async function loadProductSuggestions(
   if (haveIds.length > 0) {
     const { data } = await supabase
       .from("products")
-      .select("id, name, brand, type")
+      .select("id, name, brand, type, trait_vector")
       .in("id", haveIds)
       .eq("type", productType)
-      .order("name");
+      .eq("status", "confirmed");
 
-    cellarProducts = (
-      (data ?? []) as Array<{ id: string; name: string; brand: string | null }>
-    ).map((p) => ({
-      kind: "product" as const,
-      source: "cellar" as const,
-      product_id: p.id,
-      name: p.name,
-      brand: p.brand,
-      product_type: productType,
-    }));
+    type Row = {
+      id: string;
+      name: string;
+      brand: string | null;
+      trait_vector: TraitVector | null;
+    };
+
+    const rows = (data ?? []) as Row[];
+
+    cellarProducts = rows
+      .map((p) => {
+        const score =
+          tasteVector && p.trait_vector ? cosineSimilarity(tasteVector, p.trait_vector) : 0;
+        return { row: p, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .map(({ row }) => ({
+        kind: "product" as const,
+        source: "cellar" as const,
+        product_id: row.id,
+        name: row.name,
+        brand: row.brand,
+        product_type: productType,
+        suggestion_kind: "try_tonight" as const,
+      }));
   }
 
-  const { data: catalogRows } = await supabase
-    .from("products")
-    .select("id, name, brand, specs")
-    .eq("type", productType)
-    .eq("status", "confirmed")
-    .order("name")
-    .limit(150);
-
-  type Row = {
-    id: string;
-    name: string;
-    brand: string | null;
-    specs: Record<string, unknown> | null;
-  };
-
-  const haveSet = cellar.have;
-  const catalog: FindNextProductSuggestion[] = [];
-
-  for (const row of (catalogRows as Row[] | null) ?? []) {
-    if (haveSet.has(row.id)) continue;
-    if (preferences && hasAnyPreferences(preferences)) {
-      if (!productMatchesPreferences({ type: productType, specs: row.specs }, preferences)) {
-        continue;
-      }
-    }
-    catalog.push({
-      kind: "product",
-      source: "catalog",
-      product_id: row.id,
-      name: row.name,
-      brand: row.brand,
-      product_type: productType,
-    });
-    if (catalog.length >= FIND_NEXT_LIMIT * 2) break;
-  }
+  const tastePicks = productType === "cigar" ? recommendations.cigars : recommendations.bourbons;
+  const catalog: FindNextProductSuggestion[] = tastePicks.map((p) => ({
+    kind: "product" as const,
+    source: "catalog" as const,
+    product_id: p.product_id,
+    name: p.name,
+    brand: p.brand,
+    product_type: productType,
+    suggestion_kind: "hunt_next" as const,
+    rationale: p.rationale,
+  }));
 
   return mergeProductSuggestions(cellarProducts, catalog);
 }

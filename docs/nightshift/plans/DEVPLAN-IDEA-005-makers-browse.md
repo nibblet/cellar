@@ -1,14 +1,26 @@
 # Dev Plan: [IDEA-005] Makers browse page
 
 ## What This Does
-Adds a `/makers` list page that shows all cigar makers and bourbon distilleries whose products
-are in the NCCC catalog. Members can tap any maker to navigate to the Phase 9 maker detail page.
-Without this, maker pages are only reachable by tapping a brand name on a product detail page —
-there's no way to discover "what makers do we have in the catalog?"
+Completes Phase 9 maker discovery: members can browse cigar makers and bourbon distilleries from
+the **Cigars / Bourbons catalog tabs** (in-tab houses view) and from a canonical **`/makers`**
+index. Maker detail pages (`/makers/[slug]`) remain the destination; this work adds the front
+doors.
 
 For a club of 12 who care about provenance and house character, browsing by maker is a natural
-navigation pattern. It completes the Phase 9 investment: the detail pages exist but the front
-door doesn't.
+navigation pattern alongside the existing product catalog.
+
+## Navigation model (agreed)
+
+| Pattern | Surface | URL |
+|--------|---------|-----|
+| **3b** Products \| Houses toggle | Cigars / Bourbons tab | `/?tab=cigars&view=makers` or `/?tab=bourbons&view=makers` |
+| **3a** Contextual browse link | Below toggle (products view) | Same as makers view on current tab |
+| **3a** Full index link | Below toggle (makers view) | `/makers?type=cigar` or `?type=bourbon` |
+| **3c** Clickable bourbon dividers | Bourbons product list | `/makers/[slug]` from `makerSlugForCatalogGroup` |
+| **Filter sheet** | Brand / maker section | Link to `/?tab=…&view=makers` |
+| **Canonical index** | Standalone | `/makers` (both types) or scoped by `?type=` |
+
+**Not doing:** fourth Lounge tab, For You feed grouping, bottom-nav entry.
 
 ## User Stories
 - As a member, I want to browse all cigar makers and distilleries in the catalog so I can explore
@@ -21,137 +33,58 @@ door doesn't.
 ## Implementation
 
 ### Phase 1: Data query
-1. Create `apps/web/src/lib/makers/browse.ts`:
-   ```ts
-   export type MakerSummary = {
-     slug: string;
-     name: string;
-     type: ProductType;
-     country: string | null;
-     house_style: string | null;
-     product_count: number;
-   };
+1. `apps/web/src/lib/makers/browse.ts`:
+   - `MakerSummary`, `buildMakerSummaries` (pure, unit-tested)
+   - `loadMakerSummaries(supabase, type?)` — counts from `products.brand` + `type`, metadata from `makers`
+   - `makerSlugForCatalogGroup` — slug for bourbon `brand_family` dividers (prefers core-range `product.brand`)
 
-   export async function loadMakerSummaries(
-     supabase: SupabaseClient,
-     type?: ProductType,
-   ): Promise<MakerSummary[]>
-   ```
-   - Query: `makers` table joined with a count of `products` where `status='confirmed'`
-     and `catalog_included=true` and `brand = makers.name` (or add a `product_count` column
-     to the makers table — see note below).
-   - Actually the simplest approach: query `products` grouped by `brand`+`type` to get counts,
-     then join with `makers` for the rest. Two queries: one for counts, one for maker rows.
-   - Sort: by `name` ASC within each type group.
-   - Alternative: use a `loadCatalogBrowse`-style brand aggregation since products already have
-     `brand` and `type` — build the summary list from products and augment with `makers` rows
-     where they exist.
+2. **Note:** Counts use `product.brand` (maker page identity), not `brand_family`. Divider labels
+   may differ from `brand`; slug resolution prefers a core-range row's `brand`.
 
-   **Recommended approach** (avoids a complex join):
-   ```ts
-   // Step 1: load all confirmed/included products, group by brand+type
-   const products = await supabase.from("products")
-     .select("brand, type")
-     .eq("status", "confirmed")
-     .eq("catalog_included", true)
-     .not("brand", "is", null);
+3. **Checkpoint:** `lib/makers/browse.test.ts`
 
-   // Build count map: "brand:type" → count
-   const counts = new Map<string, number>();
-   for (const p of products.data ?? []) {
-     const key = `${p.brand}:${p.type}`;
-     counts.set(key, (counts.get(key) ?? 0) + 1);
-   }
+### Phase 2: Shared UI + `/makers` index
+1. `components/makers/maker-summary-card.tsx`, `maker-summary-list.tsx`
+2. `apps/web/src/app/(app)/(shell)/makers/page.tsx`:
+   - `?type=cigar` \| `bourbon` optional filter
+   - Sections: CIGAR MAKERS / DISTILLERIES
+   - Links back to in-tab browse
 
-   // Step 2: load makers rows
-   const { data: makerRows } = await supabase.from("makers").select("*")
-     .order("name", { ascending: true });
-
-   // Build summaries, falling back to brand-only rows for makers not yet in makers table
-   // ...
-   ```
-
-2. **Checkpoint:** Unit test `loadMakerSummaries` with fixture data.
-
-### Phase 2: Page
-1. Create `apps/web/src/app/(app)/(shell)/makers/page.tsx`:
-   - Server component, requires auth
-   - Uses `loadMakerSummaries(supabase)` for both cigars and bourbons
-   - Renders two sections: `<Divider label="CIGAR MAKERS" />` and `<Divider label="DISTILLERIES" />`
-   - Each maker: a card with `name`, `country` (if set), `house_style` (if set), product count
-
-2. Maker card JSX (no separate component needed for 12 makers):
-   ```tsx
-   <Link href={`/makers/${summary.slug}`} className="...">
-     <div className="flex items-start justify-between gap-3">
-       <div>
-         <p className="font-medium">{summary.name}</p>
-         {summary.country ? (
-           <p className="text-sm text-foreground-muted">{summary.country}</p>
-         ) : null}
-         {summary.house_style ? (
-           <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-1">
-             {summary.house_style}
-           </p>
-         ) : null}
-       </div>
-       <p className="text-sm text-foreground-muted shrink-0">
-         {summary.product_count} {summary.product_count === 1 ? "product" : "products"}
-       </p>
-     </div>
-   </Link>
-   ```
-
-3. Empty state: `<Voice>` for "No makers cataloged yet."
-
-4. **Checkpoint:** Navigate to `/makers` — two-section list renders, all makers clickable.
-
-### Phase 3: Navigation entry point
-1. Add a "Makers" link somewhere discoverable. Options (pick one):
-   - Add to the catalog browse page header (simple link below the cigars/bourbons tab bar)
-   - Add to `/you` hub as a nav shortcut
-   - Add as a footer link in product detail when `product.brand` is set (next to the existing
-     maker brand link): "See all [brand] products →"
-
-   **Recommended:** Add to the catalog browse page header. The browse page already has tabs; a
-   small "Makers" link below the tabs (right-aligned, text-foreground-muted) is unobtrusive and
-   contextually correct.
-
-2. Find `apps/web/src/app/(app)/(shell)/page.tsx` (the feed/catalog page) and add the link in
-   the catalog tab section header.
-
-3. **Checkpoint:** Link is visible in catalog, navigates to `/makers`.
+### Phase 3: Catalog tab integration (3a, 3b, 3c)
+1. `components/feed/catalog-view-toggle.tsx` — Products \| Makers / Distilleries (`view=makers`)
+2. `page.tsx` — `parseCatalogView`, `CatalogBody` branches on makers vs products
+3. `components/feed/brand-family-divider.tsx` — linked etched dividers on bourbon catalog
+4. `catalog-filter-controls.tsx` — "Browse cigar makers" / "Browse distilleries" in filter sheet
 
 ## AI / Embedding Considerations
-None — this is pure DB aggregation. No AI calls, no tokens.
+None — pure DB aggregation.
 
 ## Design System Compliance
-- No brass buttons — no primary action needed on the browse page
-- Winston: only if the page is empty (empty state voice)
-- Etched dividers between cigar makers and distilleries
-- Flavor wheel: not rendered
-- `formatMemberName`: not applicable (maker names, not member names)
-- Moss: not used (no pairing validation context)
+- No brass on browse surfaces
+- Winston: empty states only
+- Etched dividers on `/makers` index sections
+- `house_style`: `text-foreground-subtle` (not moss)
+- Moss: not used
 
 ## Mobile Constraints
-- Each maker card should be finger-tap-sized (min 44px height)
-- List should scroll naturally; no horizontal scroll
-- Country + house_style are optional — layout should not break without them
+- Maker cards min 44px tap height
+- Toggle segments min 44px height
+- Vertical scroll only
 
 ## Database / RLS
-- No migration needed — reads `makers` table (already has RLS: members read, admins manage)
-- `products` table already has member read policy
+- No migration — reads `makers` + `products`
 
 ## Testing
+- [x] `lib/makers/browse.test.ts`
 - [ ] `pnpm build` passes
-- [ ] `pnpm lint` passes
-- [ ] `pnpm test` passes (add unit test for `loadMakerSummaries` in `lib/makers/browse.test.ts`)
-- [ ] `/makers` shows cigar makers and distilleries with product counts
-- [ ] Empty sections show Winston voice (if one type has no makers)
-- [ ] Tapping a maker navigates to `/makers/[slug]`
-- [ ] Mobile viewport verified (iPhone SE / 375px width)
+- [ ] `pnpm test` passes
+- [ ] `/?tab=cigars&view=makers` lists cigar makers
+- [ ] `/?tab=bourbons&view=makers` lists distilleries
+- [ ] Bourbon catalog brand dividers link to maker pages when slug resolves
+- [ ] `/makers` and `/makers?type=bourbon` work
+- [ ] Filter sheet browse link works
 
 ## Dependencies
-- Requires Phase 9 maker pages to be built (already done in `makers/[slug]/page.tsx`)
+- Phase 9 maker detail (`makers/[slug]/page.tsx`) — done
 
-## Estimated Total: 1.5–2 hours
+## Estimated Total: 2–3 hours (includes catalog-tab integration)

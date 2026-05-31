@@ -30,7 +30,7 @@ export function DailyPourCard({ pour }: { pour: DailyPourCandidate }) {
           <div className="flex items-center gap-2.5 min-w-0">
             <Winston variant="pour" size={44} className="rounded-full shrink-0" />
             <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-              Winston's pick
+              Tonight's pick
             </p>
           </div>
           {pour.club_validated ? (

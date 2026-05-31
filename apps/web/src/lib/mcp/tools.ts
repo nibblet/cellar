@@ -669,8 +669,9 @@ export async function mcpGetClubFeed(
   input: GetClubFeedInput,
 ): Promise<McpToolResult<GetClubFeedResult>> {
   const limit = Math.min(input.limit ?? 10, 25);
+  const fetchLimit = input.recommends_only ? Math.min(limit * 5, 100) : limit;
   const items = await loadFeed(supabase, {
-    limit,
+    limit: fetchLimit,
     productType: input.product_type,
   });
 
