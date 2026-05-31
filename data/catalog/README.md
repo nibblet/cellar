@@ -25,13 +25,50 @@ turns a bottle on or off**.
 | column | meaning |
 |---|---|
 | `brand_family` | the divider it appears under (e.g. `Weller`, `Maker's Mark`) |
-| `expression` | canonical expression (e.g. `Weller 12 Year`) |
+| `expression` | the specific bottle (e.g. `Weller 12 Year`, `Maker's Mark 46`) |
+| `expression_type` | the **release type** for filtering across brands — see below |
 | `name` | card title shown to members |
-| `is_core_range` | `Y` = standard lineup, `N` = limited/special |
+| `is_core_range` | `Y` = standard lineup, `N` = limited/special — see below |
 | `proof` `abv` `age` `mash` `spirit_type` | specs (optional) |
 | `producer` | parent distillery/company |
 | `brand` | maker-page identity (usually = `brand_family`) |
 | `id` | product UUID — leave blank to add a new bottle |
+
+### `expression_type` — the release type
+
+A small, shared vocabulary so you can ask "how many Single Barrels do we
+carry?" across every brand. Use one of:
+
+`Single Barrel` · `Small Batch` · `Barrel Proof` · `Cask Strength` ·
+`Full Proof` · `Bottled-in-Bond` · `Straight Rye` · `Four Grain` ·
+`Limited Edition`
+
+Leave it **blank** for a plain flagship (Maker's Mark, Buffalo Trace) — blank
+means "no special type," which is correct. This is *not* where finishes go:
+"Port Barrel Finish", "Amburana", "Sherry Cask" are descriptive variants and
+live in the bottle's `name`, not here.
+
+### `is_core_range` — everyday vs special
+
+- `Y` = part of the brand's **standard, always-on-the-shelf lineup** (Maker's
+  Mark, Weller Special Reserve, Woodford Distiller's Select, Four Roses Small
+  Batch).
+- `N` = **limited / special / allocated / one-off** (Birthday Bourbon, Master's
+  Collection, store single-barrel picks, Booker's batches).
+
+It's independent of `expression_type`: a Single Barrel can be core (Eagle Rare)
+or limited (a store pick).
+
+## What you'll typically edit
+
+- **Add/remove bottles** (rows) — the main lever.
+- **`is_core_range`** — flag everyday vs special.
+- **`expression_type`** — fix a mis-bucketed release type.
+- **`name`** — clean up a card title.
+
+`proof`/`abv`/`age`/`mash` are optional metadata; `producer`/`brand` rarely need
+touching. Edits to `expression_type` and specs sync to the database on the next
+`pnpm seed:catalog --apply` (blank clears the value).
 
 Images are **not** in this file — they come from the app photo flow. To find
 bottles still missing a photo:

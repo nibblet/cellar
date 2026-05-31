@@ -34,7 +34,7 @@ const CSV = path.resolve(__dirname, "../../../../data/catalog/bourbon-shelf.csv"
 const APPLY = process.argv.includes("--apply");
 
 const COLS = [
-  "brand_family", "expression", "name", "is_core_range",
+  "brand_family", "expression", "expression_type", "name", "is_core_range",
   "proof", "abv", "age", "mash", "spirit_type", "producer", "brand", "id",
 ] as const;
 type Col = (typeof COLS)[number];
@@ -88,6 +88,10 @@ function specsPatch(r: ShelfRow, existing: Record<string, unknown> | null): Reco
   if (num(r.age) != null) specs.age_years = num(r.age);
   if (r.mash) specs.mash_bill = r.mash;
   if (r.spirit_type) specs.spirit_type = r.spirit_type;
+  // Release type (Single Barrel / Small Batch / Barrel Proof / …). Blank means
+  // "standard flagship, no special type" — clear it so it doesn't linger.
+  if (r.expression_type) specs.expression_type = r.expression_type;
+  else delete specs.expression_type;
   return specs;
 }
 
