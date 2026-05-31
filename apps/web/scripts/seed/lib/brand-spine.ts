@@ -49,6 +49,7 @@ const PRODUCER_RULES: Array<{ match: RegExp; producer: string }> = [
   { match: /wild turkey/i, producer: "Wild Turkey (Campari)" },
   { match: /lux row/i, producer: "Lux Row (Luxco)" },
   { match: /michter/i, producer: "Michter's" },
+  { match: /willett|kentucky bourbon distillers|\bkbd\b/i, producer: "Willett (Kentucky Bourbon Distillers)" },
   { match: /angel'?s envy/i, producer: "Angel's Envy (Bacardi)" },
   { match: /bardstown bourbon/i, producer: "Bardstown Bourbon Company" },
   { match: /cascade hollow|george dickel/i, producer: "George Dickel (Diageo)" },
@@ -69,6 +70,7 @@ export function resolveProducer(distillery: string): string {
 const BT = /buffalo trace|stitzel/i;
 const HH = /heaven hill/i;
 const BEAM = /beam/i;
+const KBD = /willett|kentucky bourbon distillers|\bkbd\b/i;
 
 export const BRAND_RULES: BrandRule[] = [
   // Buffalo Trace — one distillery, many brands
@@ -135,6 +137,20 @@ export const BRAND_RULES: BrandRule[] = [
   { producer: "Brown-Forman", brand_family: "Old Forester", distillery: /old forester|brown-forman/i, name: /^old forester/i },
   { producer: "Brown-Forman", brand_family: "Jack Daniel's", distillery: /jack daniel/i, name: /^(jack daniel|gentleman jack)/i },
   { producer: "Brown-Forman", brand_family: "Coopers' Craft", distillery: /brown-forman/i, name: /^coopers/i },
+
+  // Willett / Kentucky Bourbon Distillers — one distillery whose whole stable of
+  // small "associate" brands (Noah's Mill, Rowan's Creek, Johnny Drum, Old
+  // Bardstown, Pure Kentucky, Kentucky Vintage, Vintage…) is grouped under the
+  // Willett maker. The brands surface as curated expressions, not split makers.
+  // The name alternation must stay a real gate (never `/.*/`): an always-true
+  // name would, via the consumer-brand fallback in resolveBrandFamily, capture
+  // every other distillery's products too.
+  {
+    producer: "Willett (Kentucky Bourbon Distillers)",
+    brand_family: "Willett",
+    distillery: KBD,
+    name: /^(willett|noah'?s mill|rowan'?s creek|johnny drum|old bardstown|pure kentucky|kentucky vintage|vintage|old beezer|watkins|forged oak)/i,
+  },
 ];
 
 /** Single-brand distilleries: brand_family == cleaned distillery name. */
@@ -147,7 +163,14 @@ export function brandFromDistillery(distillery: string): string {
 
 export function resolveBrandFamily(name: string, distillery: string): { producer: string; brand_family: string } {
   for (const r of BRAND_RULES) {
-    if (r.distillery.test(distillery) && r.name.test(name)) {
+    // The `distillery` arg is `products.brand`, which for many rows already
+    // holds the consumer brand ("Elijah Craig", "Larceny", "Eagle Rare") rather
+    // than the distillery. Accept either: the rule still fires when the brand
+    // field itself matches the brand's own name pattern. Without this, a row
+    // stamped `brand = "Elijah Craig"` misses the `/heaven hill/i` distillery
+    // gate and detaches into its own one-off producer.
+    const distilleryMatches = r.distillery.test(distillery) || r.name.test(distillery);
+    if (distilleryMatches && r.name.test(name)) {
       return { producer: r.producer, brand_family: r.brand_family };
     }
   }
@@ -181,12 +204,54 @@ export const CORE_RANGES: Record<string, CoreExpression[]> = {
     b("Small Batch", "core", /./, { proof: 100, age_label: "9 yr" }),
   ],
   "Maker's Mark": [
+    b("Cellar Aged", "limited", /cellar aged/i),
+    b("DNA Project", "limited", /dna project/i),
     b("Cask Strength", "core", /cask strength|\bcs\b/i),
     b("46", "core", /\b46\b/i),
     b("101", "core", /\b101\b/i),
-    b("BEP / Wood Finishing", "limited", /bep|wood finish|fae|rc6|se4|bdb/i),
+    b("Wood Finishing Series", "limited", /wood finish|stave profile|limited release|heart release|fae|rc6|se4|bdb|bep/i),
     b("Private Selection", "limited", /private selection/i),
     b("Maker's Mark", "core", /./, { proof: 90 }),
+  ],
+  "Basil Hayden": [
+    b("10 Year", "limited", /\b10\b/i),
+    b("Toast", "core", /toast/i),
+    b("Dark Rye", "core", /dark rye/i, { spirit_type: "rye" }),
+    b("Red Wine Cask Finish", "core", /red wine/i),
+    b("Subtle Smoke", "core", /subtle smoke/i),
+    b("Malted Rye", "core", /malted rye/i, { spirit_type: "rye" }),
+    b("Caribbean Reserve Rye", "core", /caribbean/i, { spirit_type: "rye" }),
+    b("Two by Two Rye", "limited", /two by two/i, { spirit_type: "rye" }),
+    b("Basil Hayden", "core", /./, { proof: 80 }),
+  ],
+  "Michter's": [
+    b("25 Year", "limited", /\b25\b/i),
+    b("20 Year", "limited", /\b20\b/i),
+    b("10 Year Single Barrel", "limited", /\b10\b/i),
+    b("US-1 Barrel Strength Rye", "core", /barrel strength.*rye|\brye\b.*barrel strength/i, { spirit_type: "rye" }),
+    b("US-1 Toasted Barrel Finish", "limited", /toasted/i),
+    b("US-1 Barrel Strength", "core", /barrel strength/i),
+    b("US-1 Single Barrel", "core", /single barrel/i),
+    b("US-1 Sour Mash", "core", /sour mash/i),
+    b("US-1 Rye", "core", /\brye\b/i, { spirit_type: "rye" }),
+    b("Bomberger's Declaration", "limited", /bomberger/i),
+    b("Shenk's Homestead", "limited", /shenk/i),
+    b("US-1 Small Batch", "core", /./, { proof: 91.4 }),
+  ],
+  Willett: [
+    b("Family Estate Bottled", "limited", /family estate/i),
+    b("Pot Still Reserve", "core", /pot still/i),
+    b("Noah's Mill", "core", /noah/i),
+    b("Rowan's Creek", "core", /rowan/i),
+    b("Johnny Drum", "core", /johnny drum/i),
+    b("Old Bardstown", "core", /old bardstown/i),
+    b("Pure Kentucky", "core", /pure kentucky/i),
+    b("Kentucky Vintage", "core", /kentucky vintage/i),
+    b("Vintage", "limited", /\bvintage\b/i),
+    b("Old Beezer", "limited", /old beezer/i),
+    b("Watkins Select", "core", /watkins/i),
+    b("Single Barrel", "core", /single barrel/i),
+    b("Willett", "core", /./),
   ],
   "Buffalo Trace": [
     b("Experimental Collection", "limited", /experimental/i),
@@ -235,18 +300,29 @@ export const CORE_RANGES: Record<string, CoreExpression[]> = {
     b("Small Batch Rye", "core", /\brye\b/i, { spirit_type: "rye" }),
   ],
   "Woodford Reserve": [
-    b("Master's Collection", "limited", /master'?s collection|batch proof|baccarat/i),
+    b("Master's Collection", "limited", /master'?s collection|baccarat|frosty four wood/i),
+    b("Batch Proof", "limited", /batch proof/i),
+    b("Double Double Oaked", "limited", /double double oaked/i),
     b("Double Oaked", "core", /double oaked/i, { proof: 90.4 }),
+    b("Bottled in Bond", "core", /bottled in bond|\bbib\b/i, { proof: 100 }),
+    b("Malt", "core", /\bmalt\b/i),
     b("Rye", "core", /\brye\b/i, { spirit_type: "rye" }),
     b("Wheat", "core", /wheat/i),
     b("Distiller's Select", "core", /./, { proof: 90.4 }),
   ],
   "Elijah Craig": [
-    b("18 Year Single Barrel", "limited", /\b18\b/i),
     b("Barrel Proof", "core", /barrel proof/i, { proof: 124 }),
+    b("18 Year Single Barrel", "limited", /\b18\b/i),
+    b("Single Barrel", "limited", /\b(19|20|21|22|23|24|25)\b|single barrel/i),
     b("Toasted Barrel", "limited", /toasted/i),
     b("Rye", "core", /\brye\b/i, { spirit_type: "rye" }),
     b("Small Batch", "core", /./, { proof: 94 }),
+  ],
+  "Heaven Hill": [
+    b("Heritage Collection", "limited", /heritage/i),
+    b("Grain to Glass", "core", /grain to glass/i),
+    b("Barrel Proof Bottled-in-Bond", "limited", /barrel proof/i),
+    b("Bottled-in-Bond", "core", /bottled.?in.?bond|\bbib\b/i, { proof: 100 }),
   ],
   "Evan Williams": [
     b("23 Year", "limited", /\b23\b/i),
