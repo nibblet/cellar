@@ -113,6 +113,12 @@ async function main() {
       include: Boolean(dec?.include),
       reason: dec?.reason ?? "",
       patch: {
+        // Grouping fields only. `catalog_included` is intentionally NOT written
+        // here: member-facing visibility is owned exclusively by the authored
+        // catalog manifest (data/catalog/bourbon-shelf.json) applied via
+        // seed-catalog.ts. The old cut-back re-decided visibility on every run
+        // and fought human curation, which is why shelf bottles kept vanishing.
+        // `dec.include` below is used only for the dry-run preview.
         producer: fields.producer,
         brand_family: fields.brand_family,
         expression: fields.expression,
@@ -120,7 +126,6 @@ async function main() {
         is_core_range: fields.is_core_range,
         discontinued: fields.discontinued,
         nas: fields.nas,
-        catalog_included: Boolean(dec?.include),
       },
     };
   });
