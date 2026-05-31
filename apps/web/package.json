@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "typecheck": "tsc --noEmit",
+    "seed:catalog": "tsx --env-file=.env.local scripts/seed/seed-catalog.ts",
     "seed:wheels": "tsx --env-file=.env.local scripts/seed/seed-wheels.ts",
     "seed:bourbons": "tsx --env-file=.env.local scripts/seed/seed-bourbons.ts",
     "seed:cigars": "tsx --env-file=.env.local scripts/seed/seed-cigars.ts",
