@@ -85,8 +85,14 @@ export default async function ProductEditPage({ params }: { params: Params }) {
             country?: string;
             vitola?: string;
             strength?: string;
+            price_tier?: number;
             distillery?: string;
             mash_bill?: string;
+            proof?: number;
+            age_label?: string;
+            tier?: number;
+            availability_rarity?: string;
+            price_usd?: number;
           },
         }}
         canReEnrich={isAdmin}

@@ -66,7 +66,8 @@ export async function updateProduct(
 
   // Collect typed spec fields. We only let the user touch a small whitelisted
   // set; raw jsonb writes are reserved for the seed pass + AI ingest.
-  const incomingSpecs: Record<string, string | null> = {};
+  const incomingSpecs: Record<string, string | number | null> = {};
+
   for (const field of [
     "wrapper_color",
     "country",
@@ -74,9 +75,23 @@ export async function updateProduct(
     "strength",
     "distillery",
     "mash_bill",
+    "age_label",
+    "availability_rarity",
   ]) {
     const v = (formData.get(`specs.${field}`) as string | null)?.trim();
     if (v !== undefined) incomingSpecs[field] = v || null;
+  }
+
+  for (const field of ["proof", "tier", "price_usd", "price_tier"]) {
+    const v = (formData.get(`specs.${field}`) as string | null)?.trim();
+    if (v !== undefined) {
+      if (!v) {
+        incomingSpecs[field] = null;
+      } else {
+        const n = Number.parseFloat(v);
+        incomingSpecs[field] = Number.isFinite(n) && n > 0 ? n : null;
+      }
+    }
   }
 
   // Read existing specs so we merge instead of clobbering.

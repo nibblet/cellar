@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { Button, Card, Voice } from "@/components/primitives";
+import { Button, Card, Divider, Voice } from "@/components/primitives";
 import type { ProductType } from "@/lib/wheel";
 import { type EditProductState, updateProduct } from "./actions";
 
@@ -13,8 +13,14 @@ type Specs = {
   country?: string;
   vitola?: string;
   strength?: string;
+  price_tier?: number;
   distillery?: string;
   mash_bill?: string;
+  proof?: number;
+  age_label?: string;
+  tier?: number;
+  availability_rarity?: string;
+  price_usd?: number;
 };
 
 type Props = {
@@ -27,6 +33,35 @@ type Props = {
   };
   canReEnrich?: boolean;
 };
+
+const COBB_TIERS = [
+  { value: 1, label: "1 — Everyday" },
+  { value: 2, label: "2 — Common" },
+  { value: 3, label: "3 — Uncommon" },
+  { value: 4, label: "4 — Rare" },
+  { value: 5, label: "5 — Unicorn" },
+] as const;
+
+const CIGAR_PRICE_TIERS = [
+  { value: 1, label: "1 — Value" },
+  { value: 2, label: "2 — Affordable" },
+  { value: 3, label: "3 — Premium" },
+  { value: 4, label: "4 — Luxury" },
+  { value: 5, label: "5 — Ultra-premium" },
+] as const;
+
+const AVAILABILITY_OPTIONS = [
+  { value: "", label: "— not set —" },
+  { value: "everyday", label: "Everyday" },
+  { value: "seasonal", label: "Seasonal" },
+  { value: "allocated", label: "Allocated" },
+  { value: "lottery", label: "Lottery" },
+  { value: "secondary-only", label: "Secondary only" },
+  { value: "discontinued", label: "Discontinued" },
+] as const;
+
+const inputClass =
+  "h-11 px-3 rounded-[10px] bg-surface border border-border text-base text-foreground focus:border-accent outline-none";
 
 export function EditForm({ product, canReEnrich }: Props) {
   const [state, action, pending] = useActionState(updateProduct, initial);
@@ -99,11 +134,54 @@ export function EditForm({ product, canReEnrich }: Props) {
           <SpecField name="country" label="Country" value={product.specs.country} />
           <SpecField name="vitola" label="Vitola" value={product.specs.vitola} />
           <SpecField name="strength" label="Strength" value={product.specs.strength} />
+
+          <Divider label="CATALOG" />
+
+          <TierSelectField
+            name="price_tier"
+            label="Price tier"
+            value={product.specs.price_tier}
+            tiers={CIGAR_PRICE_TIERS}
+          />
+          <NumberSpecField
+            name="price_usd"
+            label="Price (USD)"
+            value={product.specs.price_usd}
+            step="0.01"
+          />
         </>
       ) : (
         <>
           <SpecField name="distillery" label="Distillery" value={product.specs.distillery} />
           <SpecField name="mash_bill" label="Mash bill" value={product.specs.mash_bill} />
+
+          <Divider label="AGING & PROOF" />
+
+          <NumberSpecField
+            name="proof"
+            label="Proof"
+            value={product.specs.proof}
+            step="0.1"
+            placeholder="e.g. 90"
+          />
+          <SpecField name="age_label" label="Age" value={product.specs.age_label} placeholder="e.g. 12 yr or NAS" />
+
+          <Divider label="CATALOG" />
+
+          <TierSelectField
+            name="tier"
+            label="Tier"
+            value={product.specs.tier}
+            tiers={COBB_TIERS}
+          />
+          <AvailabilitySelectField value={product.specs.availability_rarity} />
+          <NumberSpecField
+            name="price_usd"
+            label="Price (USD)"
+            value={product.specs.price_usd}
+            step="0.01"
+            placeholder="e.g. 49.99"
+          />
         </>
       )}
 
@@ -183,7 +261,17 @@ function TypeOption({
   );
 }
 
-function SpecField({ name, label, value }: { name: string; label: string; value?: string }) {
+function SpecField({
+  name,
+  label,
+  value,
+  placeholder,
+}: {
+  name: string;
+  label: string;
+  value?: string;
+  placeholder?: string;
+}) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-sm text-foreground-muted">{label}</span>
@@ -191,8 +279,87 @@ function SpecField({ name, label, value }: { name: string; label: string; value?
         name={`specs.${name}`}
         type="text"
         defaultValue={value ?? ""}
-        className="h-11 px-3 rounded-[10px] bg-surface border border-border text-base text-foreground focus:border-accent outline-none"
+        placeholder={placeholder}
+        className={inputClass}
       />
+    </label>
+  );
+}
+
+function NumberSpecField({
+  name,
+  label,
+  value,
+  step = "any",
+  placeholder,
+}: {
+  name: string;
+  label: string;
+  value?: number;
+  step?: string;
+  placeholder?: string;
+}) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-sm text-foreground-muted">{label}</span>
+      <input
+        name={`specs.${name}`}
+        type="number"
+        min="0"
+        step={step}
+        defaultValue={value ?? ""}
+        placeholder={placeholder}
+        className={inputClass}
+      />
+    </label>
+  );
+}
+
+function TierSelectField({
+  name,
+  label,
+  value,
+  tiers,
+}: {
+  name: string;
+  label: string;
+  value?: number;
+  tiers: readonly { value: number; label: string }[];
+}) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-sm text-foreground-muted">{label}</span>
+      <select
+        name={`specs.${name}`}
+        defaultValue={value ?? ""}
+        className={`${inputClass} appearance-none`}
+      >
+        <option value="">— not set —</option>
+        {tiers.map((t) => (
+          <option key={t.value} value={t.value}>
+            {t.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function AvailabilitySelectField({ value }: { value?: string }) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-sm text-foreground-muted">Availability</span>
+      <select
+        name="specs.availability_rarity"
+        defaultValue={value ?? ""}
+        className={`${inputClass} appearance-none`}
+      >
+        {AVAILABILITY_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }
