@@ -35,11 +35,17 @@ const APPLY = process.argv.includes("--apply");
 
 const COLS = [
   "brand_family", "expression", "expression_type", "name", "is_core_range",
+  "tier", "availability", "price_usd",
   "proof", "abv", "age", "mash", "spirit_type", "producer", "brand", "id",
 ] as const;
 type Col = (typeof COLS)[number];
 
 type ShelfRow = Record<Col, string>;
+
+/** Curated availability axis — must match normalize-specs AVAILABILITY_RARITY. */
+const AVAILABILITY_VALUES = new Set([
+  "everyday", "seasonal", "allocated", "lottery", "secondary-only", "discontinued",
+]);
 
 function num(v: string): number | null {
   const n = Number.parseFloat(v);
@@ -103,6 +109,43 @@ function specsPatch(r: ShelfRow, existing: Record<string, unknown> | null): Reco
   // "standard flagship, no special type" — clear it so it doesn't linger.
   if (r.expression_type) specs.expression_type = r.expression_type;
   else delete specs.expression_type;
+
+  // Catalog tier 1–5 — drives the member "Catalog Shelf" visibility filter and
+  // the rarity label. Blank leaves it unset (always visible).
+  const tier = num(r.tier);
+  if (tier != null) {
+    if (!Number.isInteger(tier) || tier < 1 || tier > 5) {
+      throw new Error(`Bad tier "${r.tier}" for "${r.name}" — must be an integer 1–5.`);
+    }
+    specs.tier = tier;
+    specs.tier_source = "curation";
+  } else {
+    delete specs.tier;
+  }
+
+  // Availability axis (everyday / seasonal / allocated / lottery /
+  // secondary-only / discontinued). Blank clears it.
+  const avail = r.availability.trim().toLowerCase();
+  if (avail) {
+    if (!AVAILABILITY_VALUES.has(avail)) {
+      throw new Error(
+        `Bad availability "${r.availability}" for "${r.name}" — use one of: ${[...AVAILABILITY_VALUES].join(", ")}.`,
+      );
+    }
+    specs.availability_rarity = avail;
+  } else {
+    delete specs.availability_rarity;
+  }
+
+  // Dollar price → drives the $–$$$$ bucket (the bucket itself is derived, not
+  // stored). Blank clears it.
+  const price = num(r.price_usd);
+  if (price != null) {
+    if (price <= 0) throw new Error(`Bad price_usd "${r.price_usd}" for "${r.name}".`);
+    specs.price_usd = price;
+  } else {
+    delete specs.price_usd;
+  }
   return specs;
 }
 
