@@ -21,16 +21,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-002] Badge milestone notification on the You hub
-- **Status:** seed
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-05-30
-- **Last Updated:** 2026-05-31
+- **Last Updated:** 2026-06-01
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** When a member reaches a new badge milestone, show a Winston congratulation block at the top of the You hub (one-time dismissible via `localStorage`). The badge system already computes `nextBadge`; this closes the feedback loop so members notice when they level up.
 - **Night Notes:**
   - 2026-05-30: Seeded. Needs a mechanism to detect "just earned" — probably a `last_seen_badge_level` column in `users` or a client-side localStorage check. Mild complexity; park until cellar / maker work lands.
   - 2026-05-31: Reviewed. Maker pages and MCP work landed today. Still no commits touching badges. P3 remains appropriate — not yet stale (2 days old).
+  - 2026-06-01: 3-day stale rule triggered (seeded 2026-05-30, no commits). Demoting to `parked`. Cellar + catalog CSV work dominated; badge milestone remains low-priority relative to surfacing new catalog metadata.
 
 ---
 
@@ -65,16 +66,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-004] Personal stats mini-dashboard on You hub
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-05-30
-- **Last Updated:** 2026-05-31
+- **Last Updated:** 2026-06-01
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** A small "By the numbers" card on the You hub showing: total tastings, total pairings, favorite wrapper, favorite bourbon style, strongest vs. mildest cigars tried — derived from `tastings` + `member_saves` data already in DB. Phase 8.4 in the plan, not yet implemented.
 - **Night Notes:**
   - 2026-05-30: Seeded. Mentioned in nccc-implementation-plan.md as Phase 8.4. Pure DB aggregation — no AI cost. Lower priority than maker pages; park unless P&L asks for it.
   - 2026-05-31: Reviewed. Still 1 day old. No commits. Holding at seed.
+  - 2026-06-01: 3-day stale rule triggered (seeded 2026-05-30, no commits). Demoting to `parked`. Not yet asked for by Paul.
 
 ---
 
@@ -82,9 +84,36 @@ Maturity: seed → exploring → planned → ready → parked
 - **Status:** seed
 - **Category:** new
 - **Seeded:** 2026-05-31
-- **Last Updated:** 2026-05-31
+- **Last Updated:** 2026-06-01
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** Add a `get_member_tastings` tool to the MCP server so members can ask Claude "what have I tried?" and get a paginated history of their tastings with product names, recommend flags, chips, and notes. Currently `get_my_cellar` shows shelf state (have/want/tried/loved counts) and `get_club_feed` shows recent club activity, but there's no way to query one member's full personal history.
 - **Night Notes:**
   - 2026-05-31: Seeded. The MCP server now has 9 tools; this would be the 10th. `loadFeed` already accepts a `userId` filter. Low effort — maybe 1 hour — but lower priority than makers browse since the cellar shelf gives a reasonable approximation.
+  - 2026-06-01: Reviewed. 1 day old. No commits. Holding at seed — not yet stale.
+
+---
+
+### [IDEA-007] Surface availability_rarity + cobbTier on catalog cards and product detail
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-01
+- **Last Updated:** 2026-06-01
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-007-availability-tier-on-catalog-cards.md`
+- **Summary:** The bourbon CSV seed now populates `specs.availability_rarity` (allocated/lottery/seasonal/…) and `specs.tier` (1–5). These exist in the DB but are invisible in the UI — neither the catalog card subtitle nor the product detail header show them. Extending `composeProductSubtitle` to emit "Allocated" / "Tier N" tokens makes the catalog self-documenting for members browsing or hunting.
+- **Night Notes:**
+  - 2026-06-01: Seeded and immediately promoted to `planned`. Zero AI cost, zero DB changes, zero migrations. Data is already there; it just needs to flow through `composeProductSubtitle`. ~1 hour of work. High signal: members will finally be able to see which bottles are Allocated without opening each product detail.
+
+---
+
+### [IDEA-008] Winston hunt acknowledgment for allocated Want-shelf additions
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-01
+- **Last Updated:** 2026-06-01
+- **Priority:** P3
+- **Plan:** (not yet written)
+- **Summary:** When a member marks an `availability_rarity: "allocated"` or `"lottery"` bottle as Want, show a small Winston `<Voice />` line in the cellar toggle UI ("A wise wish — the Pappy hunt is real."). This closes the emotional loop on the save action, acknowledging the hunting reality without blocking the UX. Zero AI cost: triggered by the `availability_rarity` field value already available in the client state.
+- **Night Notes:**
+  - 2026-06-01: Seeded. Small scope — needs `CellarToggle` to accept a `availabilityRarity` prop and render a Voice line when `want` flips to true for an allocated bottle. Lower priority than IDEA-007 (which surfaces the same data more broadly).

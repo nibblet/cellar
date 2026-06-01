@@ -4,6 +4,58 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-01
+
+### Summary
+- Scanned: 14 commits since last nightshift — catalog CSV source-of-truth pipeline,
+  product edit form expansion, WinstonSuggests on product detail, member preferences
+  fix, expression_type + tier/availability/price_usd CSV columns, brand-spine grouping
+- Issues: 6 new (FIX-009 through FIX-014), 0 existing open, 0 newly resolved
+- Ideas: 2 new (IDEA-007 → immediately planned, IDEA-008 → seed); 2 parked (IDEA-002,
+  IDEA-004 hit 3-day stale rule); IDEA-006 reviewed, not yet stale
+- Plans written: 6 fix plans + 1 devplan (7 total)
+- Tests: 425 passing, 0 failures
+- Lint: 71 errors (26 auto-fixable format/imports; 6 genuine — documented as FIX-009/014)
+
+### Key Findings
+- **Catalog CSV pipeline is solid.** `data/catalog/bourbon-shelf.csv` → `seed-catalog.ts`
+  → Supabase is a clean, idempotent, audit-friendly approach. Encoding guardrail (U+FFFD
+  check before write) is a good defensive touch. No issues with the pipeline itself.
+- **WinstonSuggests is the biggest new surface** — a unified suggestion panel on product
+  detail with Try Tonight (shelf-first), Hunt Next (palate model), Reach for Next (same-type
+  similar), and While Looking (similar in tier). Clean architecture in `lib/suggestions/`.
+  No bugs found; performance is acceptable (queries run in `Promise.all`).
+- **6 lint errors, all small, all planned.** FIX-009/010: unused imports (1-line each).
+  FIX-011/012: dead function + dead constant (delete-only). FIX-013/014: Biome a11y
+  over-generalization on `role="group"` — biome-ignore is the correct fix since
+  `<fieldset>` is wrong for button and link groups.
+- **availability_rarity + tier are invisible** — the CSV seed populates these, the edit
+  form captures them, but `composeProductSubtitle` doesn't emit them. Members browsing
+  the Bourbons catalog can't see "Allocated" or "Tier 4" without opening each product.
+  IDEA-007 fixes this in ~1 hour with zero DB changes.
+- **3-day stale rule triggered** for IDEA-002 (badge milestone) and IDEA-004 (personal
+  stats). Both parked with notes. Neither is urgent for the 12-member group.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-009-unused-import-tag-cloud-entry.md` — 1-line: remove `TagCloudEntry` from import in `club-says-prose.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-010-unused-import-enrich-index.md` — 1-line: remove local import of `productNeedsCatalogEnrichment` in `enrich/index.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-011-dead-function-strip-brand-prefix.md` — 5-line deletion: remove dead `stripBrandPrefix` from `catalog-name-cleanup.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-012-dead-constant-vintages-matter.md` — delete deprecated empty array + `let` → `const` in `expression-normalize.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-013-cellar-card-controls-a11y.md` — add biome-ignore comment in `cellar-card-controls.tsx`
+- `docs/nightshift/plans/FIXPLAN-FIX-014-tasting-segment-a11y.md` — add biome-ignore comment in `tasting-action-segment.tsx`
+- `docs/nightshift/plans/DEVPLAN-IDEA-007-availability-tier-on-catalog-cards.md` — surface availability_rarity + tier in catalog card subtitle; ~1 hour, zero AI cost
+
+### Recommendations
+- **If you have 15 min:** Run FIX-009 through FIX-012 in one pass (all tiny). Then run
+  `pnpm exec biome check --write` to auto-fix the 26 import/format drift errors. Gets
+  lint from 71 errors to ~2 (the two a11y biome-ignores).
+- **If you have 30 min:** Also apply FIX-013 + FIX-014 (two biome-ignore comments).
+  At that point `pnpm lint` should be clean.
+- **If you have 1 hour:** Implement DEVPLAN-IDEA-007. Members browsing the Bourbons tab
+  will immediately see "Allocated · Tier 4" on unicorn bottles. Data is already there.
+
+---
+
 ## Run: 2026-05-31
 
 ### Summary

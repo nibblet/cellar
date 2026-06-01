@@ -1,16 +1,25 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-05-31 (Nightshift run)
+Last updated: 2026-06-01 (Nightshift run)
 
 ---
 
 ## Current Phase
 
-**Phase 8 complete, Phase 9 partial.**
+**Phase 8 complete, Phase 9 complete, Phase 10 partial.**
 
-Phase 8 (taste recommendations, cellar, Want re-ranking, Winston voice rewrite) is fully done. Phase 9 (Maker & Distillery pages) is complete as of 2026-05-31: maker detail at `/makers/[slug]`, browse index at `/makers`, and in-tab houses browse on Cigars / Bourbons (`view=makers`).
+Phase 8 (taste recommendations, cellar, Want re-ranking, Winston voice rewrite) and
+Phase 9 (Maker & Distillery pages, browse index) are both fully done.
 
-An MCP server (`/api/[transport]`) and a Cloudflare OAuth proxy worker (`workers/nccc-mcp-oauth-proxy/`) were added, exposing 9 Claude tools to external AI clients.
+Since 2026-05-31: the bourbon catalog is now source-of-truth managed via an editable
+CSV (`data/catalog/bourbon-shelf.csv`) with `seed-catalog.ts` syncing to Supabase.
+New catalog fields: `expression_type`, `tier`, `availability`, `price_usd`. Product
+edit form and catalog card subtitle reflect these. A unified suggestion pipeline
+(`lib/suggestions/`) and `WinstonSuggests` component were added to product detail.
+
+An MCP server (`/api/[transport]`) and a Cloudflare OAuth proxy worker
+(`workers/nccc-mcp-oauth-proxy/`) were added, exposing 9 Claude tools to external
+AI clients.
 
 ---
 
@@ -118,6 +127,42 @@ Tested with Vitest.
 - `checkGroupValidation`: marks moss-colored validated pairings
 - Adjacent products: `suggestAdjacentProducts` via cosine on trait_vector
 
+### WinstonSuggests — product detail suggestion pipeline
+
+- `lib/suggestions/load-product-suggestions.ts`: unified pipeline for product detail.
+  Runs `suggestShelfPairing` (shelf-first), `loadOrComputeTopPairings` (catalog),
+  `loadReachForNext` (same-type similar from shelf then catalog), `ensureTasteRecommendations`
+  (Hunt Next from palate model), `suggestAdjacentProducts` (similar in tier).
+- `components/product/winston-suggests.tsx`: renders Try Tonight (brass CTA when
+  shelf match), Hunt Next (TryNextPick rationale), Reach for Next (horizontal scroll),
+  While Looking (Similar in Tier + Pairs Well With). Mounted below group voice on
+  product detail.
+- `lib/suggestions/rank.ts`: `sortClubValidatedFirst()`, `pairingIds()`.
+- `lib/suggestions/types.ts`: `CrossTypePick`, `ReachForNextPick`, `ProductSuggestions`,
+  `WhileLookingSuggestions`.
+
+### Catalog CSV + seed pipeline
+
+- `data/catalog/bourbon-shelf.csv` — authored shelf: one row per bottle, source of
+  truth for `catalog_included`. Columns: `brand_family`, `expression`, `expression_type`,
+  `name`, `is_core_range`, `tier`, `availability`, `price_usd`, `proof`, `abv`, `age`,
+  `mash`, `spirit_type`, `producer`, `brand`, `id`.
+- `scripts/seed/seed-catalog.ts` — idempotent sync: every sheet row → `catalog_included=true`,
+  every off-sheet bourbon → `catalog_included=false`. Writes new UUIDs back into the CSV.
+  Encoding guardrail: throws on U+FFFD (wrong-encoding artifacts) before any DB write.
+- `expression_type` → `specs.expression_type` (Single Barrel, Small Batch, Barrel Proof…).
+- `tier` (1–5 Cobb tier), `availability` (everyday/seasonal/allocated/lottery/…),
+  `price_usd` → `specs.tier`, `specs.availability_rarity`, `specs.price_usd`.
+
+### Product edit form (expanded)
+
+`/products/[id]/edit` now exposes: name, brand, type, and per-type spec fields.
+Bourbons: distillery, mash_bill, proof, age_label, tier (select), availability (select),
+price_usd. Cigars: wrapper_color, country, vitola, strength, price_tier, price_usd.
+Admin saves promote drafts to confirmed. RLS + app-layer auth check guards the action.
+Second `products` select in the action fetches existing specs for merge (two round-trips
+— documented trade-off for small user base).
+
 ### Cellar (personal) — Phase 8
 - `member_saves`: have / want / tried / loved per member per product
 - `CellarInsight`: GPT-5 nano reads the Have shelf, produces a 2-3 sentence Winston personality read per category. Cached in `users.cellar_insight`, keyed by `have_hash`.
@@ -203,7 +248,6 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 ---
 
 ## What's NOT Built Yet
-- Phase 9: `/makers` browse list (detail pages exist; browse page does not)
 - Replicate CLIP embeddings (referenced, not wired)
 - pgvector extension usage (trait_vector stored JSONB, cosine in JS)
 - E2E Playwright tests (Vitest unit tests exist for lib/)
@@ -211,3 +255,4 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Personal stats (Phase 8.4 in plan — not in commits)
 - `/settings/usage` admin dashboard for cost tracking
 - MCP `get_member_tastings` tool (IDEA-006, seed)
+- `availability_rarity` + `tier` surfaced on catalog card/product subtitle (IDEA-007, planned)
