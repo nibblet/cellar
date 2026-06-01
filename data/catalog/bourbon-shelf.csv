@@ -1,236 +1,243 @@
 brand_family,expression,expression_type,name,is_core_range,proof,abv,age,mash,spirit_type,producer,brand,id
-1792,1792 Bottled in Bond,Bottled-in-Bond,1792 Bottled-in-Bond,Y,100,50,,"Undisclosed (Marketed as 'High rye,' and believed to be 15-25% rye)",,Barton 1792 (Sazerac),1792,e5253b95-5f9e-44bc-97c2-d3a069fe2b50
-1792,1792 Full Proof,Full Proof,1792 Full Proof,Y,125,62.5,8,"Corn, Rye, Malted Barley",,Barton 1792 (Sazerac),1792,0781fde8-a849-4a57-96fb-e7458d20d9ce
-1792,1792 Single Barrel,Single Barrel,1792 Single Barrel,Y,98.6,49.3,,,,Barton 1792 (Sazerac),1792,b31ddd89-09e2-4de4-bad0-004d5f381096
-1792,1792 Small Batch,Small Batch,1792 Small Batch Bourbon,Y,92.2,46.1,,,,Barton 1792 (Sazerac),1792,96bbc853-4307-45c5-8360-6f49195bc72d
-1792,1792 Sweet Wheat,,1792 Sweet Wheat,N,91.2,45.6,4,Undisclosed,,Barton 1792 (Sazerac),1792,b822bfca-3be3-4993-a44e-a188c7fd9e81
-Angel's Envy,Angel's Envy,,Angel's Envy Port Barrel Finish,N,100,50,6,,,Angel's Envy (Bacardi),Angel's Envy,7755aa39-9e75-4f4c-ba82-70cc9b499422
-Angel's Envy,Angel's Envy Private Selection Port Barrel Finish,,"Angel's Envy Private Selection, Port Barrel Finish",N,110,,,"Corn, Rye, Malted Barley",,Angel's Envy (Bacardi),Angel's Envy,e821fce0-932c-4b6a-90e9-b841ef31e443
-Angel's Envy,Angel's Envy Rye,,Angel's Envy Rye,N,100,50,,"95% Rye, 5% Malted Barley",,Angel's Envy (Bacardi),Angel's Envy,d09fb1dc-1062-4829-8620-f7f00424bacf
-Backbone Bourbon,Backbone Bourbon Backbone Decade Down Anniversary Edition,,Backbone Decade Down Anniversary Edition,N,110,55,,,,Backbone Bourbon,Backbone Bourbon,3c0d5c68-9ba4-43ee-97ea-f44bb8b12911
-Backbone Bourbon,Backbone Bourbon Backbone Prime Blended,,Backbone Prime Blended,N,104,52,,,,Backbone Bourbon,Backbone Bourbon,cceede7c-7d12-43bc-a3db-8c6fbffb6928
-Backbone Bourbon,Backbone Bourbon Old Bones Reserve,,Old Bones Reserve,N,110,55,,,,Backbone Bourbon,Backbone Bourbon,7194d3c0-d970-400b-849e-2a201415d860
-Backbone Bourbon,Backbone Bourbon The Forge Blended,,Backbone Bourbon The Forge Blended,N,110,55,,"Bourbon – 75% Corn, 21% Rye, 4% Malted Barley; Rye – 95% Rye, 5% Malted Barley; American Light Whiskey – 99% Corn, 1% Malted Barley",,Backbone Bourbon,Backbone Bourbon,fc137c02-d4fa-4437-ba60-6adc414a4b63
-Backbone Bourbon,Backbone Bourbon Uncut Single Barrel,Single Barrel,"Backbone Bourbon Uncut, Single Barrel",N,118.4,59.5,7,"Rye, Corn, Malted Barley",,Backbone Bourbon,Backbone Bourbon,04a490f0-155a-475e-8ab8-aa239af55aab
-Baker's,Baker's Single Barrel 13 Year,Single Barrel,Baker's Single Barrel 13 Year,Y,107,53.5,,,,Jim Beam (Beam Suntory),Baker's,05f6a749-384e-43fd-a441-01b23c635be4
-Baker's,Baker's Single Barrel 7 Year,Single Barrel,Baker's 7 Year,Y,107,53.5,,,,Jim Beam (Beam Suntory),Baker's,338397c2-cdc8-4020-b096-bdbc6d7d254a
-Bardstown Fusion,Bardstown Fusion Series 6,,Bardstown Fusion Series,N,97.9,,,"Corn, Rye, Malted Barley",,Bardstown Fusion,Bardstown Fusion,b7f0d81b-16f4-4436-b9fb-f48ce284e43b
-Barrell,Barrell Armida,,Barrell Armida,N,112,56,,,,Barrell,Barrell,dab0f885-607b-40d3-a97e-15753dc05d49
-Barrell,Barrell Bourbon,,Barrell Bourbon,N,114.8,57.4,5,"70% corn, 25% rye, 5% malted barley",,Barrell,Barrell,52b101e3-833d-47bf-b06a-3e4fb2b63bfc
-Barrell,Barrell Cask Finish Series,,Barrell Cask Finish Series,N,116.4,58.2,,"73% corn, 23% rye, 4% malted barley",,Barrell,Barrell,5ece24fc-a981-4138-bb91-ccde8a8c9d1e
-Barrell,Barrell Dovetail,,Barrell Dovetail,N,123.8,61.9,,"Corn, Wheat, Malted Barley",,Barrell,Barrell,f7d4fe3d-697b-48a5-99bd-f6118f09d8dc
-Barrell,Barrell Foundation,,Barrell Foundation,N,100,50,5,"73% Corn, 23% Rye, 4% Malted Barley",,Barrell,Barrell,4915de66-152e-41d4-b7fd-28d49332b233
-Barrell,Barrell Gold Label,,Barrell Gold Label,N,113.6,56.8,,,,Barrell,Barrell,771f9951-b656-454f-9044-e12759c66ae4
-Barrell,Barrell Gray Label,,Barrell Gray Label,N,100.6,50.3,,,,Barrell,Barrell,e9f8a5eb-a306-44b4-bd3c-58a537a3785e
-Barrell,Barrell Private Release,,Barrell Private Release,N,114,57,5,"Undisclosed blend of TN, KY, and IN mash bills",,Barrell,Barrell,13dcb8a9-c20a-471d-8a9a-dd2526f70b40
-Barrell,Barrell Seagrass,,Barrell Seagrass,N,119.3,59.65,,Undisclosed,,Barrell,Barrell,7e1056cc-cd76-43f9-93f4-5e545ca3e2da
-Barrell,Barrell Vantage,,Barrell Vantage,N,114.4,57.2,,"Corn, Rye, Malted Barley",,Barrell,Barrell,8a95fe95-1216-4ba0-9145-fc87c4f228b0
-Basil Hayden,Basil Hayden,,Basil Hayden,Y,80,40,10,"63% Corn, 27% Rye, 10% Malted Barley",,Jim Beam (Beam Suntory),Basil Hayden,df3159bf-316d-4f6d-b32f-740ef6628cd8
-Basil Hayden,Basil Hayden Dark Rye,,Basil Hayden Dark Rye,Y,80,40,,"Rye, Malted Barley",,Jim Beam (Beam Suntory),Basil Hayden,3cb075b1-e970-4234-9e83-bdee4aa8a7bc
-Basil Hayden,Basil Hayden Red Wine Cask Finish,,Basil Hayden Red Wine Cask Finish,Y,80,,,"Rye, Malted Barley",,Jim Beam (Beam Suntory),Basil Hayden,7ada3e21-2b3e-42ec-9338-579b5335dda9
-Basil Hayden,Basil Hayden Toast,,Basil Hayden Toast,Y,80,40,,"63% corn, 27% brown rice, 10% malted barley",bourbon,Jim Beam (Beam Suntory),Basil Hayden,59c54232-9faa-4785-b019-ba22ec6897df
-Blackened,Blackened,,Blackened,N,114.7,57.35,,,,Blackened,Blackened,04805b99-ea71-4abc-8b7d-02dba16e1948
-Blackened,Blackened Cask Strength,Cask Strength,Blackened Cask Strength,N,114.7,,,"Rye, Corn, Malted Barley",,Blackened,Blackened,60fee48d-9e38-4507-b953-ca172c64f659
-Blanton's,Blanton's Single Barrel,Single Barrel,Blanton's Single Barrel,Y,93,46.5,,"Corn, Rye, Malted Barley",,Buffalo Trace (Sazerac),Blanton's,5dbaa5c6-44cf-49cc-8b8d-4b22957d91a4
-Bloody Butcher's Creed,Bloody Butcher's Creed Single Barrel Cobb Barrel Pick,Single Barrel,"Bloody Butcher's Creed Single Barrel, Cobb Barrel Pick",N,118.5,,3.5,"Bloody Butcher Heirloom Corn, Rye, Malted Barley",,Bloody Butcher's Creed,Bloody Butcher's Creed,5fc7dc25-a836-4e3f-acd1-97ddd612e220
-Blue Note,Blue Note,,Blue Note,N,109,54.5,,,,Blue Note,Blue Note,f704d426-bb89-4c62-b350-bd8cb42fd72d
-Blue Note,Blue Note Crossroads,,Crossroads,N,100,50,,,,Blue Note,Blue Note,17313800-d83f-455d-8c4c-ec8549452dac
-Blue Note,Blue Note Crossroads Toasted French Oak,,"Blue Note Crossroads, Toasted French Oak",N,100,,,"Corn, Rye, Malted Barley",,Blue Note,Blue Note,7a44419d-b311-4541-b060-e2ebb93eaaac
-Blue Note,Blue Note Juke Joint,,Juke Joint,N,117.6,58.8,,,,Blue Note,Blue Note,b449d854-13d7-4fd5-9837-7297d2d20506
-Blue Note,Blue Note Special Reserve,,Blue Note Special Reserve,N,112.4,56.2,,,,Blue Note,Blue Note,af294078-4d4f-4748-98d7-d702519c183e
-Booker's,Booker's -03 'Mighty Fine Batch',,Booker's 2023-03 'Mighty Fine Batch',N,126.6,63.3,7,"Corn, Rye, Malted Barley",,Jim Beam (Beam Suntory),Booker's,d2b44867-7027-476c-99ed-4046c30e6849
-Booker's,Booker's 30th Anniversary,,Booker's 30th Anniversary,N,125.8,62.9,,,,Jim Beam (Beam Suntory),Booker's,7ebabc4b-acb0-4757-8327-718627c743ce
-Boone County,Boone County Eighteen 33,,Eighteen 33,N,115.4,57.7,,,,Boone County,Boone County,576cd7b5-7d53-4cc7-82f7-d29ec235e37a
-Boone County,Boone County Eighteen 33 Single Barrel,Single Barrel,Boone County Eighteen 33 Single Barrel,N,115.4,45.4,12,"Corn, Malted Barley",,Boone County,Boone County,bf7085ef-7eed-4ee5-a6a6-0c479c9f0301
-Brother's Bond,Brother's Bond Straight Bourbon,,Brother's Bond Straight Bourbon,N,80,,,"Rye, Malted Barley",,Brother's Bond,Brother's Bond,9a95a82a-fb5f-4519-acd0-3196007d1b3b
-Buckner's,Buckner's Single Barrel Cask Strength Unfiltered,Single Barrel,"Buckner's Single Barrel, Cask Strength, Unfiltered",N,121.2,,10,"Corn, Rye, Malted Barley",,Buckner's,Buckner's,4ee393b7-7a1a-4053-8885-688e9af20727
-Buffalo Trace,Buffalo Trace,,"Buffalo Trace Single Oak Project Rye Bourbon, Barrel #80",Y,90,,,"Corn, Rye, Malted Barley",,Buffalo Trace (Sazerac),Buffalo Trace,0266224f-d9ca-438c-9097-df53620bfd06
-Burks Spring,Burks Spring,,Burks Spring,N,100,50,,"Corn, Rye, Malted Barley",,Burks Spring,Burks Spring,17852f98-0fb9-4ac2-b14e-5fc4cef56e08
-Calumet Farm,Calumet Farm,,Calumet Farm,N,96.2,48.1,,,,Calumet Farm,Calumet Farm,cee2d004-7691-4a7d-a911-08ae28051ca4
-Calumet Farm,Calumet Farm 10 Year Bull Lea,,Calumet Farm 10 Year,N,100,,10,"Corn, Wheat, Malted Barley",,Calumet Farm,Calumet Farm,99370cba-178d-435c-a8d0-997cf164f2ec
-Calumet Farm,Calumet Farm Single Rack Black,,Calumet Farm Single Rack Black,N,94,47,,,,Calumet Farm,Calumet Farm,e7f5521d-034e-4134-8d7a-fdedf2d4f95d
-Castle & Key,Castle & Key Bourbon,,Castle & Key Bourbon,N,98,,4,"73% White Corn, 17% Malted Barley, 10% Rye",,Castle & Key,Castle & Key,c777ed33-1746-49ee-a62f-b08b7e2820e5
-Castle & Key,Castle & Key Restoration,,Restoration,N,105,51.5,3.5,"63% Rye, 20% Malted Barley, 17% Corn",,Castle & Key,Castle & Key,7d9821fe-80df-46bc-96af-56584b7d1188
-Castle & Key,Castle & Key Restoration Rye Single Barrel,Single Barrel,"Castle & Key Restoration Rye, Single Barrel",N,120.5,57.9,4,"Rye, Corn, Malted Barley",,Castle & Key,Castle & Key,71d2d787-d311-4fd9-a526-c40b45ee73a0
-Clermont Steep,Clermont Steep American Single Malt,,Clermont Steep American Single Malt,N,94,47,,Malted Barley,,Clermont Steep,Clermont Steep,a2e6194a-164a-4e0f-b905-3c886f371937
-Colonel E.H. Taylor,Colonel E.H. Taylor Jr. Barrel Proof,Barrel Proof,Colonel E.H. Taylor Jr. Barrel Proof,N,134.4,67.2,,Undisclosed (Buffalo Trace’s low rye - 10% or less - Mashbill #1),,Buffalo Trace (Sazerac),Colonel E.H. Taylor,218a7dc3-28aa-4a09-a298-efa91e06a0e2
-Colonel E.H. Taylor,Colonel E.H. Taylor Single Barrel,Single Barrel,Colonel E.H. Taylor Single Barrel,N,100,50,10,"corn, rye, wheat, malted barley",,Buffalo Trace (Sazerac),Colonel E.H. Taylor,c3d36580-c186-4047-a324-4cba97eca160
-Colonel E.H. Taylor,Colonel E.H. Taylor Small Batch Bottled-in-Bond,Small Batch,"Colonel E.H. Taylor Small Batch, Bottled-in-Bond",N,100,,,"Corn, Rye, Malted Barley",,Buffalo Trace (Sazerac),Colonel E.H. Taylor,7492d321-d674-40cb-a589-2cd9f43ba81e
-Daviess County,Daviess County Bourbon,,Daviess County Bourbon,N,96,48,,,,Lux Row (Luxco),Daviess County,1c342554-bfd2-4add-8fbc-d9bbce1cbaab
-Daviess County,Daviess County Double Barrel,,Daviess County Double Barrel,N,96,48,,,,Lux Row (Luxco),Daviess County,c0e7bfe7-287d-42d9-8c74-f3bc87a416e7
-Daviess County,Daviess County Double Barrel Limited Edition,Limited Edition,"Daviess County Double Barrel, Limited Edition",N,96,,,"Corn, Wheat, Malted Barley",,Lux Row (Luxco),Daviess County,6dd167e6-5a2e-437e-b984-334c89f0bae8
-Daviess County,Daviess County Toasted Barrel Finish Series,,Daviess County Toasted Barrel Finish Series,N,96,48,4,,,Lux Row (Luxco),Daviess County,167daee3-9bb5-404e-93db-4c3dbae1cf24
-Distiller's Cache,Distiller's Cache Rare Find Single Barrel,Single Barrel,"Distiller's Cache Rare Find, Single Barrel",N,127.6,,,"Corn, Wheat, Malted Barley",,Distiller's Cache,Distiller's Cache,744bdcc2-8429-4551-bc3a-f45dae239807
-Eagle Rare,Eagle Rare 10 Year,Single Barrel,"Eagle Rare Single Barrel, 10 Year",Y,90,45,10,"Corn, Rye, Malted Barley",,Buffalo Trace (Sazerac),Eagle Rare,57dd54ad-63c9-4991-adee-c65f7b1ebbfd
-Eagle Rare,Eagle Rare 17 Year,,Eagle Rare 17 Yr,N,101,50.5,,,,Buffalo Trace (Sazerac),Eagle Rare,9a68ef31-d9bb-434e-8339-fd31d5d7eb22
-Elijah Craig,Elijah Craig Barrel Proof,Barrel Proof,"Elijah Craig Barrel Proof, Batch A125",Y,118.2,,10,"Corn, Rye, Malted Barley",,Heaven Hill,Elijah Craig,5322c20b-8f2d-4af1-8ca6-eaf20000ad2b
-Elijah Craig,Elijah Craig Small Batch,Small Batch,Elijah Craig,Y,94,47,,,,Heaven Hill,Elijah Craig,3db80b59-7419-4f48-915a-91ede8f0694a
-Elijah Craig,Elijah Craig Toasted Barrel,,Elijah Craig Toasted Barrel,N,94,47,,,,Heaven Hill,Elijah Craig,1b68b52d-2afc-425b-b77b-bdde38571f41
-Elmer T. Lee,Elmer T. Lee Single Barrel,Single Barrel,Elmer T. Lee Single Barrel,N,90,,,"Corn, Rye, Malted Barley",,Buffalo Trace (Sazerac),Elmer T. Lee,907349ab-3a74-4db4-926e-2ebaf324224c
-Evan Williams,Evan Williams Single Barrel,Single Barrel,Evan Williams Single Barrel,Y,86.6,43.3,,,,Heaven Hill,Evan Williams,ed69db61-c84e-4aca-8343-740ceedae9e2
-Flatboat,Flatboat KY Straight Bourbon,,Flatboat KY Straight Bourbon,N,125,62.5,,"Corn, Rye, Malted Barley",,Flatboat,Flatboat,f407b4a0-7099-48fc-ba83-150ff9d86420
-Four Roses,Four Roses Bourbon (Yellow Label),,Four Roses,Y,104,52,,,,Four Roses (Kirin),Four Roses,13dfb4eb-7a77-4446-89c7-eccb963b8913
-Four Roses,Four Roses Limited Edition Single Barrel,Single Barrel,Four Roses Limited Edition Single Barrel,N,108.6,54.3,,,,Four Roses (Kirin),Four Roses,117ec2d9-dd5a-4bdd-b835-aa75f531cf4c
-Four Roses,Four Roses Single Barrel,Single Barrel,Four Roses Single Barrel,Y,100,50,,"60% corn, 35% rye, 5% malted barley",,Four Roses (Kirin),Four Roses,b3ef4b30-24d1-48f1-bfe5-3b0cc6e32e75
-Four Roses,Four Roses Small Batch,Small Batch,Four Roses Small Batch,Y,109,54.5,,,,Four Roses (Kirin),Four Roses,ec61e2fa-db0e-4343-8154-d82226b78866
-Four Roses,Four Roses Small Batch Select,Small Batch,Four Roses Small Batch Select,Y,104,52,,,,Four Roses (Kirin),Four Roses,4ffc83fa-feff-47b8-8b08-bace4f6dec7a
-Garrison Brothers,Garrison Brothers Balmorhea,,Garrison Brothers Balmorhea,N,115,57.5,,,,Garrison Brothers,Garrison Brothers,71611a1d-e21a-4abb-9334-61a816f2bcc8
-Garrison Brothers,Garrison Brothers Guadalupe,,Guadalupe,N,107,53.5,,,,Garrison Brothers,Garrison Brothers,c9aea0fd-7208-42e7-b939-564e5eaf7dce
-Garrison Brothers,Garrison Brothers Honey Dew,,Garrison Brothers Honey Dew,N,80,40,3,"Corn, Wheat, Malted Barley",,Garrison Brothers,Garrison Brothers,233b1890-529c-43f5-b775-b12ac186a3f1
-Garrison Brothers,Garrison Brothers Lady Bird,,Lady Bird,N,114,57,,,,Garrison Brothers,Garrison Brothers,76d8c2a4-944c-4d22-a271-af46c4f5e746
-George T. Stagg,George T. Stagg,,George T. Stagg,N,90,45,,,,Buffalo Trace (Sazerac),George T. Stagg,02bb6c49-1f71-4778-9ecc-4044aa0e6d8e
-H.K. Young,H.K. Young Toasted Barrel Blend,,"H.K. Young Kentucky Straight Bourbon, Toasted Barrel Blend",N,115.8,45.7,6,"Corn, Rye, Malted Barley",,H.K. Young,H.K. Young,3d6b3440-bf4f-4e45-97f7-1adf5856e42b
-Hard Truth,Hard Truth,,Hard Truth,N,109,54.5,,,,Hard Truth,Hard Truth,56769933-cead-4b66-8191-44c430bba101
-Hard Truth,Hard Truth Four Grain,Four Grain,Hard Truth Four Grain,N,100,50,,,,Hard Truth,Hard Truth,d4b450ff-d2dc-4886-8c29-a1c6d9bef93c
-Hard Truth,Hard Truth Sweet Mash Four Grain Bottled-in-Bond,Bottled-in-Bond,"Hard Truth Sweet Mash Four Grain, Bottled-in-Bond",N,100,,,"Corn, Wheat, Malted Barley",,Hard Truth,Hard Truth,388b6d1e-8be2-4df1-a5ca-566ceb9a10f6
-Hard Truth,Hard Truth Wheated,,Hard Truth Wheated,N,100,50,,,,Hard Truth,Hard Truth,de80a73d-77b3-4df5-830b-8a6d2337cf1d
-Heaven Hill,Heaven Hill Barrel Proof Bottled-in-Bond,Barrel Proof,Heaven Hill Barrel Proof,N,94.8,47.4,,,,Heaven Hill,Heaven Hill,42e216f5-faa3-48e2-9344-52323a3cf651
-Heaven Hill,Heaven Hill Bottled-in-Bond,Bottled-in-Bond,Heaven Hill Bottled in Bond,Y,100,50,,,,Heaven Hill,Heaven Hill,7b7b9523-6aec-4c3f-a8c9-e92780f7728c
-Heaven Hill,Heaven Hill Grain to Glass,,Grain to Glass,Y,121,60.5,,,,Heaven Hill,Heaven Hill,855e1952-29d1-4ce0-8a81-f37130cf45e9
-Heaven Hill,Heaven Hill Heritage Collection,,Heaven Hill Heritage Collection,N,118.2,59.1,,,,Heaven Hill,Heaven Hill,1d29f903-a1d4-4a66-8e15-d21f7779142f
-Heaven's Door,Heaven's Door,,Heaven's Door,N,100,50,,,,Heaven's Door,Heaven's Door,714cf775-d03e-4640-99c2-871aa6d54658
-Heaven's Door,Heaven's Door Cask Strength,Cask Strength,Heaven's Door Cask Strength,N,121.8,60.9,,,,Heaven's Door,Heaven's Door,64da008e-ac5e-41a9-8410-8b1c756ff602
-Heaven's Door,Heaven's Door Cask Strength Single Barrel,Single Barrel,"Heaven's Door Cask Strength, Single Barrel",N,121.8,,5,"Corn, Rye, Malted Barley",,Heaven's Door,Heaven's Door,d02be228-4b00-41b7-b614-b1131eafb132
-Heaven's Door,Heaven's Door Decade Series,,Heaven's Door Decade Series,N,100,50,,,,Heaven's Door,Heaven's Door,7b02d78c-1c17-4fe5-9a18-03539a4f3f55
-Henry McKenna,Henry McKenna 10 Year Bottled-in-Bond Single Barrel,Single Barrel,"Henry McKenna Single Barrel, Bottled-in-Bond",Y,100,50,10,"Corn, Rye, Malted Barley",,Heaven Hill,Henry McKenna,456f5ae0-f62b-41f8-9052-16c1ad0b4bfc
-Hibiki,Hibiki Japanese Harmony,,Hibiki Japanese Harmony,N,86,43,,Malt + Grain blend,,Hibiki,Hibiki,8c3cae59-ad39-41cb-b1e4-709c69369773
-Horse Soldier,Horse Soldier,,Horse Soldier,N,87,43.5,,,,Horse Soldier,Horse Soldier,849714fa-4d20-450a-933c-b560255727f4
-Horse Soldier,Horse Soldier Single Barrel,Single Barrel,Horse Soldier Single Barrel,N,87,,,"Rye, Malted Barley",,Horse Soldier,Horse Soldier,9c22f71a-8680-44d5-8221-feafc4a0b1b5
-I.W. Harper,I.W. Harper,,I.W. Harper,N,86,43,,,,I.W. Harper,I.W. Harper,95fdd45e-e062-4c5c-a526-6f02268818d8
-Jack Daniel's,Jack Daniel's Bottled in Bond,Bottled-in-Bond,Jack Daniel's Bottled in Bond,N,100,50,,,,Brown-Forman,Jack Daniel's,725faf93-f31c-4ef9-964e-e99d17bbd926
-Jack Daniel's,Jack Daniel's Single Barrel,Single Barrel,Jack Daniel's Single Barrel,N,145,72.5,,,,Brown-Forman,Jack Daniel's,9ffa520e-63f8-4082-9f6e-379c9817d927
-Jack Daniel's,Jack Daniel's Single Barrel Barrel Proof,Single Barrel,Jack Daniel's Single Barrel Barrel Proof,N,,,,,,Brown-Forman,Jack Daniel's,f653e8a1-d309-4abd-8ea5-34adf34da5c3
-James B. Beam,James B. Beam Distiller's Share 03 — Wine & Sherry Finish,,James B. Beam Distiller's Share 03 — Wine & Sherry Finish,N,112,56,,Malted Barley,,Jim Beam (Beam Suntory),James B. Beam,5f0f36ef-4f83-4868-adc7-7d1446c6cfeb
-Jefferson's,Jefferson's Jefferson’s Tropics,,Jefferson’s Tropics,N,104,52,4,Undisclosed,,Jefferson's,Jefferson's,a27465d0-e817-4790-87f8-12cc3d8929e4
-Jefferson's,Jefferson's Ocean Aged at Sea,,Jefferson's Ocean Aged at Sea,N,82.2,41.1,,,,Jefferson's,Jefferson's,f96ff5bd-ca1c-4b46-88fa-0c9f12f54304
-Jefferson's,Jefferson's Very Small,Small Batch,Jefferson's Very Small Batch Bourbon,N,82.2,41.1,,,,Jefferson's,Jefferson's,7065da6d-ce22-4c64-8c94-b2e6d71e587b
-Jim Beam,Jim Beam Black 7 Year,,Jim Beam Black 7 Year,N,90,45,,"77% corn, 13% rye, 10% malted barley",,Jim Beam (Beam Suntory),Jim Beam,ce14777d-20fb-4658-bb33-629f91169ff0
-Jim Beam,Jim Beam Bonded,Bottled-in-Bond,Jim Beam Bonded,N,100,50,,"77% corn, 13% rye, 10% malted barley",,Jim Beam (Beam Suntory),Jim Beam,2028bebc-2213-4774-bc61-e5f668f3fdb3
-Jim Beam,Jim Beam Distiller's Cut,,Distiller's Cut,N,100,50,,,,Jim Beam (Beam Suntory),Jim Beam,04c0e847-a149-4a63-84a1-662068bd9781
-Jim Beam,Jim Beam Distiller's Masterpiece Sherry Cask Finished,,Distiller's Masterpiece Sherry Cask Finished,N,100,50,,,,Jim Beam (Beam Suntory),Jim Beam,7c4788dc-d736-4b8a-8909-41386dbc3fc8
-Jim Beam,Jim Beam Distillers' Masterpiece,,Distillers' Masterpiece,N,98,49,,,,Jim Beam (Beam Suntory),Jim Beam,47cd3b1e-4dd6-49a7-946b-0043f06da685
-Jim Beam,Jim Beam Signature Craft,,Signature Craft,N,90,45,,,,Jim Beam (Beam Suntory),Jim Beam,3b6ed3a2-b17e-4d52-a765-23e5864e55bc
-Jim Beam,Jim Beam Single Barrel,Single Barrel,Jim Beam Single Barrel,N,95,47.5,,"77% corn, 13% rye, 10% malted barley",,Jim Beam (Beam Suntory),Jim Beam,4a7b4601-1ecb-455a-a504-d843f2b6bfd6
-Journeyman,Journeyman Corsets Whips & Whiskey,,"Journeyman Corsets, Whips & Whiskey",N,120.1,58.5,,Various (Journeyman house mash),,Journeyman,Journeyman,093a34bf-0993-4df0-ab2e-31224b235c39
-Journeyman,Journeyman Distillery Featherbone,,Distillery Featherbone,N,90,45,,,,Journeyman,Journeyman,105ec17c-e758-442c-b48c-59b31c000401
-K.Luke,K.Luke Cask Finished Single Barrel Cognac Cask,Single Barrel,"K.Luke Cask Finished Single Barrel, Cognac Cask",N,117.4,,,"Corn, Rye, Malted Barley",,K.Luke,K.Luke,8c13f97e-8e6a-409e-92e0-ae31a905ac69
-Knob Creek,Knob Creek 12 Year,,Knob Creek 12 Year,Y,100,,12,"Corn, Rye, Malted Barley",,Jim Beam (Beam Suntory),Knob Creek,863281a6-8f59-45d3-91db-1bfc7f0069dd
-Knob Creek,Knob Creek 18 Year,,Knob Creek 18 Year,N,100,50,,,,Jim Beam (Beam Suntory),Knob Creek,41d1d740-24ff-4ab2-831f-8be0803ae7dc
-Knob Creek,Knob Creek Single Barrel Select,Single Barrel,"Knob Creek Single Barrel Select, 9 Year",Y,120,,9,"Corn, Rye, Malted Barley",,Jim Beam (Beam Suntory),Knob Creek,71225035-349f-4dcd-ac7c-275eeca1bed5
-Knob Creek,Knob Creek Small Batch,Small Batch,Knob Creek,Y,120,60,14,,,Jim Beam (Beam Suntory),Knob Creek,37b8e204-1e39-449a-b203-328686d5816c
-Larceny,Larceny Barrel Proof,Barrel Proof,Larceny Barrel Proof,Y,126.6,63.3,,,,Heaven Hill,Larceny,293db85f-db1c-4459-8824-87c8e0c45a84
-Larceny,Larceny Small Batch,Small Batch,Larceny,Y,125,62.5,,,,Heaven Hill,Larceny,24a2e3d9-9e7c-4021-aa15-9faabad71e13
-Legent,Legent Yamazaki Cask Finish,,Legent Yamazaki Cask Finish,N,114,57,8,"Corn, Rye, Malted Barley",,Jim Beam (Beam Suntory),Legent,30f715a3-013f-4f06-898c-480f9f820ada
-Lincoln,Lincoln KY Straight Bourbon,,Lincoln KY Straight Bourbon,N,118,59,,,,Lincoln,Lincoln,53a3c002-660d-48a2-85b3-0a89c4c31eae
-Lincoln,Lincoln KY Straight Bourbon Cask Strength,Cask Strength,"Lincoln KY Straight Bourbon, Cask Strength",N,118,,2,"Corn, Rye, Malted Barley",,Lincoln,Lincoln,24f2896f-d229-4383-8e14-537563afb394
-Little Book,Little Book,,Little Book,N,118.1,59.05,,,,Jim Beam (Beam Suntory),Little Book,7b9e84da-be9d-4b15-a0ea-ae8f0f160cae
-Little Book,Little Book Chapter 7 'In Retrospect',,Little Book Chapter 7 'In Retrospect' (2023),N,118.1,,,Various (blend of straight whiskeys),,Jim Beam (Beam Suntory),Little Book,255e4f08-c127-408d-9379-8ddc76bc015b
-Lucky Seven,Lucky Seven,,Lucky Seven,N,134.2,67.1,,,,Lucky Seven,Lucky Seven,cabf63aa-db71-4507-807f-57ac2de68eaa
-Lucky Seven,Lucky Seven The Holiday Toast Double Oak,,"Lucky Seven The Holiday Toast, Double Oak",N,115,57.5,,"Corn, Rye, Malted Barley",,Lucky Seven,Lucky Seven,9857ad9a-439a-4678-beb8-d5a8811c82d9
-Maker's Mark,Maker's Mark,,Maker's Mark,Y,90,,,"70% Corn, 16% Wheat, 14% Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,5ae039ed-36dd-4a45-a169-39b38e08959e
-Maker's Mark,Maker's Mark 46,,Maker's Mark No. 46 French Oaked,Y,94,47,,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,9c24e0ec-bc65-4ad6-a35f-727af74286cf
-Maker's Mark,Maker's Mark Cask Strength,Cask Strength,Maker's Mark Cask Strength,Y,113.2,54.35,,"70% Corn, 16% Wheat, 14% Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,ca606168-694a-4712-b602-b6af97db876f
-Maker's Mark,Maker's Mark Cellar Aged,,Maker's Mark Cellar Aged,N,115.8,57.9,,,,Maker's Mark (Beam Suntory),Maker's Mark,e2a88581-4039-4a89-a03d-252cbe7a9e05
-Maker's Mark,Maker's Mark DNA Project,,Maker's Mark DNA Project — 115 Entry Proof,N,117.6,,8,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,180442a9-4725-41d6-8c32-ca15309c9ee4
-Maker's Mark,Maker's Mark Private Selection,,Maker's Mark Private Selection 2022 Master Distiller,N,113.2,,,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,4c93b345-6536-4cda-8a6e-a3919ed721c6
-Maker's Mark,Maker's Mark Wood Finishing Series,,Maker's Mark Wood Finishing 2024 — The Heart Release,N,110.8,,,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,cbaed5ea-ead3-4fb0-94bb-1124bef30496
-Michter's,Michter's 10 Year Single Barrel,Single Barrel,Michter's 10 Yr,N,94.4,47.2,,,,Michter's,Michter's,3453cde6-854c-453e-8ec6-3767def6a0d5
-Michter's,Michter's 20 Year,,Michter's 20 Yr,N,114.2,57.1,,,,Michter's,Michter's,9a01c99a-bc2a-4f88-ac81-5c6f16d5bfe0
-Michter's,Michter's 25 Year,,Michter's 25 Yr,N,116.2,58.1,,,,Michter's,Michter's,84c1b56d-61ed-4fc9-a2bd-d000b976f104
-Michter's,Michter's US-1 Small Batch,Small Batch,Michter's US-1 Small Batch,Y,,,,,,Michter's,Michter's,ab616e4b-1ead-46b4-a409-65bc5058c5c9
-Michter's,Michter's US-1 Toasted Barrel Finish,,Michter's Toasted Barrel Finish Bourbon (Batch 15H664),N,91.4,45.7,,,,Michter's,Michter's,f76da960-449f-46d3-acd6-a7ecb10a55fc
-New Riff,New Riff 8 year old,,New Riff 8 year old,Y,100,50,8,"65% corn, 30% rye, 5% malted barley",,New Riff,New Riff,ad270781-fbf2-4e4f-9d3b-ec5b40e4225a
-New Riff,New Riff Kentucky Straight Rye,Straight Rye,New Riff Kentucky Straight Rye,N,100,50,8,"Rye, Malted Barley",,New Riff,New Riff,2f80ddda-e8d4-4c09-8b4c-c1760feac9e9
-New Riff,New Riff Single Barrel Bourbon Barrel Proof,Single Barrel,"New Riff Single Barrel Bourbon, Barrel Proof",N,102.4,56.3,4,"Corn, Rye, Malted Barley",,New Riff,New Riff,0f6bf57a-90ac-40e2-b363-d58e73785bc1
-New Riff,New Riff Single Barrel Bourbon Cigar Club Pick,Single Barrel,"New Riff Single Barrel Bourbon, Cigar Club Pick",N,110.3,56.3,4,"Corn, Rye, Malted Barley",,New Riff,New Riff,17848500-bac1-44b6-b3cc-a03ad0fae91e
-New Riff,New Riff Winter Whiskey,,New Riff Winter Whiskey,N,100,50,4,"65% corn, 20% malted oats, 7% pale malt, 5% steel cut raw oats, 3% chocolate malt",,New Riff,New Riff,7ecfb5c0-3601-48fb-94b9-aa20b7e38f58
-O.K.I.,O.K.I. Single Barrel Straight Bourbon,Single Barrel,O.K.I. Single Barrel Straight Bourbon,N,113.3,57,5,"Corn, Rye, Malted Barley",,O.K.I.,O.K.I.,ac0ff254-f5e0-4c3c-bec3-ee731ca76441
-Old Ezra,Old Ezra,,Old Ezra,N,117,58.5,,,,Lux Row (Luxco),Old Ezra,2ee0be75-2daf-4c20-aa25-aa95b21f515b
-Old Ezra,Old Ezra Barrel Strength,Cask Strength,Old Ezra Barrel Strength,N,117,58.5,7,"Corn, Rye, Malted Barley",,Lux Row (Luxco),Old Ezra,8404a9ba-862b-42f3-9d1f-62dce801e2f2
-Old Fitzgerald,Old Fitzgerald Bottled-in-Bond Decanter,Bottled-in-Bond,Old Fitzgerald,Y,100,50,,,,Heaven Hill,Old Fitzgerald,94f0dbcf-9c07-40fe-a416-d214de7c20a7
-Old Forester,Old Forester 117 Series,Bottled-in-Bond,117 Series Bottled in Bond,N,100,50,,,,Brown-Forman,Old Forester,da5bd787-ceaf-43af-9a59-552d55dd7891
-Old Forester,Old Forester 150th Anniversary,,Old Forester 150th Anniversary Batch,N,126.8,63.4,,,,Brown-Forman,Old Forester,b261666d-fd8e-4708-8a54-36ef29c2b155
-Old Forester,Old Forester 1870 Original Batch,,1870 Original Batch,Y,90,45,4,"72% Corn, 18% Rye, 10% Malted Barley",,Brown-Forman,Old Forester,65a75061-295f-4951-a654-1aa30e2e8940
-Old Forester,Old Forester 1897 Bottled in Bond,Bottled-in-Bond,1897,Y,100,,,"72% Corn, 18% Rye, 10% Malted Barley",,Brown-Forman,Old Forester,a94830b6-e400-438e-bd61-4aa1a93a6878
-Old Forester,Old Forester 1910 Old Fine Whisky,,1910 Old Fine Whisky,Y,93,46.5,,"72% Corn, 18% Rye, 10% Malted Barley",,Brown-Forman,Old Forester,f857d6d2-ac11-40ff-833d-37950c007478
-Old Forester,Old Forester 1920 Prohibition Style,,Old Forester 1920 Prohibition Style,Y,115,57.5,,"Corn, Rye, Malted Barley",,Brown-Forman,Old Forester,9e35882a-dba3-4cd8-a5b0-f70d21c61bf4
-Old Forester,Old Forester Birthday Bourbon,,Birthday Bourbon,N,96,48,,,,Brown-Forman,Old Forester,1c1a77f0-020c-4028-b7f9-d2e79176a9cc
-Old Forester,Old Forester King Ranch,,Old Forester King Ranch,N,105,,,"Corn, Rye, Malted Barley",,Brown-Forman,Old Forester,ea158fc5-57cf-4b4d-8af2-a6d53a9d44b1
-Old Forester,Old Forester President's Choice,,The President s Choice,N,111,55.5,,,,Brown-Forman,Old Forester,f2f8635d-5878-40a9-8e60-8a164c7e87fb
-Old Forester,Old Forester Repeal Bourbon,,Repeal Bourbon,Y,100,50,,,,Brown-Forman,Old Forester,2998d8a6-a7f2-4cd9-b2ee-993c2ffeb301
-Old Forester,Old Forester Signature,,Old Forester 100 Proof Signature,Y,100,50,,"72% Corn, 18% Rye, 10% Malted Barley",,Brown-Forman,Old Forester,09e48a71-3889-4da3-a607-4f967bcb7675
-Old Forester,Old Forester Single Barrel,Single Barrel,"Old Forester Single Barrel, Barrel Strength",Y,127.1,,4.4166666667,"Corn, Rye, Malted Barley",,Brown-Forman,Old Forester,54a81325-9b7d-4586-8862-84213ad9ccc9
-Old Forester,Old Forester Statesman,,Statesman,Y,95,47.5,,"72% Corn, 18% Rye, 10% Malted Barley",,Brown-Forman,Old Forester,4745ad0a-03a3-4683-839a-e0f33a3722aa
-Old Forester,Old Forester — 10 Year,,Old Forester 1924 — 10 Year,N,100,50,10,"Corn, Rye, Malted Barley",,Brown-Forman,Old Forester,e2064bd9-9fb0-4893-a664-efebd3f1b51c
-Old Grand-Dad,Old Grand-Dad 114,,Old Grand-Dad 114,Y,114,,4,"Corn, Rye, Malted Barley",,Jim Beam (Beam Suntory),Old Grand-Dad,074125ee-5cf1-4747-9ed3-a7a690082695
-Old Grand-Dad,Old Grand-Dad Bottled-in-Bond,Bottled-in-Bond,Old Grand-Dad Bottled-in-Bond,N,,,7,"63% Corn, 27% Rye, 10% Malted Barley",,Jim Beam (Beam Suntory),Old Grand-Dad,c5475639-1c76-497b-986b-4660592f92f7
-On Your Six,On Your Six Bourbon,,On Your Six Bourbon,Y,80,,,"Corn, Rye, Malted Barley",,On Your Six,On Your Six,801c6450-fce8-4afe-958f-fc73a4d7e8d8
-Peerless,Peerless Single Barrel Bourbon,Single Barrel,Peerless Single Barrel Bourbon,Y,114,55.4,8,"Corn, Rye, Malted Barley",,Peerless,Peerless,af105ecb-2432-42b6-9a37-9aaafd538870
-Peerless,Peerless Small,Small Batch,Peerless Small Batch Rye,N,111.1,,,"Rye, Malted Barley",,Peerless,Peerless,9b40b21e-f453-451f-a85e-e2ec9050ab28
-Penelope,Penelope Toasted Series,,Penelope Toasted Series,N,100,50,,,,Penelope,Penelope,8c66850c-7cbf-4dbb-9f95-4b5010b0d758
-Pursuit United,Pursuit United An Adventure in Bold Flavors,,Pursuit United An Adventure in Bold Flavors,N,108,54,,"Corn, Wheat, Malted Barley",,Pursuit United,Pursuit United,84ac08ec-73e1-43b1-bb9a-909088ae41c2
-Pursuit United,Pursuit United Blended Straight,,Pursuit United Blended Straight,N,108,54,,,,Pursuit United,Pursuit United,ea345976-9adf-473c-bf9b-b7e11dde1e8d
-RD One,RD One Small Batch,Small Batch,RD One Small Batch,N,110,55,,,,RD One,RD One,4b49e3d0-8f2f-4bfd-949a-32ca9878e34c
-RD One,RD One Smoked Oak & Maple Wood,,RD One Smoked Oak & Maple Wood (gold label),N,111.3,,4,"Corn, Rye, Malted Barley",,RD One,RD One,d2105782-513a-4833-ad47-9cad8d32a81c
-Rabbit Hole,Rabbit Hole Cavehill,,Rabbit Hole Cavehill,Y,95,47.5,,,,Rabbit Hole,Rabbit Hole,d269dfc1-a6cc-4b4a-9432-79c0d806720d
-Rabbit Hole,Rabbit Hole Dareringer,,Rabbit Hole Dareringer,Y,93,46.5,,,,Rabbit Hole,Rabbit Hole,4bc17292-d4a7-4a84-a462-953a762a7af3
-Rabbit Hole,Rabbit Hole Heigold,,Rabbit Hole Heigold,Y,95,47.5,,,,Rabbit Hole,Rabbit Hole,729e31c0-9969-4d23-b6cf-73a6074f29d6
-Rebel,Rebel,,Rebel,N,100,50,,,,Lux Row (Luxco),Rebel,66f34395-0e9c-4ca7-9e9d-3ec6a1e53854
-Rebel,Rebel Cask Strength,Cask Strength,Rebel Cask Strength,N,120,60,6,"Corn, Wheat, Malted Barley",,Lux Row (Luxco),Rebel,7d043a67-ab39-4e15-b1d5-a91d1accba25
-Russell's Reserve,Russell's Reserve 10 Year,,Russell's Reserve 10 Year,Y,90,45,,"75% corn, 13% rye, 12% malted barley",,Wild Turkey (Campari),Russell's Reserve,79950c93-2561-4545-a416-39d22df88d43
-Russell's Reserve,Russell's Reserve Private Barrel Selection,,Russell's Reserve Private Barrel Selection,N,110,55,9,"Corn, Rye, Malted Barley",,Wild Turkey (Campari),Russell's Reserve,355e73eb-e369-4a31-8aef-9a6424c6e28e
-Russell's Reserve,Russell's Reserve Single Barrel,Single Barrel,Russell's Reserve Single Barrel,Y,110,55,,,,Wild Turkey (Campari),Russell's Reserve,0ff683f5-8bce-4411-9a8f-44e9cdc677e7
-Russell's Reserve,Russell's Reserve Small Batch,Small Batch,Russell's Reserve Small Batch,Y,110,55,,"75% Corn, 13% Rye, 12% Malted Barley",,Wild Turkey (Campari),Russell's Reserve,75b49157-642b-4c23-a550-ad06d40c09e2
-Shortbarrel,Shortbarrel Cigar Batch — Marignac Cognac Rum & Tawny Port Cask Finish,,"Shortbarrel Cigar Batch — Marignac Cognac, Rum & Tawny Port Cask Finish",N,115,,,Various (blend of straight whiskeys),,Shortbarrel,Shortbarrel,40ff6490-76c4-4513-8615-0ecca23621b5
-Shortbarrel,Shortbarrel Single Barrel Series —,Single Barrel,Shortbarrel Single Barrel Series — Kentucky Straight Bourbon,N,121.8,,10,"Corn, Rye, Malted Barley",,Shortbarrel,Shortbarrel,facea7f4-5677-4741-9f6c-ae9ed53a79b0
-Shortbarrel,Shortbarrel Single Barrel Series — Kentucky Straight Rye,Single Barrel,Shortbarrel Single Barrel Series — Kentucky Straight Rye,N,120.2,,10,"Rye, Corn, Malted Barley",,Shortbarrel,Shortbarrel,f9f2f611-8d09-4205-8f87-0f9e9339e0cb
-Smoke Wagon,Smoke Wagon Uncut Unfiltered,,Smoke Wagon Uncut Unfiltered,N,115,57.5,,"Corn, Rye, Malted Barley",,Smoke Wagon,Smoke Wagon,a5f995b3-360c-4960-a028-ef4412a4d804
-Spirits of French Lick,Spirits of French Lick The Wheater Straight Bourbon,,The Wheater Straight Bourbon,N,90,45,,,,Spirits of French Lick,Spirits of French Lick,f69331f2-7967-4518-bc32-977d54c07703
-Stagg,Stagg Barrel Proof,Barrel Proof,Stagg Jr. Barrel Proof,N,128.4,64.2,,,,Buffalo Trace (Sazerac),Stagg,59e959c5-3a90-4580-b6b6-b2e575c7b116
-Starlight,Starlight Distillery Carl T. Huber Signature Indiana Straight,,Starlight Distillery Carl T. Huber Signature Indiana Straight,N,92,46,,,,Starlight,Starlight,d6bfc748-6da2-4ace-a194-18dfb9b2f489
-Starlight,Starlight Distillery Carl T. Huber's,,Starlight Distillery Carl T. Huber's,Y,100,50,,,,Starlight,Starlight,b619ba3d-55bd-4dae-beba-c7f302bf4b2d
-Stellum,Stellum Bourbon,,Stellum Bourbon,Y,115,57.5,,,,Stellum Spirits,Stellum,72545e51-0e92-4b2e-866f-5ddd676f71cc
-The Morning Glory,The Morning Glory Kasha Bourbon,,The Morning Glory Kasha Bourbon,N,109,,4.5,"Corn, Rye, Malted Barley",,The Morning Glory,The Morning Glory,69ed94e1-37d4-4c22-9762-ff86610f9f22
-Three Chord,Three Chord,,Three Chord,Y,99,49.5,,,,Three Chord,Three Chord,ffe88d75-f64e-45e3-8c52-4300c7dc70a1
-Town Branch,Town Branch,,Town Branch Kentucky Straight Bourbon,N,90,45,,,,Town Branch,Town Branch,928145b6-5e70-40df-a4d1-245273e80589
-Town Branch,Town Branch Reserve Rye,,Town Branch Reserve Rye,N,100,50,,,,Town Branch,Town Branch,e1b606aa-fa57-4196-aaeb-19140871caed
-Town Branch,Town Branch Single Barrel Reserve Rye,Single Barrel,Town Branch Single Barrel Reserve Rye,N,100,,6,"Rye, Malted Barley",,Town Branch,Town Branch,4aceeee0-6d09-4f7e-84cd-770ba1b37726
-Trackside,Trackside Bourbon Whiskey Founder Release,,"Trackside Bourbon Whiskey, Founder Release 2025",N,107,,,"Corn, Rye, Malted Barley",,Trackside,Trackside,ee4e2409-d3ef-4b86-8911-67eb4aa4533b
-Uncle Nearest,Uncle Nearest 1820,,Uncle Nearest 1820,Y,115,57.5,,,,Uncle Nearest,Uncle Nearest,f05ba405-6eb3-491b-b1e8-423a37a4f27f
-Uncle Nearest,Uncle Nearest 1856,,Uncle Nearest 1856,N,100,50,,,,Uncle Nearest,Uncle Nearest,456f14ce-54d6-4fcd-a1ee-d936850add8c
-Uncle Nearest,Uncle Nearest 1884,,Uncle Nearest 1884,N,93,46.5,,,,Uncle Nearest,Uncle Nearest,9dcb78fc-36d8-4962-85ef-2d0ab9674b38
-Watch Hill Proper,Watch Hill Proper Honey Toasted Reserve Limited Release,,"Watch Hill Proper Honey Toasted Reserve, 2025 Limited Release",N,116,,,Various (blend),,Watch Hill Proper,Watch Hill Proper,e17205cd-86be-4e5b-b777-ea686317f0b0
-Weller,Weller 12 Year,,Weller 12 Year,Y,90,45,12,"Undisclosed (Buffalo Trace “Wheated” Mashbill - Corn, Wheat, Malted Barley)",,Buffalo Trace (Sazerac),Weller,e811d4b9-7635-43fc-afb9-e66f1f9efd92
-Weller,Weller Antique 107,,Weller Antique 107,Y,95,47.5,,"Undisclosed (Buffalo Trace ""Wheated"" Mashbill - Corn, Wheat, Malted Barley)",,Buffalo Trace (Sazerac),Weller,8b5cc01d-b4c4-4b11-ae16-6dd3059cd8ca
-Weller,Weller Full Proof,Full Proof,Weller Full Proof,N,114,57,,,,Buffalo Trace (Sazerac),Weller,991605ef-5148-4c67-8936-8007ea8ef858
-Weller,Weller Special Reserve,,W.L. Weller Special Reserve,N,90,,,"Corn, Wheat, Malted Barley",,Buffalo Trace (Sazerac),Weller,b66119dc-b2e6-429c-92cc-26761d0d49e6
-WhistlePig,WhistlePig PiggyBack Rye,,WhistlePig PiggyBack 100% Rye,N,96.56,48.28,6,100% Rye,,WhistlePig,WhistlePig,a811b04b-b56b-439b-9e73-b47f2cd2c993
-WhistlePig,WhistlePig Single Barrel Rye 10 Year,Single Barrel,"WhistlePig Single Barrel Rye, 10 Year",N,106.2,,10,"Rye, Malted Barley",,WhistlePig,WhistlePig,b2420717-cec1-49ac-b11e-e5e3c8b92e94
-Widow Jane,Widow Jane,,Widow Jane,N,91,45.5,,,,Widow Jane,Widow Jane,40b99e37-712b-47b7-aec7-05426bf92072
-Widow Jane,Widow Jane Decadence,,Widow Jane Decadence,N,91,45.5,,,,Widow Jane,Widow Jane,67723a6b-095c-43bc-ae73-407f8bda4b0d
-Wild Turkey,Wild Turkey 101,,Wild Turkey 101,Y,,,,,,Wild Turkey (Campari),Wild Turkey,b8b6f3e0-a5d2-423b-925c-5563a05d17e7
-Wild Turkey,Wild Turkey Generations 70th Anniversary,,Wild Turkey Generations 70th Anniversary Release,Y,101,50.5,8,"Corn, Rye, Malted Barley",,Wild Turkey (Campari),Wild Turkey,58a1e88f-0f24-4f5f-8dd8-a5559f4f42ae
-Wild Turkey,Wild Turkey Kentucky Spirit,,Wild Turkey Kentucky Spirit,Y,101,50.5,8,"75% Corn, 13% Rye, 12% Malted Barley",,Wild Turkey (Campari),Wild Turkey,d83a2db3-8e3e-4832-a2a6-f23b5e5a6a71
-Wild Turkey,Wild Turkey Longbranch,,Wild Turkey Longbranch,Y,86,43,8,"75% Corn, 13% Rye, 12% Malted Barley",,Wild Turkey (Campari),Wild Turkey,12e2f298-8c8f-4b5b-b2a7-f1657a63d30e
-Wild Turkey,Wild Turkey Master's Keep,,Wild Turkey Master's Keep,N,106,53,,,,Wild Turkey (Campari),Wild Turkey,1cebcf62-4e0a-47c0-ada7-09b8f1ae313b
-Wild Turkey,Wild Turkey Rare Breed,,Wild Turkey Rare Breed,Y,116.8,58.4,,"75% Corn, 13% Rye, 12% Malted Barley",,Wild Turkey (Campari),Wild Turkey,10f89810-ae93-44e2-8b69-39e6bb9d3d82
-Wilderness Trail,Wilderness Trail Bottle in Bond,,Wilderness Trail Bottle in Bond,N,,,,,,Wilderness Trail,Wilderness Trail,7d6bdc21-61c4-42cc-a53c-8b1137891645
-Willett,Willett Family Estate Rye,,Willett Family Estate Bottled Rye,N,110,55,4,rye,rye,Willett (Kentucky Bourbon Distillers),Willett,444c1657-9fbf-4e33-9c02-a5c30c9c8d82
-Willett,Willett Johnny Drum,,Johnny Drum Private Stock,Y,101,50.5,4,Undisclosed,,Willett (Kentucky Bourbon Distillers),Willett,06382b2b-192f-4ced-b8e7-6c7cd1ccac9f
-Willett,Willett Noah's Mill,,Noah's Mill,Y,114.2,57.1,,,,Willett (Kentucky Bourbon Distillers),Willett,3220a432-0261-44bf-94b7-d31bf319e76f
-Willett,Willett Old Bardstown,,Old Bardstown,Y,100,50,,,,Willett (Kentucky Bourbon Distillers),Willett,86f89367-f6fe-4661-838e-ba02f09e0a09
-Willett,Willett Pot Still Reserve,,Willett Pot Still Reserve,Y,94,47,,"Corn, Rye, Malted Barley",,Willett (Kentucky Bourbon Distillers),Willett,213ce445-7fad-4cd6-88f4-2c9d33380d23
-Willett,Willett Pure Kentucky,,Pure Kentucky XO,Y,107,53.5,12,,,Willett (Kentucky Bourbon Distillers),Willett,cd3d5c53-fe10-4237-9740-848b1d78a249
-Willett,Willett Rowan's Creek,,"Rowan's Creek, 12 Year",Y,100,50,,,,Willett (Kentucky Bourbon Distillers),Willett,f767930f-a689-4cfc-ba11-9cb13b8214c7
-Willett,Willett Single Barrel,Single Barrel,Willett Single Barrel,Y,113.2,56.6,,,,Willett (Kentucky Bourbon Distillers),Willett,05609799-8245-4267-9553-32492c97f914
-Willett,Willett Vintage,,Vintage Bourbon,N,94,47,,,,Willett (Kentucky Bourbon Distillers),Willett,8ade6ac9-495a-4c43-994f-15b150ae7b1c
-Woodford Reserve,Woodford Reserve Distiller's Select,,Woodford Reserve Distiller's Select,Y,90.4,45.2,,"Corn, Rye, Malted Barley",,Brown-Forman,Woodford Reserve,a8fce06d-8263-45e1-b4c7-920809ea9648
-Woodford Reserve,Woodford Reserve Double Double Oaked,,Woodford Reserve Double Double Oaked,N,90.4,45.2,,,,Brown-Forman,Woodford Reserve,8167447b-51f0-46f0-bdee-a44583aeade9
-Woodford Reserve,Woodford Reserve Double Oaked,,Woodford Reserve Double Oaked,Y,90.4,45.2,,,,Brown-Forman,Woodford Reserve,e9ff244d-2f0c-448e-964e-6ca219bc6bc4
-Woodford Reserve,Woodford Reserve Master's Collection,,Woodford Reserve Master's Collection,N,90.4,45.2,,,,Brown-Forman,Woodford Reserve,cfbf3497-b355-4a4e-aaba-efe0629133bb
-Woodford Reserve,Woodford Reserve Rye,Single Barrel,"Woodford Reserve Distiller's Select Rye, Single Barrel / Barrel Strength",Y,125.1,62.55,,"Rye, Corn, Malted Barley",,Brown-Forman,Woodford Reserve,1b42ebed-8341-4996-bfd7-6569cf9772c0
-Woodinville,Woodinville,,Woodinville,N,94,47,,,,Woodinville Whiskey Co.,Woodinville,3a8cfe3f-a7fe-43c5-a1a1-50afea000b13
-Yellowstone,Yellowstone,,Yellowstone,N,101,50.5,,,,Yellowstone,Yellowstone,261f2316-de0f-4f37-8d6f-7c3c4d849f59
-Yellowstone,Yellowstone Hand Picked Collection Single Barrel,Single Barrel,"Yellowstone Hand Picked Collection, Single Barrel",N,109,57.5,,"Rye, Malted Barley",,Yellowstone,Yellowstone,da025fd5-2f68-46b6-aa12-f00dda369a67
-Yellowstone,Yellowstone Select,,Yellowstone Select,N,93,46.5,,,,Yellowstone,Yellowstone,2a78f5a1-6906-4340-a12b-de1a00a1a3e4
-Yellowstone,Yellowstone Single Barrel,Single Barrel,"Yellowstone , Single Barrel",N,109,54.5,,,,Yellowstone,Yellowstone,a46b41d1-f829-439e-8708-a9909753bd77
+1792,1792 Bottled in Bond,Bottled-in-Bond,1792 Bottled-in-Bond,Y,100,50,,"Undisclosed (Marketed as 'High rye,' and believed to be 15-25% rye)",bourbon,Barton 1792 (Sazerac),1792,e5253b95-5f9e-44bc-97c2-d3a069fe2b50
+1792,1792 Full Proof,Full Proof,1792 Full Proof,Y,125,62.5,8,"Corn, Rye, Malted Barley",bourbon,Barton 1792 (Sazerac),1792,0781fde8-a849-4a57-96fb-e7458d20d9ce
+1792,1792 Single Barrel,Single Barrel,1792 Single Barrel,Y,98.6,49.3,,,bourbon,Barton 1792 (Sazerac),1792,b31ddd89-09e2-4de4-bad0-004d5f381096
+1792,1792 Small Batch,Small Batch,1792 Small Batch Bourbon,Y,92.2,46.1,,,bourbon,Barton 1792 (Sazerac),1792,96bbc853-4307-45c5-8360-6f49195bc72d
+1792,1792 Sweet Wheat,,1792 Sweet Wheat,N,91.2,45.6,4,Undisclosed,bourbon,Barton 1792 (Sazerac),1792,b822bfca-3be3-4993-a44e-a188c7fd9e81
+Angel's Envy,Angel's Envy,,Angel's Envy Port Barrel Finish,Y,100,50,6,,bourbon,Angel's Envy,Angel's Envy,7755aa39-9e75-4f4c-ba82-70cc9b499422
+Angel's Envy,Angel's Envy Private Selection Port Barrel Finish,,"Angel's Envy Private Selection, Port Barrel Finish",N,110,55,,"Corn, Rye, Malted Barley",bourbon,Angel's Envy,Angel's Envy,e821fce0-932c-4b6a-90e9-b841ef31e443
+Angel's Envy,Angel's Envy Rye,,Angel's Envy Rye,Y,100,50,,"95% Rye, 5% Malted Barley",rye,Angel's Envy,Angel's Envy,d09fb1dc-1062-4829-8620-f7f00424bacf
+Backbone Bourbon,Backbone Bourbon Backbone Decade Down Anniversary Edition,,Backbone Decade Down Anniversary Edition,N,110,55,,,bourbon,Backbone Bourbon,Backbone Bourbon,3c0d5c68-9ba4-43ee-97ea-f44bb8b12911
+Backbone Bourbon,Backbone Bourbon Backbone Prime Blended,,Backbone Prime Blended,N,104,52,,,bourbon,Backbone Bourbon,Backbone Bourbon,cceede7c-7d12-43bc-a3db-8c6fbffb6928
+Backbone Bourbon,Backbone Bourbon Old Bones Reserve,,Old Bones Reserve,N,110,55,,,bourbon,Backbone Bourbon,Backbone Bourbon,7194d3c0-d970-400b-849e-2a201415d860
+Backbone Bourbon,Backbone Bourbon The Forge Blended,,Backbone Bourbon The Forge Blended,N,110,55,,"Bourbon – 75% Corn, 21% Rye, 4% Malted Barley; Rye – 95% Rye, 5% Malted Barley; American Light Whiskey – 99% Corn, 1% Malted Barley",bourbon,Backbone Bourbon,Backbone Bourbon,fc137c02-d4fa-4437-ba60-6adc414a4b63
+Backbone Bourbon,Backbone Bourbon Uncut Single Barrel,Single Barrel,"Backbone Bourbon Uncut, Single Barrel",N,118.4,59.5,7,"Rye, Corn, Malted Barley",bourbon,Backbone Bourbon,Backbone Bourbon,04a490f0-155a-475e-8ab8-aa239af55aab
+Baker's,Baker's Single Barrel 13 Year,Single Barrel,Baker's Single Barrel 13 Year,Y,107,53.5,,,bourbon,Jim Beam,Baker's,05f6a749-384e-43fd-a441-01b23c635be4
+Baker's,Baker's Single Barrel 7 Year,Single Barrel,Baker's Single Barrel 7 Year,Y,107,53.5,,,bourbon,Jim Beam,Baker's,338397c2-cdc8-4020-b096-bdbc6d7d254a
+Bardstown Fusion,Bardstown Bourbon Company Fusion Series,,Bardstown Bourbon Company Fusion Series,N,97.9,48.95,,"Corn, Rye, Malted Barley",bourbon,Bardstown Bourbon Company,Bardstown Bourbon Company,b7f0d81b-16f4-4436-b9fb-f48ce284e43b
+Barrell,Barrell Armida,,Barrell Armida,N,112,56,,,bourbon,Barrell,Barrell,dab0f885-607b-40d3-a97e-15753dc05d49
+Barrell,Barrell Bourbon,,Barrell Bourbon,N,114.8,57.4,5,"70% corn, 25% rye, 5% malted barley",bourbon,Barrell,Barrell,52b101e3-833d-47bf-b06a-3e4fb2b63bfc
+Barrell,Barrell Cask Finish Series,,Barrell Cask Finish Series,N,116.4,58.2,,"73% corn, 23% rye, 4% malted barley",bourbon,Barrell,Barrell,5ece24fc-a981-4138-bb91-ccde8a8c9d1e
+Barrell,Barrell Dovetail,,Barrell Dovetail,Y,123.8,61.9,,"Corn, Wheat, Malted Barley",bourbon,Barrell,Barrell,f7d4fe3d-697b-48a5-99bd-f6118f09d8dc
+Barrell,Barrell Foundation,,Barrell Foundation,N,100,50,5,"73% Corn, 23% Rye, 4% Malted Barley",bourbon,Barrell,Barrell,4915de66-152e-41d4-b7fd-28d49332b233
+Barrell,Barrell Gold Label,,Barrell Gold Label,N,113.6,56.8,,,bourbon,Barrell,Barrell,771f9951-b656-454f-9044-e12759c66ae4
+Barrell,Barrell Gray Label,,Barrell Gray Label,N,100.6,50.3,,,bourbon,Barrell,Barrell,e9f8a5eb-a306-44b4-bd3c-58a537a3785e
+Barrell,Barrell Private Release,,Barrell Private Release,N,114,57,5,"Undisclosed blend of TN, KY, and IN mash bills",bourbon,Barrell,Barrell,13dcb8a9-c20a-471d-8a9a-dd2526f70b40
+Barrell,Barrell Seagrass,,Barrell Seagrass,Y,119.3,59.65,,Undisclosed,rye,Barrell,Barrell,7e1056cc-cd76-43f9-93f4-5e545ca3e2da
+Barrell,Barrell Vantage,,Barrell Vantage,Y,114.4,57.2,,"Corn, Rye, Malted Barley",bourbon,Barrell,Barrell,8a95fe95-1216-4ba0-9145-fc87c4f228b0
+Basil Hayden,Basil Hayden,,Basil Hayden,Y,80,40,10,"63% Corn, 27% Rye, 10% Malted Barley",bourbon,Jim Beam,Basil Hayden,df3159bf-316d-4f6d-b32f-740ef6628cd8
+Basil Hayden,Basil Hayden Dark Rye,,Basil Hayden Dark Rye,Y,80,40,,"Rye, Malted Barley",rye,Jim Beam,Basil Hayden,3cb075b1-e970-4234-9e83-bdee4aa8a7bc
+Basil Hayden,Basil Hayden Red Wine Cask Finish,,Basil Hayden Red Wine Cask Finish,Y,80,40,,"Rye, Malted Barley",bourbon,Jim Beam,Basil Hayden,7ada3e21-2b3e-42ec-9338-579b5335dda9
+Basil Hayden,Basil Hayden Toast,,Basil Hayden Toast,Y,80,40,,"63% corn, 27% brown rice, 10% malted barley",bourbon,Jim Beam,Basil Hayden,59c54232-9faa-4785-b019-ba22ec6897df
+Blackened,Blackened,,Blackened,Y,114.7,57.35,,,bourbon,Blackened,Blackened,04805b99-ea71-4abc-8b7d-02dba16e1948
+Blackened,Blackened Cask Strength,Cask Strength,Blackened Cask Strength,N,114.7,57.35,,"Rye, Corn, Malted Barley",bourbon,Blackened,Blackened,60fee48d-9e38-4507-b953-ca172c64f659
+Blanton's,Blanton's Single Barrel,Single Barrel,Blanton's Single Barrel,Y,93,46.5,,"Corn, Rye, Malted Barley",bourbon,Buffalo Trace,Blanton's,5dbaa5c6-44cf-49cc-8b8d-4b22957d91a4
+Bloody Butcher's Creed,Bloody Butcher's Creed Single Barrel Cobb Barrel Pick,Single Barrel,"Bloody Butcher's Creed Single Barrel, Cobb Barrel Pick",N,118.5,59.25,3.5,"Bloody Butcher Heirloom Corn, Rye, Malted Barley",bourbon,Jepthra Creed,Bloody Butcher's Creed,5fc7dc25-a836-4e3f-acd1-97ddd612e220
+Blue Note,Blue Note,,Blue Note,Y,109,54.5,,,bourbon,Blue Note,Blue Note,f704d426-bb89-4c62-b350-bd8cb42fd72d
+Blue Note,Blue Note Crossroads,,Crossroads,Y,100,50,,,bourbon,Blue Note,Blue Note,17313800-d83f-455d-8c4c-ec8549452dac
+Blue Note,Blue Note Crossroads Toasted French Oak,,"Blue Note Crossroads, Toasted French Oak",N,100,50,,"Corn, Rye, Malted Barley",bourbon,Blue Note,Blue Note,7a44419d-b311-4541-b060-e2ebb93eaaac
+Blue Note,Blue Note Juke Joint,,Juke Joint,Y,117.6,58.8,,,bourbon,Blue Note,Blue Note,b449d854-13d7-4fd5-9837-7297d2d20506
+Blue Note,Blue Note Special Reserve,,Blue Note Special Reserve,N,112.4,56.2,,,bourbon,Blue Note,Blue Note,af294078-4d4f-4748-98d7-d702519c183e
+Booker's,Booker's -03 'Mighty Fine Batch',,Booker's 2023-03 'Mighty Fine Batch',N,126.6,63.3,7,"Corn, Rye, Malted Barley",bourbon,Jim Beam,Booker's,d2b44867-7027-476c-99ed-4046c30e6849
+Boone County,Boone County Eighteen 33,,Eighteen 33,Y,115.4,57.7,,,bourbon,Boone County,Boone County,576cd7b5-7d53-4cc7-82f7-d29ec235e37a
+Boone County,Boone County Eighteen 33 Single Barrel Cigar Club Pick,Single Barrel,Boone County Eighteen 33 Single Barrel,N,115.4,45.4,12,"Corn, Malted Barley",bourbon,Boone County,Boone County,bf7085ef-7eed-4ee5-a6a6-0c479c9f0301
+Brother's Bond,Brother's Bond Straight Bourbon,,Brother's Bond Straight Bourbon,N,80,40,,"Rye, Malted Barley",bourbon,Brother's Bond,Brother's Bond,9a95a82a-fb5f-4519-acd0-3196007d1b3b
+Buckner's,Buckner's Single Barrel Cask Strength Unfiltered,Single Barrel,"Buckner's Single Barrel, Cask Strength, Unfiltered",N,121.2,60.6,10,"Corn, Rye, Malted Barley",bourbon,Buckner's,Buckner's,4ee393b7-7a1a-4053-8885-688e9af20727
+Buffalo Trace,Single Oak Project,,"Buffalo Trace Single Oak Project Rye Bourbon, Barrel #80",Y,90,45,,"Corn, Rye, Malted Barley",bourbon,Buffalo Trace,Single Oak Project,0266224f-d9ca-438c-9097-df53620bfd06
+Burks Spring,Burks Spring,,Burks Spring,N,100,50,,"Corn, Rye, Malted Barley",bourbon,Burks Spring,Burks Spring,17852f98-0fb9-4ac2-b14e-5fc4cef56e08
+Calumet Farm,Calumet Farm,,Calumet Farm,Y,96.2,48.1,,,bourbon,Calumet Farm,Calumet Farm,cee2d004-7691-4a7d-a911-08ae28051ca4
+Calumet Farm,Calumet Farm 10 Year,,Calumet Farm 10 Year,N,100,50,10,"Corn, Wheat, Malted Barley",bourbon,Calumet Farm,Calumet Farm,99370cba-178d-435c-a8d0-997cf164f2ec
+Calumet Farm,Calumet Farm Single Rack Black,,Calumet Farm Single Rack Black,N,94,47,,,bourbon,Calumet Farm,Calumet Farm,e7f5521d-034e-4134-8d7a-fdedf2d4f95d
+Castle & Key,Castle & Key Bourbon,,Castle & Key Bourbon,Y,98,49,4,"73% White Corn, 17% Malted Barley, 10% Rye",bourbon,Castle & Key,Castle & Key,c777ed33-1746-49ee-a62f-b08b7e2820e5
+Castle & Key,Castle & Key Restoration,,Restoration,Y,105,51.5,3.5,"63% Rye, 20% Malted Barley, 17% Corn",bourbon,Castle & Key,Castle & Key,7d9821fe-80df-46bc-96af-56584b7d1188
+Castle & Key,Castle & Key Restoration Rye Single Barrel,Single Barrel,"Castle & Key Restoration Rye, Single Barrel",N,120.5,57.9,4,"Rye, Corn, Malted Barley",rye,Castle & Key,Castle & Key,71d2d787-d311-4fd9-a526-c40b45ee73a0
+Clermont Steep,Clermont Steep American Single Malt,,Clermont Steep American Single Malt,N,94,47,,Malted Barley,whiskey,Jim Beam,Clermont Steep,a2e6194a-164a-4e0f-b905-3c886f371937
+Colonel E.H. Taylor,Colonel E.H. Taylor Jr. Barrel Proof,Barrel Proof,Colonel E.H. Taylor Jr. Barrel Proof,N,134.4,67.2,,Undisclosed (Buffalo Trace’s low rye - 10% or less - Mashbill #1),bourbon,Buffalo Trace,Colonel E.H. Taylor,218a7dc3-28aa-4a09-a298-efa91e06a0e2
+Colonel E.H. Taylor,Colonel E.H. Taylor Single Barrel,Single Barrel,Colonel E.H. Taylor Single Barrel,N,100,50,10,"corn, rye, wheat, malted barley",bourbon,Buffalo Trace,Colonel E.H. Taylor,c3d36580-c186-4047-a324-4cba97eca160
+Colonel E.H. Taylor,Colonel E.H. Taylor Small Batch Bottled-in-Bond,Small Batch,"Colonel E.H. Taylor Small Batch, Bottled-in-Bond",Y,100,50,,"Corn, Rye, Malted Barley",bourbon,Buffalo Trace,Colonel E.H. Taylor,7492d321-d674-40cb-a589-2cd9f43ba81e
+Daviess County,Daviess County Bourbon,,Daviess County Bourbon,Y,96,48,,,bourbon,Lux Row (Luxco),Daviess County,1c342554-bfd2-4add-8fbc-d9bbce1cbaab
+Daviess County,Daviess County Double Barrel,,Daviess County Double Barrel,Y,96,48,,,bourbon,Lux Row (Luxco),Daviess County,c0e7bfe7-287d-42d9-8c74-f3bc87a416e7
+Daviess County,Daviess County Double Barrel Limited Edition,Limited Edition,"Daviess County Double Barrel, Limited Edition",N,96,48,,"Corn, Wheat, Malted Barley",bourbon,Lux Row (Luxco),Daviess County,6dd167e6-5a2e-437e-b984-334c89f0bae8
+Daviess County,Daviess County Toasted Barrel Finish Series,,Daviess County Toasted Barrel Finish Series,N,96,48,4,,bourbon,Lux Row (Luxco),Daviess County,167daee3-9bb5-404e-93db-4c3dbae1cf24
+Distiller's Cache,Distiller's Cache Rare Find Single Barrel,Single Barrel,"Distiller's Cache Rare Find, Single Barrel",N,127.6,63.8,,"Corn, Wheat, Malted Barley",bourbon,Distiller's Cache,Distiller's Cache,744bdcc2-8429-4551-bc3a-f45dae239807
+Eagle Rare,Eagle Rare 10 Year,Single Barrel,"Eagle Rare Single Barrel, 10 Year",Y,90,45,10,"Corn, Rye, Malted Barley",bourbon,Buffalo Trace,Eagle Rare,57dd54ad-63c9-4991-adee-c65f7b1ebbfd
+Eagle Rare,Eagle Rare 17 Year,,Eagle Rare 17 Yr,N,101,50.5,,,bourbon,Buffalo Trace,Eagle Rare,9a68ef31-d9bb-434e-8339-fd31d5d7eb22
+Elijah Craig,Elijah Craig Barrel Proof — Batch A125,Barrel Proof,Elijah Craig Barrel Proof — Batch A125,Y,118.2,59.1,10,"Corn, Rye, Malted Barley",bourbon,Heaven Hill,Elijah Craig,5322c20b-8f2d-4af1-8ca6-eaf20000ad2b
+Elijah Craig,Elijah Craig Barrel Proof,Barrel Proof,"Elijah Craig Barrel Proof, Private Barrel",Y,125,62.5,,"Corn, Rye, Malted Barley",bourbon,Heaven Hill,Elijah Craig,41cd0e0d-3a84-4c4c-85e2-a3e702d12a7e
+Elijah Craig,Elijah Craig Small Batch,Small Batch,Elijah Craig,Y,94,47,,,bourbon,Heaven Hill,Elijah Craig,3db80b59-7419-4f48-915a-91ede8f0694a
+Elijah Craig,Elijah Craig Toasted Barrel,,Elijah Craig Toasted Barrel,N,94,47,,,bourbon,Heaven Hill,Elijah Craig,1b68b52d-2afc-425b-b77b-bdde38571f41
+Elmer T. Lee,Elmer T. Lee Single Barrel,Single Barrel,Elmer T. Lee Single Barrel,N,90,45,,"Corn, Rye, Malted Barley",bourbon,Buffalo Trace,Elmer T. Lee,907349ab-3a74-4db4-926e-2ebaf324224c
+Evan Williams,Evan Williams Single Barrel,Single Barrel,Evan Williams Single Barrel,Y,86.6,43.3,,,bourbon,Heaven Hill,Evan Williams,ed69db61-c84e-4aca-8343-740ceedae9e2
+Flatboat,Flatboat KY Straight Bourbon,,Flatboat KY Straight Bourbon,Y,125,62.5,,"Corn, Rye, Malted Barley",bourbon,Flatboat,Flatboat,f407b4a0-7099-48fc-ba83-150ff9d86420
+Four Roses,Four Roses Bourbon (Yellow Label),,Four Roses,Y,104,52,,,bourbon,Four Roses,Four Roses,13dfb4eb-7a77-4446-89c7-eccb963b8913
+Four Roses,Four Roses Limited Edition Single Barrel,Single Barrel,Four Roses Limited Edition Single Barrel,N,108.6,54.3,,,bourbon,Four Roses,Four Roses,117ec2d9-dd5a-4bdd-b835-aa75f531cf4c
+Four Roses,Four Roses Single Barrel,Single Barrel,Four Roses Single Barrel,Y,100,50,,"60% corn, 35% rye, 5% malted barley",bourbon,Four Roses,Four Roses,b3ef4b30-24d1-48f1-bfe5-3b0cc6e32e75
+Four Roses,Four Roses Small Batch,Small Batch,Four Roses Small Batch,Y,90,45,,,bourbon,Four Roses,Four Roses,ec61e2fa-db0e-4343-8154-d82226b78866
+Four Roses,Four Roses Small Batch Select,Small Batch,Four Roses Small Batch Select,Y,104,52,,,bourbon,Four Roses,Four Roses,4ffc83fa-feff-47b8-8b08-bace4f6dec7a
+Garrison Brothers,Garrison Brothers Balmorhea,,Garrison Brothers Balmorhea,N,115,57.5,,,bourbon,Garrison Brothers,Garrison Brothers,71611a1d-e21a-4abb-9334-61a816f2bcc8
+Garrison Brothers,Garrison Brothers Guadalupe,,Guadalupe,N,107,53.5,,,bourbon,Garrison Brothers,Garrison Brothers,c9aea0fd-7208-42e7-b939-564e5eaf7dce
+Garrison Brothers,Garrison Brothers Honey Dew,,Garrison Brothers Honey Dew,Y,80,40,3,"Corn, Wheat, Malted Barley",bourbon,Garrison Brothers,Garrison Brothers,233b1890-529c-43f5-b775-b12ac186a3f1
+Garrison Brothers,Garrison Brothers Lady Bird,,Lady Bird,N,114,57,,,bourbon,Garrison Brothers,Garrison Brothers,76d8c2a4-944c-4d22-a271-af46c4f5e746
+George T. Stagg,George T. Stagg,,George T. Stagg,N,90,45,,,bourbon,Buffalo Trace,George T. Stagg,02bb6c49-1f71-4778-9ecc-4044aa0e6d8e
+H.K. Young,H.K. Young Toasted Barrel Blend,,"H.K. Young Kentucky Straight Bourbon, Toasted Barrel Blend",N,115.8,45.7,6,"Corn, Rye, Malted Barley",bourbon,H.K. Young,H.K. Young,3d6b3440-bf4f-4e45-97f7-1adf5856e42b
+Hard Truth,Hard Truth,,Hard Truth,Y,109,54.5,,,bourbon,Hard Truth,Hard Truth,56769933-cead-4b66-8191-44c430bba101
+Hard Truth,Hard Truth Four Grain,Four Grain,Hard Truth Four Grain,Y,100,50,,,bourbon,Hard Truth,Hard Truth,d4b450ff-d2dc-4886-8c29-a1c6d9bef93c
+Hard Truth,Hard Truth Sweet Mash Four Grain Bottled-in-Bond,Bottled-in-Bond,"Hard Truth Sweet Mash Four Grain, Bottled-in-Bond",Y,100,50,,"Corn, Wheat, Malted Barley",bourbon,Hard Truth,Hard Truth,388b6d1e-8be2-4df1-a5ca-566ceb9a10f6
+Hard Truth,Hard Truth Wheated,,Hard Truth Wheated,Y,100,50,,,bourbon,Hard Truth,Hard Truth,de80a73d-77b3-4df5-830b-8a6d2337cf1d
+Heaven Hill,Heaven Hill Barrel Proof Bottled-in-Bond,Barrel Proof,Heaven Hill Barrel Proof,N,94.8,47.4,,,bourbon,Heaven Hill,Heaven Hill,42e216f5-faa3-48e2-9344-52323a3cf651
+Heaven Hill,Heaven Hill Bottled-in-Bond,Bottled-in-Bond,Heaven Hill Bottled in Bond,Y,100,50,,,bourbon,Heaven Hill,Heaven Hill,7b7b9523-6aec-4c3f-a8c9-e92780f7728c
+Heaven Hill,Heaven Hill Grain to Glass,,Grain to Glass,Y,121,60.5,,,bourbon,Heaven Hill,Heaven Hill,855e1952-29d1-4ce0-8a81-f37130cf45e9
+Heaven Hill,Heaven Hill Heritage Collection,,Heaven Hill Heritage Collection,N,118.2,59.1,,,bourbon,Heaven Hill,Heaven Hill,1d29f903-a1d4-4a66-8e15-d21f7779142f
+Heaven's Door,Heaven's Door,,Heaven's Door,Y,100,50,,,bourbon,Heaven's Door,Heaven's Door,714cf775-d03e-4640-99c2-871aa6d54658
+Heaven's Door,Heaven's Door Cask Strength,Cask Strength,Heaven's Door Cask Strength,N,121.8,60.9,,,bourbon,Heaven's Door,Heaven's Door,64da008e-ac5e-41a9-8410-8b1c756ff602
+Heaven's Door,Heaven's Door Cask Strength Single Barrel,Single Barrel,"Heaven's Door Cask Strength, Single Barrel",N,121.8,60.9,5,"Corn, Rye, Malted Barley",bourbon,Heaven's Door,Heaven's Door,d02be228-4b00-41b7-b614-b1131eafb132
+Heaven's Door,Heaven's Door Decade Series,,Heaven's Door Decade Series,N,100,50,,,bourbon,Heaven's Door,Heaven's Door,7b02d78c-1c17-4fe5-9a18-03539a4f3f55
+Henry McKenna,Henry McKenna 10 Year Bottled-in-Bond Single Barrel,Single Barrel,"Henry McKenna Single Barrel, Bottled-in-Bond",Y,100,50,10,"Corn, Rye, Malted Barley",bourbon,Heaven Hill,Henry McKenna,456f5ae0-f62b-41f8-9052-16c1ad0b4bfc
+Hibiki,Hibiki Japanese Harmony,,Hibiki Japanese Harmony,N,86,43,,Malt + Grain blend,bourbon,Hibiki,Hibiki,8c3cae59-ad39-41cb-b1e4-709c69369773
+Horse Soldier,Horse Soldier,,Horse Soldier,Y,87,43.5,,,bourbon,Horse Soldier,Horse Soldier,849714fa-4d20-450a-933c-b560255727f4
+Horse Soldier,Horse Soldier Single Barrel,Single Barrel,Horse Soldier Single Barrel,N,87,43.5,,"Rye, Malted Barley",bourbon,Horse Soldier,Horse Soldier,9c22f71a-8680-44d5-8221-feafc4a0b1b5
+I.W. Harper,I.W. Harper,,I.W. Harper,N,86,43,,,bourbon,I.W. Harper,I.W. Harper,95fdd45e-e062-4c5c-a526-6f02268818d8
+Jack Daniel's,Jack Daniel's Bottled in Bond,Bottled-in-Bond,Jack Daniel's Bottled in Bond,Y,100,50,,,bourbon,Brown-Forman,Jack Daniel's,725faf93-f31c-4ef9-964e-e99d17bbd926
+Jack Daniel's,Jack Daniel's Single Barrel,Single Barrel,Jack Daniel's Single Barrel,N,145,72.5,,,bourbon,Brown-Forman,Jack Daniel's,9ffa520e-63f8-4082-9f6e-379c9817d927
+Jack Daniel's,Jack Daniel's Single Barrel Barrel Proof,Single Barrel,Jack Daniel's Single Barrel Barrel Proof,N,,0,,,bourbon,Brown-Forman,Jack Daniel's,f653e8a1-d309-4abd-8ea5-34adf34da5c3
+James B. Beam,James B. Beam Distiller's Share 02,,James B. Beam Distiller's Share 02,N,109,,,Malted Barley,,Jim Beam (Beam Suntory),James B. Beam,81c3754e-9b06-43ab-8fa6-ffbbeccf7fc3
+James B. Beam,James B. Beam Distiller's Share 03 — Wine & Sherry Finish,,James B. Beam Distiller's Share 03 — Wine & Sherry Finish,N,112,56,,Malted Barley,whiskey,Jim Beam,James B. Beam,5f0f36ef-4f83-4868-adc7-7d1446c6cfeb
+Jefferson's,Jefferson's Ocean Aged at Sea,,Jefferson's Ocean Aged at Sea,Y,82.2,41.1,,,bourbon,Jefferson's,Jefferson's,f96ff5bd-ca1c-4b46-88fa-0c9f12f54304
+Jefferson's,Jefferson's Tropics,,Jefferson's Tropics,Y,104,52,4,Undisclosed,bourbon,Jefferson's,Jefferson's,a27465d0-e817-4790-87f8-12cc3d8929e4
+Jefferson's,Jefferson's Very Small,Small Batch,Jefferson's Very Small Batch Bourbon,Y,82.2,41.1,,,bourbon,Jefferson's,Jefferson's,7065da6d-ce22-4c64-8c94-b2e6d71e587b
+Jim Beam,Jim Beam Black 7 Year,,Jim Beam Black 7 Year,N,90,45,,"77% corn, 13% rye, 10% malted barley",bourbon,Jim Beam,Jim Beam,ce14777d-20fb-4658-bb33-629f91169ff0
+Jim Beam,Jim Beam Bonded,Bottled-in-Bond,Jim Beam Bonded,N,100,50,,"77% corn, 13% rye, 10% malted barley",bourbon,Jim Beam,Jim Beam,2028bebc-2213-4774-bc61-e5f668f3fdb3
+Jim Beam,Jim Beam Distiller's Cut,,Distiller's Cut,N,100,50,,,bourbon,Jim Beam,Jim Beam,04c0e847-a149-4a63-84a1-662068bd9781
+Jim Beam,Jim Beam Distiller's Masterpiece Sherry Cask Finished,,Distiller's Masterpiece Sherry Cask Finished,N,100,50,,,bourbon,Jim Beam,Jim Beam,7c4788dc-d736-4b8a-8909-41386dbc3fc8
+Jim Beam,Jim Beam Distillers' Masterpiece,,Distillers' Masterpiece,N,98,49,,,bourbon,Jim Beam,Jim Beam,47cd3b1e-4dd6-49a7-946b-0043f06da685
+Jim Beam,Jim Beam Signature Craft,,Signature Craft,N,90,45,,,bourbon,Jim Beam,Jim Beam,3b6ed3a2-b17e-4d52-a765-23e5864e55bc
+Jim Beam,Jim Beam Single Barrel,Single Barrel,Jim Beam Single Barrel,N,95,47.5,,"77% corn, 13% rye, 10% malted barley",bourbon,Jim Beam,Jim Beam,4a7b4601-1ecb-455a-a504-d843f2b6bfd6
+Journeyman,Journeyman Corsets Whips & Whiskey,,"Journeyman Corsets, Whips & Whiskey",N,120.1,58.5,,Various (Journeyman house mash),bourbon,Journeyman,Journeyman,093a34bf-0993-4df0-ab2e-31224b235c39
+Journeyman,Journeyman Distillery Featherbone,,Distillery Featherbone,Y,90,45,,,bourbon,Journeyman,Journeyman,105ec17c-e758-442c-b48c-59b31c000401
+K.Luke,K.Luke Cask Finished Single Barrel Cognac Cask,Single Barrel,"K.Luke Cask Finished Single Barrel, Cognac Cask",N,117.4,58.7,,"Corn, Rye, Malted Barley",bourbon,K.Luke,K.Luke,8c13f97e-8e6a-409e-92e0-ae31a905ac69
+Knob Creek,Knob Creek 12 Year,,Knob Creek 12 Year,Y,100,50,12,"Corn, Rye, Malted Barley",bourbon,Jim Beam,Knob Creek,863281a6-8f59-45d3-91db-1bfc7f0069dd
+Knob Creek,Knob Creek 18 Year,,Knob Creek 18 Year,Y,100,50,,,bourbon,Jim Beam,Knob Creek,41d1d740-24ff-4ab2-831f-8be0803ae7dc
+Knob Creek,Knob Creek Single Barrel Select,Single Barrel,"Knob Creek Single Barrel Select, 9 Year",Y,120,60,9,"Corn, Rye, Malted Barley",bourbon,Jim Beam,Knob Creek,71225035-349f-4dcd-ac7c-275eeca1bed5
+Knob Creek,Knob Creek Small Batch,Small Batch,Knob Creek,Y,120,60,14,,bourbon,Jim Beam,Knob Creek,37b8e204-1e39-449a-b203-328686d5816c
+Larceny,Larceny Barrel Proof,Barrel Proof,Larceny Barrel Proof,Y,126.6,63.3,,,bourbon,Heaven Hill,Larceny,293db85f-db1c-4459-8824-87c8e0c45a84
+Larceny,Larceny Small Batch,Small Batch,Larceny,Y,125,62.5,,,bourbon,Heaven Hill,Larceny,24a2e3d9-9e7c-4021-aa15-9faabad71e13
+Legent,Legent Yamazaki Cask Finish,,Legent Yamazaki Cask Finish,N,114,57,8,"Corn, Rye, Malted Barley",bourbon,Jim Beam,Legent,30f715a3-013f-4f06-898c-480f9f820ada
+Lincoln,Lincoln KY Straight Bourbon,,Lincoln KY Straight Bourbon,Y,118,59,,,bourbon,Lincoln,Lincoln,53a3c002-660d-48a2-85b3-0a89c4c31eae
+Lincoln,Lincoln KY Straight Bourbon Cask Strength,Cask Strength,"Lincoln KY Straight Bourbon, Cask Strength",N,118,59,2,"Corn, Rye, Malted Barley",bourbon,Lincoln,Lincoln,24f2896f-d229-4383-8e14-537563afb394
+Little Book,Little Book Chapter 7 'In Retrospect',,Little Book Chapter 7 'In Retrospect' (2023),N,118.1,59.05,,Various (blend of straight whiskeys),bourbon,Jim Beam,Little Book,255e4f08-c127-408d-9379-8ddc76bc015b
+Lucky Seven,Lucky Seven,,Lucky Seven,Y,134.2,67.1,,,bourbon,Lucky Seven,Lucky Seven,cabf63aa-db71-4507-807f-57ac2de68eaa
+Lucky Seven,Lucky Seven The Holiday Toast Double Oak,,"Lucky Seven The Holiday Toast, Double Oak",N,115,57.5,,"Corn, Rye, Malted Barley",bourbon,Lucky Seven,Lucky Seven,9857ad9a-439a-4678-beb8-d5a8811c82d9
+Maker's Mark,Maker's Mark,,Maker's Mark,Y,90,45,,"70% Corn, 16% Wheat, 14% Malted Barley",bourbon,Maker's Mark,Maker's Mark,5ae039ed-36dd-4a45-a169-39b38e08959e
+Maker's Mark,Maker's Mark 46,,Maker's Mark No. 46 French Oaked,Y,94,47,,"Corn, Wheat, Malted Barley",bourbon,Maker's Mark,Maker's Mark,9c24e0ec-bc65-4ad6-a35f-727af74286cf
+Maker's Mark,Maker's Mark Cask Strength,Cask Strength,Maker's Mark Cask Strength,Y,113.2,54.35,,"70% Corn, 16% Wheat, 14% Malted Barley",bourbon,Maker's Mark,Maker's Mark,ca606168-694a-4712-b602-b6af97db876f
+Maker's Mark,Maker's Mark Cellar Aged,,Maker's Mark Cellar Aged,N,115.8,57.9,,,bourbon,Maker's Mark,Maker's Mark,e2a88581-4039-4a89-a03d-252cbe7a9e05
+Maker's Mark,Maker's Mark DNA Project — 110 Entry Proof,,Maker's Mark DNA Project — 110 Entry Proof,N,114.9,,8,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,c6178595-aff2-44ed-8aaa-5804c828b099
+Maker's Mark,Maker's Mark DNA Project — 115 Entry Proof,,Maker's Mark DNA Project — 115 Entry Proof,N,114.9,57.45,8,"Corn, Wheat, Malted Barley",bourbon,Maker's Mark,Maker's Mark,180442a9-4725-41d6-8c32-ca15309c9ee4
+Maker's Mark,Maker's Mark DNA Project — 120 Entry Proof,,Maker's Mark DNA Project — 120 Entry Proof,N,122.8,,8,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,26aa5d49-c54f-41ba-81ec-8e6ca78b24ba
+Maker's Mark,Maker's Mark DNA Project — 125 Entry Proof,,Maker's Mark DNA Project — 125 Entry Proof,N,126.4,,8,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,590a4f06-9248-4065-9407-8eed9d9cacc7
+Maker's Mark,Maker's Mark Private Selection — 2022 Master Distiller,,Maker's Mark Private Selection — 2022 Master Distiller,N,113.2,56.6,,"Corn, Wheat, Malted Barley",bourbon,Maker's Mark,Maker's Mark,4c93b345-6536-4cda-8a6e-a3919ed721c6
+Maker's Mark,Maker's Mark Private Selection — 2022 Master of Maturation,,Maker's Mark Private Selection — 2022 Master of Maturation,N,113.3,,,"Corn, Wheat, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,d9ef64c6-404e-4192-847f-dad36ceddf0b
+Maker's Mark,Maker's Mark Wood Finishing Series — FAE-01,,Maker's Mark Wood Finishing Series — FAE-01,N,110.6,,,"Corn, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,1b10d81d-bf91-41b1-9e75-92fbce0d3c54
+Maker's Mark,Maker's Mark Wood Finishing Series — FAE-02,,Maker's Mark Wood Finishing Series — FAE-02,N,109.1,,,"Rye, Corn, Malted Barley",,Maker's Mark (Beam Suntory),Maker's Mark,9a59689c-f96d-4bf6-bf52-f5f870da3200
+Maker's Mark,Maker's Mark Wood Finishing Series — The Heart Release,,Maker's Mark Wood Finishing Series — The Heart Release (2024),N,110.8,55.4,,"Corn, Wheat, Malted Barley",bourbon,Maker's Mark,Maker's Mark,cbaed5ea-ead3-4fb0-94bb-1124bef30496
+Michter's,Michter's 10 Year Single Barrel,Single Barrel,Michter's 10 Yr,N,94.4,47.2,,,bourbon,Michter's,Michter's,3453cde6-854c-453e-8ec6-3767def6a0d5
+Michter's,Michter's 20 Year,,Michter's 20 Yr,N,114.2,57.1,,,bourbon,Michter's,Michter's,9a01c99a-bc2a-4f88-ac81-5c6f16d5bfe0
+Michter's,Michter's 25 Year,,Michter's 25 Yr,N,116.2,58.1,,,bourbon,Michter's,Michter's,84c1b56d-61ed-4fc9-a2bd-d000b976f104
+Michter's,Michter's US-1 Small Batch,Small Batch,Michter's US-1 Small Batch,Y,,0,,,bourbon,Michter's,Michter's,ab616e4b-1ead-46b4-a409-65bc5058c5c9
+Michter's,Michter's US-1 Toasted Barrel Finish,,Michter's Toasted Barrel Finish Bourbon (Batch 15H664),Y,91.4,45.7,,,bourbon,Michter's,Michter's,f76da960-449f-46d3-acd6-a7ecb10a55fc
+New Riff,New Riff 8 year old,,New Riff 8 year old,Y,100,50,8,"65% corn, 30% rye, 5% malted barley",bourbon,New Riff,New Riff,ad270781-fbf2-4e4f-9d3b-ec5b40e4225a
+New Riff,New Riff Kentucky Straight Rye,Straight Rye,New Riff Kentucky Straight Rye,Y,100,50,8,"Rye, Malted Barley",rye,New Riff,New Riff,2f80ddda-e8d4-4c09-8b4c-c1760feac9e9
+New Riff,New Riff Single Barrel Bourbon Barrel Proof,Single Barrel,"New Riff Single Barrel Bourbon, Barrel Proof",N,102.4,56.3,4,"Corn, Rye, Malted Barley",bourbon,New Riff,New Riff,0f6bf57a-90ac-40e2-b363-d58e73785bc1
+New Riff,New Riff Single Barrel Bourbon Cigar Club Pick,Single Barrel,"New Riff Single Barrel Bourbon, Cigar Club Pick",N,110.3,56.3,4,"Corn, Rye, Malted Barley",bourbon,New Riff,New Riff,17848500-bac1-44b6-b3cc-a03ad0fae91e
+New Riff,New Riff Winter Whiskey,,New Riff Winter Whiskey,N,100,50,4,"65% corn, 20% malted oats, 7% pale malt, 5% steel cut raw oats, 3% chocolate malt",bourbon,New Riff,New Riff,7ecfb5c0-3601-48fb-94b9-aa20b7e38f58
+O.K.I.,O.K.I. Single Barrel Straight Bourbon,Single Barrel,O.K.I. Single Barrel Straight Bourbon,N,113.3,57,5,"Corn, Rye, Malted Barley",bourbon,O.K.I.,O.K.I.,ac0ff254-f5e0-4c3c-bec3-ee731ca76441
+Old Ezra,Old Ezra,,Old Ezra,Y,117,58.5,,,bourbon,Lux Row (Luxco),Old Ezra,2ee0be75-2daf-4c20-aa25-aa95b21f515b
+Old Ezra,Old Ezra Barrel Strength,Cask Strength,Old Ezra Barrel Strength,Y,117,58.5,7,"Corn, Rye, Malted Barley",bourbon,Lux Row (Luxco),Old Ezra,8404a9ba-862b-42f3-9d1f-62dce801e2f2
+Old Fitzgerald,Old Fitzgerald Bottled-in-Bond Decanter,Bottled-in-Bond,Old Fitzgerald,Y,100,50,,,bourbon,Heaven Hill,Old Fitzgerald,94f0dbcf-9c07-40fe-a416-d214de7c20a7
+Old Forester,Old Forester 117 Series,Bottled-in-Bond,117 Series Bottled in Bond,N,100,50,,,bourbon,Brown-Forman,Old Forester,da5bd787-ceaf-43af-9a59-552d55dd7891
+Old Forester,Old Forester 150th Anniversary,,Old Forester 150th Anniversary Batch,N,126.8,63.4,,,bourbon,Brown-Forman,Old Forester,b261666d-fd8e-4708-8a54-36ef29c2b155
+Old Forester,Old Forester 1870 Original Batch,,1870 Original Batch,Y,90,45,4,"72% Corn, 18% Rye, 10% Malted Barley",bourbon,Brown-Forman,Old Forester,65a75061-295f-4951-a654-1aa30e2e8940
+Old Forester,Old Forester 1897 Bottled in Bond,Bottled-in-Bond,Old Forester 1897,Y,100,50,,"72% Corn, 18% Rye, 10% Malted Barley",bourbon,Brown-Forman,Old Forester,a94830b6-e400-438e-bd61-4aa1a93a6878
+Old Forester,Old Forester 1910 Old Fine Whisky,,1910 Old Fine Whisky,Y,93,46.5,,"72% Corn, 18% Rye, 10% Malted Barley",bourbon,Brown-Forman,Old Forester,f857d6d2-ac11-40ff-833d-37950c007478
+Old Forester,Old Forester 1920 Prohibition Style,,Old Forester 1920 Prohibition Style,Y,115,57.5,,"Corn, Rye, Malted Barley",bourbon,Brown-Forman,Old Forester,9e35882a-dba3-4cd8-a5b0-f70d21c61bf4
+Old Forester,Old Forester Birthday Bourbon,,Birthday Bourbon,N,96,48,,,bourbon,Brown-Forman,Old Forester,1c1a77f0-020c-4028-b7f9-d2e79176a9cc
+Old Forester,Old Forester King Ranch,,Old Forester King Ranch,N,105,52.5,,"Corn, Rye, Malted Barley",bourbon,Brown-Forman,Old Forester,ea158fc5-57cf-4b4d-8af2-a6d53a9d44b1
+Old Forester,Old Forester President's Choice,,The President s Choice,N,111,55.5,,,bourbon,Brown-Forman,Old Forester,f2f8635d-5878-40a9-8e60-8a164c7e87fb
+Old Forester,Old Forester Repeal Bourbon,,Repeal Bourbon,Y,100,50,,,bourbon,Brown-Forman,Old Forester,2998d8a6-a7f2-4cd9-b2ee-993c2ffeb301
+Old Forester,Old Forester Signature,,Old Forester 100 Proof Signature,Y,100,50,,"72% Corn, 18% Rye, 10% Malted Barley",bourbon,Brown-Forman,Old Forester,09e48a71-3889-4da3-a607-4f967bcb7675
+Old Forester,Old Forester Single Barrel,Single Barrel,"Old Forester Single Barrel, Barrel Strength",Y,127.1,63.55,4.416666667,"Corn, Rye, Malted Barley",bourbon,Brown-Forman,Old Forester,54a81325-9b7d-4586-8862-84213ad9ccc9
+Old Forester,Old Forester Statesman,,Statesman,Y,95,47.5,,"72% Corn, 18% Rye, 10% Malted Barley",bourbon,Brown-Forman,Old Forester,4745ad0a-03a3-4683-839a-e0f33a3722aa
+Old Forester,Old Forester — 10 Year,,Old Forester 1924 — 10 Year,N,100,50,10,"Corn, Rye, Malted Barley",bourbon,Brown-Forman,Old Forester,e2064bd9-9fb0-4893-a664-efebd3f1b51c
+Old Grand-Dad,Old Grand-Dad 114,,Old Grand-Dad 114,Y,114,57,4,"Corn, Rye, Malted Barley",bourbon,Jim Beam,Old Grand-Dad,074125ee-5cf1-4747-9ed3-a7a690082695
+Old Grand-Dad,Old Grand-Dad Bottled-in-Bond,Bottled-in-Bond,Old Grand-Dad Bottled-in-Bond,N,,0,7,"63% Corn, 27% Rye, 10% Malted Barley",bourbon,Jim Beam,Old Grand-Dad,c5475639-1c76-497b-986b-4660592f92f7
+On Your Six,On Your Six Bourbon,,On Your Six Bourbon,Y,80,40,,"Corn, Rye, Malted Barley",bourbon,On Your Six,On Your Six,801c6450-fce8-4afe-958f-fc73a4d7e8d8
+Peerless,Peerless Single Barrel Bourbon,Single Barrel,Peerless Single Barrel Bourbon,Y,114,55.4,8,"Corn, Rye, Malted Barley",bourbon,Peerless,Peerless,af105ecb-2432-42b6-9a37-9aaafd538870
+Peerless,"Peerless Single Barrel Rye, 10 Year",Single Barrel,"Peerless Single Barrel Rye, 10 Year",Y,114,55.4,8,"Corn, Rye, Malted Barley",rye,Peerless,Peerless,9fed6a42-0a81-4dd9-879a-1515b43a5126
+Peerless,Peerless Small,Small Batch,Peerless Small Batch Rye,N,111.1,55.55,,"Rye, Malted Barley",rye,Peerless,Peerless,9b40b21e-f453-451f-a85e-e2ec9050ab28
+Penelope,Penelope Toasted Series,,Penelope Toasted Series,N,100,50,,,bourbon,Penelope,Penelope,8c66850c-7cbf-4dbb-9f95-4b5010b0d758
+Pursuit United,Pursuit United An Adventure in Bold Flavors,,Pursuit United An Adventure in Bold Flavors,N,108,54,,"Corn, Wheat, Malted Barley",bourbon,Pursuit United,Pursuit United,84ac08ec-73e1-43b1-bb9a-909088ae41c2
+Pursuit United,Pursuit United Blended Straight,,Pursuit United Blended Straight,N,108,54,,,bourbon,Pursuit United,Pursuit United,ea345976-9adf-473c-bf9b-b7e11dde1e8d
+RD One,RD One Small Batch,Small Batch,RD One Small Batch,N,110,55,,,bourbon,RD One,RD One,4b49e3d0-8f2f-4bfd-949a-32ca9878e34c
+RD One,RD One Smoked Oak & Maple Wood,,RD One Smoked Oak & Maple Wood (gold label),N,111.3,55.65,4,"Corn, Rye, Malted Barley",bourbon,RD One,RD One,d2105782-513a-4833-ad47-9cad8d32a81c
+Rabbit Hole,Rabbit Hole Cavehill,,Rabbit Hole Cavehill,Y,95,47.5,,,bourbon,Rabbit Hole,Rabbit Hole,d269dfc1-a6cc-4b4a-9432-79c0d806720d
+Rabbit Hole,Rabbit Hole Dareringer,,Rabbit Hole Dareringer,Y,93,46.5,,,bourbon,Rabbit Hole,Rabbit Hole,4bc17292-d4a7-4a84-a462-953a762a7af3
+Rabbit Hole,Rabbit Hole Heigold,,Rabbit Hole Heigold,Y,95,47.5,,,bourbon,Rabbit Hole,Rabbit Hole,729e31c0-9969-4d23-b6cf-73a6074f29d6
+Rebel,Rebel,,Rebel,Y,100,50,,,bourbon,Lux Row (Luxco),Rebel,66f34395-0e9c-4ca7-9e9d-3ec6a1e53854
+Rebel,Rebel Cask Strength,Cask Strength,Rebel Cask Strength,Y,120,60,6,"Corn, Wheat, Malted Barley",bourbon,Lux Row (Luxco),Rebel,7d043a67-ab39-4e15-b1d5-a91d1accba25
+Russell's Reserve,Russell's Reserve 10 Year,,Russell's Reserve 10 Year,Y,90,45,,"75% corn, 13% rye, 12% malted barley",bourbon,Wild Turkey (Campari),Russell's Reserve,79950c93-2561-4545-a416-39d22df88d43
+Russell's Reserve,Russell's Reserve Private Barrel Selection,,Russell's Reserve Private Barrel Selection,Y,110,55,9,"Corn, Rye, Malted Barley",bourbon,Wild Turkey (Campari),Russell's Reserve,355e73eb-e369-4a31-8aef-9a6424c6e28e
+Russell's Reserve,Russell's Reserve Single Barrel,Single Barrel,Russell's Reserve Single Barrel,Y,110,55,,,bourbon,Wild Turkey (Campari),Russell's Reserve,0ff683f5-8bce-4411-9a8f-44e9cdc677e7
+Russell's Reserve,Russell's Reserve Small Batch,Small Batch,Russell's Reserve Small Batch,Y,110,55,,"75% Corn, 13% Rye, 12% Malted Barley",bourbon,Wild Turkey (Campari),Russell's Reserve,75b49157-642b-4c23-a550-ad06d40c09e2
+Shortbarrel,Shortbarrel Cigar Batch — Marignac Cognac Rum & Tawny Port Cask Finish,,"Shortbarrel Cigar Batch — Marignac Cognac, Rum & Tawny Port Cask Finish",N,115,57.5,,Various (blend of straight whiskeys),bourbon,Shortbarrel,Shortbarrel,40ff6490-76c4-4513-8615-0ecca23621b5
+Shortbarrel,Shortbarrel Single Barrel Series — Kentucky Straight Bourbon,Single Barrel,Shortbarrel Single Barrel Series — Kentucky Straight Bourbon,N,121.8,60.9,10,"Corn, Rye, Malted Barley",bourbon,Shortbarrel,Shortbarrel,facea7f4-5677-4741-9f6c-ae9ed53a79b0
+Shortbarrel,Shortbarrel Single Barrel Series — Kentucky Straight Rye,Single Barrel,Shortbarrel Single Barrel Series — Kentucky Straight Rye,N,120.2,60.1,10,"Rye, Corn, Malted Barley",rye,Shortbarrel,Shortbarrel,f9f2f611-8d09-4205-8f87-0f9e9339e0cb
+Smoke Wagon,Smoke Wagon Uncut Unfiltered,,Smoke Wagon Uncut Unfiltered,N,115,57.5,,"Corn, Rye, Malted Barley",bourbon,Smoke Wagon,Smoke Wagon,a5f995b3-360c-4960-a028-ef4412a4d804
+Spirits of French Lick,Spirits of French Lick The Wheater Straight Bourbon,,The Wheater Straight Bourbon,N,90,45,,,bourbon,Spirits of French Lick,Spirits of French Lick,f69331f2-7967-4518-bc32-977d54c07703
+Stagg,Stagg Barrel Proof,Barrel Proof,Stagg Jr. Barrel Proof,N,128.4,64.2,,,bourbon,Buffalo Trace,Stagg,59e959c5-3a90-4580-b6b6-b2e575c7b116
+Starlight,Starlight Distillery Carl T. Huber Signature Indiana Straight,,Starlight Distillery Carl T. Huber Signature Indiana Straight,N,92,46,,,bourbon,Starlight,Starlight,d6bfc748-6da2-4ace-a194-18dfb9b2f489
+Starlight,Starlight Distillery Carl T. Huber's,,Starlight Distillery Carl T. Huber's,Y,100,50,,,bourbon,Starlight,Starlight,b619ba3d-55bd-4dae-beba-c7f302bf4b2d
+Stellum,Stellum Bourbon,,Stellum Bourbon,Y,115,57.5,,,bourbon,Stellum Spirits,Stellum,72545e51-0e92-4b2e-866f-5ddd676f71cc
+The Morning Glory,The Morning Glory Kasha Bourbon,,The Morning Glory Kasha Bourbon,N,109,54.5,4.5,"Corn, Rye, Malted Barley",bourbon,The Morning Glory,The Morning Glory,69ed94e1-37d4-4c22-9762-ff86610f9f22
+Three Chord,Three Chord,,Three Chord,Y,99,49.5,,,bourbon,Three Chord,Three Chord,ffe88d75-f64e-45e3-8c52-4300c7dc70a1
+Town Branch,Town Branch,,Town Branch Kentucky Straight Bourbon,Y,90,45,,,bourbon,Town Branch,Town Branch,928145b6-5e70-40df-a4d1-245273e80589
+Town Branch,Town Branch Reserve Rye,,Town Branch Reserve Rye,N,100,50,,,rye,Town Branch,Town Branch,e1b606aa-fa57-4196-aaeb-19140871caed
+Town Branch,Town Branch Single Barrel Reserve Rye,Single Barrel,Town Branch Single Barrel Reserve Rye,N,100,50,6,"Rye, Malted Barley",rye,Town Branch,Town Branch,4aceeee0-6d09-4f7e-84cd-770ba1b37726
+Trackside,Trackside Bourbon Whiskey Founder Release,,"Trackside Bourbon Whiskey, Founder Release 2025",N,107,53.5,,"Corn, Rye, Malted Barley",bourbon,Trackside,Trackside,ee4e2409-d3ef-4b86-8911-67eb4aa4533b
+Uncle Nearest,Uncle Nearest 1820,,Uncle Nearest 1820,Y,115,57.5,,,bourbon,Uncle Nearest,Uncle Nearest,f05ba405-6eb3-491b-b1e8-423a37a4f27f
+Uncle Nearest,Uncle Nearest 1856,,Uncle Nearest 1856,N,100,50,,,bourbon,Uncle Nearest,Uncle Nearest,456f14ce-54d6-4fcd-a1ee-d936850add8c
+Uncle Nearest,Uncle Nearest 1884,,Uncle Nearest 1884,Y,93,46.5,,,bourbon,Uncle Nearest,Uncle Nearest,9dcb78fc-36d8-4962-85ef-2d0ab9674b38
+Watch Hill Proper,Watch Hill Proper Honey Toasted Reserve Limited Release,,"Watch Hill Proper Honey Toasted Reserve, 2025 Limited Release",N,116,58,,Various (blend),bourbon,Watch Hill Proper,Watch Hill Proper,e17205cd-86be-4e5b-b777-ea686317f0b0
+Weller,Weller 12 Year,,Weller 12 Year,Y,90,45,12,"Undisclosed (Buffalo Trace “Wheated” Mashbill - Corn, Wheat, Malted Barley)",bourbon,Buffalo Trace,Weller,e811d4b9-7635-43fc-afb9-e66f1f9efd92
+Weller,Weller Antique 107,,Weller Antique 107,Y,95,47.5,,"Undisclosed (Buffalo Trace ""Wheated"" Mashbill - Corn, Wheat, Malted Barley)",bourbon,Buffalo Trace,Weller,8b5cc01d-b4c4-4b11-ae16-6dd3059cd8ca
+Weller,Weller Full Proof,Full Proof,Weller Full Proof,N,114,57,,,bourbon,Buffalo Trace,Weller,991605ef-5148-4c67-8936-8007ea8ef858
+Weller,Weller Special Reserve,,W.L. Weller Special Reserve,Y,90,45,,"Corn, Wheat, Malted Barley",bourbon,Buffalo Trace,Weller,b66119dc-b2e6-429c-92cc-26761d0d49e6
+WhistlePig,WhistlePig PiggyBack Rye,,WhistlePig PiggyBack 100% Rye,Y,96.56,48.28,6,100% Rye,rye,WhistlePig,WhistlePig,a811b04b-b56b-439b-9e73-b47f2cd2c993
+WhistlePig,WhistlePig Single Barrel Rye 10 Year,Single Barrel,"WhistlePig Single Barrel Rye, 10 Year",Y,106.2,53.1,10,"Rye, Malted Barley",rye,WhistlePig,WhistlePig,b2420717-cec1-49ac-b11e-e5e3c8b92e94
+Widow Jane,Widow Jane,,Widow Jane,Y,91,45.5,,,bourbon,Widow Jane,Widow Jane,40b99e37-712b-47b7-aec7-05426bf92072
+Widow Jane,Widow Jane Decadence,,Widow Jane Decadence,Y,91,45.5,,,bourbon,Widow Jane,Widow Jane,67723a6b-095c-43bc-ae73-407f8bda4b0d
+Wild Turkey,Wild Turkey 101,,Wild Turkey 101,Y,,,,,bourbon,Wild Turkey (Campari),Wild Turkey,b8b6f3e0-a5d2-423b-925c-5563a05d17e7
+Wild Turkey,Wild Turkey Generations 70th Anniversary,,Wild Turkey Generations 70th Anniversary Release,Y,101,50.5,8,"Corn, Rye, Malted Barley",bourbon,Wild Turkey (Campari),Wild Turkey,58a1e88f-0f24-4f5f-8dd8-a5559f4f42ae
+Wild Turkey,Wild Turkey Kentucky Spirit,,Wild Turkey Kentucky Spirit,Y,101,50.5,8,"75% Corn, 13% Rye, 12% Malted Barley",bourbon,Wild Turkey (Campari),Wild Turkey,d83a2db3-8e3e-4832-a2a6-f23b5e5a6a71
+Wild Turkey,Wild Turkey Longbranch,,Wild Turkey Longbranch,Y,86,43,8,"75% Corn, 13% Rye, 12% Malted Barley",bourbon,Wild Turkey (Campari),Wild Turkey,12e2f298-8c8f-4b5b-b2a7-f1657a63d30e
+Wild Turkey,Wild Turkey Master's Keep,,Wild Turkey Master's Keep,N,106,53,,,bourbon,Wild Turkey (Campari),Wild Turkey,1cebcf62-4e0a-47c0-ada7-09b8f1ae313b
+Wild Turkey,Wild Turkey Rare Breed,,Wild Turkey Rare Breed,Y,116.8,58.4,,"75% Corn, 13% Rye, 12% Malted Barley",bourbon,Wild Turkey (Campari),Wild Turkey,10f89810-ae93-44e2-8b69-39e6bb9d3d82
+Wilderness Trail,Wilderness Trail Bottle in Bond,,Wilderness Trail Bottle in Bond,N,,,,,bourbon,Wilderness Trail,Wilderness Trail,7d6bdc21-61c4-42cc-a53c-8b1137891645
+Willett,Willett Family Estate Rye,,Willett Family Estate Bottled Rye,Y,110,55,4,rye,rye,Willett,Willett,444c1657-9fbf-4e33-9c02-a5c30c9c8d82
+Willett,Willett Johnny Drum,,Johnny Drum Private Stock,Y,101,50.5,4,Undisclosed,bourbon,Willett,Willett,06382b2b-192f-4ced-b8e7-6c7cd1ccac9f
+Willett,Willett Noah's Mill,,Noah's Mill,Y,114.2,57.1,,,bourbon,Willett,Willett,3220a432-0261-44bf-94b7-d31bf319e76f
+Willett,Willett Old Bardstown,,Old Bardstown,Y,100,50,,,bourbon,Willett,Willett,86f89367-f6fe-4661-838e-ba02f09e0a09
+Willett,Willett Pot Still Reserve,,Willett Pot Still Reserve,Y,94,47,,"Corn, Rye, Malted Barley",bourbon,Willett,Willett,213ce445-7fad-4cd6-88f4-2c9d33380d23
+Willett,Willett Pure Kentucky,,Pure Kentucky XO,Y,107,53.5,12,,bourbon,Willett,Willett,cd3d5c53-fe10-4237-9740-848b1d78a249
+Willett,Willett Rowan's Creek,,"Rowan's Creek, 12 Year",Y,100,50,,,bourbon,Willett,Willett,f767930f-a689-4cfc-ba11-9cb13b8214c7
+Willett,Willett Single Barrel,Single Barrel,Willett Single Barrel,N,113.2,56.6,,,bourbon,Willett,Willett,05609799-8245-4267-9553-32492c97f914
+Willett,Willett Vintage,,Vintage Bourbon,N,94,47,,,bourbon,Willett,Willett,8ade6ac9-495a-4c43-994f-15b150ae7b1c
+Woodford Reserve,Woodford Reserve Distiller's Select,,Woodford Reserve Distiller's Select,Y,90.4,45.2,,"Corn, Rye, Malted Barley",bourbon,Brown-Forman,Woodford Reserve,a8fce06d-8263-45e1-b4c7-920809ea9648
+Woodford Reserve,Woodford Reserve Double Double Oaked,,Woodford Reserve Double Double Oaked,N,90.4,45.2,,,bourbon,Brown-Forman,Woodford Reserve,8167447b-51f0-46f0-bdee-a44583aeade9
+Woodford Reserve,Woodford Reserve Double Oaked,,Woodford Reserve Double Oaked,Y,90.4,45.2,,,bourbon,Brown-Forman,Woodford Reserve,e9ff244d-2f0c-448e-964e-6ca219bc6bc4
+Woodford Reserve,Woodford Reserve Master's Collection,,Woodford Reserve Master's Collection,N,90.4,45.2,,,bourbon,Brown-Forman,Woodford Reserve,cfbf3497-b355-4a4e-aaba-efe0629133bb
+Woodford Reserve,Woodford Reserve Rye,Single Barrel,"Woodford Reserve Distiller's Select Rye, Single Barrel / Barrel Strength",Y,125.1,62.55,,"Rye, Corn, Malted Barley",rye,Brown-Forman,Woodford Reserve,1b42ebed-8341-4996-bfd7-6569cf9772c0
+Woodinville,Woodinville,,Woodinville,Y,94,47,,,bourbon,Woodinville Whiskey Co.,Woodinville,3a8cfe3f-a7fe-43c5-a1a1-50afea000b13
+Yellowstone,Yellowstone,,Yellowstone,N,101,50.5,,,bourbon,Yellowstone,Yellowstone,261f2316-de0f-4f37-8d6f-7c3c4d849f59
+Yellowstone,Yellowstone Hand Picked Collection Single Barrel,Single Barrel,"Yellowstone Hand Picked Collection, Single Barrel",N,109,57.5,,"Rye, Malted Barley",bourbon,Yellowstone,Yellowstone,da025fd5-2f68-46b6-aa12-f00dda369a67
+Yellowstone,Yellowstone Select,,Yellowstone Select,N,93,46.5,,,bourbon,Yellowstone,Yellowstone,2a78f5a1-6906-4340-a12b-de1a00a1a3e4
+Yellowstone,Yellowstone Single Barrel,Single Barrel,"Yellowstone , Single Barrel",N,109,54.5,,,bourbon,Yellowstone,Yellowstone,a46b41d1-f829-439e-8708-a9909753bd77

@@ -66,6 +66,17 @@ async function readSheet(): Promise<ShelfRow[]> {
     };
     const rec = Object.fromEntries(COLS.map((c) => [c, get(c)])) as ShelfRow;
     if (!rec.brand_family && !rec.expression && !rec.name) continue; // skip blank lines
+    // Guardrail: the Unicode replacement char (U+FFFD) means the CSV was saved
+    // in the wrong encoding (e.g. Excel non-UTF-8), which silently mangles
+    // em-dashes and curly quotes. Refuse to write rather than corrupt the DB.
+    for (const c of COLS) {
+      if (rec[c]?.includes("�")) {
+        throw new Error(
+          `Encoding corruption (�) in row "${rec.name || rec.expression}" column "${c}". ` +
+            "Re-save bourbon-shelf.csv as UTF-8 (Excel: 'CSV UTF-8') and try again. Nothing was written.",
+        );
+      }
+    }
     rows.push(rec);
   }
   return rows;
