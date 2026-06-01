@@ -29,6 +29,9 @@ turns a bottle on or off**.
 | `expression_type` | the **release type** for filtering across brands — see below |
 | `name` | card title shown to members |
 | `is_core_range` | `Y` = standard lineup, `N` = limited/special — see below |
+| `tier` | catalog shelf tier `1`–`5` — see below |
+| `availability` | how hard it is to get — see below |
+| `price_usd` | approx. dollar price; drives the `$`–`$$$$` badge |
 | `proof` `abv` `age` `mash` `spirit_type` | specs (optional) |
 | `producer` | parent distillery/company |
 | `brand` | maker-page identity (usually = `brand_family`) |
@@ -58,6 +61,28 @@ live in the bottle's `name`, not here.
 
 It's independent of `expression_type`: a Single Barrel can be core (Eagle Rare)
 or limited (a store pick).
+
+### `tier` — catalog shelf level (1–5)
+
+How far up the allocation ladder a bottle sits. Members have a **Catalog Shelf**
+slider in their preferences; a bottle shows only if its `tier` is at or below
+the member's setting (the max setting, 5, shows everything; a blank tier always
+shows). Rough guide:
+
+- `1` everyday shelf · `2` common-but-nicer · `3` uncommon/harder ·
+  `4` allocated · `5` unicorn/lottery
+
+### `availability` — how hard to get
+
+One of: `everyday` · `seasonal` · `allocated` · `lottery` · `secondary-only` ·
+`discontinued`. Shown as a badge; blank hides it. (Related to `tier` but
+separate — `tier` gates visibility, `availability` is descriptive.)
+
+### `price_usd`
+
+Approximate dollar price. The app turns it into a `$`–`$$$$` badge
+(bourbon: `$` <\$35, `$$` <\$75, `$$$` <\$150, `$$$$` \$150+); the bucket is
+derived, so you only enter the number. Blank = no price badge.
 
 ## What you'll typically edit
 
