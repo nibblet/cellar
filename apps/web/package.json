@@ -22,6 +22,7 @@
     "seed:cigars-cigarbase": "tsx --env-file=.env.local scripts/seed/seed-cigars-cigarbase.ts",
     "seed:cobb-whiskey": "tsx --env-file=.env.local scripts/seed/seed-cobb-whiskey.ts",
     "dedupe:bourbons": "tsx --env-file=.env.local scripts/seed/dedupe-bourbons.ts",
+    "gen:catalog-scenes": "tsx --env-file=.env.local scripts/media/generate-catalog-scenes.ts",
     "restore:weller": "tsx --env-file=.env.local scripts/seed/restore-weller-catalog.ts",
     "restore:taylor": "tsx --env-file=.env.local scripts/seed/restore-taylor-catalog.ts",
     "rectify:catalog": "tsx --env-file=.env.local scripts/seed/rectify-catalog-from-curation.ts",
