@@ -60,10 +60,6 @@ const SERIES_EXPRESSION_TOKENS = [
   "straight bourbon",
 ];
 
-/** Canonical names that group tastings by release year on the product page. */
-/** @deprecated All expressions use tasting chips; product pages do not group by year. */
-const VINTAGES_MATTER_PATTERNS: Array<{ match: RegExp; pattern: ReleasePattern }> = [];
-
 /** Legacy series rules — fixed canonical names (Bardstown, Four Roses). */
 const SERIES_CANONICAL: Array<{
   match: (p: NormalizationInput) => boolean;
@@ -681,7 +677,7 @@ function resolveCanonical(
   const yearMade = specNum(input.specs, "year_made");
   const batch = extractBatchNumber(input.name);
   const year = extractReleaseYear(input.name, yearMade);
-  let canonical = stripReleaseSuffixes(input.name);
+  const canonical = stripReleaseSuffixes(input.name);
   let release_label: string | null = null;
   let release_pattern: ReleasePattern | null = null;
 

@@ -94,8 +94,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-009 — Unused import `TagCloudEntry` in club-says-prose.ts
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-009-unused-import-tag-cloud-entry.md`
 - **File:** `apps/web/src/lib/aggregation/club-says-prose.ts` line 1
 - **Summary:** `TagCloudEntry` imported from `./group-voice` but never referenced by name in the module. Used only transitively through `GroupVoice.tag_cloud`. Biome `noUnusedImports` error. Remove from the import destructure.
@@ -104,8 +105,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-010 — Unused local import `productNeedsCatalogEnrichment` in enrich/index.ts
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-010-unused-import-enrich-index.md`
 - **File:** `apps/web/src/lib/enrich/index.ts` line 11
 - **Summary:** `productNeedsCatalogEnrichment` is imported locally at line 11 but never used within the file — it is re-exported directly from the source module at line 21 via `export { } from`. The local import is dead. Biome `noUnusedImports` error. Remove line 11.
@@ -114,8 +116,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-011 — Dead function `stripBrandPrefix` in catalog-name-cleanup.ts
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-011-dead-function-strip-brand-prefix.md`
 - **File:** `apps/web/src/lib/catalog/catalog-name-cleanup.ts` line 50
 - **Summary:** Private function `stripBrandPrefix` is defined but never called anywhere. Biome `noUnusedVariables` warning. Remnant of a planned normalization step that was not implemented. Delete the function.
@@ -124,8 +127,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-012 — Deprecated dead constant + `let` vs `const` in expression-normalize.ts
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-012-dead-constant-vintages-matter.md`
 - **Files:** `apps/web/src/lib/catalog/expression-normalize.ts` lines 65, 684
 - **Summary:** `VINTAGES_MATTER_PATTERNS` is an empty deprecated array that is never read (Biome `noUnusedVariables`). `let canonical` at line 684 is only assigned once and should be `const` (Biome `useConst`). Both are safe deletions / single-token changes.
@@ -134,8 +138,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-013 — a11y/useSemanticElements in cellar-card-controls.tsx
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-013-cellar-card-controls-a11y.md`
 - **File:** `apps/web/src/components/cellar/cellar-card-controls.tsx` line 39
 - **Summary:** `<div role="group">` wrapping icon buttons triggers Biome `useSemanticElements` error (suggests `<fieldset>`). `<fieldset>` is semantically incorrect for button groups (not form inputs). Fix: add `biome-ignore` with explanation.
@@ -144,8 +149,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-014 — a11y/useSemanticElements in tasting-action-segment.tsx
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-01
+- **Fixed:** 2026-06-02
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-014-tasting-segment-a11y.md`
 - **File:** `apps/web/src/components/product/tasting-action-segment.tsx` line 22
 - **Summary:** `<div role="group">` wrapping `<Link>` elements (navigation) triggers Biome `useSemanticElements` error (suggests `<fieldset>`). `<fieldset>` is wrong for navigation links. Fix: add `biome-ignore` with explanation.

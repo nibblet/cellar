@@ -32,6 +32,7 @@ export function CellarCardControls({ productId, initialState }: CellarCardContro
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: groups icon buttons, not form inputs; <fieldset> requires a <legend> and assumes form controls
     <div
       className="flex items-center gap-1.5 px-2 py-1.5 rounded-full bg-ink-900/40 border border-paper-50/30 backdrop-blur-[2px]"
       onClick={(e) => e.preventDefault()}

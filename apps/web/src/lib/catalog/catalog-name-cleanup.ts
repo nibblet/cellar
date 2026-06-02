@@ -47,12 +47,6 @@ function normalizeSpaces(name: string): string {
   return name.replace(/\s+/g, " ").replace(/\s+([,.])/g, "$1").trim();
 }
 
-function stripBrandPrefix(brand: string | null, name: string): string {
-  if (!brand) return name;
-  const re = new RegExp(`^${brand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+`, "i");
-  return name.replace(re, "").trim();
-}
-
 function extractAgeLabel(name: string, specs: Record<string, unknown> | null): string | null {
   const fromSpec = specStr(specs, "age_label");
   if (fromSpec) return fromSpec;

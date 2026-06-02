@@ -1,4 +1,4 @@
-import type { GroupVoice, MemberTake, TagCloudEntry } from "./group-voice";
+import type { GroupVoice, MemberTake } from "./group-voice";
 
 /**
  * Winston one-liner for THE CLUB SAYS. Pure function — unit tested.

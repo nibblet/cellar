@@ -8,7 +8,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import { ApifyClient } from "./apify-client";
 import { type ApifyEnrichResult, type EnrichInput, enrichProductFromWeb } from "./apify-enrich";
-import { productNeedsCatalogEnrichment } from "./needs-enrichment";
 import { extractAndMergeSpecs, type SpecsEnrichResult } from "./specs-enrich";
 import { extractAndMergeWheelVector, type WheelEnrichResult } from "./wheel-enrich";
 

@@ -17,6 +17,7 @@ export function TastingActionSegment({ productId, hasTasting, event }: TastingAc
   const sessionHref = `/products/${productId}/session${qs}`;
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: groups navigation links as a segmented control; <fieldset> requires form inputs and <legend>
     <div
       className="grid grid-cols-2 rounded-[12px] border border-accent overflow-hidden bg-accent"
       role="group"
