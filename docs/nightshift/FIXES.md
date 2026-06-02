@@ -149,3 +149,23 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-014-tasting-segment-a11y.md`
 - **File:** `apps/web/src/components/product/tasting-action-segment.tsx` line 22
 - **Summary:** `<div role="group">` wrapping `<Link>` elements (navigation) triggers Biome `useSemanticElements` error (suggests `<fieldset>`). `<fieldset>` is wrong for navigation links. Fix: add `biome-ignore` with explanation.
+
+---
+
+## FIX-015 — Identity invariant in group-validation.ts (raw template string for display_name)
+
+- **Status:** planned
+- **Found:** 2026-06-02
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-015-group-validation-identity.md`
+- **Files:** `apps/web/src/lib/pairing/group-validation.ts` lines 76 and 137
+- **Summary:** `checkEventValidation` (line 76) and `checkPairingSessionValidation` (line 137) both construct `display_name` via `` `${t.user.name_first} ${t.user.name_last_initial}` `` instead of `formatMemberName(user)`. This is the same pattern fixed in FIX-001. The `display_name` field is shown in the pairing detail UI for club-validated pairings. Bypasses the identity formatter, missing uppercase normalization and the two-Paul disambiguation path.
+
+---
+
+## FIX-016 — Scene generator --size flag silenced by TypeScript cast
+
+- **Status:** planned
+- **Found:** 2026-06-02
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-016-scene-generator-size-cast.md`
+- **File:** `apps/web/scripts/media/generate-catalog-scenes.ts` lines 72 and 129
+- **Summary:** The `--size` CLI flag value is assigned as `string` and cast to `"1024x1024"` at the OpenAI API call site (`size: size as "1024x1024"`). An invalid value like `--size 512x512` passes TypeScript silently and only fails at the API. Fix: add an allowlist check for valid gpt-image-1 sizes (`1024x1024`, `1536x1024`, `1024x1536`, `auto`) and the same for `--quality`. No production risk (script-only) but prevents confusing runtime errors.

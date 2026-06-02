@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-01 (Nightshift run)
+Last updated: 2026-06-02 (Nightshift run)
 
 ---
 
@@ -20,6 +20,18 @@ edit form and catalog card subtitle reflect these. A unified suggestion pipeline
 An MCP server (`/api/[transport]`) and a Cloudflare OAuth proxy worker
 (`workers/nccc-mcp-oauth-proxy/`) were added, exposing 9 Claude tools to external
 AI clients.
+
+Since 2026-06-01: a catalog scene-generator script (`scripts/media/generate-catalog-scenes.ts`,
+`pnpm gen:catalog-scenes`) re-stages each catalog bourbon's photo into one of 8 curated
+scenes via gpt-image-1 image-edit (stable hash assignment per product ID). Dry-run by
+default; `--run` generates to `scripts/media/out/`. Scene upload back to Supabase is not
+yet wired (IDEA-009, planned).
+
+**Discrepancy note:** `docs/nightshift/plans/DEVPLAN-IDEA-006-pair-me-ux.md` exists from
+a pre-nightshift session and describes the Pair-Me UX / WinstonSuggests feature (now
+fully shipped as of 2026-06-01). The BACKLOG.md has IDEA-006 tracked as "MCP member
+tastings tool" (seeded 2026-05-31). The plan file is orphaned documentation of shipped
+work; IDEA-006 in the living backlog refers to the MCP tool idea.
 
 ---
 

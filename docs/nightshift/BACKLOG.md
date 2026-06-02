@@ -49,6 +49,10 @@ Maturity: seed → exploring → planned → ready → parked
 
 ---
 
+## Category 1 — Enhance Existing (continued — IDEA-009 added 2026-06-02, see end of Cat 1 above)
+
+---
+
 ## Category 2 — New Feature or Integration
 
 ### [IDEA-003] Phase 9 — Maker & Distillery pages
@@ -84,13 +88,15 @@ Maturity: seed → exploring → planned → ready → parked
 - **Status:** seed
 - **Category:** new
 - **Seeded:** 2026-05-31
-- **Last Updated:** 2026-06-01
+- **Last Updated:** 2026-06-02
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** Add a `get_member_tastings` tool to the MCP server so members can ask Claude "what have I tried?" and get a paginated history of their tastings with product names, recommend flags, chips, and notes. Currently `get_my_cellar` shows shelf state (have/want/tried/loved counts) and `get_club_feed` shows recent club activity, but there's no way to query one member's full personal history.
+- **Note:** `docs/nightshift/plans/DEVPLAN-IDEA-006-pair-me-ux.md` exists from a pre-nightshift session — it documents the shipped Pair-Me UX / WinstonSuggests feature, not this tool. That plan file is orphaned shipped-work documentation; it does not belong to this backlog entry.
 - **Night Notes:**
   - 2026-05-31: Seeded. The MCP server now has 9 tools; this would be the 10th. `loadFeed` already accepts a `userId` filter. Low effort — maybe 1 hour — but lower priority than makers browse since the cellar shelf gives a reasonable approximation.
   - 2026-06-01: Reviewed. 1 day old. No commits. Holding at seed — not yet stale.
+  - 2026-06-02: 2 days old. No commits. Approaching 3-day stale threshold (triggers tomorrow 2026-06-03 if no action). Holding at seed tonight.
 
 ---
 
@@ -98,12 +104,26 @@ Maturity: seed → exploring → planned → ready → parked
 - **Status:** planned
 - **Category:** enhance
 - **Seeded:** 2026-06-01
-- **Last Updated:** 2026-06-01
+- **Last Updated:** 2026-06-02
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-007-availability-tier-on-catalog-cards.md`
-- **Summary:** The bourbon CSV seed now populates `specs.availability_rarity` (allocated/lottery/seasonal/…) and `specs.tier` (1–5). These exist in the DB but are invisible in the UI — neither the catalog card subtitle nor the product detail header show them. Extending `composeProductSubtitle` to emit "Allocated" / "Tier N" tokens makes the catalog self-documenting for members browsing or hunting.
+- **Summary:** The bourbon CSV seed now populates `specs.availability_rarity` (allocated/lottery/seasonal/…) and `specs.tier` (1–5). These exist in the DB but are invisible in the UI — neither the catalog card subtitle nor the product detail header show them. Extending `composeProductSubtitle` to emit "Allocated" / "Tier N" tokens makes the catalog self-documenting for members browsing or hunting. Note: `FactsStrip` on product detail already shows `availabilityLabel`; the gap is the browse-card subtitle only.
 - **Night Notes:**
   - 2026-06-01: Seeded and immediately promoted to `planned`. Zero AI cost, zero DB changes, zero migrations. Data is already there; it just needs to flow through `composeProductSubtitle`. ~1 hour of work. High signal: members will finally be able to see which bottles are Allocated without opening each product detail.
+  - 2026-06-02: Reviewed. Not yet implemented (no commits touching composeProductSubtitle). Holding at planned. Still 1 day old; no stale risk.
+
+---
+
+### [IDEA-010] Availability filter chip in bourbon catalog browse
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-02
+- **Last Updated:** 2026-06-02
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** The Bourbons catalog tab has filter chips for proof band, style, and age, but no way to filter by `availability_rarity` (everyday / seasonal / allocated / lottery). Now that these values are in the DB for most catalog bourbons, adding an "Availability" filter chip would let Paul and other members immediately surface "all the allocated bottles I can't get" vs "all the everyday pours." Zero AI cost; follows the same in-memory filter pattern already used by the other bourbon filters in `loadCatalogBrowse`. Pairs with IDEA-007 (surface the same data in the subtitle).
+- **Night Notes:**
+  - 2026-06-02: Seeded. Three touch points: add `availability` field to `CatalogFilters` type, add a matching `passesFilters` branch in `catalog-queries.ts`, add a chip to `catalog-filter-controls.tsx`. ~1 hour. Blocked until IDEA-007 lands (availability data visible in subtitle = prerequisite for filter to feel discoverable).
 
 ---
 
@@ -111,9 +131,23 @@ Maturity: seed → exploring → planned → ready → parked
 - **Status:** seed
 - **Category:** new
 - **Seeded:** 2026-06-01
-- **Last Updated:** 2026-06-01
+- **Last Updated:** 2026-06-02
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** When a member marks an `availability_rarity: "allocated"` or `"lottery"` bottle as Want, show a small Winston `<Voice />` line in the cellar toggle UI ("A wise wish — the Pappy hunt is real."). This closes the emotional loop on the save action, acknowledging the hunting reality without blocking the UX. Zero AI cost: triggered by the `availability_rarity` field value already available in the client state.
 - **Night Notes:**
   - 2026-06-01: Seeded. Small scope — needs `CellarToggle` to accept a `availabilityRarity` prop and render a Voice line when `want` flips to true for an allocated bottle. Lower priority than IDEA-007 (which surfaces the same data more broadly).
+  - 2026-06-02: Reviewed. 1 day old. No commits. Holding at seed.
+
+---
+
+### [IDEA-009] Scene upload workflow — `--upload` flag for generate-catalog-scenes.ts
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-02
+- **Last Updated:** 2026-06-02
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-009-scene-upload-workflow.md`
+- **Summary:** The `generate-catalog-scenes.ts` script writes glamour shots to `scripts/media/out/` with no upload step. After Paul reviews and approves the output, he must manually push each image through the admin UI — defeating the batch workflow. Adding `--upload` (commit) and `--dry-run-upload` (plan only) flags reads `out/`, matches files to products by the `{productId}--{sceneSlug}.jpg` filename pattern, and bulk-pushes to the `product-catalog` Supabase bucket with a `products.image_url` update per row. ~1 hour, no new UI, no migrations.
+- **Night Notes:**
+  - 2026-06-02: Seeded and immediately promoted to `planned`. The script already uses `adminClient()`; the upload path is a straight port of the pattern in `api/product-photo/route.ts`. Self-contained enhancement to the new script — closes the workflow loop from generate → review → publish.

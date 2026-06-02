@@ -4,6 +4,57 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-02
+
+### Summary
+- Scanned: 1 commit since last nightshift — catalog scene-generator script
+  (`scripts/media/generate-catalog-scenes.ts`) for gpt-image-1 glamour shots
+- Issues: 2 new (FIX-015 identity invariant in group-validation.ts, FIX-016 scene
+  generator --size cast), 6 existing still planned (FIX-009 through FIX-014, none resolved)
+- Ideas: 2 new (IDEA-009 scene upload workflow → immediately planned, IDEA-010 availability
+  filter chip → seed); IDEA-006 approaching 3-day stale (triggers tomorrow); all others reviewed
+- Plans written: 2 fix plans + 1 devplan (3 total)
+- Lint/build: could not run (node_modules not installed in environment). Manual scan performed.
+
+### Key Findings
+- **Identity invariant re-occurs** — `lib/pairing/group-validation.ts` lines 76 and 137 build
+  `display_name` via raw template string instead of `formatMemberName()`. This is the same
+  pattern as the FIX-001 fix applied to `products/[id]/page.tsx` in May. Impact: club-validated
+  pairing attribution will be wrong for the two-Paul disambiguation path when it eventually
+  applies. Quick two-line fix.
+- **Scene generator --size cast silences TypeScript** — `size as "1024x1024"` at line 129
+  allows any string to reach the OpenAI API without validation. The valid gpt-image-1 edit
+  sizes are `1024x1024`, `1536x1024`, `1024x1536`, `auto`. An allowlist check gives early,
+  clear errors instead of a confusing API rejection.
+- **Scene generator workflow gap** — the script generates to `out/` but has no upload step.
+  IDEA-009 (planned) adds `--upload` / `--dry-run-upload` flags using the same `adminClient()`
+  + `getPublicUrl` pattern already used by `api/product-photo/route.ts`. Closes the batch
+  workflow without any new UI.
+- **DEVPLAN-IDEA-006-pair-me-ux.md discrepancy documented** — that plan file describes the
+  shipped WinstonSuggests / Pair-Me UX feature (committed before this nightshift system
+  existed). BACKLOG.md IDEA-006 correctly refers to the MCP member tastings tool. STATUS.md
+  updated with a discrepancy note.
+- **IDEA-007 still not implemented** — `composeProductSubtitle` still omits
+  `availability_rarity` and `tier`. Data is there; the plan exists. Prioritize this next
+  session. Note: `FactsStrip` on product detail already shows `availabilityLabel`; only the
+  catalog browse card subtitle is missing it.
+- **IDEA-006 approaching stale** — seeded 2026-05-31, now 2 days old. Will trigger 3-day
+  stale rule tomorrow (2026-06-03) if no action. Paul should either promote or park it.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-015-group-validation-identity.md` — 3-line fix: import `formatMemberName`, replace two template strings in group-validation.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-016-scene-generator-size-cast.md` — add allowlist validation for --quality and --size in the scene generator script
+- `docs/nightshift/plans/DEVPLAN-IDEA-009-scene-upload-workflow.md` — add --upload / --dry-run-upload flags to generate-catalog-scenes.ts; ~1 hour
+- `docs/nightshift/plans/DEVPLAN-IDEA-007-availability-tier-on-catalog-cards.md` — (from last night, still unimplemented) surface availability/tier in catalog browse subtitle; ~1 hour
+
+### Recommendations
+- **If you have 10 min:** Apply FIX-015 (3-line change in group-validation.ts + import). Then FIX-016 (allowlist validation in scene generator). Both are safe, self-contained, and close long-standing debt.
+- **If you have 30 min:** Apply all of FIX-009 through FIX-016 in one pass (most are 1–3 lines each). Gets lint clean and identity invariants solid across the codebase.
+- **If you have 1 hour:** Implement DEVPLAN-IDEA-007 (availability/tier in catalog subtitle). Members browsing Bourbons immediately see "Allocated" or "Everyday" without tapping through to product detail. High payoff, zero cost, no migrations.
+- **Decision needed:** IDEA-006 (MCP member tastings) will hit its 3-day stale rule tomorrow. Either promote to `planned` (1-hour implementation) or park it.
+
+---
+
 ## Run: 2026-06-01
 
 ### Summary
