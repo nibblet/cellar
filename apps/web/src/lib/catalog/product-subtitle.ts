@@ -1,4 +1,10 @@
-import { formatPriceBucket, normalizeProductSpecs } from "@/lib/catalog/normalize-specs";
+import {
+  formatAvailabilityRarity,
+  formatPriceBucket,
+  normalizeAvailabilityRarity,
+  normalizeCobbTier,
+  normalizeProductSpecs,
+} from "@/lib/catalog/normalize-specs";
 import type { ProductType } from "@/lib/wheel";
 
 /** Facts line under the product title (detail page + catalog browse). */
@@ -22,6 +28,12 @@ export function composeProductSubtitle(
     if (typeof specs.proof === "number") tokens.push(`${specs.proof} proof`);
     if (typeof specs.expression_type === "string" && specs.expression_type)
       tokens.push(specs.expression_type);
+
+    const avail = normalizeAvailabilityRarity(specs);
+    if (avail && avail !== "everyday") tokens.push(formatAvailabilityRarity(avail));
+
+    const tier = normalizeCobbTier(specs);
+    if (tier != null) tokens.push(`Tier ${tier}`);
   }
   return tokens.length > 0 ? tokens.join(" · ") : null;
 }

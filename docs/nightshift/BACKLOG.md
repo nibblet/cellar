@@ -56,16 +56,17 @@ Maturity: seed → exploring → planned → ready → parked
 ## Category 2 — New Feature or Integration
 
 ### [IDEA-003] Phase 9 — Maker & Distillery pages
-- **Status:** done
+- **Status:** done (Part A); Part B refinements planned
 - **Category:** new
 - **Seeded:** 2026-05-30
-- **Last Updated:** 2026-05-30
-- **Done:** 2026-05-30
-- **Priority:** P1
-- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-003-maker-pages.md`
+- **Last Updated:** 2026-06-02
+- **Done:** 2026-05-30 (Part A)
+- **Priority:** P2 (Part B)
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-003-maker-pages.md` · Part B: `docs/nightshift/plans/DEVPLAN-IDEA-003-maker-pages-part-b.md`
 - **Summary:** Tappable maker/distillery pages keyed by brand name. Each page shows a Winston blurb (AI-generated, admin-editable), country/region, the club's catalog from that house, and a one-line house-style read derived from aggregated `trait_vector` across the maker's products. Turns dead brand text on product detail into an explorable surface. Fully specced in `planning/nccc-implementation-plan.md` Phase 9.
 - **Night Notes:**
   - 2026-05-30: Seeded + immediately promoted to `planned`. `catalog_hierarchy` migration already landed (20260527000001). Bourbon catalog is well-seeded. Phase 9 plan from spec is detailed; dev plan can lift directly from it. P1 because it's the next major feature in the roadmap.
+  - 2026-06-02: Part A review — core routes shipped; gaps: `country`/`website` never written, `house_style` stale after first visit, Part A manual QA open. Part B dev plan written.
 
 ---
 

@@ -63,6 +63,15 @@ function arg(flag: string): string | null {
   return i >= 0 ? (process.argv[i + 1] ?? null) : null;
 }
 
+function csvArg(flag: string): string[] | null {
+  const value = arg(flag);
+  if (!value) return null;
+  return value
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 async function main() {
   const RUN = process.argv.includes("--run");
   const FORCE = process.argv.includes("--force");
@@ -70,6 +79,8 @@ async function main() {
   const tiers = (arg("--tiers") ?? "1,2").split(",").map((t) => Number.parseInt(t, 10));
   const quality = (arg("--quality") ?? "low") as "low" | "medium" | "high";
   const size = arg("--size") ?? "1024x1024";
+  const includeIds = csvArg("--ids");
+  const excludeIds = new Set(csvArg("--exclude-ids") ?? []);
 
   const supa = adminClient();
   const { data, error } = await supa
@@ -88,6 +99,8 @@ async function main() {
       image_url: r.image_url as string,
     }))
     .filter((b) => tiers.includes(b.tier))
+    .filter((b) => (includeIds ? includeIds.includes(b.id) : true))
+    .filter((b) => !excludeIds.has(b.id))
     .sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name));
 
   mkdirSync(OUT_DIR, { recursive: true });

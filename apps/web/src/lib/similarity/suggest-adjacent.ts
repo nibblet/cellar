@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { composeProductSubtitle } from "@/lib/catalog/product-subtitle";
 import type { ProductType, TraitVector, WheelVector } from "@/lib/wheel";
 import { rollUpTraits } from "@/lib/wheel/traits";
 import { cosineSimilarity } from "./cosine";
@@ -10,6 +11,8 @@ export type AdjacentProduct = {
   similarity: number;
   tier: number | null;
   price_usd: number | null;
+  /** Same facts line as catalog cards (price bucket, availability, tier, …). */
+  subtitle: string | null;
 };
 
 type ProductRow = {
@@ -144,6 +147,7 @@ export async function suggestAdjacentProducts(
       if (!candidateVec) return null;
       const similarity = cosineSimilarity(sourceVec, candidateVec);
       if (similarity < minSimilarity) return null;
+      const specs = (c.specs ?? {}) as Record<string, unknown>;
       return {
         product_id: c.id,
         name: c.name,
@@ -151,6 +155,7 @@ export async function suggestAdjacentProducts(
         similarity,
         tier: readTier(c.specs),
         price_usd: readPriceUsd(c.specs),
+        subtitle: composeProductSubtitle(productType, specs),
       } satisfies ScoredAdjacent;
     })
     .filter((c): c is ScoredAdjacent => c !== null)

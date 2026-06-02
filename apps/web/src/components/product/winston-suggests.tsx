@@ -22,13 +22,6 @@ function productHeadline(name: string, brand: string | null): string {
   return `${brand} ${name}`;
 }
 
-function formatTierPrice(tier: number | null, priceUsd: number | null): string | null {
-  const parts: string[] = [];
-  if (tier != null) parts.push(`Tier ${tier}`);
-  if (priceUsd != null) parts.push(`~$${Math.round(priceUsd)}`);
-  return parts.length > 0 ? parts.join(" · ") : null;
-}
-
 function SuggestionBadge({ kind }: { kind: "try_tonight" | "hunt_next" }) {
   const label = kind === "try_tonight" ? "Try tonight" : "Hunt next";
   return (
@@ -196,7 +189,6 @@ export function WinstonSuggests({
                 </p>
                 <div className="-mx-6 flex gap-3 overflow-x-auto px-6 pb-1 snap-x snap-mandatory">
                   {similarInTier.map((p) => {
-                    const meta = formatTierPrice(p.tier, p.price_usd);
                     return (
                       <Link
                         key={p.product_id}
@@ -210,9 +202,9 @@ export function WinstonSuggests({
                           {p.brand ? (
                             <p className="text-xs text-foreground-muted truncate mt-1">{p.brand}</p>
                           ) : null}
-                          {meta ? (
-                            <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mt-1">
-                              {meta}
+                          {p.subtitle ? (
+                            <p className="text-[10px] text-foreground-muted truncate mt-1">
+                              {p.subtitle}
                             </p>
                           ) : null}
                         </Card>

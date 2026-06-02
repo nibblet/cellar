@@ -1,4 +1,6 @@
-# Dev Plan: [IDEA-003] Phase 9 — Maker & Distillery Pages
+# Dev Plan: [IDEA-003] Phase 9 — Maker & Distillery Pages (Part A)
+
+> **Part B (refinements):** [DEVPLAN-IDEA-003-maker-pages-part-b.md](DEVPLAN-IDEA-003-maker-pages-part-b.md) — structured country/website, fresh `house_style`, admin metadata, manual QA.
 
 ## What This Does
 Tappable maker/distillery pages keyed by brand name. Each page shows: a Winston blurb (AI-generated, admin-editable), country/region, the club's catalog from that house, and a one-line house-style read derived from aggregating `trait_vector` across the maker's products. Brand names on product detail pages become links to these pages.

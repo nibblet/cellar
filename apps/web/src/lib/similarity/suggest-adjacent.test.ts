@@ -63,6 +63,7 @@ describe("applyTierPriceFilter", () => {
       similarity: 0.9,
       tier: 2,
       price_usd: 50,
+      subtitle: null,
     },
     {
       product_id: "b",
@@ -71,6 +72,7 @@ describe("applyTierPriceFilter", () => {
       similarity: 0.85,
       tier: 4,
       price_usd: 200,
+      subtitle: null,
     },
     {
       product_id: "c",
@@ -79,6 +81,7 @@ describe("applyTierPriceFilter", () => {
       similarity: 0.8,
       tier: 2,
       price_usd: 55,
+      subtitle: null,
     },
   ];
 
