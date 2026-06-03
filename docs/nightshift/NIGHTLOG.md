@@ -4,6 +4,73 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-03
+
+### Summary
+- Scanned: 2 commits since last run — FIX-009–014 lint cleanup (`2105dd6`), and
+  availability/tier subtitle + bourbon-shelf CSV revision + scene source review
+  (`3b1acfb`, "updates to tagline of bourbons")
+- Issues: 1 new (FIX-017 — TypeScript build failure from missing subtitle field),
+  2 existing still planned (FIX-015, FIX-016)
+- Ideas: 2 new (IDEA-011 subtitle consistency → immediately planned; IDEA-012 Personal
+  Hunt List → seed); IDEA-006 parked (3-day stale rule); IDEA-007 marked done;
+  IDEA-010 promoted from seed → planned (unblocked by IDEA-007 landing)
+- Plans written: 1 fix plan + 2 devplans (3 total)
+- Lint/build: node_modules not installed; manual code scan. FIX-017 is a confirmed
+  TypeScript type error (missing required property) that would fail `pnpm build`.
+
+### Key Findings
+- **FIX-017: TypeScript build will fail.** Commit `3b1acfb` added `subtitle: string | null`
+  as a required field to `AdjacentProduct` and updated `suggestAdjacentProducts` to compute
+  it. However, `loadReachForNext` in `lib/suggestions/load-product-suggestions.ts` (line
+  108–117) also constructs `ReachForNextPick` (which extends `AdjacentProduct`) manually
+  for the shelf-first path — and that object literal was not updated with the new field.
+  TypeScript strict will reject the missing required property. Fix: import
+  `composeProductSubtitle` and add `subtitle: composeProductSubtitle(source.type, row.specs ?? {})`
+  to the returned object. One-line fix.
+- **IDEA-007 is shipped.** `composeProductSubtitle` now emits "Allocated", "Seasonal",
+  "Lottery", "Tier N" tokens for bourbons. "Everyday" is correctly suppressed (no noise).
+  5 unit tests added. `suggestAdjacentProducts` also passes `subtitle` through, and the
+  "Similar in tier" cards in `WinstonSuggests` render it.
+- **bourbon-shelf.csv comprehensively updated.** Tier and availability values were revised
+  across the full catalog — e.g. 1792 Full Proof moved from tier 1/everyday to tier
+  3/allocated, 1792 Small Batch moved from tier 3/allocated to tier 1/everyday. These
+  now flow through to the UI via the updated subtitle and the seed script. Running
+  `pnpm gen:seed-catalog` will push the revised data to Supabase.
+- **IDEA-010 unblocked.** Now that availability is visible in the subtitle (IDEA-007 done),
+  the availability filter chip is the natural next step. Promoted to planned, devplan written.
+- **Dead component spotted.** `YouMightAlsoLike` in `components/product/you-might-also-like.tsx`
+  is exported from the barrel but never imported anywhere. It was superseded by
+  `WinstonSuggests`. Candidate for deletion (noted in DEVPLAN-IDEA-011).
+- **FIX-015 and FIX-016 still open.** No commits touching `group-validation.ts` or the
+  scene generator. Plans remain ready to execute.
+- **IDEA-006 parked.** Hit 3-day stale rule (seeded 2026-05-31). MCP `get_my_cellar` is
+  a reasonable approximation for the 12-member group.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-017-subtitle-missing-reach-for-next.md` — **do this first**: add `subtitle` to shelf-scored `ReachForNextPick`; unblocks build
+- `docs/nightshift/plans/FIXPLAN-FIX-015-group-validation-identity.md` — 3-line fix: import + two template-string replacements in group-validation.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-016-scene-generator-size-cast.md` — add allowlist for --size/--quality in scene generator
+- `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md` — 10 min: add subtitle to "Reach for next" cards (after FIX-017)
+- `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md` — 1–1.5 hr: availability filter chip in Bourbons browse
+
+### Recommendations
+- **If you have 10 min:** Apply FIX-017 (one-line fix to unblock the build). Then FIX-015
+  (three lines in group-validation.ts). Then FIX-016 (allowlist validation in scene generator).
+  All three are small, safe, and sequential.
+- **If you have 30 min:** Apply FIX-017 + FIX-015 + FIX-016, then immediately add IDEA-011
+  (10-min subtitle consistency in "Reach for next" cards). Closes out all outstanding fixes
+  and gets visual consistency across the WinstonSuggests scroll sections.
+- **If you have 2 hours:** Implement DEVPLAN-IDEA-010 (availability filter chip). Members
+  browsing Bourbons can filter to "Allocated" or "Lottery" in one tap. High payoff, zero AI
+  cost, fully specced.
+- **Action needed:** Run `pnpm gen:seed-catalog` (or `supabase db push` after confirming
+  the revised CSV tiers/availability are correct) to push the bourbon-shelf.csv revisions
+  to the live Supabase instance. The CSV changed significantly — 1792 Full Proof is now
+  tier 3/allocated, 1792 Small Batch is tier 1/everyday, and others shifted.
+
+---
+
 ## Run: 2026-06-02
 
 ### Summary

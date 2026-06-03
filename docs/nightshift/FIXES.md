@@ -175,3 +175,13 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-016-scene-generator-size-cast.md`
 - **File:** `apps/web/scripts/media/generate-catalog-scenes.ts` lines 72 and 129
 - **Summary:** The `--size` CLI flag value is assigned as `string` and cast to `"1024x1024"` at the OpenAI API call site (`size: size as "1024x1024"`). An invalid value like `--size 512x512` passes TypeScript silently and only fails at the API. Fix: add an allowlist check for valid gpt-image-1 sizes (`1024x1024`, `1536x1024`, `1024x1536`, `auto`) and the same for `--quality`. No production risk (script-only) but prevents confusing runtime errors.
+
+---
+
+## FIX-017 — `subtitle` missing from shelf-scored ReachForNextPick (TypeScript build failure)
+
+- **Status:** found
+- **Found:** 2026-06-03
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-017-subtitle-missing-reach-for-next.md`
+- **File:** `apps/web/src/lib/suggestions/load-product-suggestions.ts` lines 108–117
+- **Summary:** Commit `3b1acfb` added `subtitle: string | null` as a required field to `AdjacentProduct` (in `suggest-adjacent.ts`). `suggestAdjacentProducts` now computes it. However, `loadReachForNext` also constructs `ReachForNextPick` objects manually for the shelf-first path, and those object literals were not updated. The missing required field will cause `pnpm build` to fail with a TypeScript type error. Fix: import `composeProductSubtitle` in `load-product-suggestions.ts` and add `subtitle: composeProductSubtitle(source.type, row.specs ?? {})` to the shelf-scored object.

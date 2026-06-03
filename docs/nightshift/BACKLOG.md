@@ -86,10 +86,10 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-006] MCP `get_member_tastings` tool
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-05-31
-- **Last Updated:** 2026-06-02
+- **Last Updated:** 2026-06-03
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** Add a `get_member_tastings` tool to the MCP server so members can ask Claude "what have I tried?" and get a paginated history of their tastings with product names, recommend flags, chips, and notes. Currently `get_my_cellar` shows shelf state (have/want/tried/loved counts) and `get_club_feed` shows recent club activity, but there's no way to query one member's full personal history.
@@ -98,33 +98,37 @@ Maturity: seed → exploring → planned → ready → parked
   - 2026-05-31: Seeded. The MCP server now has 9 tools; this would be the 10th. `loadFeed` already accepts a `userId` filter. Low effort — maybe 1 hour — but lower priority than makers browse since the cellar shelf gives a reasonable approximation.
   - 2026-06-01: Reviewed. 1 day old. No commits. Holding at seed — not yet stale.
   - 2026-06-02: 2 days old. No commits. Approaching 3-day stale threshold (triggers tomorrow 2026-06-03 if no action). Holding at seed tonight.
+  - 2026-06-03: 3-day stale rule triggered. No commits. Demoting to `parked`. The MCP cellar tool provides reasonable approximation; this is a nice-to-have for a private 12-person app.
 
 ---
 
 ### [IDEA-007] Surface availability_rarity + cobbTier on catalog cards and product detail
-- **Status:** planned
+- **Status:** done
 - **Category:** enhance
 - **Seeded:** 2026-06-01
-- **Last Updated:** 2026-06-02
+- **Last Updated:** 2026-06-03
+- **Done:** 2026-06-02 (commit `3b1acfb`)
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-007-availability-tier-on-catalog-cards.md`
 - **Summary:** The bourbon CSV seed now populates `specs.availability_rarity` (allocated/lottery/seasonal/…) and `specs.tier` (1–5). These exist in the DB but are invisible in the UI — neither the catalog card subtitle nor the product detail header show them. Extending `composeProductSubtitle` to emit "Allocated" / "Tier N" tokens makes the catalog self-documenting for members browsing or hunting. Note: `FactsStrip` on product detail already shows `availabilityLabel`; the gap is the browse-card subtitle only.
 - **Night Notes:**
   - 2026-06-01: Seeded and immediately promoted to `planned`. Zero AI cost, zero DB changes, zero migrations. Data is already there; it just needs to flow through `composeProductSubtitle`. ~1 hour of work. High signal: members will finally be able to see which bottles are Allocated without opening each product detail.
   - 2026-06-02: Reviewed. Not yet implemented (no commits touching composeProductSubtitle). Holding at planned. Still 1 day old; no stale risk.
+  - 2026-06-03: Shipped in commit `3b1acfb`. `composeProductSubtitle` now calls `normalizeAvailabilityRarity` + `normalizeCobbTier`; "everyday" is omitted (no noise), non-everyday rarity and tier are emitted. 5 unit tests added. `suggestAdjacentProducts` also updated to pass `subtitle` through to `AdjacentProduct`.
 
 ---
 
 ### [IDEA-010] Availability filter chip in bourbon catalog browse
-- **Status:** seed
+- **Status:** planned
 - **Category:** new
 - **Seeded:** 2026-06-02
-- **Last Updated:** 2026-06-02
+- **Last Updated:** 2026-06-03
 - **Priority:** P2
-- **Plan:** (not yet written)
-- **Summary:** The Bourbons catalog tab has filter chips for proof band, style, and age, but no way to filter by `availability_rarity` (everyday / seasonal / allocated / lottery). Now that these values are in the DB for most catalog bourbons, adding an "Availability" filter chip would let Paul and other members immediately surface "all the allocated bottles I can't get" vs "all the everyday pours." Zero AI cost; follows the same in-memory filter pattern already used by the other bourbon filters in `loadCatalogBrowse`. Pairs with IDEA-007 (surface the same data in the subtitle).
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md`
+- **Summary:** The Bourbons catalog tab has filter chips for proof band, style, and age, but no way to filter by `availability_rarity` (everyday / seasonal / allocated / lottery). Now that these values are in the DB for most catalog bourbons, adding an "Availability" filter chip would let Paul and other members immediately surface "all the allocated bottles I can't get" vs "all the everyday pours." Zero AI cost; follows the same in-memory filter pattern already used by the other bourbon filters in `loadCatalogBrowse`.
 - **Night Notes:**
   - 2026-06-02: Seeded. Three touch points: add `availability` field to `CatalogFilters` type, add a matching `passesFilters` branch in `catalog-queries.ts`, add a chip to `catalog-filter-controls.tsx`. ~1 hour. Blocked until IDEA-007 lands (availability data visible in subtitle = prerequisite for filter to feel discoverable).
+  - 2026-06-03: IDEA-007 shipped — unblocked. Promoted to `planned`. Dev plan written.
 
 ---
 
@@ -139,6 +143,32 @@ Maturity: seed → exploring → planned → ready → parked
 - **Night Notes:**
   - 2026-06-01: Seeded. Small scope — needs `CellarToggle` to accept a `availabilityRarity` prop and render a Voice line when `want` flips to true for an allocated bottle. Lower priority than IDEA-007 (which surfaces the same data more broadly).
   - 2026-06-02: Reviewed. 1 day old. No commits. Holding at seed.
+
+---
+
+### [IDEA-011] Display subtitle in "Reach for next" cards (WinstonSuggests)
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-03
+- **Last Updated:** 2026-06-03
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md`
+- **Summary:** "Similar in tier" cards in `WinstonSuggests` already render `p.subtitle` (the availability/tier facts strip). "Reach for next" cards do not, creating a visual inconsistency. After FIX-017 adds `subtitle` to shelf-scored items, this 10-minute JSX addition makes the two adjacent scroll sections consistent. Also notes the dead `YouMightAlsoLike` component (exported but never imported — candidate for deletion).
+- **Night Notes:**
+  - 2026-06-03: Seeded and immediately promoted to `planned`. Directly depends on FIX-017. Dev plan written. Small scope, high visual consistency payoff.
+
+---
+
+### [IDEA-012] Personal Hunt List on Cellar page
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-03
+- **Last Updated:** 2026-06-03
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** A dedicated "Hunt List" section on the Cellar page (or You hub) that surfaces the member's Want-shelf items filtered to `allocated`, `lottery`, and `secondary-only` availability — the bottles that require active hunting rather than a store visit. Members often "want" unicorn bottles alongside everyday pours; mixing them in the Want list buries the hunts. Zero AI cost. Built on existing `member_saves.want` + `specs.availability_rarity` (now populated for most catalog bourbons). Grouped by difficulty: Lottery → Allocated → Secondary Only.
+- **Night Notes:**
+  - 2026-06-03: Seeded. Becomes meaningful only once most Want-shelf items have `availability_rarity` populated (currently catalog bourbons are covered; cigar wants are not). Two-step: (1) filter the Want list server-side by availability, (2) render a separate "Hunt List" section above the full Want shelf. Winston voice intro ("These are the ones worth hunting."). ~1.5–2 hours.
 
 ---
 

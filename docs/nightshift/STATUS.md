@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-02 (Nightshift run)
+Last updated: 2026-06-03 (Nightshift run)
 
 ---
 
@@ -25,13 +25,27 @@ Since 2026-06-01: a catalog scene-generator script (`scripts/media/generate-cata
 `pnpm gen:catalog-scenes`) re-stages each catalog bourbon's photo into one of 8 curated
 scenes via gpt-image-1 image-edit (stable hash assignment per product ID). Dry-run by
 default; `--run` generates to `scripts/media/out/`. Scene upload back to Supabase is not
-yet wired (IDEA-009, planned).
+yet wired (IDEA-009, planned). A `catalog-scene-source-review.md` was added to
+`scripts/media/` with Paul's allow/borderline/skip review for Tier 1 images.
+
+Since 2026-06-02 (commit `3b1acfb`): `composeProductSubtitle` now emits availability
+rarity (non-everyday only) and Cobb tier for bourbons. `suggestAdjacentProducts` computes
+and returns `subtitle: string | null` on each `AdjacentProduct` result. `WinstonSuggests`
+"Similar in tier" cards render the subtitle. `bourbon-shelf.csv` was comprehensively
+updated with revised tier/availability/price_usd values. `AGENTS.md` added at repo root
+(mirrors `CLAUDE.md` conventions for Codex/other agents). 5 new tests added for
+`composeProductSubtitle`.
+
+**Known open bug (FIX-017):** `loadReachForNext` in `lib/suggestions/load-product-suggestions.ts`
+constructs shelf-scored `ReachForNextPick` objects without the new `subtitle` field —
+TypeScript build will fail. Plan written; fix is a one-line addition of
+`subtitle: composeProductSubtitle(source.type, row.specs ?? {})`.
 
 **Discrepancy note:** `docs/nightshift/plans/DEVPLAN-IDEA-006-pair-me-ux.md` exists from
 a pre-nightshift session and describes the Pair-Me UX / WinstonSuggests feature (now
 fully shipped as of 2026-06-01). The BACKLOG.md has IDEA-006 tracked as "MCP member
-tastings tool" (seeded 2026-05-31). The plan file is orphaned documentation of shipped
-work; IDEA-006 in the living backlog refers to the MCP tool idea.
+tastings tool" (seeded 2026-05-31, now parked). The plan file is orphaned documentation
+of shipped work; IDEA-006 in the living backlog refers to the MCP tool idea.
 
 ---
 
@@ -267,4 +281,6 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Personal stats (Phase 8.4 in plan — not in commits)
 - `/settings/usage` admin dashboard for cost tracking
 - MCP `get_member_tastings` tool (IDEA-006, seed)
-- `availability_rarity` + `tier` surfaced on catalog card/product subtitle (IDEA-007, planned)
+- Availability filter chip in bourbon catalog browse (IDEA-010, planned — unblocked)
+- "Reach for next" subtitle display in WinstonSuggests (IDEA-011, planned — needs FIX-017 first)
+- Personal Hunt List on Cellar/You hub (IDEA-012, seed)
