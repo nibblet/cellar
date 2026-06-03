@@ -77,8 +77,18 @@ async function main() {
   const FORCE = process.argv.includes("--force");
   const limit = arg("--limit") ? Number.parseInt(arg("--limit") as string, 10) : Infinity;
   const tiers = (arg("--tiers") ?? "1,2").split(",").map((t) => Number.parseInt(t, 10));
-  const quality = (arg("--quality") ?? "low") as "low" | "medium" | "high";
-  const size = arg("--size") ?? "1024x1024";
+  const VALID_QUALITIES = ["low", "medium", "high"] as const;
+  const VALID_SIZES = ["1024x1024", "1536x1024", "1024x1536", "auto"] as const;
+  const rawQuality = arg("--quality") ?? "low";
+  const rawSize = arg("--size") ?? "1024x1024";
+  if (!VALID_QUALITIES.includes(rawQuality as never)) {
+    throw new Error(`Unknown --quality: ${rawQuality}. Valid: ${VALID_QUALITIES.join(", ")}`);
+  }
+  if (!VALID_SIZES.includes(rawSize as never)) {
+    throw new Error(`Unknown --size: ${rawSize}. Valid: ${VALID_SIZES.join(", ")}`);
+  }
+  const quality = rawQuality as (typeof VALID_QUALITIES)[number];
+  const size = rawSize as (typeof VALID_SIZES)[number];
   const includeIds = csvArg("--ids");
   const excludeIds = new Set(csvArg("--exclude-ids") ?? []);
 
@@ -139,7 +149,7 @@ async function main() {
         model: "gpt-image-1",
         image: ref,
         prompt: BASE_PROMPT + scene.text,
-        size: size as "1024x1024",
+        size,
         quality,
         input_fidelity: "high",
         output_format: "jpeg",

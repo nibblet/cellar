@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { formatMemberName } from "@/lib/identity";
 
 /**
  * A pairing counts as "club-validated" when at least one member has:
@@ -73,7 +74,7 @@ async function checkEventValidation(
     return {
       kind: "event",
       user_id: t.user_id,
-      display_name: `${t.user.name_first} ${t.user.name_last_initial}`,
+      display_name: formatMemberName(t.user),
       event_id: t.event_id,
       event_name: t.event.name,
       event_date: t.event.date,
@@ -134,7 +135,7 @@ async function checkPairingSessionValidation(
     return {
       kind: "pairing",
       user_id: session.user_id,
-      display_name: `${session.user.name_first} ${session.user.name_last_initial}`,
+      display_name: formatMemberName(session.user),
       validated_at: session.created_at,
     };
   }

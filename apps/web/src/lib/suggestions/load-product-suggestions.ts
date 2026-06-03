@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { composeProductSubtitle } from "@/lib/catalog/product-subtitle";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import {
   loadOrComputeTopPairings,
@@ -112,6 +113,7 @@ async function loadReachForNext(
           similarity,
           tier,
           price_usd,
+          subtitle: composeProductSubtitle(source.type, row.specs ?? {}),
           onShelf: true,
           source: "cellar" as const,
         };
