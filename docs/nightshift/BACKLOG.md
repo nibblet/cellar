@@ -133,29 +133,31 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-008] Winston hunt acknowledgment for allocated Want-shelf additions
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-01
-- **Last Updated:** 2026-06-02
+- **Last Updated:** 2026-06-04
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** When a member marks an `availability_rarity: "allocated"` or `"lottery"` bottle as Want, show a small Winston `<Voice />` line in the cellar toggle UI ("A wise wish — the Pappy hunt is real."). This closes the emotional loop on the save action, acknowledging the hunting reality without blocking the UX. Zero AI cost: triggered by the `availability_rarity` field value already available in the client state.
 - **Night Notes:**
   - 2026-06-01: Seeded. Small scope — needs `CellarToggle` to accept a `availabilityRarity` prop and render a Voice line when `want` flips to true for an allocated bottle. Lower priority than IDEA-007 (which surfaces the same data more broadly).
   - 2026-06-02: Reviewed. 1 day old. No commits. Holding at seed.
+  - 2026-06-04: 3-day stale rule triggered (seeded 2026-06-01). No commits. Demoting to `parked`. IDEA-012 (Personal Hunt List) covers the hunting-awareness angle more holistically.
 
 ---
 
 ### [IDEA-011] Display subtitle in "Reach for next" cards (WinstonSuggests)
-- **Status:** planned
+- **Status:** ready
 - **Category:** enhance
 - **Seeded:** 2026-06-03
-- **Last Updated:** 2026-06-03
+- **Last Updated:** 2026-06-04
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md`
-- **Summary:** "Similar in tier" cards in `WinstonSuggests` already render `p.subtitle` (the availability/tier facts strip). "Reach for next" cards do not, creating a visual inconsistency. After FIX-017 adds `subtitle` to shelf-scored items, this 10-minute JSX addition makes the two adjacent scroll sections consistent. Also notes the dead `YouMightAlsoLike` component (exported but never imported — candidate for deletion).
+- **Summary:** "Similar in tier" cards in `WinstonSuggests` already render `p.subtitle` (the availability/tier facts strip). "Reach for next" cards do not, creating a visual inconsistency. FIX-017 landed (commit `b1ac846`) — `subtitle` is now computed for shelf-scored items. This 10-minute JSX addition makes the two adjacent scroll sections consistent. Also the dead `YouMightAlsoLike` component (tracked as FIX-020) should be deleted at the same time.
 - **Night Notes:**
   - 2026-06-03: Seeded and immediately promoted to `planned`. Directly depends on FIX-017. Dev plan written. Small scope, high visual consistency payoff.
+  - 2026-06-04: FIX-017 landed in commit `b1ac846`. Dependency resolved. Promoting to `ready` — unblocked, plan exists, estimated 10 minutes.
 
 ---
 
@@ -169,6 +171,32 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** A dedicated "Hunt List" section on the Cellar page (or You hub) that surfaces the member's Want-shelf items filtered to `allocated`, `lottery`, and `secondary-only` availability — the bottles that require active hunting rather than a store visit. Members often "want" unicorn bottles alongside everyday pours; mixing them in the Want list buries the hunts. Zero AI cost. Built on existing `member_saves.want` + `specs.availability_rarity` (now populated for most catalog bourbons). Grouped by difficulty: Lottery → Allocated → Secondary Only.
 - **Night Notes:**
   - 2026-06-03: Seeded. Becomes meaningful only once most Want-shelf items have `availability_rarity` populated (currently catalog bourbons are covered; cigar wants are not). Two-step: (1) filter the Want list server-side by availability, (2) render a separate "Hunt List" section above the full Want shelf. Winston voice intro ("These are the ones worth hunting."). ~1.5–2 hours.
+
+---
+
+### [IDEA-013] Club recommendation count badge on catalog cards
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-04
+- **Last Updated:** 2026-06-04
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-013-catalog-rec-count-badge.md`
+- **Summary:** `loadCatalogBrowse` already computes `rec_count` per product (it drives the "Recommended" sort order) but strips it before returning `CatalogEntry`. Exposing it and rendering a "N club recs" label below the subtitle on catalog cards gives members a quality signal when browsing — especially useful when filtering by availability or style. Zero AI cost. Threshold: show only for 2+ recs to avoid noise.
+- **Night Notes:**
+  - 2026-06-04: Seeded and immediately promoted to `planned`. Data is already computed — just not threaded through to the UI. 45 minutes, no migrations. Dev plan written.
+
+---
+
+### [IDEA-014] Meetup event day banner on the feed
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-04
+- **Last Updated:** 2026-06-04
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** When a meetup event in the `events` table has `date` matching today, show a Winston `<Voice />` banner at the top of the feed's "For You" tab linking to the pairing capture page. The club meets in-person regularly; this feeds the feedback loop by surfacing "tonight is a meetup" in the app members already have open. Zero AI cost (text template); requires one extra Supabase query for today's events on the feed page.
+- **Night Notes:**
+  - 2026-06-04: Seeded. The `events` table and `event_id` on tastings already exist. The feed page is a server component — a single `.eq("date", todayKey())` query costs ~5ms. This also sets up for IDEA-015 (event attendance capture). P2 because it's the kind of detail that makes the club feel alive.
 
 ---
 

@@ -160,8 +160,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-015 — Identity invariant in group-validation.ts (raw template string for display_name)
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-02
+- **Fixed:** 2026-06-03 (commit `b1ac846`)
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-015-group-validation-identity.md`
 - **Files:** `apps/web/src/lib/pairing/group-validation.ts` lines 76 and 137
 - **Summary:** `checkEventValidation` (line 76) and `checkPairingSessionValidation` (line 137) both construct `display_name` via `` `${t.user.name_first} ${t.user.name_last_initial}` `` instead of `formatMemberName(user)`. This is the same pattern fixed in FIX-001. The `display_name` field is shown in the pairing detail UI for club-validated pairings. Bypasses the identity formatter, missing uppercase normalization and the two-Paul disambiguation path.
@@ -170,8 +171,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-016 — Scene generator --size flag silenced by TypeScript cast
 
-- **Status:** planned
+- **Status:** done
 - **Found:** 2026-06-02
+- **Fixed:** 2026-06-03 (commit `b1ac846`)
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-016-scene-generator-size-cast.md`
 - **File:** `apps/web/scripts/media/generate-catalog-scenes.ts` lines 72 and 129
 - **Summary:** The `--size` CLI flag value is assigned as `string` and cast to `"1024x1024"` at the OpenAI API call site (`size: size as "1024x1024"`). An invalid value like `--size 512x512` passes TypeScript silently and only fails at the API. Fix: add an allowlist check for valid gpt-image-1 sizes (`1024x1024`, `1536x1024`, `1024x1536`, `auto`) and the same for `--quality`. No production risk (script-only) but prevents confusing runtime errors.
@@ -180,8 +182,46 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-017 — `subtitle` missing from shelf-scored ReachForNextPick (TypeScript build failure)
 
-- **Status:** found
+- **Status:** done
 - **Found:** 2026-06-03
+- **Fixed:** 2026-06-03 (commit `b1ac846`)
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-017-subtitle-missing-reach-for-next.md`
 - **File:** `apps/web/src/lib/suggestions/load-product-suggestions.ts` lines 108–117
 - **Summary:** Commit `3b1acfb` added `subtitle: string | null` as a required field to `AdjacentProduct` (in `suggest-adjacent.ts`). `suggestAdjacentProducts` now computes it. However, `loadReachForNext` also constructs `ReachForNextPick` objects manually for the shelf-first path, and those object literals were not updated. The missing required field will cause `pnpm build` to fail with a TypeScript type error. Fix: import `composeProductSubtitle` in `load-product-suggestions.ts` and add `subtitle: composeProductSubtitle(source.type, row.specs ?? {})` to the shelf-scored object.
+
+---
+
+## FIX-018 — Missing admin auth in roadmap suggestion management actions
+
+- **Status:** planned
+- **Found:** 2026-06-04
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md`
+- **Files:** `apps/web/src/app/(app)/(shell)/roadmap/actions.ts` lines 54–87
+- **Summary:** `updateSuggestionStatus` and `deleteSuggestion` in `roadmap/actions.ts` lack any app-layer auth or admin-role check. Any authenticated member can call these server actions; the DB will reject non-admins via RLS, but the caller receives a raw Postgres error instead of a friendly "Not authorized" message. Defense-in-depth pattern missing — same class as FIX-002 (invites, now resolved). Fix: add a `requireAdminSupabase()` helper (same pattern as `admin/catalog/actions.ts`) and call it at the top of both functions.
+
+---
+
+## FIX-019 — Moss color used for success/feedback states — design system violation
+
+- **Status:** planned
+- **Found:** 2026-06-04
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md`
+- **Files:**
+  - `apps/web/src/app/(app)/(shell)/products/[id]/page.tsx` line 196 (member-visible: "Club staple" label)
+  - `apps/web/src/components/product/photo-manager.tsx` line 151 (photo upload ok feedback)
+  - `apps/web/src/app/(app)/(shell)/products/[id]/edit/edit-form.tsx` line 225 (enrichment done)
+  - `apps/web/src/app/(app)/(shell)/makers/[slug]/maker-admin-actions.tsx` line 72 (blurb regenerated)
+  - `apps/web/src/app/(app)/(shell)/admin/meetup/meetup-form.tsx` line 72 (meetup saved)
+- **Summary:** Design system reserves `text-moss-*` exclusively for "club has tested this pairing" validation signals. Five places use it for generic success/ok states. The most impactful is the "Club staple" label on product detail — it uses the same visual language as club-validated pairing indicators, misleadingly implying club endorsement. Fix: swap all five to `text-foreground-muted` or `text-foreground`.
+
+---
+
+## FIX-020 — Dead `YouMightAlsoLike` component — exported but never imported
+
+- **Status:** planned
+- **Found:** 2026-06-04
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md`
+- **Files:**
+  - `apps/web/src/components/product/you-might-also-like.tsx` (file to delete)
+  - `apps/web/src/components/product/index.ts` line 15 (re-export to remove)
+- **Summary:** `YouMightAlsoLike` is exported from the product component barrel but never imported in any page or component. It was superseded by `WinstonSuggests` (shipped 2026-06-01). Safe to delete — zero callers confirmed by grep. Biome `noUnusedExports` would flag this if the barrel itself were an entry point.

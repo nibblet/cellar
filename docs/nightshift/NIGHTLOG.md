@@ -4,6 +4,39 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-04
+
+### Summary
+- Scanned: 1 code commit since last run — `b1ac846` ("fixes and landing subtitle line updates"), applied FIX-015, FIX-016, FIX-017
+- Issues: 3 new (FIX-018 admin auth in roadmap, FIX-019 moss color violations, FIX-020 dead component); FIX-015 + FIX-016 + FIX-017 marked done
+- Ideas: 2 new (IDEA-013 rec count badge → `planned`; IDEA-014 meetup day banner → `seed`); IDEA-008 parked (3-day stale rule); IDEA-011 promoted `planned` → `ready` (FIX-017 dependency landed)
+- Plans written: 3 fix plans + 1 devplan (4 total)
+- Lint/build: node_modules not installed; manual code scan. No new TypeScript type errors found after FIX-017 landed.
+
+### Key Findings
+- **FIX-015, FIX-016, FIX-017 all resolved** in commit `b1ac846`. Group-validation identity invariant fixed, scene generator now validates CLI flags, ReachForNextPick subtitle unblocked. The build should now be clean.
+- **IDEA-011 is unblocked and ready** — the only remaining work is adding `{p.subtitle && ...}` to the "Reach for next" card JSX in `winston-suggests.tsx` (mirror of what's already done for "Similar in tier" cards). 10-minute change.
+- **FIX-018 (admin auth in roadmap actions)** — `updateSuggestionStatus` and `deleteSuggestion` in `roadmap/actions.ts` have no app-layer auth check. RLS does protect the DB, but non-admins get a raw Postgres error instead of "Not authorized." Same class as FIX-002. Medium severity.
+- **FIX-019 (moss color violations)** — five places use `text-moss-500` for generic success/feedback states. Most impactful is "Club staple" on product detail (member-visible), which shares visual language with moss-colored pairing validation — implying club endorsement it doesn't represent. Four-word fix per site.
+- **FIX-020 (dead YouMightAlsoLike)** — `YouMightAlsoLike` component is exported from the barrel but zero callers remain. Superseded by `WinstonSuggests`. Safe to delete.
+- **IDEA-013 seeded and planned** — `loadCatalogBrowse` already computes `rec_count` per product for sorting but strips it before returning `CatalogEntry`. Expose it, render "N club recs" on cards with 2+ recs. 45 minutes, zero AI cost, zero migrations.
+- **IDEA-008 parked** — 3-day stale rule triggered (seeded 2026-06-01). IDEA-012 (Personal Hunt List) covers the hunting-awareness angle more holistically.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md` — **10 min**: add `p.subtitle` rendering to "Reach for next" horizontal scroll cards in `winston-suggests.tsx`
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete `you-might-also-like.tsx` and remove barrel export (pair with IDEA-011)
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: add `requireAdminSupabase()` to two functions in `roadmap/actions.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: swap `text-moss-500` → `text-foreground-muted` in 5 files
+- `docs/nightshift/plans/DEVPLAN-IDEA-013-catalog-rec-count-badge.md` — **45 min**: expose `rec_count` in `CatalogEntry` + render "N club recs" badge on cards
+- `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md` — **1–1.5 hr**: availability filter chip in Bourbons browse (carried from last night, still unblocked)
+
+### Recommendations
+- **If you have 15 min:** Apply IDEA-011 (10 min) + FIX-020 (5 min) back-to-back — they touch adjacent lines in the same component area. The "Reach for next" cards will then show subtitles, and the dead component will be gone.
+- **If you have 30 min:** Also apply FIX-018 (admin auth, 10 min) + FIX-019 (moss color, 10 min). All four are safe, self-contained, and sequential.
+- **If you have 2 hours:** Implement DEVPLAN-IDEA-013 (rec count badge, 45 min) + DEVPLAN-IDEA-010 (availability filter chip, 1–1.5 hr). Members browsing the Bourbons tab will be able to both see "3 club recs" on popular bottles and filter to "Allocated" in one tap.
+
+---
+
 ## Run: 2026-06-03
 
 ### Summary

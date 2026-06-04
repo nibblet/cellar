@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-03 (Nightshift run)
+Last updated: 2026-06-04 (Nightshift run)
 
 ---
 
@@ -36,10 +36,11 @@ updated with revised tier/availability/price_usd values. `AGENTS.md` added at re
 (mirrors `CLAUDE.md` conventions for Codex/other agents). 5 new tests added for
 `composeProductSubtitle`.
 
-**Known open bug (FIX-017):** `loadReachForNext` in `lib/suggestions/load-product-suggestions.ts`
-constructs shelf-scored `ReachForNextPick` objects without the new `subtitle` field —
-TypeScript build will fail. Plan written; fix is a one-line addition of
-`subtitle: composeProductSubtitle(source.type, row.specs ?? {})`.
+Since 2026-06-03 (commit `b1ac846`): FIX-015, FIX-016, and FIX-017 were all applied.
+`group-validation.ts` now uses `formatMemberName()` for both `display_name` fields.
+Scene generator validates `--size`/`--quality` against allowlists before passing to the API.
+`loadReachForNext` now computes `subtitle` via `composeProductSubtitle` on shelf-scored objects,
+unblocking the TypeScript build and unlocking IDEA-011 (subtitle in Reach for Next cards).
 
 **Discrepancy note:** `docs/nightshift/plans/DEVPLAN-IDEA-006-pair-me-ux.md` exists from
 a pre-nightshift session and describes the Pair-Me UX / WinstonSuggests feature (now
@@ -281,6 +282,11 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Personal stats (Phase 8.4 in plan — not in commits)
 - `/settings/usage` admin dashboard for cost tracking
 - MCP `get_member_tastings` tool (IDEA-006, seed)
-- Availability filter chip in bourbon catalog browse (IDEA-010, planned — unblocked)
-- "Reach for next" subtitle display in WinstonSuggests (IDEA-011, planned — needs FIX-017 first)
+- Availability filter chip in bourbon catalog browse (IDEA-010, planned — fully unblocked)
+- "Reach for next" subtitle display in WinstonSuggests (IDEA-011, **ready** — FIX-017 landed, 10 min)
 - Personal Hunt List on Cellar/You hub (IDEA-012, seed)
+- Club recommendation count badge on catalog cards (IDEA-013, planned)
+- Meetup event day banner on feed (IDEA-014, seed)
+- `YouMightAlsoLike` dead component cleanup (FIX-020, planned)
+- Moss color in success states (FIX-019, planned — 5 files, all small swaps)
+- Admin auth in roadmap suggestion actions (FIX-018, planned — same pattern as FIX-002)
