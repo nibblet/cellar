@@ -225,3 +225,27 @@ Format: FIX-XXX | Title | Status | Plan
   - `apps/web/src/components/product/you-might-also-like.tsx` (file to delete)
   - `apps/web/src/components/product/index.ts` line 15 (re-export to remove)
 - **Summary:** `YouMightAlsoLike` is exported from the product component barrel but never imported in any page or component. It was superseded by `WinstonSuggests` (shipped 2026-06-01). Safe to delete — zero callers confirmed by grep. Biome `noUnusedExports` would flag this if the barrel itself were an entry point.
+
+---
+
+## FIX-021 — Storage leak on DB insert failure in product-photo admin route
+
+- **Status:** planned
+- **Found:** 2026-06-05
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md`
+- **File:** `apps/web/src/app/api/product-photo/route.ts` lines 109–124
+- **Summary:** In the `POST` handler's `target=member` path, the storage upload succeeds (line 109–114) but the subsequent `product_images` DB insert can fail. When it does, the handler returns a 500 without cleaning up the uploaded storage object. Same class as FIX-003 (capture action, now resolved). Fix: add `void admin.storage.from(PHOTOS_BUCKET).remove([storagePath])` before the 500 return when `insertErr` is set.
+
+---
+
+## FIX-022 — Moss color in settings form success states (additional violations)
+
+- **Status:** planned
+- **Found:** 2026-06-05
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md`
+- **Files:**
+  - `apps/web/src/app/(app)/(shell)/you/settings/avatar-uploader.tsx` line 50
+  - `apps/web/src/app/(app)/(shell)/you/settings/display-name-form.tsx` line 48
+  - `apps/web/src/app/(app)/(shell)/settings/preferences-form.tsx` line 116
+  - `apps/web/src/app/(app)/(shell)/roadmap/suggestion-form.tsx` line 69
+- **Summary:** Four more member-facing forms use `text-moss-600` as generic success feedback (avatar saved, name saved, preferences saved, suggestion sent). Same design system violation as FIX-019 (which covers the 5 most impactful sites). Fix: swap all four to `text-foreground-muted`. Note: `admin/invites/page.tsx` (redeemed invite) and `admin/suggestions/suggestion-row.tsx` (done status) also use moss — tracked as acceptable admin-internal use pending Paul's decision.

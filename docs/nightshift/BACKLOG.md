@@ -162,15 +162,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-012] Personal Hunt List on Cellar page
-- **Status:** seed
+- **Status:** exploring
 - **Category:** new
 - **Seeded:** 2026-06-03
-- **Last Updated:** 2026-06-03
+- **Last Updated:** 2026-06-05
 - **Priority:** P2
 - **Plan:** (not yet written)
 - **Summary:** A dedicated "Hunt List" section on the Cellar page (or You hub) that surfaces the member's Want-shelf items filtered to `allocated`, `lottery`, and `secondary-only` availability — the bottles that require active hunting rather than a store visit. Members often "want" unicorn bottles alongside everyday pours; mixing them in the Want list buries the hunts. Zero AI cost. Built on existing `member_saves.want` + `specs.availability_rarity` (now populated for most catalog bourbons). Grouped by difficulty: Lottery → Allocated → Secondary Only.
 - **Night Notes:**
   - 2026-06-03: Seeded. Becomes meaningful only once most Want-shelf items have `availability_rarity` populated (currently catalog bourbons are covered; cigar wants are not). Two-step: (1) filter the Want list server-side by availability, (2) render a separate "Hunt List" section above the full Want shelf. Winston voice intro ("These are the ones worth hunting."). ~1.5–2 hours.
+  - 2026-06-05: Verified cellar-section.tsx loads the Want shelf but does NOT filter by availability_rarity. The lib/cellar/ code has zero usage of `availability_rarity`. The data path is clear: `loadCellarProducts(supabase, memberId, "want")` → fetch `specs` join → filter where `specs.availability_rarity IN (allocated, lottery, secondary-only)`. Promoting to `exploring`. Estimate: 1.5 hours. Blocked by no hard dependency but most meaningful after IDEA-010 (availability filter chip) lands to set member expectations about availability tiers.
 
 ---
 
@@ -188,15 +189,42 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-014] Meetup event day banner on the feed
-- **Status:** seed
+- **Status:** planned
 - **Category:** new
 - **Seeded:** 2026-06-04
-- **Last Updated:** 2026-06-04
+- **Last Updated:** 2026-06-05
 - **Priority:** P2
-- **Plan:** (not yet written)
-- **Summary:** When a meetup event in the `events` table has `date` matching today, show a Winston `<Voice />` banner at the top of the feed's "For You" tab linking to the pairing capture page. The club meets in-person regularly; this feeds the feedback loop by surfacing "tonight is a meetup" in the app members already have open. Zero AI cost (text template); requires one extra Supabase query for today's events on the feed page.
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-014-meetup-tonight-banner.md`
+- **Summary:** When a meetup event in the `events` table has `date` matching today, show a Winston `<Voice />` banner at the top of the feed's "For You" tab linking to the pairing capture page. The club meets in-person regularly; this feeds the feedback loop by surfacing "tonight is a meetup" in the app members already have open. Zero AI cost (text template); the `events` query already runs in `FeedList` — just needs a `isTonightMeetup` boolean derived from `upcoming.date === today`.
 - **Night Notes:**
-  - 2026-06-04: Seeded. The `events` table and `event_id` on tastings already exist. The feed page is a server component — a single `.eq("date", todayKey())` query costs ~5ms. This also sets up for IDEA-015 (event attendance capture). P2 because it's the kind of detail that makes the club feel alive.
+  - 2026-06-04: Seeded. The `events` table and `event_id` on tastings already exist. The feed page is a server component — a single `.eq("date", todayKey())` query costs ~5ms. P2 because it's the kind of detail that makes the club feel alive.
+  - 2026-06-05: Scanned `page.tsx` and `meetup-card.tsx`. The feed already fetches `upcoming` events with `gte("date", today)` — no new query needed. `MeetupCard` just needs a companion `MeetupTonightBanner` component that fires when `upcoming.date === today`. Dev plan written. Estimate: 30 minutes.
+
+---
+
+### [IDEA-015] Club tasting digest export for meetup nights
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-05
+- **Last Updated:** 2026-06-05
+- **Priority:** P3
+- **Plan:** (not yet written)
+- **Summary:** An admin-only action that generates a plain-text or JSON digest of all tastings from a specific event — product names, recommend flags, member chips, and free notes — downloadable or copy-pasteable. Useful for Paul's post-meetup recap email or group text. Zero AI cost. Data is already in `tastings` + `events` + `products` tables. Could be a simple `/admin/meetup/[id]/digest` route with a `<pre>` block.
+- **Night Notes:**
+  - 2026-06-05: Seeded. Grounded in the existing `events` table and `event_id` on tastings. Very practical for 12-person group social layer. Low complexity (pure DB query + text render). P3 because it's a convenience feature, not a core loop.
+
+---
+
+### [IDEA-016] My notes pinned at top in "The club says"
+- **Status:** seed
+- **Category:** enhance
+- **Seeded:** 2026-06-05
+- **Last Updated:** 2026-06-05
+- **Priority:** P3
+- **Plan:** (not yet written)
+- **Summary:** The `ClubVoice` component already extracts `myTake` and shows it in a "Your notes" section — but it renders at the BOTTOM of the card, after all other members' takes. On a well-tasted product with 8+ member notes, the member has to scroll past everyone else before seeing their own notes. Reorder so the "Your notes" section appears first (before other members' takes), making the product detail feel personal before it feels social.
+- **Night Notes:**
+  - 2026-06-05: Seeded. Found while scanning `club-voice.tsx`. The `myTake` and `otherTakes` are already separated. It's a single JSX reorder: move `{myTake ? <YourNotes ...> : null}` above `{otherTakes.length > 0 ? <MemberTakes ...> : null}`. Zero DB changes. Aesthetic / UX question for Paul — hence P3. ~5 minutes to implement.
 
 ---
 

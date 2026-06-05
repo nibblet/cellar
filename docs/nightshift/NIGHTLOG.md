@@ -4,6 +4,42 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-05
+
+### Summary
+- Scanned: 0 code commits since last run (last code commit was `b1ac846` — captured by 2026-06-04 nightshift). Full codebase rescan focused on product-photo route, settings forms, roadmap actions, club voice, meetup card, catalog queries, and cellar page.
+- Issues: 2 new (FIX-021 storage leak in product-photo route, FIX-022 additional moss violations in settings forms); 3 existing open confirmed still present (FIX-018, FIX-019, FIX-020)
+- Ideas: 2 new seeds (IDEA-015 tasting digest export, IDEA-016 my notes first in ClubVoice); IDEA-014 promoted seed → planned; IDEA-012 promoted seed → exploring
+- Plans written: 2 fix plans + 1 devplan (3 total)
+- Lint/build: node_modules not installed; manual code scan. No new TypeScript type errors found.
+
+### Key Findings
+- **FIX-021: Storage leak in `product-photo/route.ts`** — The admin member-photo POST path uploads to `product-photos`, then inserts into `product_images`. If the DB insert fails, the uploaded file is abandoned in storage. One-line fix: add `void admin.storage.from(PHOTOS_BUCKET).remove([storagePath])` before the 500 return. Same class as FIX-003 (capture action, resolved). Small risk for 12 users but clean.
+- **FIX-022: 4 more moss violations in settings forms** — `avatar-uploader.tsx`, `display-name-form.tsx`, `preferences-form.tsx`, and `suggestion-form.tsx` all use `text-moss-600` as a generic success color. Distinct from FIX-019 (which covers the 5 more impactful sites). All four swap to `text-foreground-muted`.
+- **IDEA-014 ready to implement** — Scanned `page.tsx` and `meetup-card.tsx`. The feed already fetches `upcoming` events; deriving `isTonightMeetup = upcoming?.date === today` costs zero extra queries. A new `MeetupTonightBanner` component + a JSX conditional is all that's needed. 30-minute job. Plan written.
+- **IDEA-012 promoted to exploring** — Verified that `lib/cellar/` has no usage of `availability_rarity`. The data path is clear: `loadCellarProducts` returns Want items, fetch `specs` join, filter where `availability_rarity IN (allocated, lottery, secondary-only)`. Clean two-step implementation.
+- **IDEA-016 seeded** — Noticed `ClubVoice` renders `myTake` (Your notes) AFTER `otherTakes` (other members). For products with many member takes, the current member scrolls past everyone else before seeing their own notes. JSX reorder: `<YourNotes>` before `<MemberTakes>`. 5-minute change — flagged for Paul's preference call.
+- **All 3 previously planned fixes (FIX-018, 019, 020) confirmed still unresolved** — no code commits since 2026-06-04 nightshift ran.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md` — **10 min**: add `p.subtitle` to Reach for Next cards in `winston-suggests.tsx`
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete `you-might-also-like.tsx` + remove barrel export (pair with IDEA-011)
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one-line cleanup before 500 return in `product-photo/route.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: add `requireAdminSupabase()` to two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5 moss→foreground swaps across product/admin files
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss→foreground swaps in settings forms
+- `docs/nightshift/plans/DEVPLAN-IDEA-014-meetup-tonight-banner.md` — **30 min**: Winston tonight banner on feed meetup day
+- `docs/nightshift/plans/DEVPLAN-IDEA-013-catalog-rec-count-badge.md` — **45 min**: expose rec_count and render on catalog cards
+- `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md` — **1–1.5 hr**: availability filter chip in Bourbons browse
+
+### Recommendations
+- **If you have 15 min:** IDEA-011 (10 min) + FIX-020 (5 min) — pair them; they touch the same component area. Subtitles appear in Reach for Next cards and the dead component is gone.
+- **If you have 30 min:** Add FIX-021 (5 min) + FIX-018 (10 min) on top. Four changes, all self-contained.
+- **If you have 1 hour:** Implement IDEA-014 (meetup tonight banner, 30 min) — the next meetup night it's live it will feel magical. Then FIX-019 + FIX-022 together (moss cleanup, ~15 min combined). Design system fully consistent.
+- **If you have 2 hours:** IDEA-013 (rec count badge, 45 min) + IDEA-010 (availability filter chip, 1–1.5 hr). Members browsing Bourbons see club social proof AND can filter by allocation tier.
+
+---
+
 ## Run: 2026-06-04
 
 ### Summary
