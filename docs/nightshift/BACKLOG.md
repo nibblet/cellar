@@ -228,6 +228,32 @@ Maturity: seed → exploring → planned → ready → parked
 
 ---
 
+### [IDEA-017] Bourbon-specific explore links on product detail
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-06
+- **Last Updated:** 2026-06-06
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-017-bourbon-explore-links.md`
+- **Summary:** The `ExploreLinks` component shows cigar-specific research links (CigarPage, Cigar Aficionado) on cigar product detail, but bourbon product detail has no equivalent "Explore" section. Adding a `productType` prop and bourbon-specific links (Whiskybase, Distiller.com) completes the research surface for bourbons. 30 minutes, no AI cost, no DB changes — two new link arrays and a prop.
+- **Night Notes:**
+  - 2026-06-06: Seeded and immediately promoted to `planned`. `ExploreLinks` is already guarded `{productType === "cigar" ? ...}` in product detail; just needs to accept a `productType` prop and select the right link set. Dev plan written.
+
+---
+
+### [IDEA-018] Native share sheet for product pages (PWA)
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-06
+- **Last Updated:** 2026-06-06
+- **Priority:** P3
+- **Plan:** (not yet written)
+- **Summary:** Add a "Share" icon button to product detail that triggers `navigator.share()` with the product name and app deep-link URL. Falls back to copy-to-clipboard on browsers that don't support the Web Share API (e.g. desktop). The 12 club members share product links in group texts frequently; a native share sheet eliminates copy-paste friction. Zero AI cost, no new DB columns — purely a client-side `"use client"` wrapper around the platform Share API.
+- **Night Notes:**
+  - 2026-06-06: Seeded. `navigator.share()` is supported on all modern iOS Safari versions (PWA target). Implementation: a small `ShareButton` client component with `type="button"` and a share icon (e.g. `lucide-react` `Share2`). Place in the product detail header alongside the edit pencil link. The `href` is `window.location.href` (the canonical deep-link). ~30 minutes.
+
+---
+
 ### [IDEA-009] Scene upload workflow — `--upload` flag for generate-catalog-scenes.ts
 - **Status:** planned
 - **Category:** enhance

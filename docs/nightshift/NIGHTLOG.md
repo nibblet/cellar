@@ -4,6 +4,65 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-06
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-05 nightshift. Full codebase rescan focused on
+  pairing capture actions, cellar page, MCP route, maker load, product detail explore links,
+  tasting action segment, onboarding flow, and all outstanding tracked issues.
+- Issues: 1 new (FIX-023 storage leak in pairing capture); 5 existing confirmed still open
+  (FIX-018, FIX-019, FIX-020, FIX-021, FIX-022)
+- Ideas: 2 new (IDEA-017 bourbon explore links → immediately `planned`; IDEA-018 native share
+  sheet → `seed`); no stale promotions this run (all existing seeds <2 days old)
+- Plans written: 1 fix plan (FIX-023) + 1 devplan (IDEA-017) = 2 total
+- Lint/build: node_modules not installed; manual code scan. No new TypeScript type errors found.
+
+### Key Findings
+- **FIX-023: Storage leak in `pairings/capture/actions.ts`** — `identifyPairingPhoto` uploads
+  a photo then calls `createSignedUrl` and `identifyPairFromImage`. On either failure the
+  uploaded file is abandoned in storage without cleanup. This is the identical pattern as
+  FIX-003 (single capture, resolved in 2026-05-30) and FIX-021 (product-photo admin route,
+  planned). Two-line fix: add `void supabase.storage.from(BUCKET).remove([storagePath])` before
+  each error return that happens after the upload succeeds. Plan written and ready.
+- **All 5 previous planned fixes confirmed still unresolved** — no code commits since the
+  2026-06-05 nightshift ran. The backlog of quick wins continues to accumulate.
+- **IDEA-011 (Reach for Next subtitle) confirmed not yet implemented** — `winston-suggests.tsx`
+  Reach for Next card section (lines ~136–154) still does not render `p.subtitle`. The Similar
+  in Tier section (lines ~162–190) already does. Dev plan exists, estimate 10 min.
+- **IDEA-017 seeded and planned** — `ExploreLinks` is already type-guarded to cigars only in
+  product detail. Bourbon product detail has no equivalent research section. Two bourbon links
+  (Whiskybase, Distiller.com) and a `productType` prop close the gap. Dev plan written.
+- **FIX-019/022 moss violations fully mapped** — Rescanned all `text-moss-*` usages.
+  `find-your-next-hero.tsx` (line 260) uses moss correctly (guarded by `item.club_validated`).
+  `admin/suggestions/suggestion-row.tsx` and `admin/invites/page.tsx` are admin-internal.
+  The 9 violations tracked in FIX-019 + FIX-022 are the complete set needing fixes.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two cleanup lines in `pairings/capture/actions.ts` (identical pattern to resolved FIX-003)
+- `docs/nightshift/plans/DEVPLAN-IDEA-017-bourbon-explore-links.md` — **30 min**: add bourbon Whiskybase + Distiller links; `productType` prop on `ExploreLinks`
+- `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md` — **10 min**: add `p.subtitle` to Reach for Next cards in `winston-suggests.tsx`
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete `you-might-also-like.tsx` and barrel export (pair with IDEA-011)
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one-line cleanup in `product-photo/route.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: add admin check to two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5 moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss swaps
+- `docs/nightshift/plans/DEVPLAN-IDEA-014-meetup-tonight-banner.md` — **30 min**: Winston meetup night banner on feed
+- `docs/nightshift/plans/DEVPLAN-IDEA-013-catalog-rec-count-badge.md` — **45 min**: rec count badge on catalog cards
+- `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md` — **1–1.5 hr**: availability filter chip in Bourbons browse
+
+### Recommendations
+- **If you have 30 min:** Apply FIX-023 (5 min) + IDEA-011 (10 min) + FIX-020 (5 min) + FIX-018
+  (10 min). Four self-contained changes: closes the last storage-leak class, adds subtitles to
+  Reach for Next cards, deletes the dead component, and adds admin defense-in-depth to roadmap.
+- **If you have 1 hour:** Add IDEA-017 (30 min) on top — bourbon explore links give members
+  direct research paths for bourbons they discover in the catalog. Plus FIX-019 + FIX-022 (15 min
+  combined) to finish the moss color cleanup and get the design system fully consistent.
+- **If you have 2 hours:** Implement DEVPLAN-IDEA-014 (meetup tonight banner, 30 min) + DEVPLAN-
+  IDEA-013 (rec count badge, 45 min) + DEVPLAN-IDEA-010 (availability filter chip, 1–1.5 hr).
+  Members see club social proof in the catalog AND can filter to "Allocated" in one tap.
+
+---
+
 ## Run: 2026-06-05
 
 ### Summary

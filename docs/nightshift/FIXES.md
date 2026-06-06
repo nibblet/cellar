@@ -249,3 +249,13 @@ Format: FIX-XXX | Title | Status | Plan
   - `apps/web/src/app/(app)/(shell)/settings/preferences-form.tsx` line 116
   - `apps/web/src/app/(app)/(shell)/roadmap/suggestion-form.tsx` line 69
 - **Summary:** Four more member-facing forms use `text-moss-600` as generic success feedback (avatar saved, name saved, preferences saved, suggestion sent). Same design system violation as FIX-019 (which covers the 5 most impactful sites). Fix: swap all four to `text-foreground-muted`. Note: `admin/invites/page.tsx` (redeemed invite) and `admin/suggestions/suggestion-row.tsx` (done status) also use moss — tracked as acceptable admin-internal use pending Paul's decision.
+
+---
+
+## FIX-023 — Storage leak in pairing capture on sign/identify failure
+
+- **Status:** planned
+- **Found:** 2026-06-06
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md`
+- **File:** `apps/web/src/app/(app)/(shell)/pairings/capture/actions.ts` lines ~47–72
+- **Summary:** `identifyPairingPhoto` uploads a photo to `product-photos`, then calls `createSignedUrl` and `identifyPairFromImage`. If either step fails, the uploaded file is abandoned in storage without cleanup. Same class as FIX-003 (single capture, resolved) and FIX-021 (product-photo admin route, planned). Fix: add `void supabase.storage.from(BUCKET).remove([storagePath])` before each error return that occurs after the upload succeeds — identical pattern to the resolved FIX-003.

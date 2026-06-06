@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-05 (Nightshift run)
+Last updated: 2026-06-06 (Nightshift run)
 
 ---
 
@@ -292,6 +292,9 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Admin auth in roadmap suggestion actions (FIX-018, planned — same pattern as FIX-002)
 - Storage leak on DB insert failure in `api/product-photo/route.ts` member upload path (FIX-021, planned — same class as FIX-003)
 - Additional moss color violations in settings forms (FIX-022, planned — 4 more files: avatar-uploader, display-name-form, preferences-form, suggestion-form)
+- Storage leak in pairing capture on sign/identify failure (FIX-023, planned — same class as FIX-003, plan written)
 - Meetup tonight banner on feed (IDEA-014, planned — 30 min, zero cost, dev plan written)
 - My notes pinned first in ClubVoice "The club says" (IDEA-016, seed — 5-min JSX reorder)
 - Club tasting digest export for meetup nights (IDEA-015, seed — admin convenience feature)
+- Bourbon-specific explore links on product detail (IDEA-017, planned — 30 min, dev plan written)
+- Native share sheet for product pages (IDEA-018, seed — `navigator.share()` PWA integration)
