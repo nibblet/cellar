@@ -259,3 +259,13 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md`
 - **File:** `apps/web/src/app/(app)/(shell)/pairings/capture/actions.ts` lines ~47–72
 - **Summary:** `identifyPairingPhoto` uploads a photo to `product-photos`, then calls `createSignedUrl` and `identifyPairFromImage`. If either step fails, the uploaded file is abandoned in storage without cleanup. Same class as FIX-003 (single capture, resolved) and FIX-021 (product-photo admin route, planned). Fix: add `void supabase.storage.from(BUCKET).remove([storagePath])` before each error return that occurs after the upload succeeds — identical pattern to the resolved FIX-003.
+
+---
+
+## FIX-024 — UTC weekday in Tonight's Pick voice line
+
+- **Status:** planned
+- **Found:** 2026-06-07
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md`
+- **File:** `apps/web/src/app/(app)/(shell)/you/cellar/page.tsx` line 85
+- **Summary:** `TonightsPickSection` derives the weekday name for Winston's voice line using `new Date().getUTCDay()`. After 8pm EDT (UTC-4), the UTC date has already rolled to the next calendar day. Members in Louisville, KY see "For a Wednesday on the porch" during Tuesday evening meetups. Fix: replace `days[new Date().getUTCDay()]` with `new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" })`. The pick rotation itself (`todayKey()`) correctly uses UTC and is not changed by this fix.

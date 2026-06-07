@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-06 (Nightshift run)
+Last updated: 2026-06-07 (Nightshift run)
 
 ---
 
@@ -282,19 +282,22 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Personal stats (Phase 8.4 in plan — not in commits)
 - `/settings/usage` admin dashboard for cost tracking
 - MCP `get_member_tastings` tool (IDEA-006, seed)
-- Availability filter chip in bourbon catalog browse (IDEA-010, planned — fully unblocked)
-- "Reach for next" subtitle display in WinstonSuggests (IDEA-011, **ready** — FIX-017 landed, 10 min)
-- Personal Hunt List on Cellar/You hub (IDEA-012, seed)
-- Club recommendation count badge on catalog cards (IDEA-013, planned)
-- Meetup event day banner on feed (IDEA-014, seed)
+- Availability filter chip in bourbon catalog browse (IDEA-010, parked — plan written, reclaim when ready)
+- "Reach for next" subtitle display in WinstonSuggests (IDEA-011, parked — plan written, 10 min to implement)
+- Personal Hunt List on Cellar/You hub (IDEA-012, exploring)
+- Club recommendation count badge on catalog cards (IDEA-013, parked — plan written, reclaim when ready)
+- Meetup event day banner on feed (IDEA-014, planned — 30 min, zero cost, dev plan written)
 - `YouMightAlsoLike` dead component cleanup (FIX-020, planned)
 - Moss color in success states (FIX-019, planned — 5 files, all small swaps)
 - Admin auth in roadmap suggestion actions (FIX-018, planned — same pattern as FIX-002)
 - Storage leak on DB insert failure in `api/product-photo/route.ts` member upload path (FIX-021, planned — same class as FIX-003)
 - Additional moss color violations in settings forms (FIX-022, planned — 4 more files: avatar-uploader, display-name-form, preferences-form, suggestion-form)
 - Storage leak in pairing capture on sign/identify failure (FIX-023, planned — same class as FIX-003, plan written)
-- Meetup tonight banner on feed (IDEA-014, planned — 30 min, zero cost, dev plan written)
+- UTC weekday mismatch in Tonight's Pick voice line (FIX-024, planned — 2-line fix in cellar page)
 - My notes pinned first in ClubVoice "The club says" (IDEA-016, seed — 5-min JSX reorder)
 - Club tasting digest export for meetup nights (IDEA-015, seed — admin convenience feature)
 - Bourbon-specific explore links on product detail (IDEA-017, planned — 30 min, dev plan written)
 - Native share sheet for product pages (IDEA-018, seed — `navigator.share()` PWA integration)
+- Club want-count hint on Want shelf (IDEA-019, planned — 45 min, dev plan written)
+- Branded error.tsx and not-found.tsx pages (IDEA-020, planned — 30 min, dev plan written)
+- No `error.tsx` or `not-found.tsx` in the app — Next.js default pages shown on errors/404s

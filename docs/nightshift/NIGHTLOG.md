@@ -4,6 +4,68 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-07
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-06 nightshift. Targeted scan of cellar page,
+  pairing capture, admin pages, member profiles, welcome/onboarding, session form, and the
+  full app structure (confirmed no `error.tsx` / `not-found.tsx` exist anywhere).
+- Issues: 1 new (FIX-024 UTC weekday mismatch in Tonight's Pick voice line); 6 existing
+  confirmed still open (FIX-018 through FIX-023).
+- Ideas: 4 parked by 3-day stale rule (IDEA-009, 010, 011, 013); 2 new ideas seeded and
+  immediately promoted to `planned` (IDEA-019 want-overlap count, IDEA-020 error/404 pages).
+- Plans written: 1 fix plan (FIX-024) + 2 devplans (IDEA-019, IDEA-020) = 3 total.
+- Lint/build: node_modules not installed in environment; manual code scan. No new TypeScript
+  type errors found.
+
+### Key Findings
+- **FIX-024: UTC weekday mismatch in Tonight's Pick.** `TonightsPickSection` uses
+  `new Date().getUTCDay()` for Winston's day-name flavor text. After 8pm EDT (UTC-4), the UTC
+  date has rolled to the next calendar day — Winston says "For a Wednesday on the porch" during
+  Tuesday meetup nights. Two-line fix: replace the `days[]` array lookup with
+  `new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" })`.
+  The actual pick rotation (`todayKey()`) correctly stays in UTC and is untouched.
+- **No `error.tsx` or `not-found.tsx` anywhere in the app.** When a server component throws or
+  a URL is not found, Next.js renders its own default page — completely unbranded, no Winston.
+  For a private iPhone PWA that shows on the patio at meetups, poor-signal errors should feel
+  like the club, not a generic error screen. IDEA-020 adds both files in ~30 min.
+- **IDEA-019 (Want overlap count) grounded in clear data path.** `member_saves` already contains
+  all want flags. A single aggregate query (excluding the viewer's own rows) yields the counts.
+  Zero AI cost, no migrations. Adds meaningful hunting-together signal for the 12-member group.
+- **4 stale ideas parked.** IDEA-009 (5 days), IDEA-010 (4 days), IDEA-011 (3 days), IDEA-013
+  (3 days). All four have fully written dev plans — they're parked, not lost. Reclaim any of
+  them at any time by reopening the plan file. The backlog is now leaner.
+- **6 planned fixes still unresolved since 2026-06-04.** The quick-wins (FIX-018: 10 min admin
+  auth; FIX-019/022: moss swaps; FIX-020: dead component; FIX-021/023: storage leaks) keep
+  accumulating without being committed. The oldest fix plan (FIX-018) is now 3 days old.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md` — **2 min**: replace `getUTCDay()` with `toLocaleDateString` in cellar page Tonight's Pick section
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two cleanup lines in `pairings/capture/actions.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one cleanup line in `product-photo/route.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete file + barrel export
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: add admin check to two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5 moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss swaps
+- `docs/nightshift/plans/DEVPLAN-IDEA-020-error-not-found-pages.md` — **30 min**: branded error + 404 pages with Winston voice
+- `docs/nightshift/plans/DEVPLAN-IDEA-017-bourbon-explore-links.md` — **30 min**: bourbon research links on product detail
+- `docs/nightshift/plans/DEVPLAN-IDEA-014-meetup-tonight-banner.md` — **30 min**: Winston banner on meetup nights in the feed
+- `docs/nightshift/plans/DEVPLAN-IDEA-019-want-overlap-count.md` — **45 min**: "N others want this" on Want shelf
+
+### Recommendations
+- **If you have 30 min:** Apply FIX-024 (2 min) + FIX-023 (5 min) + FIX-021 (5 min) +
+  FIX-020 (5 min) + FIX-018 (10 min). Five changes, all self-contained, clears the oldest
+  debt. The storage leaks, dead component, and admin auth gap are all gone in a single pass.
+- **If you have 1 hour:** Add FIX-019 + FIX-022 (15 min combined, moss cleanup done) and
+  IDEA-020 (30 min, branded error + 404 pages). After this pass: lint clean, design system
+  consistent, and the app no longer shows raw Next.js error pages to club members.
+- **If you have 2 hours:** Implement IDEA-017 (bourbon explore links, 30 min) + IDEA-014
+  (meetup tonight banner, 30 min) + IDEA-019 (want overlap count, 45 min). Members can now
+  click to Whiskybase from bourbon detail, see tonight's meetup called out in the feed, AND
+  see who else in the club is hunting the same bottles.
+
+---
+
 ## Run: 2026-06-06
 
 ### Summary

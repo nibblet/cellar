@@ -119,16 +119,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-010] Availability filter chip in bourbon catalog browse
-- **Status:** planned
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-02
-- **Last Updated:** 2026-06-03
+- **Last Updated:** 2026-06-07
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-010-availability-filter-chip.md`
 - **Summary:** The Bourbons catalog tab has filter chips for proof band, style, and age, but no way to filter by `availability_rarity` (everyday / seasonal / allocated / lottery). Now that these values are in the DB for most catalog bourbons, adding an "Availability" filter chip would let Paul and other members immediately surface "all the allocated bottles I can't get" vs "all the everyday pours." Zero AI cost; follows the same in-memory filter pattern already used by the other bourbon filters in `loadCatalogBrowse`.
 - **Night Notes:**
   - 2026-06-02: Seeded. Three touch points: add `availability` field to `CatalogFilters` type, add a matching `passesFilters` branch in `catalog-queries.ts`, add a chip to `catalog-filter-controls.tsx`. ~1 hour. Blocked until IDEA-007 lands (availability data visible in subtitle = prerequisite for filter to feel discoverable).
   - 2026-06-03: IDEA-007 shipped — unblocked. Promoted to `planned`. Dev plan written.
+  - 2026-06-07: 3-day stale rule (4 days since last priority change, no commits). Parked. Plan fully written — reclaim when ready for a 1-hour bourbon-catalog session.
 
 ---
 
@@ -148,16 +149,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-011] Display subtitle in "Reach for next" cards (WinstonSuggests)
-- **Status:** ready
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-03
-- **Last Updated:** 2026-06-04
+- **Last Updated:** 2026-06-07
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-011-reach-for-next-subtitle.md`
 - **Summary:** "Similar in tier" cards in `WinstonSuggests` already render `p.subtitle` (the availability/tier facts strip). "Reach for next" cards do not, creating a visual inconsistency. FIX-017 landed (commit `b1ac846`) — `subtitle` is now computed for shelf-scored items. This 10-minute JSX addition makes the two adjacent scroll sections consistent. Also the dead `YouMightAlsoLike` component (tracked as FIX-020) should be deleted at the same time.
 - **Night Notes:**
   - 2026-06-03: Seeded and immediately promoted to `planned`. Directly depends on FIX-017. Dev plan written. Small scope, high visual consistency payoff.
   - 2026-06-04: FIX-017 landed in commit `b1ac846`. Dependency resolved. Promoting to `ready` — unblocked, plan exists, estimated 10 minutes.
+  - 2026-06-07: 3-day stale rule (3 days since `ready` promotion, no commits). Parked. Dev plan fully written — this is a 10-minute grab when someone opens `winston-suggests.tsx`.
 
 ---
 
@@ -176,15 +178,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-013] Club recommendation count badge on catalog cards
-- **Status:** planned
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-04
-- **Last Updated:** 2026-06-04
+- **Last Updated:** 2026-06-07
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-013-catalog-rec-count-badge.md`
 - **Summary:** `loadCatalogBrowse` already computes `rec_count` per product (it drives the "Recommended" sort order) but strips it before returning `CatalogEntry`. Exposing it and rendering a "N club recs" label below the subtitle on catalog cards gives members a quality signal when browsing — especially useful when filtering by availability or style. Zero AI cost. Threshold: show only for 2+ recs to avoid noise.
 - **Night Notes:**
   - 2026-06-04: Seeded and immediately promoted to `planned`. Data is already computed — just not threaded through to the UI. 45 minutes, no migrations. Dev plan written.
+  - 2026-06-07: 3-day stale rule (3 days since planning, no commits). Parked. Plan fully written — reclaim when doing a catalog browse polish session.
 
 ---
 
@@ -254,13 +257,40 @@ Maturity: seed → exploring → planned → ready → parked
 
 ---
 
-### [IDEA-009] Scene upload workflow — `--upload` flag for generate-catalog-scenes.ts
+### [IDEA-019] Club want-count hint on Want shelf
 - **Status:** planned
 - **Category:** enhance
+- **Seeded:** 2026-06-07
+- **Last Updated:** 2026-06-07
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-019-want-overlap-count.md`
+- **Summary:** When a member views their own Want shelf on the Cellar page, show "N others want this" beneath the subtitle for any bottle that 2+ other club members also want. Turns the Want shelf into a visible hunting-together signal for the 12-person group without creating public profiles or follower counts. Pure server-side aggregate of `member_saves.want`. Zero AI cost, no migrations. ~45 minutes.
+- **Night Notes:**
+  - 2026-06-07: Seeded and immediately promoted to `planned`. Data path is clear: `SELECT product_id FROM member_saves WHERE want=true AND member_id != :me`, aggregate counts, pass to `CellarSection` as a Map. Dev plan written.
+
+---
+
+### [IDEA-020] Branded error.tsx and not-found.tsx for the app shell
+- **Status:** planned
+- **Category:** new
+- **Seeded:** 2026-06-07
+- **Last Updated:** 2026-06-07
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-020-error-not-found-pages.md`
+- **Summary:** The app has no `error.tsx` or `not-found.tsx` files. Runtime errors and 404s show Next.js default pages — unbranded and jarring for a private PWA. Adding a `(app)/(shell)/error.tsx` (client component error boundary with Winston voice + retry button) and `app/not-found.tsx` (server component 404 with Winston voice + home link) gives every failure state the same club character as the rest of the app. ~30 minutes, zero AI cost, no DB changes.
+- **Night Notes:**
+  - 2026-06-07: Seeded and immediately promoted to `planned`. Confirmed no `error.tsx` or `not-found.tsx` exists anywhere in the app. Two new files, self-contained, no dependencies. Dev plan written.
+
+---
+
+### [IDEA-009] Scene upload workflow — `--upload` flag for generate-catalog-scenes.ts
+- **Status:** parked
+- **Category:** enhance
 - **Seeded:** 2026-06-02
-- **Last Updated:** 2026-06-02
+- **Last Updated:** 2026-06-07
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-009-scene-upload-workflow.md`
 - **Summary:** The `generate-catalog-scenes.ts` script writes glamour shots to `scripts/media/out/` with no upload step. After Paul reviews and approves the output, he must manually push each image through the admin UI — defeating the batch workflow. Adding `--upload` (commit) and `--dry-run-upload` (plan only) flags reads `out/`, matches files to products by the `{productId}--{sceneSlug}.jpg` filename pattern, and bulk-pushes to the `product-catalog` Supabase bucket with a `products.image_url` update per row. ~1 hour, no new UI, no migrations.
 - **Night Notes:**
   - 2026-06-02: Seeded and immediately promoted to `planned`. The script already uses `adminClient()`; the upload path is a straight port of the pattern in `api/product-photo/route.ts`. Self-contained enhancement to the new script — closes the workflow loop from generate → review → publish.
+  - 2026-06-07: 3-day stale rule (5 days, no commits). Parked. Plan still valid — reclaim when scene-generation workflow resumes.
