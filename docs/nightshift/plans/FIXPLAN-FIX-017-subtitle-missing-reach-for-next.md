@@ -81,9 +81,11 @@ return {
 
 ## Verify
 
-- [ ] `pnpm build` passes (was failing on missing property)
-- [ ] `pnpm lint` passes
-- [ ] `pnpm test` passes
+- [x] `pnpm build` passes (was failing on missing property)
+- [x] `pnpm lint` passes (changed files clean; repo-wide lint has pre-existing failures)
+- [x] `pnpm test` passes
 - [ ] On product detail: "Reach for next" card for a shelf item no longer has
       `undefined` for subtitle (verify in browser dev tools, network tab, or just
       by confirming build succeeds)
+
+**Fixed:** 2026-06-03

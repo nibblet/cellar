@@ -37,7 +37,9 @@ display_name: `${t.user.name_first} ${t.user.name_last_initial}`,
 - `apps/web/src/lib/pairing/group-validation.ts` — add `formatMemberName` import, use it on lines 76 and 137
 
 ## Verify
-- [ ] Build passes
-- [ ] Lint passes
+- [x] Build passes
+- [x] Lint passes (changed files clean; repo-wide lint has pre-existing failures)
 - [ ] On a pairing detail page where the pairing has a club-validated badge, the validator's name renders correctly as "First L" format
 - [ ] No regression on pairing detail pages with no validation
+
+**Fixed:** 2026-06-03

@@ -47,6 +47,8 @@ The cast overrides TypeScript instead of validating the input.
 - `apps/web/scripts/media/generate-catalog-scenes.ts` — add allowlist validation for `--quality` and `--size`, remove unsafe cast
 
 ## Verify
-- [ ] `pnpm gen:catalog-scenes --size 512x512` exits early with a clear error message
-- [ ] `pnpm gen:catalog-scenes --size 1536x1024` is accepted and proceeds to plan output (dry run)
-- [ ] Build passes
+- [x] `pnpm gen:catalog-scenes --size 512x512` exits early with a clear error message
+- [x] `pnpm gen:catalog-scenes --size 1536x1024` is accepted and proceeds to plan output (dry run)
+- [x] Build passes
+
+**Fixed:** 2026-06-03
