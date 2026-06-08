@@ -4,6 +4,68 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-08
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-07 nightshift. The "past fixes" commit (17c9b25)
+  updated only nightshift plan files, not code. Targeted scan of cellar page (FIX-024 confirmed
+  still open), feed page, roadmap actions (FIX-018), product-photo route (FIX-021), pairing
+  capture (FIX-023), all `text-moss-*` usages, `YouMightAlsoLike` component, Winston context
+  usage across all routes, and date/timezone patterns across the codebase.
+- Issues: 1 new (FIX-025 UTC date in feed `today`); 7 existing confirmed still open
+  (FIX-018 through FIX-024).
+- Ideas: 4 parked by 3-day stale rule (IDEA-012, IDEA-014, IDEA-015, IDEA-016);
+  2 new (IDEA-021 → immediately planned, IDEA-022 → seed).
+- Plans written: 1 fix plan (FIX-025) + 1 devplan (IDEA-021) = 2 total.
+- Lint/build: node_modules not installed in environment; manual code scan. No new TypeScript
+  type errors found. All open fixes confirmed unchanged.
+
+### Key Findings
+- **FIX-025: UTC date in FeedList `today` variable.** `FeedList` uses
+  `new Date().toISOString().slice(0, 10)` — UTC-based. After 8pm EDT, `today` becomes the next
+  calendar day. A meetup event with `date` = today shifts from the "upcoming" query to the "last"
+  query mid-evening, showing "Last meetup" while the club is still on the porch. Also kills the
+  planned IDEA-014 meetup-tonight banner at 8pm EDT. One-line fix: replace with
+  `new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })` (en-CA natively
+  gives YYYY-MM-DD). Same class as FIX-024 (cellar UTC weekday, still planned).
+- **FIX-024 confirmed still unresolved in code.** Line 85 of `cellar/page.tsx` still has
+  `days[new Date().getUTCDay()]`. The plan is complete and ready to execute (2 min).
+- **FIX-020 confirmed: YouMightAlsoLike is dead.** Only exists in `you-might-also-like.tsx`
+  and the barrel re-export at `product/index.ts:15`. No other imports. Safe to delete now.
+- **IDEA-021 (Tonight's Pick empty state) is a 5-minute grab.** `TonightsPickSection` returns
+  `null` bare when the Have shelf is empty. Adding a Winston voice + "Browse bourbons →" link
+  takes one replace of a single `return null`. All imports already present in the file.
+- **4 stale ideas parked.** IDEA-012 (5 days at exploring), IDEA-014 (4 days at planned),
+  IDEA-015 (3 days at seed), IDEA-016 (3 days at seed). IDEA-014 and IDEA-012 have partial work
+  done — fully reclaim-ready via their plan files.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/DEVPLAN-IDEA-021-tonights-pick-empty-state.md` — **5 min**: add Winston empty-state voice + catalog link to TonightsPickSection when Have shelf is empty
+- `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md` — **2 min**: replace `getUTCDay()` in cellar page with ET locale weekday name
+- `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md` — **2 min**: replace UTC slice with ET locale YYYY-MM-DD in feed FeedList
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two cleanup lines in `pairings/capture/actions.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one cleanup line in `product-photo/route.ts`
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete file + barrel export
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: add admin check to two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5 moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss swaps
+- `docs/nightshift/plans/DEVPLAN-IDEA-020-error-not-found-pages.md` — **30 min**: branded error + 404 pages with Winston voice
+- `docs/nightshift/plans/DEVPLAN-IDEA-017-bourbon-explore-links.md` — **30 min**: bourbon research links on product detail
+- `docs/nightshift/plans/DEVPLAN-IDEA-019-want-overlap-count.md` — **45 min**: "N others want this" on Want shelf
+
+### Recommendations
+- **If you have 15 min:** Apply FIX-024 (2 min) + FIX-025 (2 min) + IDEA-021 (5 min) +
+  FIX-020 (5 min). Four changes, all self-contained. UTC timezone bugs gone, dead component
+  gone, Tonight's Pick has a proper empty state. Bread-and-butter cleanup.
+- **If you have 30 min:** Add FIX-023 (5 min) + FIX-021 (5 min) + FIX-018 (10 min) on top.
+  Every storage leak class is closed, admin defense-in-depth is complete. Seven self-contained
+  changes clearing the oldest planned debt.
+- **If you have 1 hour:** Add FIX-019 + FIX-022 (15 min combined) to finish the moss color
+  audit entirely, plus IDEA-020 (30 min branded error/404 pages). After this pass: design system
+  consistent everywhere, no unbranded error screens for club members.
+
+---
+
 ## Run: 2026-06-07
 
 ### Summary

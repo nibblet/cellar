@@ -164,16 +164,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-012] Personal Hunt List on Cellar page
-- **Status:** exploring
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-03
-- **Last Updated:** 2026-06-05
+- **Last Updated:** 2026-06-08
 - **Priority:** P2
 - **Plan:** (not yet written)
 - **Summary:** A dedicated "Hunt List" section on the Cellar page (or You hub) that surfaces the member's Want-shelf items filtered to `allocated`, `lottery`, and `secondary-only` availability — the bottles that require active hunting rather than a store visit. Members often "want" unicorn bottles alongside everyday pours; mixing them in the Want list buries the hunts. Zero AI cost. Built on existing `member_saves.want` + `specs.availability_rarity` (now populated for most catalog bourbons). Grouped by difficulty: Lottery → Allocated → Secondary Only.
 - **Night Notes:**
   - 2026-06-03: Seeded. Becomes meaningful only once most Want-shelf items have `availability_rarity` populated (currently catalog bourbons are covered; cigar wants are not). Two-step: (1) filter the Want list server-side by availability, (2) render a separate "Hunt List" section above the full Want shelf. Winston voice intro ("These are the ones worth hunting."). ~1.5–2 hours.
   - 2026-06-05: Verified cellar-section.tsx loads the Want shelf but does NOT filter by availability_rarity. The lib/cellar/ code has zero usage of `availability_rarity`. The data path is clear: `loadCellarProducts(supabase, memberId, "want")` → fetch `specs` join → filter where `specs.availability_rarity IN (allocated, lottery, secondary-only)`. Promoting to `exploring`. Estimate: 1.5 hours. Blocked by no hard dependency but most meaningful after IDEA-010 (availability filter chip) lands to set member expectations about availability tiers.
+  - 2026-06-08: 3-day stale rule (5 days at exploring, no commits). Parked. Data path is clear; reclaim when Want-shelf polish session begins.
 
 ---
 
@@ -192,42 +193,45 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-014] Meetup event day banner on the feed
-- **Status:** planned
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-04
-- **Last Updated:** 2026-06-05
+- **Last Updated:** 2026-06-08
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-014-meetup-tonight-banner.md`
 - **Summary:** When a meetup event in the `events` table has `date` matching today, show a Winston `<Voice />` banner at the top of the feed's "For You" tab linking to the pairing capture page. The club meets in-person regularly; this feeds the feedback loop by surfacing "tonight is a meetup" in the app members already have open. Zero AI cost (text template); the `events` query already runs in `FeedList` — just needs a `isTonightMeetup` boolean derived from `upcoming.date === today`.
 - **Night Notes:**
   - 2026-06-04: Seeded. The `events` table and `event_id` on tastings already exist. The feed page is a server component — a single `.eq("date", todayKey())` query costs ~5ms. P2 because it's the kind of detail that makes the club feel alive.
   - 2026-06-05: Scanned `page.tsx` and `meetup-card.tsx`. The feed already fetches `upcoming` events with `gte("date", today)` — no new query needed. `MeetupCard` just needs a companion `MeetupTonightBanner` component that fires when `upcoming.date === today`. Dev plan written. Estimate: 30 minutes.
+  - 2026-06-08: 3-day stale rule (4 days at planned, no commits). Parked. **Note:** FIX-025 (UTC date bug in FeedList) must also be applied when implementing this — use `en-CA` ET locale for `today` to avoid banner disappearing at 8pm EDT. Dev plan and fix plan both ready.
 
 ---
 
 ### [IDEA-015] Club tasting digest export for meetup nights
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-05
-- **Last Updated:** 2026-06-05
+- **Last Updated:** 2026-06-08
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** An admin-only action that generates a plain-text or JSON digest of all tastings from a specific event — product names, recommend flags, member chips, and free notes — downloadable or copy-pasteable. Useful for Paul's post-meetup recap email or group text. Zero AI cost. Data is already in `tastings` + `events` + `products` tables. Could be a simple `/admin/meetup/[id]/digest` route with a `<pre>` block.
 - **Night Notes:**
   - 2026-06-05: Seeded. Grounded in the existing `events` table and `event_id` on tastings. Very practical for 12-person group social layer. Low complexity (pure DB query + text render). P3 because it's a convenience feature, not a core loop.
+  - 2026-06-08: 3-day stale rule triggered. Parked. Low priority P3 — reclaim when post-meetup workflow becomes a pain point.
 
 ---
 
 ### [IDEA-016] My notes pinned at top in "The club says"
-- **Status:** seed
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-05
-- **Last Updated:** 2026-06-05
+- **Last Updated:** 2026-06-08
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** The `ClubVoice` component already extracts `myTake` and shows it in a "Your notes" section — but it renders at the BOTTOM of the card, after all other members' takes. On a well-tasted product with 8+ member notes, the member has to scroll past everyone else before seeing their own notes. Reorder so the "Your notes" section appears first (before other members' takes), making the product detail feel personal before it feels social.
 - **Night Notes:**
   - 2026-06-05: Seeded. Found while scanning `club-voice.tsx`. The `myTake` and `otherTakes` are already separated. It's a single JSX reorder: move `{myTake ? <YourNotes ...> : null}` above `{otherTakes.length > 0 ? <MemberTakes ...> : null}`. Zero DB changes. Aesthetic / UX question for Paul — hence P3. ~5 minutes to implement.
+  - 2026-06-08: 3-day stale rule triggered. Parked. P3 aesthetic question for Paul — needs a preference call before implementing. Trivial to reclaim when asked.
 
 ---
 
@@ -294,3 +298,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Night Notes:**
   - 2026-06-02: Seeded and immediately promoted to `planned`. The script already uses `adminClient()`; the upload path is a straight port of the pattern in `api/product-photo/route.ts`. Self-contained enhancement to the new script — closes the workflow loop from generate → review → publish.
   - 2026-06-07: 3-day stale rule (5 days, no commits). Parked. Plan still valid — reclaim when scene-generation workflow resumes.
+
+---
+
+### [IDEA-021] Tonight's Pick empty-shelf Winston voice
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-08
+- **Last Updated:** 2026-06-08
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-021-tonights-pick-empty-state.md`
+- **Summary:** When `TonightsPickSection` on the cellar page has no pick to show (empty Have shelf or no opposite-type pair available), it currently returns `null` silently. Adding a Winston `<Voice />` empty state — "The shelf's bare. Add something to have on hand and I'll pick tonight's pour." — with a "Browse bourbons →" link closes the feedback loop and gives first-time cellar visitors a reason to start adding bottles. 5-minute change, zero AI cost, no DB changes.
+- **Night Notes:**
+  - 2026-06-08: Seeded and immediately promoted to `planned`. Noticed the bare `return null` while verifying FIX-024. The `<Voice />`, `<Link>`, `<Divider>`, and `cn` are all already imported in the file — truly zero new imports. Dev plan written.
+
+---
+
+### [IDEA-022] Admin product merge tool
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-08
+- **Last Updated:** 2026-06-08
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** As more members capture products, the DB will accumulate duplicates — two rows representing the same bourbon or cigar, each with partial tastings and saves. There's currently no admin mechanism to merge them. An `/admin/products/merge` page would accept a primary UUID (keep) and a secondary UUID (archive), then: (1) UPDATE all `tastings.product_id` from secondary to primary, (2) upsert `member_saves` by taking the OR of each flag per member, (3) copy `product_images` rows to primary, (4) set `products.status = 'archived'` on secondary. No AI cost, no new migrations, pure SQL/Supabase client logic. ~2 hours.
+- **Night Notes:**
+  - 2026-06-08: Seeded. The existing admin pages (`admin/invites`, `admin/catalog`, `admin/suggestions`) establish a clear pattern: server component page with server action forms. A merge page fits that mold exactly. The `tastings` re-parent is a single UPDATE; the `member_saves` merge needs a per-member check (SELECT existing row, upsert combining flags). Self-contained, low risk since secondary gets archived not deleted.

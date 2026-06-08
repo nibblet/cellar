@@ -269,3 +269,13 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md`
 - **File:** `apps/web/src/app/(app)/(shell)/you/cellar/page.tsx` line 85
 - **Summary:** `TonightsPickSection` derives the weekday name for Winston's voice line using `new Date().getUTCDay()`. After 8pm EDT (UTC-4), the UTC date has already rolled to the next calendar day. Members in Louisville, KY see "For a Wednesday on the porch" during Tuesday evening meetups. Fix: replace `days[new Date().getUTCDay()]` with `new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" })`. The pick rotation itself (`todayKey()`) correctly uses UTC and is not changed by this fix.
+
+---
+
+## FIX-025 — UTC date in FeedList `today` causes meetup events to flip prematurely
+
+- **Status:** planned
+- **Found:** 2026-06-08
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md`
+- **File:** `apps/web/src/app/(app)/(shell)/page.tsx` line 290
+- **Summary:** `FeedList` derives `today` via `new Date().toISOString().slice(0, 10)` — UTC-based. After 8pm EDT (UTC-4), the UTC date rolls to the next calendar day. A meetup event with `date` = today flips from the "upcoming" events query to the "last" events query at 8pm EDT — while the club is still on the porch. The MeetupCard shows "Last meetup" instead of "Upcoming meetup." This also affects the planned IDEA-014 meetup-tonight banner (`upcoming.date === today` never fires after 8pm). Same class as FIX-024 (cellar UTC weekday). Fix: replace the UTC slice with `new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })` which natively produces YYYY-MM-DD in ET.

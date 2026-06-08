@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-07 (Nightshift run)
+Last updated: 2026-06-08 (Nightshift run)
 
 ---
 
@@ -294,10 +294,12 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Additional moss color violations in settings forms (FIX-022, planned — 4 more files: avatar-uploader, display-name-form, preferences-form, suggestion-form)
 - Storage leak in pairing capture on sign/identify failure (FIX-023, planned — same class as FIX-003, plan written)
 - UTC weekday mismatch in Tonight's Pick voice line (FIX-024, planned — 2-line fix in cellar page)
-- My notes pinned first in ClubVoice "The club says" (IDEA-016, seed — 5-min JSX reorder)
-- Club tasting digest export for meetup nights (IDEA-015, seed — admin convenience feature)
+- UTC date in feed `today` variable causes meetup events to flip at 8pm EDT (FIX-025, planned — 1-line fix in page.tsx)
+- Tonight's Pick empty-shelf Winston voice (IDEA-021, planned — 5 min, dev plan written)
+- Admin product merge tool (IDEA-022, seed — ~2 hours, for duplicate product cleanup)
 - Bourbon-specific explore links on product detail (IDEA-017, planned — 30 min, dev plan written)
 - Native share sheet for product pages (IDEA-018, seed — `navigator.share()` PWA integration)
 - Club want-count hint on Want shelf (IDEA-019, planned — 45 min, dev plan written)
 - Branded error.tsx and not-found.tsx pages (IDEA-020, planned — 30 min, dev plan written)
 - No `error.tsx` or `not-found.tsx` in the app — Next.js default pages shown on errors/404s
+- IDEA-014 (meetup tonight banner) parked by stale rule — dev plan ready; apply FIX-025 first when reclaiming
