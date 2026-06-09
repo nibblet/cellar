@@ -236,28 +236,30 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-017] Bourbon-specific explore links on product detail
-- **Status:** planned
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-06
-- **Last Updated:** 2026-06-06
+- **Last Updated:** 2026-06-09
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-017-bourbon-explore-links.md`
 - **Summary:** The `ExploreLinks` component shows cigar-specific research links (CigarPage, Cigar Aficionado) on cigar product detail, but bourbon product detail has no equivalent "Explore" section. Adding a `productType` prop and bourbon-specific links (Whiskybase, Distiller.com) completes the research surface for bourbons. 30 minutes, no AI cost, no DB changes — two new link arrays and a prop.
 - **Night Notes:**
   - 2026-06-06: Seeded and immediately promoted to `planned`. `ExploreLinks` is already guarded `{productType === "cigar" ? ...}` in product detail; just needs to accept a `productType` prop and select the right link set. Dev plan written.
+  - 2026-06-09: 3-day stale rule triggered (3 days at planned, no commits). Parked. Dev plan fully written — reclaim in a 30-min bourbon product-detail polish session.
 
 ---
 
 ### [IDEA-018] Native share sheet for product pages (PWA)
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-06
-- **Last Updated:** 2026-06-06
+- **Last Updated:** 2026-06-09
 - **Priority:** P3
 - **Plan:** (not yet written)
 - **Summary:** Add a "Share" icon button to product detail that triggers `navigator.share()` with the product name and app deep-link URL. Falls back to copy-to-clipboard on browsers that don't support the Web Share API (e.g. desktop). The 12 club members share product links in group texts frequently; a native share sheet eliminates copy-paste friction. Zero AI cost, no new DB columns — purely a client-side `"use client"` wrapper around the platform Share API.
 - **Night Notes:**
   - 2026-06-06: Seeded. `navigator.share()` is supported on all modern iOS Safari versions (PWA target). Implementation: a small `ShareButton` client component with `type="button"` and a share icon (e.g. `lucide-react` `Share2`). Place in the product detail header alongside the edit pencil link. The `href` is `window.location.href` (the canonical deep-link). ~30 minutes.
+  - 2026-06-09: 3-day stale rule triggered (3 days at seed, no commits). Parked. P3 UX convenience — reclaim when Paul asks for native sharing from product detail.
 
 ---
 
@@ -324,3 +326,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** As more members capture products, the DB will accumulate duplicates — two rows representing the same bourbon or cigar, each with partial tastings and saves. There's currently no admin mechanism to merge them. An `/admin/products/merge` page would accept a primary UUID (keep) and a secondary UUID (archive), then: (1) UPDATE all `tastings.product_id` from secondary to primary, (2) upsert `member_saves` by taking the OR of each flag per member, (3) copy `product_images` rows to primary, (4) set `products.status = 'archived'` on secondary. No AI cost, no new migrations, pure SQL/Supabase client logic. ~2 hours.
 - **Night Notes:**
   - 2026-06-08: Seeded. The existing admin pages (`admin/invites`, `admin/catalog`, `admin/suggestions`) establish a clear pattern: server component page with server action forms. A merge page fits that mold exactly. The `tastings` re-parent is a single UPDATE; the `member_saves` merge needs a per-member check (SELECT existing row, upsert combining flags). Self-contained, low risk since secondary gets archived not deleted.
+
+---
+
+### [IDEA-023] "Tasted by N members" count in ClubVoice
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-09
+- **Last Updated:** 2026-06-09
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md`
+- **Summary:** Add `taster_count: number` to `GroupVoice` and display "Tasted by N of 12 members" in the ClubVoice section on product detail. Computed from the already-fetched tastings array as `new Set(tastings.map(t => t.user_id)).size` — zero extra DB queries. Gives members an instant quorum signal before reading the aggregate voice: "9 of 12 members weighed in" vs. "2 of 12." 30 minutes, zero AI cost, no migrations.
+- **Night Notes:**
+  - 2026-06-09: Seeded and immediately promoted to `planned`. `loadGroupVoice` already fetches all tasting rows for the product. The distinct-user count is a client-side dedup of an already-loaded array. Three touch points: type, computation, rendering. Dev plan written with unit test coverage.
+
+---
+
+### [IDEA-024] Quick Want-shelf toggle on catalog cards
+- **Status:** exploring
+- **Category:** new
+- **Seeded:** 2026-06-09
+- **Last Updated:** 2026-06-09
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** A small bookmark icon on bourbon catalog cards that toggles `member_saves.want` inline without navigating to product detail. Reduces friction from the current "browse → tap → toggle → back" flow to a single tap in the list. Pattern: a compact `<form>` with a server action + `revalidatePath` wrapping a want icon, consistent with the Server-first architecture. The catalog page stays RSC; no "use client" needed for the toggle itself.
+- **Night Notes:**
+  - 2026-06-09: Seeded and promoted to `exploring`. Architecture is clear: inline server action form on each card, `revalidatePath` on the catalog route to refresh state. Key design questions before writing a plan: (a) optimistic state (revalidatePath is round-trip — acceptable for 12 users but potentially noticeable on cellular); (b) tap-target placement without overlapping the card's primary "navigate to product" tap area. Estimate 45–60 min once questions resolved.

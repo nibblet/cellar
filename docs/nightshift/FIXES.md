@@ -279,3 +279,35 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md`
 - **File:** `apps/web/src/app/(app)/(shell)/page.tsx` line 290
 - **Summary:** `FeedList` derives `today` via `new Date().toISOString().slice(0, 10)` — UTC-based. After 8pm EDT (UTC-4), the UTC date rolls to the next calendar day. A meetup event with `date` = today flips from the "upcoming" events query to the "last" events query at 8pm EDT — while the club is still on the porch. The MeetupCard shows "Last meetup" instead of "Upcoming meetup." This also affects the planned IDEA-014 meetup-tonight banner (`upcoming.date === today` never fires after 8pm). Same class as FIX-024 (cellar UTC weekday). Fix: replace the UTC slice with `new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })` which natively produces YYYY-MM-DD in ET.
+
+---
+
+## FIX-026 — MCP single-token design exposes any member's private cellar to all bearer-token holders
+
+- **Status:** planned
+- **Found:** 2026-06-09
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-026-mcp-cross-member-access.md`
+- **Files:** `apps/web/src/lib/mcp/tools.ts` (~lines 481, 534)
+- **Summary:** `get_my_cellar` and `suggest_try_next` in the MCP server accept a `member_email` parameter and return that member's private shelf data and palate-based picks. The MCP server uses a single shared bearer token (`NCCC_MCP_TOKEN`). Any holder of the token can query any club member's cellar by passing their email. For 12 friends this may be intentional, but the behavior is undocumented and the existing Cloudflare OAuth proxy provides a clean path to per-user token scoping. Near-term fix: add a comment documenting the single-token design. Medium-term fix: extend the OAuth proxy to inject a verified `X-Nccc-Member-Email` header and validate it against `member_email` in the tool handlers.
+
+---
+
+## FIX-027 — `release_label` URL search param has no max-length guard in recommend page
+
+- **Status:** planned
+- **Found:** 2026-06-09
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-027-release-label-length.md`
+- **File:** `apps/web/src/app/(app)/(shell)/products/[id]/recommend/page.tsx` (~line 58)
+- **Summary:** The `release_label` value from URL search params is trimmed but never length-capped before being used in a Supabase `.eq()` query and passed to the form as a default value. An excessively long string could corrupt the page layout. Supabase parameterized queries prevent SQL injection; this is a low-severity data-boundary validation gap. Fix: add `.slice(0, 100)` immediately after `.trim()`.
+
+---
+
+## FIX-028 — `<Voice />` used on capture form — design system violation
+
+- **Status:** planned
+- **Found:** 2026-06-09
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-028-voice-on-capture.md`
+- **Files:**
+  - `apps/web/src/app/(app)/(shell)/capture/capture-form.tsx` lines 68–70 and 96
+  - `apps/web/src/components/pairing/pairing-capture-flow.tsx` ~line 223
+- **Summary:** The `<Voice />` component (Winston's italic Playfair prose) appears on the capture form with instructional hints: "Hold the band steady. I'll do the rest." (line 96), "One photo of the pair — I'll name the cigar and the pour." (line 68), and a loading-state narration in the pairing capture flow. The design system is explicit: Winston never appears on the capture page. His allowed contexts are empty states, recommendation intros, onboarding, and system messages. Fix: replace each `<Voice>` with a plain `<p className="text-center text-sm text-foreground-subtle italic font-serif">` — same visual feel, correct semantic.

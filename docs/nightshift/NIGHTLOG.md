@@ -4,6 +4,67 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-09
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-08 nightshift. Targeted scan via two parallel
+  subagents: (1) bug hunt across enrich-draft route, MCP tools, recommend page, badge
+  computation, pairing prose, and members page; (2) design system scan for Voice violations,
+  brass color usage, formatMemberName compliance, "use client" overuse, type safety, and
+  unhandled promise rejections.
+- Issues: 3 new (FIX-026 MCP cross-member access, FIX-027 release_label length, FIX-028
+  Voice on capture form); 8 existing confirmed still open (FIX-018 through FIX-025).
+- Ideas: 2 parked by 3-day stale rule (IDEA-017, IDEA-018); 2 new ideas (IDEA-023 →
+  immediately planned with dev plan; IDEA-024 → exploring).
+- Plans written: 3 fix plans (FIX-026, FIX-027, FIX-028) + 1 devplan (IDEA-023) = 4 total.
+- Lint/build: node_modules not installed; manual scan + subagent reads. No new TypeScript
+  type errors found. Daily-pour card Voice flagged by Agent 2 — reviewed and confirmed
+  intentional (recommendation intro context explicitly documented in the component).
+
+### Key Findings
+- **FIX-028: `<Voice />` on capture form — clear design system violation.** Two instances in
+  `capture/capture-form.tsx` (lines 68 and 96) and one in `pairing-capture-flow.tsx` (~line 223)
+  use the Voice component for instructional hints during photo capture. The design system says
+  "Never on capture." The fix is `<p className="... italic font-serif">` — same visual personality,
+  correct semantic. About 10 minutes to apply across three sites.
+- **FIX-026: MCP single-token design is an undocumented cross-member data exposure.** Any bearer-
+  token holder can call `get_my_cellar` or `suggest_try_next` with any member's email and get
+  private shelf data. For a 12-person friends club this may be acceptable, but it's worth
+  documenting. The Cloudflare OAuth proxy already provides the infrastructure for per-user token
+  scoping — the plan describes both the 5-min doc fix and the full OAuth-scoped approach.
+- **Daily Pour card Voice is intentional, not a violation.** Agent 2 flagged `daily-pour-card.tsx`
+  line 42. On inspection the component is explicitly described as "Winston-narrated" in its header
+  comment, and the Daily Pour IS a recommendation intro — an allowed Voice context. Dismissed.
+- **IDEA-023 grounded and planned.** "Tasted by N of 12 members" derived client-side from the
+  `loadGroupVoice` tastings array already in memory. Three touch points: `GroupVoice` type,
+  `loadGroupVoice` computation, `ClubVoice` rendering. Zero extra DB query, 30 min, dev plan
+  written.
+- **8 planned fixes still unresolved.** The oldest (FIX-018 through FIX-021) are 5 and 4 days
+  planned with no commits. The backlog of small quick-wins keeps growing.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-028-voice-on-capture.md` — **10 min**: replace Voice→p in capture-form.tsx (2 sites) and pairing-capture-flow.tsx (1 site)
+- `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md` — **30 min**: add taster_count to GroupVoice + render "Tasted by N of 12" in ClubVoice
+- `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md` — **2 min**: replace `getUTCDay()` in cellar page Tonight's Pick
+- `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md` — **2 min**: replace UTC slice in feed FeedList
+- `docs/nightshift/plans/DEVPLAN-IDEA-021-tonights-pick-empty-state.md` — **5 min**: Winston empty state for Tonight's Pick
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete YouMightAlsoLike component + barrel export
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one cleanup line in product-photo/route.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two cleanup lines in pairings/capture/actions.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: admin check in two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5 moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-026-mcp-cross-member-access.md` — **5 min (Option A)**: add doc comment to MCP tools documenting single-token design
+- `docs/nightshift/plans/DEVPLAN-IDEA-019-want-overlap-count.md` — **45 min**: "N others want this" on Want shelf
+- `docs/nightshift/plans/DEVPLAN-IDEA-020-error-not-found-pages.md` — **30 min**: branded error + 404 pages with Winston voice
+
+### Recommendations
+- **If you have 15 min:** Apply FIX-028 (10 min) + FIX-020 (5 min). Capture Voice violations gone, dead component deleted. Clean, high-signal.
+- **If you have 30 min:** Add FIX-024 (2 min) + FIX-025 (2 min) + IDEA-021 (5 min) + FIX-021 (5 min) + FIX-023 (5 min). In 30 min total: UTC bugs gone, Tonight's Pick has a proper empty state, two storage leak classes closed.
+- **If you have 1 hour:** Add FIX-018 (10 min) + FIX-019 + FIX-022 (15 min combined) + IDEA-023 (30 min). Admin defense-in-depth complete, moss design system fully consistent, every product now shows a member quorum count in ClubVoice.
+
+---
+
 ## Run: 2026-06-08
 
 ### Summary

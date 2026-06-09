@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-08 (Nightshift run)
+Last updated: 2026-06-09 (Nightshift run)
 
 ---
 
@@ -303,3 +303,9 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Branded error.tsx and not-found.tsx pages (IDEA-020, planned — 30 min, dev plan written)
 - No `error.tsx` or `not-found.tsx` in the app — Next.js default pages shown on errors/404s
 - IDEA-014 (meetup tonight banner) parked by stale rule — dev plan ready; apply FIX-025 first when reclaiming
+- MCP single-token cross-member data access (FIX-026, planned — 5 min doc comment; full OAuth-scoped fix described in plan)
+- `release_label` URL param lacks max-length guard in recommend page (FIX-027, planned — 1-line `.slice(0, 100)`)
+- `<Voice />` used on capture form and pairing capture flow — design system violation (FIX-028, planned — 10 min, 3 sites)
+- "Tasted by N of 12 members" count in ClubVoice group voice (IDEA-023, planned — 30 min, dev plan written)
+- Quick Want-shelf toggle inline on catalog cards (IDEA-024, exploring — ~45 min once architecture questions resolved)
+- Bourbon explore links (IDEA-017) and native share sheet (IDEA-018) parked — dev plan for IDEA-017 ready to reclaim
