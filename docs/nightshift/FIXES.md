@@ -311,3 +311,26 @@ Format: FIX-XXX | Title | Status | Plan
   - `apps/web/src/app/(app)/(shell)/capture/capture-form.tsx` lines 68–70 and 96
   - `apps/web/src/components/pairing/pairing-capture-flow.tsx` ~line 223
 - **Summary:** The `<Voice />` component (Winston's italic Playfair prose) appears on the capture form with instructional hints: "Hold the band steady. I'll do the rest." (line 96), "One photo of the pair — I'll name the cigar and the pour." (line 68), and a loading-state narration in the pairing capture flow. The design system is explicit: Winston never appears on the capture page. His allowed contexts are empty states, recommendation intros, onboarding, and system messages. Fix: replace each `<Voice>` with a plain `<p className="text-center text-sm text-foreground-subtle italic font-serif">` — same visual feel, correct semantic.
+
+---
+
+## FIX-029 — `member_saves` documented as "own-only" but SELECT is club-wide; `loved` flag is cross-member visible
+
+- **Status:** planned
+- **Found:** 2026-06-10
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-029-member-saves-loved-visibility.md`
+- **Files:**
+  - `docs/nightshift/STATUS.md` (documentation correction)
+  - `CLAUDE.md` (if "own-only" description present)
+  - `supabase/migrations/20260522000001_member_saves.sql` (RLS source of truth — read-only reference)
+- **Summary:** STATUS.md and NCCC conventions describe `member_saves` as "own-only (no cross-member visibility)." In reality, the RLS SELECT policy is `member_saves_select_all` — any authenticated club member can read any other member's saves, including the `loved` flag (described elsewhere as a "private signal for Try Next"). The member profile Cellar tab depends on this cross-member read silently. For 12 friends this behavior is likely intentional, but the documentation is wrong. Primary fix: correct STATUS.md. Secondary consideration: if Paul wants `loved` truly private, add a narrowed SELECT policy excluding `loved=true` from cross-member reads.
+
+---
+
+## FIX-030 — Duplicate cellar + taste DB calls in `loadFindNextSuggestions`
+
+- **Status:** planned
+- **Found:** 2026-06-10
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-030-find-next-duplicate-queries.md`
+- **File:** `apps/web/src/lib/find-next/load.ts` — `loadProductSuggestions` (lines 116–180)
+- **Summary:** `loadFindNextSuggestions` calls `loadProductSuggestions` for both "bourbon" and "cigar" via `Promise.all`. Each call independently executes `loadCellarSnapshot(supabase, memberId)` and `ensureTasteRecommendations(supabase, memberId)` — identical DB queries for the same member. Both fire simultaneously (parallel), doubling the connection overhead for these two reads. Fix: hoist both shared loads into `loadFindNextSuggestions` and pass the results as parameters to a refactored `loadProductSuggestions`. Saves ~2 DB roundtrips (~40–80ms) per find-next feed render.

@@ -4,6 +4,96 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-10
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-09 nightshift. Targeted deep-scan of under-inspected
+  areas: search page, shelf page, members pages (list + profile), welcome/onboarding flow, find-
+  next lib, daily-pour lib, taste lib (context/load/vector/rationale/want), onboarding lib,
+  preferences lib, similarity lib, pairings capture flow, primitive components, and all member-
+  profile section components.
+- Issues: 2 new (FIX-029 member_saves RLS docs mismatch + loved visibility; FIX-030 duplicate
+  cellar/taste DB calls in find-next); 11 existing confirmed still open (FIX-018 through FIX-028).
+- Ideas: 2 parked by 3-day stale rule (IDEA-019, IDEA-020); 1 promoted seed→planned (IDEA-022);
+  2 new seeds (IDEA-025 feed note preview, IDEA-026 event recap page).
+- Plans written: 2 fix plans (FIX-029, FIX-030) + 1 devplan (IDEA-022) = 3 total.
+- Lint/build: node_modules not installed in environment; manual code scan. No TypeScript type
+  errors found in scanned files. Daily-pour `todayKey()` UTC usage is intentional per in-file
+  comment (rotation stability > local time display; UI weekday fixes are FIX-024/025).
+
+### Key Findings
+- **FIX-029: `member_saves` RLS is club-wide for SELECT, not "own-only."** The migration defines
+  `member_saves_select_all` — any authenticated club member can read any other member's saves,
+  including the `loved` flag. STATUS.md has said "own-only" since day one. This is almost certainly
+  intentional for 12 friends (the member profile Cellar tab silently depends on cross-member reads),
+  but the docs are wrong. Correction committed to STATUS.md. If Paul wants `loved` truly private,
+  FIX-029 plan describes the narrowed SELECT policy.
+- **FIX-030: `loadFindNextSuggestions` duplicates two DB queries per call.** `loadProductSuggestions`
+  called for "bourbon" and "cigar" in parallel, but each independently fetches `loadCellarSnapshot`
+  and `ensureTasteRecommendations` — identical queries for the same member. Doubles connection
+  overhead for these two reads (~40–80ms avoidable per find-next render). 30-min refactor: hoist
+  shared loads to the outer function.
+- **IDEA-022 promoted to planned.** Admin product merge tool dev plan written. 3-phase plan:
+  form + auth guard → 6-step atomic merge sequence (tastings, member_saves OR-merge, images,
+  pairing cache invalidation, archive secondary, invalidate Winston prose) → post-merge voice
+  line. Estimated 2 hours. No new migrations needed (uses existing `archived` status).
+- **`loadTasteByType` and taste module are well-structured.** Cache keyed by `signal_hash`
+  (SHA-256 of tried/loved ids + preferences + SIGNAL_VERSION). Fallback to stale cache on
+  rebuild failure. Cold-start path uses preference-only scoring. No issues found.
+- **Members page and member profile are clean.** `formatMemberName` used correctly in both.
+  Parallel queries for members list. Own-profile redirect on `/members/[id]` fires before
+  loading the member data. No issues found in these pages.
+- **Search page Voice context is correct.** `<Voice>` on the "no query" empty state and "no
+  results" state — both are allowed empty-state contexts. "A few more letters" is borderline
+  (validation hint) but defensibly a system message. Not flagging.
+- **`todayKey()` UTC usage is documented and intentional.** In-file comment in `daily-pour/select.ts`
+  explicitly explains the UTC tradeoff for rotation stability. FIX-024 (cellar weekday display) and
+  FIX-025 (feed today variable) address the UI display layer only; the rotation seed remains UTC.
+- **13 planned fixes total — backlog of quick wins continues to grow.** The oldest unresolved
+  (FIX-018 through FIX-023) range from 4–6 days planned with no commits.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/DEVPLAN-IDEA-022-admin-product-merge.md` — **2 hr**: full admin product
+  merge tool; re-parents tastings, OR-merges saves, archives secondary, invalidates prose cache
+- `docs/nightshift/plans/FIXPLAN-FIX-029-member-saves-loved-visibility.md` — **10 min**: correct
+  STATUS.md + CLAUDE.md to reflect club-wide SELECT on member_saves; optionally restrict loved
+- `docs/nightshift/plans/FIXPLAN-FIX-030-find-next-duplicate-queries.md` — **30 min**: hoist
+  shared cellar + taste loads in loadFindNextSuggestions to eliminate 2 duplicate DB calls
+- `docs/nightshift/plans/FIXPLAN-FIX-028-voice-on-capture.md` — **10 min**: replace Voice→p in
+  capture-form.tsx (2 sites) and pairing-capture-flow.tsx (1 site)
+- `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md` — **30 min**: "Tasted by N of 12"
+  in ClubVoice
+- `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md` — **2 min**: replace `getUTCDay()`
+  in cellar Tonight's Pick
+- `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md` — **2 min**: replace UTC slice
+  in FeedList
+- `docs/nightshift/plans/DEVPLAN-IDEA-021-tonights-pick-empty-state.md` — **5 min**: Winston
+  empty state for Tonight's Pick
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete dead
+  component + barrel export
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one cleanup
+  line in product-photo/route.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two
+  cleanup lines in pairings/capture/actions.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: admin check in
+  two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5
+  moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more moss swaps
+
+### Recommendations
+- **If you have 15 min:** Apply FIX-029 (10 min doc correction) + FIX-020 (5 min dead component).
+  Fast and surgical.
+- **If you have 30 min:** Apply FIX-024 + FIX-025 (4 min total UTC bugs) + IDEA-021 (5 min
+  Tonight's Pick empty state) + FIX-021 + FIX-023 (10 min combined storage leaks) + FIX-028
+  (10 min Voice violations). In one session: UTC display bugs gone, empty state covered, two
+  storage-leak classes closed, capture Voice fixed.
+- **If you have 2 hours:** Implement IDEA-022 (admin product merge — the plan is ready, 2 hours).
+  This is the highest-value single task: it permanently fixes the catalog hygiene problem before
+  duplicates accumulate further.
+
+---
+
 ## Run: 2026-06-09
 
 ### Summary

@@ -264,28 +264,30 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-019] Club want-count hint on Want shelf
-- **Status:** planned
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-07
-- **Last Updated:** 2026-06-07
+- **Last Updated:** 2026-06-10
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-019-want-overlap-count.md`
 - **Summary:** When a member views their own Want shelf on the Cellar page, show "N others want this" beneath the subtitle for any bottle that 2+ other club members also want. Turns the Want shelf into a visible hunting-together signal for the 12-person group without creating public profiles or follower counts. Pure server-side aggregate of `member_saves.want`. Zero AI cost, no migrations. ~45 minutes.
 - **Night Notes:**
   - 2026-06-07: Seeded and immediately promoted to `planned`. Data path is clear: `SELECT product_id FROM member_saves WHERE want=true AND member_id != :me`, aggregate counts, pass to `CellarSection` as a Map. Dev plan written.
+  - 2026-06-10: 3-day stale rule (3 days at planned, no commits). Parked. Dev plan fully written — reclaim in a Cellar/Want-shelf polish session.
 
 ---
 
 ### [IDEA-020] Branded error.tsx and not-found.tsx for the app shell
-- **Status:** planned
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-07
-- **Last Updated:** 2026-06-07
+- **Last Updated:** 2026-06-10
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-020-error-not-found-pages.md`
 - **Summary:** The app has no `error.tsx` or `not-found.tsx` files. Runtime errors and 404s show Next.js default pages — unbranded and jarring for a private PWA. Adding a `(app)/(shell)/error.tsx` (client component error boundary with Winston voice + retry button) and `app/not-found.tsx` (server component 404 with Winston voice + home link) gives every failure state the same club character as the rest of the app. ~30 minutes, zero AI cost, no DB changes.
 - **Night Notes:**
   - 2026-06-07: Seeded and immediately promoted to `planned`. Confirmed no `error.tsx` or `not-found.tsx` exists anywhere in the app. Two new files, self-contained, no dependencies. Dev plan written.
+  - 2026-06-10: 3-day stale rule (3 days at planned, no commits). Parked. Dev plan fully written — reclaim in a 30-min polish session for any unbranded error state.
 
 ---
 
@@ -317,15 +319,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-022] Admin product merge tool
-- **Status:** seed
+- **Status:** planned
 - **Category:** new
 - **Seeded:** 2026-06-08
-- **Last Updated:** 2026-06-08
+- **Last Updated:** 2026-06-10
 - **Priority:** P2
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-022-admin-product-merge.md`
 - **Summary:** As more members capture products, the DB will accumulate duplicates — two rows representing the same bourbon or cigar, each with partial tastings and saves. There's currently no admin mechanism to merge them. An `/admin/products/merge` page would accept a primary UUID (keep) and a secondary UUID (archive), then: (1) UPDATE all `tastings.product_id` from secondary to primary, (2) upsert `member_saves` by taking the OR of each flag per member, (3) copy `product_images` rows to primary, (4) set `products.status = 'archived'` on secondary. No AI cost, no new migrations, pure SQL/Supabase client logic. ~2 hours.
 - **Night Notes:**
   - 2026-06-08: Seeded. The existing admin pages (`admin/invites`, `admin/catalog`, `admin/suggestions`) establish a clear pattern: server component page with server action forms. A merge page fits that mold exactly. The `tastings` re-parent is a single UPDATE; the `member_saves` merge needs a per-member check (SELECT existing row, upsert combining flags). Self-contained, low risk since secondary gets archived not deleted.
+  - 2026-06-10: Promoted to `planned`. Dev plan written (DEVPLAN-IDEA-022). 3 phases: form + auth guard, merge logic (6-step atomic sequence), polish (preview panel + post-merge voice line). Estimated 2 hours. Blocked by no hard dependency.
 
 ---
 
@@ -352,3 +355,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** A small bookmark icon on bourbon catalog cards that toggles `member_saves.want` inline without navigating to product detail. Reduces friction from the current "browse → tap → toggle → back" flow to a single tap in the list. Pattern: a compact `<form>` with a server action + `revalidatePath` wrapping a want icon, consistent with the Server-first architecture. The catalog page stays RSC; no "use client" needed for the toggle itself.
 - **Night Notes:**
   - 2026-06-09: Seeded and promoted to `exploring`. Architecture is clear: inline server action form on each card, `revalidatePath` on the catalog route to refresh state. Key design questions before writing a plan: (a) optimistic state (revalidatePath is round-trip — acceptable for 12 users but potentially noticeable on cellular); (b) tap-target placement without overlapping the card's primary "navigate to product" tap area. Estimate 45–60 min once questions resolved.
+
+---
+
+### [IDEA-025] "Your note" one-line preview on feed tasting cards
+- **Status:** seed
+- **Category:** enhance
+- **Seeded:** 2026-06-10
+- **Last Updated:** 2026-06-10
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** Feed tasting cards show the product name, member name, "Recommended" badge, and flavor chips — but if the member left a free-text note, it's invisible. Members have to tap through to product detail and locate that specific member's take. Adding a 1-line truncated note preview (`note.slice(0, 80)` + ellipsis) on cards where `note` is non-empty surfaces personal voice directly in the feed. Zero DB changes: `note` is already returned by the feed query. ~20 minutes. The note preview respects the card's existing chip row — add it below the chips, muted text, italic for texture.
+- **Night Notes:**
+  - 2026-06-10: Seeded. Confirmed `note` is included in the feed query. This is a pure JSX addition to the tasting card component — no data changes. The main design question is where to place it relative to the chip row and how to truncate cleanly on iPhone narrowband widths. P2 because it directly makes the feed feel more personal without requiring any navigation.
+
+---
+
+### [IDEA-026] Event tasting recap page
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-10
+- **Last Updated:** 2026-06-10
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** A per-event recap page at `/events/[id]` (member-readable, not admin-only) showing all tastings from that specific meetup: products covered, who recommended what, combined flavor chips, and the best pairing score among pairings captured that night. The `tastings.event_id` field already exists; this is a simple group-by query with product joins. Complements IDEA-015 (parked admin digest) but from a member-facing, in-app perspective. Gives the club a lightweight meetup history that lives in the app rather than a group text. ~1.5 hours, zero AI cost, no new migrations.
+- **Night Notes:**
+  - 2026-06-10: Seeded. `tastings.event_id`, `events`, and `pairing_sessions` tables are all in place. The event-night context already surfaces in the feed's "Last meetup" card — this extends that into a full-page view. Key data points: products tasted (unique product_ids from event tastings), recommend rate per product, top chips, and best pairing score from `pairings_cache` for any pair captured that night. The recap page could also serve as a landing for future push-notification links ("Last night's meetup recap is ready"). P2 because it adds long-term club memory without any complexity or cost.

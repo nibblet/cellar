@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-09 (Nightshift run)
+Last updated: 2026-06-10 (Nightshift run)
 
 ---
 
@@ -248,7 +248,7 @@ Tables (from migrations through 2026-05-30):
 - `invites`: single-use invite tokens
 - `products`: id, type (cigar|bourbon), name, brand, line, source, image_url, specs (jsonb), status (draft|confirmed), wheel_vector (jsonb), trait_vector (jsonb), catalog_included, release_pattern, vintages_matter, winston_prose, created_by
 - `tastings`: id, user_id, product_id, recommend, chips, note, wheel_vector, wheel_version, event_id, pairing_session_id, photo_image_id, release_label, release_year, release_label_source, release_kind, created_at
-- `member_saves`: member_id, product_id, have, want, tried, loved (unique per member+product)
+- `member_saves`: member_id, product_id, have, want, tried, loved (unique per member+product). **RLS: SELECT is club-wide (`member_saves_select_all`); INSERT/UPDATE/DELETE are own-only.** The `loved` flag is technically readable by all club members — the member profile Cellar tab depends on this. STATUS previously said "own-only" (FIX-029).
 - `product_reviews`: catalog enrichment source data (Apify), extracted_vector
 - `product_images`: member-contributed photos
 - `pairings_cache`: (cigar_id, bourbon_id) → score, rationale_text, last_computed_at
@@ -258,7 +258,7 @@ Tables (from migrations through 2026-05-30):
 - `usage_logs`: AI usage tracking
 - `catalog_hierarchy`: brand family grouping for bourbon catalog (used for etched dividers)
 
-RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at the DB level. `member_saves` is own-only. Products are readable by all authenticated members.
+RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at the DB level. `member_saves` writes are own-only; reads (`SELECT`) are club-wide (all authenticated members). Products are readable by all authenticated members.
 
 ---
 
@@ -309,3 +309,8 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - "Tasted by N of 12 members" count in ClubVoice group voice (IDEA-023, planned — 30 min, dev plan written)
 - Quick Want-shelf toggle inline on catalog cards (IDEA-024, exploring — ~45 min once architecture questions resolved)
 - Bourbon explore links (IDEA-017) and native share sheet (IDEA-018) parked — dev plan for IDEA-017 ready to reclaim
+- Admin product merge tool (IDEA-022, planned — ~2 hours, dev plan written)
+- `member_saves` RLS docs incorrect — SELECT is club-wide, not own-only (FIX-029, planned — documentation fix + optional RLS narrowing for `loved` flag)
+- Duplicate cellar + taste DB calls in `loadFindNextSuggestions` (FIX-030, planned — 30 min refactor in `lib/find-next/load.ts`)
+- "Your note" preview on feed tasting cards (IDEA-025, seed — ~20 min, no DB changes)
+- Event tasting recap page `/events/[id]` (IDEA-026, seed — ~1.5 hours, no migrations)
