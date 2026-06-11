@@ -334,3 +334,23 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-030-find-next-duplicate-queries.md`
 - **File:** `apps/web/src/lib/find-next/load.ts` — `loadProductSuggestions` (lines 116–180)
 - **Summary:** `loadFindNextSuggestions` calls `loadProductSuggestions` for both "bourbon" and "cigar" via `Promise.all`. Each call independently executes `loadCellarSnapshot(supabase, memberId)` and `ensureTasteRecommendations(supabase, memberId)` — identical DB queries for the same member. Both fire simultaneously (parallel), doubling the connection overhead for these two reads. Fix: hoist both shared loads into `loadFindNextSuggestions` and pass the results as parameters to a refactored `loadProductSuggestions`. Saves ~2 DB roundtrips (~40–80ms) per find-next feed render.
+
+---
+
+## FIX-031 — PWA manifest references four icon files that don't exist
+
+- **Status:** planned
+- **Found:** 2026-06-11
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-031-pwa-manifest-icons.md`
+- **File:** `apps/web/public/manifest.webmanifest` lines 12–35
+- **Summary:** The manifest's `icons` array references `/icons/icon-192.png`, `/icons/icon-512.png`, `/icons/icon-maskable-512.png`, and `/icons/apple-touch-icon.png`. Only `nccc-logo.png` exists in `public/icons/`. Every page load generates four 404 errors; Chrome may refuse or downgrade PWA install eligibility. The `public/icons/README.md` documents this as a "defer until launch prep" placeholder. Short-term fix: replace all four entries with the existing `nccc-logo.png` (two entries: `any` + `any maskable` at 512×512). The README generation instructions are preserved as the launch-prep path.
+
+---
+
+## FIX-032 — Missing max-length guard on `release_label` in session tasting action
+
+- **Status:** planned
+- **Found:** 2026-06-11
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-032-session-release-label-length.md`
+- **File:** `apps/web/src/app/(app)/(shell)/products/[id]/session/actions.ts` lines 86, 88
+- **Summary:** `submitSession` reads `release_label` from FormData with `as string | null` cast and `.trim()`, but no `.slice(0, 100)` max-length cap. Same class as FIX-027 (recommend page URL param). An excessively long string passes through to `saveTasting` and the `tastings` DB upsert. Fix: `String(formData.get("release_label") ?? "").trim().slice(0, 100) || null`. Also fixes the `eventId` line to use `String()` instead of an unsafe cast, matching the rest of the file's pattern.

@@ -306,15 +306,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-021] Tonight's Pick empty-shelf Winston voice
-- **Status:** planned
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-08
-- **Last Updated:** 2026-06-08
+- **Last Updated:** 2026-06-11
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-021-tonights-pick-empty-state.md`
 - **Summary:** When `TonightsPickSection` on the cellar page has no pick to show (empty Have shelf or no opposite-type pair available), it currently returns `null` silently. Adding a Winston `<Voice />` empty state — "The shelf's bare. Add something to have on hand and I'll pick tonight's pour." — with a "Browse bourbons →" link closes the feedback loop and gives first-time cellar visitors a reason to start adding bottles. 5-minute change, zero AI cost, no DB changes.
 - **Night Notes:**
   - 2026-06-08: Seeded and immediately promoted to `planned`. Noticed the bare `return null` while verifying FIX-024. The `<Voice />`, `<Link>`, `<Divider>`, and `cn` are all already imported in the file — truly zero new imports. Dev plan written.
+  - 2026-06-11: 3-day stale rule triggered (seeded 2026-06-08, no commits). Parked. A 5-minute grab — dev plan written and ready to execute immediately.
 
 ---
 
@@ -333,41 +334,72 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-023] "Tasted by N members" count in ClubVoice
-- **Status:** planned
+- **Status:** ready
 - **Category:** enhance
 - **Seeded:** 2026-06-09
-- **Last Updated:** 2026-06-09
+- **Last Updated:** 2026-06-11
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md`
 - **Summary:** Add `taster_count: number` to `GroupVoice` and display "Tasted by N of 12 members" in the ClubVoice section on product detail. Computed from the already-fetched tastings array as `new Set(tastings.map(t => t.user_id)).size` — zero extra DB queries. Gives members an instant quorum signal before reading the aggregate voice: "9 of 12 members weighed in" vs. "2 of 12." 30 minutes, zero AI cost, no migrations.
 - **Night Notes:**
   - 2026-06-09: Seeded and immediately promoted to `planned`. `loadGroupVoice` already fetches all tasting rows for the product. The distinct-user count is a client-side dedup of an already-loaded array. Three touch points: type, computation, rendering. Dev plan written with unit test coverage.
+  - 2026-06-11: Promoted to `ready`. Dev plan is fully self-contained (DEVPLAN-IDEA-023). No dependencies. Zero new queries. Executable in 30 minutes.
 
 ---
 
 ### [IDEA-024] Quick Want-shelf toggle on catalog cards
-- **Status:** exploring
+- **Status:** done
 - **Category:** new
 - **Seeded:** 2026-06-09
-- **Last Updated:** 2026-06-09
+- **Last Updated:** 2026-06-11
+- **Done:** 2026-06-11 (already shipped — discovered on scan)
 - **Priority:** P2
-- **Plan:** (not yet written)
-- **Summary:** A small bookmark icon on bourbon catalog cards that toggles `member_saves.want` inline without navigating to product detail. Reduces friction from the current "browse → tap → toggle → back" flow to a single tap in the list. Pattern: a compact `<form>` with a server action + `revalidatePath` wrapping a want icon, consistent with the Server-first architecture. The catalog page stays RSC; no "use client" needed for the toggle itself.
+- **Plan:** (none needed — already implemented)
+- **Summary:** A small bookmark icon on bourbon catalog cards that toggles `member_saves.want` inline without navigating to product detail.
 - **Night Notes:**
-  - 2026-06-09: Seeded and promoted to `exploring`. Architecture is clear: inline server action form on each card, `revalidatePath` on the catalog route to refresh state. Key design questions before writing a plan: (a) optimistic state (revalidatePath is round-trip — acceptable for 12 users but potentially noticeable on cellular); (b) tap-target placement without overlapping the card's primary "navigate to product" tap area. Estimate 45–60 min once questions resolved.
+  - 2026-06-09: Seeded and promoted to `exploring`. Architecture questions: (a) optimistic state; (b) tap-target placement.
+  - 2026-06-11: Scanned `CatalogCard` and `CellarCardControls`. This feature is **already fully implemented**. `CatalogCard` renders `CellarCardControls` (tried / have / want / love toggle buttons) when `cellarState != null`. The feed page passes `cellarState={showCellar ? cellarState : null}` where `showCellar = Boolean(viewerId)` — true for any authenticated member. Architecture questions were already solved: `CellarCardControls` uses `useState` + `startTransition` for optimistic updates and `e.stopPropagation()` to avoid navigating. The 2026-06-09 nightshift scan missed this existing component.
 
 ---
 
 ### [IDEA-025] "Your note" one-line preview on feed tasting cards
-- **Status:** seed
+- **Status:** done
 - **Category:** enhance
 - **Seeded:** 2026-06-10
-- **Last Updated:** 2026-06-10
+- **Last Updated:** 2026-06-11
+- **Done:** 2026-06-11 (already shipped — discovered on scan)
+- **Priority:** P2
+- **Plan:** (none needed — already implemented)
+- **Summary:** Feed tasting cards show a one-line truncated note preview when `note` is non-empty.
+- **Night Notes:**
+  - 2026-06-10: Seeded. Confirmed `note` included in feed query. Described as missing from tasting card.
+  - 2026-06-11: Scanned `TastingCard` (lines 108–112) and `PairingFeedCard` (lines 92–96). **Both already render the note inline** — `TastingCard` with `truncate` single-line, `PairingFeedCard` with `line-clamp-2`. `FeedTastingEntry.note` is fetched in the query. The 2026-06-10 nightshift seeded this as missing but the feature already existed in both card components.
+
+---
+
+### [IDEA-027] Cellar hint dots on WinstonSuggests suggestion cards
+- **Status:** exploring
+- **Category:** enhance
+- **Seeded:** 2026-06-11
+- **Last Updated:** 2026-06-11
 - **Priority:** P2
 - **Plan:** (not yet written)
-- **Summary:** Feed tasting cards show the product name, member name, "Recommended" badge, and flavor chips — but if the member left a free-text note, it's invisible. Members have to tap through to product detail and locate that specific member's take. Adding a 1-line truncated note preview (`note.slice(0, 80)` + ellipsis) on cards where `note` is non-empty surfaces personal voice directly in the feed. Zero DB changes: `note` is already returned by the feed query. ~20 minutes. The note preview respects the card's existing chip row — add it below the chips, muted text, italic for texture.
+- **Summary:** `WinstonSuggests` renders "Reach for Next" (horizontal scroll), "Hunt Next" (TryNextPick rationale), and "Similar in Tier" / "Pairs Well With" cards (vertical list). These cards show product name + subtitle but give no indication of the member's cellar relationship to the product — whether they already Have it, Want it, or have Tried it. A member browsing suggestions has to navigate into each card to see their relationship. Adding tiny inline cellar-state indicators (small "Have" / "Want" / "Tried" badge dots, not the full toggle control) to suggestion cards would let members scan suggestions immediately. The cellar snapshot is already loaded in `loadProductSuggestions` for the shelf-first pairing logic — it could be threaded through to the card render. Zero AI cost, no DB changes.
 - **Night Notes:**
-  - 2026-06-10: Seeded. Confirmed `note` is included in the feed query. This is a pure JSX addition to the tasting card component — no data changes. The main design question is where to place it relative to the chip row and how to truncate cleanly on iPhone narrowband widths. P2 because it directly makes the feed feel more personal without requiring any navigation.
+  - 2026-06-11: Seeded. Promoted to `exploring` immediately — architecture is clear in principle but needs a closer look at how `loadProductSuggestions` passes data to `WinstonSuggests` and which suggestion card components exist. Key questions: (a) Is the cellar snapshot already available at the `WinstonSuggests` component boundary, or does it need to be fetched again? (b) Should this be full `CellarCardControls` (toggle) or read-only indicator dots? Given that WinstonSuggests cards are compact suggestion items (not the primary browsing surface), read-only indicator dots are appropriate — full controls would crowd the suggestion layout. Estimate: 45 min once architecture confirmed.
+
+---
+
+### [IDEA-028] "New to the shelf" catalog additions section in For You feed
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-11
+- **Last Updated:** 2026-06-11
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** When Paul adds a new bourbon or cigar to the catalog (sets `catalog_included = true`), club members have no way to discover it except browsing the full catalog. Adding a "New to the NCCC shelf" section at the top of the For You feed tab — showing products with `catalog_included = true` and `created_at` within the last 30 days (or a `catalog_added_at` timestamp if we want precision) — makes catalog additions feel like events. Each new product gets the same card treatment as catalog browse cards, with a "Recently added" pill. Zero AI cost; one extra query on the For You feed load: `SELECT * FROM products WHERE catalog_included = true AND created_at > now() - interval '30 days' LIMIT 5`. If no new products in 30 days, the section is hidden silently. ~1 hour.
+- **Night Notes:**
+  - 2026-06-11: Seeded. The 30-day window + `catalog_included` filter is straightforward. Potential refinement: track `catalog_added_at` separately from `created_at` since a product created months ago might be added to the catalog now — `created_at` would not reflect the catalog-add event. Could use `products.updated_at` as a proxy when `catalog_included` changes, but that column is set by trigger for all updates. A cleaner approach: add a `catalog_included_at` timestamp column (nullable; set when `catalog_included` transitions true → false → true is tracked). For now, using `created_at` is an acceptable approximation for Phase-10 scope. P2 because it closes the discovery loop for new catalog additions without requiring any notifications infrastructure.
 
 ---
 

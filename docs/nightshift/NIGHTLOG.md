@@ -4,6 +4,90 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-11
+
+### Summary
+- Scanned: 0 new code commits since 2026-06-10 nightshift. Targeted scan via two parallel
+  subagents: (1) shelf, pairing detail pages, admin catalog/suggestions/roadmap, welcome,
+  pick-pour route, pairing lib, MCP tools recommend/get_product; (2) product session form,
+  pairings capture action, lib/suggestions, lib/find-next, feed page, MCP tools recommend,
+  enrich-draft route, catalog-queries, PWA manifest. Manual reads: cellar/actions, catalog
+  card + cellar card controls, tasting card, pairing feed card, feed query types.
+- Issues: 2 new (FIX-031 PWA manifest missing icons, FIX-032 session release_label no
+  length cap); 14 existing confirmed still open (FIX-018 through FIX-030).
+- Ideas: 1 parked by 3-day stale rule (IDEA-021); 2 previously-seeded ideas marked `done`
+  as already-implemented (IDEA-024 CellarCardControls already on CatalogCard; IDEA-025
+  note already renders in TastingCard and PairingFeedCard); 1 promoted planned→ready
+  (IDEA-023); 2 new ideas seeded (IDEA-027 cellar hint dots on WinstonSuggests, IDEA-028
+  "new to the shelf" catalog additions).
+- Plans written: 2 fix plans (FIX-031, FIX-032).
+- Lint/build: node_modules not installed in environment; manual code scan + two parallel
+  subagents. No new TypeScript type errors found. All confirmed fixes from prior runs still
+  open — no daytime code commits since 2026-06-10 nightshift.
+
+### Key Findings
+- **IDEA-024 and IDEA-025 were already shipped — nightshift missed them on prior runs.**
+  `CatalogCard` (`components/feed/catalog-card.tsx`) already renders `CellarCardControls`
+  (tried/have/want/love icon row) when `cellarState != null` — passed from the feed page
+  whenever a viewer is authenticated. `TastingCard` (lines 108–112) and `PairingFeedCard`
+  (lines 92–96) both already render the tasting note inline. Both features have been in
+  the codebase since at least 2026-06-02. These backlog entries are now marked done.
+- **FIX-031: PWA manifest 404s on every page load.** `manifest.webmanifest` references
+  four icon paths that don't exist. `public/icons/` only has `nccc-logo.png`. The
+  `README.md` documents this as a launch-prep deferral, but the manifest should reference
+  the existing file in the interim to avoid 404 noise and potential Android install
+  failure. 5-minute fix: point all entries at `nccc-logo.png`.
+- **FIX-032: session/actions.ts `release_label` no max-length cap.** Lines 86 and 88 use
+  unsafe `as string | null` casts instead of `String()` wrapping (inconsistent with the
+  rest of the file), and `releaseLabel` has no `.slice(0, 100)`. Same class as FIX-027
+  (recommend page URL param). One-liner fix + type safety cleanup.
+- **IDEA-023 promoted to `ready`.** The devplan (DEVPLAN-IDEA-023) is fully self-contained
+  — 30 minutes, zero new queries, three touch points: type, computation, render.
+- **IDEA-027 seeded + exploring.** Cellar hint dots on WinstonSuggests cards — architecture
+  needs one more look at the component boundary before writing a plan.
+- **16 planned fixes total.** The planned-but-unexecuted backlog continues to grow. The
+  oldest unresolved (FIX-018 through FIX-023) are 5–7 days planned with no commits.
+
+### Plans Ready to Execute
+- `docs/nightshift/plans/FIXPLAN-FIX-031-pwa-manifest-icons.md` — **5 min**: replace 404
+  icon paths in manifest with existing `nccc-logo.png`
+- `docs/nightshift/plans/FIXPLAN-FIX-032-session-release-label-length.md` — **5 min**:
+  `String()` wrapping + `.slice(0, 100)` on `releaseLabel` in session/actions.ts
+- `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md` — **30 min**: "Tasted by N
+  of 12" in ClubVoice; now at `ready`, fully self-contained
+- `docs/nightshift/plans/DEVPLAN-IDEA-022-admin-product-merge.md` — **2 hr**: admin product
+  merge tool (highest-value unexecuted task)
+- `docs/nightshift/plans/FIXPLAN-FIX-028-voice-on-capture.md` — **10 min**: replace
+  Voice→p in capture-form.tsx (2 sites) and pairing-capture-flow.tsx (1 site)
+- `docs/nightshift/plans/FIXPLAN-FIX-024-utc-day-name.md` — **2 min**: replace
+  `getUTCDay()` in cellar Tonight's Pick
+- `docs/nightshift/plans/FIXPLAN-FIX-025-utc-date-feed-today.md` — **2 min**: replace UTC
+  slice in FeedList
+- `docs/nightshift/plans/FIXPLAN-FIX-021-product-photo-storage-leak.md` — **5 min**: one
+  cleanup line in product-photo/route.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-023-pairing-capture-storage-leak.md` — **5 min**: two
+  cleanup lines in pairings/capture/actions.ts
+- `docs/nightshift/plans/FIXPLAN-FIX-018-roadmap-admin-auth.md` — **10 min**: admin check
+  in two roadmap actions
+- `docs/nightshift/plans/FIXPLAN-FIX-019-moss-color-success-states.md` — **10 min**: 5
+  moss→foreground swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-022-moss-settings-forms.md` — **10 min**: 4 more
+  moss swaps
+- `docs/nightshift/plans/FIXPLAN-FIX-020-dead-youmightalsolike.md` — **5 min**: delete
+  dead component + barrel export
+
+### Recommendations
+- **If you have 15 min:** Apply FIX-031 (5 min manifest), FIX-032 (5 min session length),
+  and FIX-020 (5 min dead component). Three surgical cleanups that close 3 tracked issues.
+- **If you have 30 min:** FIX-024 + FIX-025 (4 min UTC bugs) + FIX-028 (10 min Voice
+  violations) + FIX-021 + FIX-023 (10 min storage leaks) + IDEA-023 (30 min tasted-by
+  count). In one session: UTC display fixed, capture Voice fixed, two storage-leak classes
+  closed, tasted-by count shipped.
+- **If you have 2 hours:** IDEA-022 (admin product merge). Highest long-term value: fixes
+  the catalog hygiene problem before duplicates accumulate further.
+
+---
+
 ## Run: 2026-06-10
 
 ### Summary

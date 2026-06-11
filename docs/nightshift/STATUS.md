@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-10 (Nightshift run)
+Last updated: 2026-06-11 (Nightshift run)
 
 ---
 
@@ -307,10 +307,13 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - `release_label` URL param lacks max-length guard in recommend page (FIX-027, planned — 1-line `.slice(0, 100)`)
 - `<Voice />` used on capture form and pairing capture flow — design system violation (FIX-028, planned — 10 min, 3 sites)
 - "Tasted by N of 12 members" count in ClubVoice group voice (IDEA-023, planned — 30 min, dev plan written)
-- Quick Want-shelf toggle inline on catalog cards (IDEA-024, exploring — ~45 min once architecture questions resolved)
 - Bourbon explore links (IDEA-017) and native share sheet (IDEA-018) parked — dev plan for IDEA-017 ready to reclaim
 - Admin product merge tool (IDEA-022, planned — ~2 hours, dev plan written)
 - `member_saves` RLS docs incorrect — SELECT is club-wide, not own-only (FIX-029, planned — documentation fix + optional RLS narrowing for `loved` flag)
 - Duplicate cellar + taste DB calls in `loadFindNextSuggestions` (FIX-030, planned — 30 min refactor in `lib/find-next/load.ts`)
-- "Your note" preview on feed tasting cards (IDEA-025, seed — ~20 min, no DB changes)
+- PWA manifest references 4 icon files that don't exist (FIX-031, planned — swap to nccc-logo.png placeholder)
+- session/actions.ts `release_label` no max-length cap (FIX-032, planned — companion to FIX-027, one-liner)
 - Event tasting recap page `/events/[id]` (IDEA-026, seed — ~1.5 hours, no migrations)
+- Cellar hint dots on WinstonSuggests suggestion cards (IDEA-027, exploring — ~45 min)
+- "New to the shelf" catalog additions section in For You feed (IDEA-028, seed — ~1 hour)
+- **Note (2026-06-11):** `CellarCardControls` (tried/have/want/love) has been present on `CatalogCard` since at least 2026-06-02. IDEA-024 and IDEA-025 were incorrectly seeded as missing features — both were already implemented. Marked done.
