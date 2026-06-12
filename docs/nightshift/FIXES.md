@@ -354,3 +354,25 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-032-session-release-label-length.md`
 - **File:** `apps/web/src/app/(app)/(shell)/products/[id]/session/actions.ts` lines 86, 88
 - **Summary:** `submitSession` reads `release_label` from FormData with `as string | null` cast and `.trim()`, but no `.slice(0, 100)` max-length cap. Same class as FIX-027 (recommend page URL param). An excessively long string passes through to `saveTasting` and the `tastings` DB upsert. Fix: `String(formData.get("release_label") ?? "").trim().slice(0, 100) || null`. Also fixes the `eventId` line to use `String()` instead of an unsafe cast, matching the rest of the file's pattern.
+
+---
+
+## FIX-033 — `<Voice />` on pairing capture and pairing taste pages — design system violation
+
+- **Status:** planned
+- **Found:** 2026-06-12
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-033-voice-pairing-pages.md`
+- **Files:**
+  - `apps/web/src/app/(app)/(shell)/pairings/capture/page.tsx` lines 40–42
+  - `apps/web/src/app/(app)/(shell)/pairings/[cigarId]/[bourbonId]/taste/page.tsx` line 64
+- **Summary:** Two additional `<Voice />` usages in capture/form contexts not covered by FIX-028. Both render instructional text ("One photo of the pair — I'll name the cigar and the pour." and "One photo of the pair — then tell us how it sat.") using Winston's italic Playfair prose, violating the rule that Winston never appears on capture pages or forms. Fix: replace each `<Voice>` with a plain `<p className="... italic font-serif">` — same visual feel, correct semantics. Remove now-unused Voice imports.
+
+---
+
+## FIX-034 — Storage leak in pairing taste action on DB insert failure
+
+- **Status:** planned
+- **Found:** 2026-06-12
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-034-taste-action-storage-leak.md`
+- **File:** `apps/web/src/app/(app)/(shell)/pairings/[cigarId]/[bourbonId]/taste/actions.ts` (~line 147)
+- **Summary:** `submitPairingTaste` uploads a photo to the `product-photos` bucket, then inserts rows into `product_images` for both products in the pair. If the insert fails (two insert errors or row count mismatch), the action returns an error without cleaning up the already-uploaded storage object. Same class as FIX-003 (capture — resolved), FIX-021 (product-photo admin route — planned), FIX-023 (pairing capture action — planned). Fix: add `void supabase.storage.from(BUCKET).remove([storagePath])` before each post-upload early-return, matching the resolved FIX-003 pattern.

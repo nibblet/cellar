@@ -4,6 +4,86 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-12
+
+### Summary
+- Scanned: No new code commits since 2026-06-11 nightshift. Two parallel subagents: (1)
+  WinstonSuggests + suggestion pipeline architecture for IDEA-027 resolution; (2) deep scan
+  of previously-unscanned routes: products/depth/, you/pairings/, you/tastings/, admin/catalog/,
+  pairings/[cigarId]/[bourbonId]/, lib/pairing/, you/cellar/ actions, shelf/. Manual reads:
+  pairing capture/taste pages for Voice violations, search page Voice audit.
+- Issues: 2 new (FIX-033 Voice on 2 additional pairing pages; FIX-034 storage leak in
+  pairing taste action). 17 existing planned fixes remain open; none resolved overnight.
+- Ideas: IDEA-027 promoted exploring→planned, dev plan written; IDEA-029 and IDEA-030 seeded
+  (2 new ideas, one per category). No stale demotions this run (all ideas ≤ 2 days at
+  current status). Note: IDEA-022 (admin product merge) reaches day 3 stale threshold
+  tomorrow (2026-06-13) if no commits land.
+- Plans written: DEVPLAN-IDEA-027-cellar-hint-dots.md, FIXPLAN-FIX-033-voice-pairing-pages.md,
+  FIXPLAN-FIX-034-taste-action-storage-leak.md.
+- Lint/build: node_modules not installed in environment; manual scan + subagent analysis.
+  No new TypeScript type errors found.
+
+### Key Findings
+
+- **IDEA-027 architecture resolved + promoted to planned.** Nightshift subagent confirmed:
+  `cellarSnapshot` is loaded inside `loadProductSuggestions` but stripped before the return
+  type. All suggestion items already carry `product_id` (or `cigar_id`/`bourbon_id` for
+  CrossTypePick). Cleanest fix: extend the return type to `{ suggestions, cellarSnapshot }`
+  — zero new DB queries. New read-only `CellarStatusDots` component (~100 lines); thread
+  snapshot through page → WinstonSuggests → per-card render. `loved` flag excluded (private
+  signal). 45-minute implementation; full dev plan written.
+
+- **FIX-033: Two more Voice violations on pairing pages.** `pairings/capture/page.tsx`
+  line 40–42 and `pairings/[cigarId]/[bourbonId]/taste/page.tsx` line 64 both use
+  `<Voice>` for instructional text ("One photo of the pair…") on capture/form pages —
+  the same violation class as FIX-028. FIX-028 covered `capture-form.tsx` and
+  `pairing-capture-flow.tsx` (the component); it missed these two page-level sites. Fix:
+  replace with plain `<p className="... italic font-serif">`. 10 minutes; plan written.
+
+- **FIX-034: Fourth storage-leak instance — pairing taste action.** `taste/actions.ts`
+  uploads a photo then inserts into `product_images`. If the insert fails, no cleanup.
+  Same pattern as FIX-003 (resolved), FIX-021 (planned), FIX-023 (planned). Plan written;
+  matches the established `void storage.remove()` cleanup pattern exactly.
+
+- **All previously-unscanned routes are clean.** depth/ (redirect only), you/pairings/,
+  you/tastings/, admin/catalog/ (proper `requireAdminSupabase()`), pairings detail (correct
+  identity use), shelf/ (redirect), lib/pairing/ — no new issues. Search page Voice usages
+  are correct empty-state uses (allowed by design system).
+
+- **19 open planned fixes total.** The execution backlog continues to grow without daytime
+  code commits. IDEA-022 (admin product merge, dev plan ready) will hit the 3-day stale
+  threshold tomorrow if no action.
+
+### Plans Ready to Execute
+
+- `docs/nightshift/plans/DEVPLAN-IDEA-027-cellar-hint-dots.md` — **45 min**: cellar hint
+  dots on WinstonSuggests cards; architecture fully mapped, zero new DB queries
+- `docs/nightshift/plans/FIXPLAN-FIX-033-voice-pairing-pages.md` — **10 min**: replace
+  Voice with plain `<p>` on 2 pairing pages (extends FIX-028 sweep)
+- `docs/nightshift/plans/FIXPLAN-FIX-034-taste-action-storage-leak.md` — **5 min**: add
+  `void storage.remove()` cleanup in taste/actions.ts (4th storage-leak fix)
+- `docs/nightshift/plans/FIXPLAN-FIX-031-pwa-manifest-icons.md` — **5 min**: fix 404
+  icons in manifest
+- `docs/nightshift/plans/FIXPLAN-FIX-032-session-release-label-length.md` — **5 min**:
+  `String()` + `.slice(0, 100)` in session/actions.ts
+- `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md` — **30 min**: "Tasted by N
+  of 12" in ClubVoice; `ready`, fully self-contained, zero new queries
+- `docs/nightshift/plans/DEVPLAN-IDEA-022-admin-product-merge.md` — **2 hr**: admin product
+  merge; highest-value unexecuted task; hits stale rule tomorrow
+
+### Recommendations
+
+- **If you have 15 min:** Apply FIX-031 + FIX-032 + FIX-034 — three 5-minute surgical
+  cleanups closing the last manifest 404, the last release_label length gap, and the fourth
+  instance of the storage-leak class.
+- **If you have 30 min:** FIX-033 (10 min, closes Voice-on-capture sweep) + IDEA-023
+  (30 min, ships "Tasted by N of 12" in ClubVoice). The most visible member-facing
+  improvement ready to go this run.
+- **If you have 2 hours:** IDEA-022 (admin product merge). Highest long-term value; also
+  prevents the devplan from going stale tomorrow. Fully specced in 3 phases.
+
+---
+
 ## Run: 2026-06-11
 
 ### Summary

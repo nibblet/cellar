@@ -378,15 +378,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-027] Cellar hint dots on WinstonSuggests suggestion cards
-- **Status:** exploring
+- **Status:** planned
 - **Category:** enhance
 - **Seeded:** 2026-06-11
-- **Last Updated:** 2026-06-11
+- **Last Updated:** 2026-06-12
 - **Priority:** P2
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-027-cellar-hint-dots.md`
 - **Summary:** `WinstonSuggests` renders "Reach for Next" (horizontal scroll), "Hunt Next" (TryNextPick rationale), and "Similar in Tier" / "Pairs Well With" cards (vertical list). These cards show product name + subtitle but give no indication of the member's cellar relationship to the product — whether they already Have it, Want it, or have Tried it. A member browsing suggestions has to navigate into each card to see their relationship. Adding tiny inline cellar-state indicators (small "Have" / "Want" / "Tried" badge dots, not the full toggle control) to suggestion cards would let members scan suggestions immediately. The cellar snapshot is already loaded in `loadProductSuggestions` for the shelf-first pairing logic — it could be threaded through to the card render. Zero AI cost, no DB changes.
 - **Night Notes:**
   - 2026-06-11: Seeded. Promoted to `exploring` immediately — architecture is clear in principle but needs a closer look at how `loadProductSuggestions` passes data to `WinstonSuggests` and which suggestion card components exist. Key questions: (a) Is the cellar snapshot already available at the `WinstonSuggests` component boundary, or does it need to be fetched again? (b) Should this be full `CellarCardControls` (toggle) or read-only indicator dots? Given that WinstonSuggests cards are compact suggestion items (not the primary browsing surface), read-only indicator dots are appropriate — full controls would crowd the suggestion layout. Estimate: 45 min once architecture confirmed.
+  - 2026-06-12: Architecture fully confirmed via nightshift subagent scan. `cellarSnapshot` is fetched inside `loadProductSuggestions` but not returned to the page. All suggestion items have `product_id`; `CrossTypePick` has `cigar_id`/`bourbon_id`. Fix: extend `loadProductSuggestions` return type to `{ suggestions, cellarSnapshot }` (zero new DB queries — reuses already-fetched data). Create a new read-only `CellarStatusDots` component (~100 lines). Thread snapshot prop through page → WinstonSuggests. `loved` flag excluded (private signal). Promoted to `planned`. Dev plan written at `DEVPLAN-IDEA-027-cellar-hint-dots.md`. Estimate: 45 min.
 
 ---
 
@@ -413,3 +414,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** A per-event recap page at `/events/[id]` (member-readable, not admin-only) showing all tastings from that specific meetup: products covered, who recommended what, combined flavor chips, and the best pairing score among pairings captured that night. The `tastings.event_id` field already exists; this is a simple group-by query with product joins. Complements IDEA-015 (parked admin digest) but from a member-facing, in-app perspective. Gives the club a lightweight meetup history that lives in the app rather than a group text. ~1.5 hours, zero AI cost, no new migrations.
 - **Night Notes:**
   - 2026-06-10: Seeded. `tastings.event_id`, `events`, and `pairing_sessions` tables are all in place. The event-night context already surfaces in the feed's "Last meetup" card — this extends that into a full-page view. Key data points: products tasted (unique product_ids from event tastings), recommend rate per product, top chips, and best pairing score from `pairings_cache` for any pair captured that night. The recap page could also serve as a landing for future push-notification links ("Last night's meetup recap is ready"). P2 because it adds long-term club memory without any complexity or cost.
+
+---
+
+### [IDEA-029] Re-taste shortcut from tasting history
+- **Status:** seed
+- **Category:** enhance
+- **Seeded:** 2026-06-12
+- **Last Updated:** 2026-06-12
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** The `/you/tastings` history page shows each tasting card (product, chips, note, date) but has no quick path back to the recommend form to log a follow-up tasting. Adding a "Try again →" link per card that navigates to `/products/{id}/recommend?release_label={label}` lets members quickly log a follow-up tasting for a new vintage without searching for the product again. Especially useful for annual releases (e.g., Buffalo Trace Antique Collection each fall). ~20 minutes, zero AI cost, no DB changes — one JSX link added to `TastingSection` card render.
+- **Night Notes:**
+  - 2026-06-12: Seeded. The `TastingsSection` component already receives product name and product_id per tasting row, and `release_label` is in the tasting query. The link is a pre-populated deep-link to the existing recommend form. The "Try again" label is intentionally casual — matches the club voice. P2 because it closes a real friction point for members who taste the same product across vintages.
+
+---
+
+### [IDEA-030] Club Bulletin Board — admin-pinned message in For You feed
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-12
+- **Last Updated:** 2026-06-12
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** Paul (admin) can post a short text message from the admin panel that appears as a Winston `<Voice />` card at the top of the For You feed tab until dismissed. Use case: "Next meetup is June 19 at the usual spot" or "New Weller Antique batch just hit Brown-Forman Cask." Members dismiss per-session via `localStorage` keyed to the bulletin ID. Zero AI cost. DB: a `club_bulletin` table (id UUID, message text, active boolean, created_at). Admin: a simple `/admin/bulletin` page with textarea + save action. For You feed: one extra query `SELECT * FROM club_bulletin WHERE active = true LIMIT 1`. If no active bulletin, section is hidden. ~1.5 hours, 1 migration.
+- **Night Notes:**
+  - 2026-06-12: Seeded. The `events` table already exists for meetup dates — but a bulletin is more flexible (not tied to a scheduled event). The dismissal approach uses `localStorage` rather than a server-side table to avoid a new join on every feed load and keep the feature self-contained. The admin bulletin page follows the same server-action pattern as `/admin/invites` and `/admin/catalog`. Winston voice card uses the `<Voice>` primitive + a dismiss button in a `"use client"` wrapper. P2 because it gives Paul a lightweight club-wide broadcast channel that doesn't require the group text.
