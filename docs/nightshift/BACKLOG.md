@@ -320,16 +320,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-022] Admin product merge tool
-- **Status:** planned
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-08
-- **Last Updated:** 2026-06-10
+- **Last Updated:** 2026-06-13
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-022-admin-product-merge.md`
 - **Summary:** As more members capture products, the DB will accumulate duplicates — two rows representing the same bourbon or cigar, each with partial tastings and saves. There's currently no admin mechanism to merge them. An `/admin/products/merge` page would accept a primary UUID (keep) and a secondary UUID (archive), then: (1) UPDATE all `tastings.product_id` from secondary to primary, (2) upsert `member_saves` by taking the OR of each flag per member, (3) copy `product_images` rows to primary, (4) set `products.status = 'archived'` on secondary. No AI cost, no new migrations, pure SQL/Supabase client logic. ~2 hours.
 - **Night Notes:**
   - 2026-06-08: Seeded. The existing admin pages (`admin/invites`, `admin/catalog`, `admin/suggestions`) establish a clear pattern: server component page with server action forms. A merge page fits that mold exactly. The `tastings` re-parent is a single UPDATE; the `member_saves` merge needs a per-member check (SELECT existing row, upsert combining flags). Self-contained, low risk since secondary gets archived not deleted.
   - 2026-06-10: Promoted to `planned`. Dev plan written (DEVPLAN-IDEA-022). 3 phases: form + auth guard, merge logic (6-step atomic sequence), polish (preview panel + post-merge voice line). Estimated 2 hours. Blocked by no hard dependency.
+  - 2026-06-13: 3-day stale rule triggered (3 days at `planned`, no commits). Parked. Dev plan fully written and ready — reclaim for a 2-hour admin session.
 
 ---
 
@@ -418,15 +419,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-029] Re-taste shortcut from tasting history
-- **Status:** seed
+- **Status:** planned
 - **Category:** enhance
 - **Seeded:** 2026-06-12
-- **Last Updated:** 2026-06-12
+- **Last Updated:** 2026-06-13
 - **Priority:** P2
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-029-retaste-shortcut.md`
 - **Summary:** The `/you/tastings` history page shows each tasting card (product, chips, note, date) but has no quick path back to the recommend form to log a follow-up tasting. Adding a "Try again →" link per card that navigates to `/products/{id}/recommend?release_label={label}` lets members quickly log a follow-up tasting for a new vintage without searching for the product again. Especially useful for annual releases (e.g., Buffalo Trace Antique Collection each fall). ~20 minutes, zero AI cost, no DB changes — one JSX link added to `TastingSection` card render.
 - **Night Notes:**
   - 2026-06-12: Seeded. The `TastingsSection` component already receives product name and product_id per tasting row, and `release_label` is in the tasting query. The link is a pre-populated deep-link to the existing recommend form. The "Try again" label is intentionally casual — matches the club voice. P2 because it closes a real friction point for members who taste the same product across vintages.
+  - 2026-06-13: Confirmed architecture: `TastingCard` is the correct file (wraps card in `<Link>`; add inner `<a>` with `e.stopPropagation()`). `TastingsSection` needs a `showRetaste?: boolean` prop; pass `showRetaste={true}` from `/you/tastings/page.tsx` only (not from `members/[id]` profile). Full dev plan written. Promoting seed → `planned`. Estimated 20 minutes.
 
 ---
 
@@ -440,3 +442,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** Paul (admin) can post a short text message from the admin panel that appears as a Winston `<Voice />` card at the top of the For You feed tab until dismissed. Use case: "Next meetup is June 19 at the usual spot" or "New Weller Antique batch just hit Brown-Forman Cask." Members dismiss per-session via `localStorage` keyed to the bulletin ID. Zero AI cost. DB: a `club_bulletin` table (id UUID, message text, active boolean, created_at). Admin: a simple `/admin/bulletin` page with textarea + save action. For You feed: one extra query `SELECT * FROM club_bulletin WHERE active = true LIMIT 1`. If no active bulletin, section is hidden. ~1.5 hours, 1 migration.
 - **Night Notes:**
   - 2026-06-12: Seeded. The `events` table already exists for meetup dates — but a bulletin is more flexible (not tied to a scheduled event). The dismissal approach uses `localStorage` rather than a server-side table to avoid a new join on every feed load and keep the feature self-contained. The admin bulletin page follows the same server-action pattern as `/admin/invites` and `/admin/catalog`. Winston voice card uses the `<Voice>` primitive + a dismiss button in a `"use client"` wrapper. P2 because it gives Paul a lightweight club-wide broadcast channel that doesn't require the group text.
+
+---
+
+### [IDEA-031] Pairing compatibility score on pairing detail page
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-13
+- **Last Updated:** 2026-06-13
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-031-pairing-score-display.md`
+- **Summary:** The pairing detail page at `/pairings/[cigarId]/[bourbonId]` shows Winston's AI prose and "Why it works" bullets but never surfaces the computed compatibility score for the headline pair. The alternative bourbons list at the bottom does show tier labels ("Excellent match", "Good match") — the omission from the header makes the page feel incomplete and leaves members guessing how strongly Winston endorses this specific combination. The score is free to compute: both trait vectors are already fetched for the page; `scorePair(cigar.trait_vector, bourbon.trait_vector)` is one in-process call. Add a tier-label badge in the page header. Zero AI cost, zero new DB queries. ~20 minutes.
+- **Night Notes:**
+  - 2026-06-13: Seeded and immediately promoted to `planned`. Architecture confirmed: `cigar.trait_vector` and `bourbon.trait_vector` are both guaranteed non-null by line 44's notFound guard. Import `scorePair` from `@/lib/pairing/score`; call it inline. `pairingTierLabel` is already imported in the page (line 9). Render a small etched-glass tier badge in the header between "Winston suggests" and the cigar name. Dev plan written. Estimated 20 minutes.
+
+---
+
+### [IDEA-032] Group chip hints on the recommend form
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-13
+- **Last Updated:** 2026-06-13
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** When a member starts a new tasting on `/products/[id]/recommend`, the chip picker shows every chip from the full flavor wheel — no guidance on what the club has found relevant for this product. The product's `GroupVoice.tag_cloud` already aggregates all previous tastings into a ranked set of flavor labels. Surfacing the top 4–5 as tappable "Others have noted: earthy, cedar, medium body" chips above the main picker gives new members context and helps experienced members quickly re-confirm shared notes. Server-side: `tag_cloud` is computed by `loadGroupVoice` and already exists on the product detail page — it needs to be passed to the recommend page as well. Client-side: a small `GroupChipHints` component renders the top cloud entries as selectable ghost chips. Tapping one pre-selects it in the active chip state. Zero AI cost, no DB changes. ~45 minutes (threading GroupVoice from server page to client chip picker is the main work).
+- **Night Notes:**
+  - 2026-06-13: Seeded. The recommend page (`/products/[id]/recommend/page.tsx`) currently loads tasting history for release-label detection but not the full group voice. Adding `loadGroupVoice(supabase, productId, productType)` to the server page is one extra call. The chip picker is a client component — the tag_cloud would be passed as a prop serialized from the server. Key constraint: the chip picker must remain the single source of truth for selection state; hint chips only pre-populate it, not replace it. P2 because it directly improves tasting quality by reducing "I don't know what to pick" friction for less-experienced members.

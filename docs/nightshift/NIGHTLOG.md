@@ -4,6 +4,90 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-13
+
+### Summary
+- Scanned: No new code commits since 2026-06-12 nightshift. Direct reads: pairing detail page,
+  group-voice aggregation (recommend-bar, member-takes), lib/taste/rationale.ts + load.ts,
+  lib/enrich/needs-enrichment.ts, you/page.tsx, members/[id]/page.tsx, you/tastings/page.tsx,
+  components/members/sections/tastings-section.tsx, tasting-card.tsx. Parallel subagent: lib/taste/,
+  lib/aggregation/, lib/identity/, lib/enrich/, welcome/page.tsx, members/ profile, you/ hub,
+  components/primitives/, lib/mcp/ tools.
+- Issues: 4 new found (FIX-035 GroupVoice member_count, FIX-036 welcome empty-user query,
+  FIX-037 taste/load UPDATE error check, FIX-038 cigar enrichment logic bug). FIX-038 is
+  critical — plans written and status set to `planned`. FIX-035/036/037 are low-severity,
+  status `found`. 20 existing planned fixes remain open; none resolved overnight.
+- Ideas: IDEA-022 parked (3-day stale). IDEA-029 promoted seed→planned + dev plan written.
+  IDEA-031 seeded and immediately promoted to `planned` + dev plan written (Category 1 enhance).
+  IDEA-032 seeded at Category 2 new (group chip hints on recommend form).
+- Plans written: FIXPLAN-FIX-038-cigar-enrichment-logic.md, DEVPLAN-IDEA-029-retaste-shortcut.md,
+  DEVPLAN-IDEA-031-pairing-score-display.md.
+- Lint/build: node_modules not installed in environment; manual code scan + subagent analysis.
+  No new TypeScript type errors found.
+
+### Key Findings
+
+- **FIX-038 (CRITICAL): Cigar catalog enrichment broken.** `needs-enrichment.ts` line 59 has
+  a stray `return false` inside the `hasVisionOnlySpecs` cigar loop that fires as soon as any
+  vision-only spec (vitola, country, strength, wrapper_color) has a non-empty value — which is
+  virtually every photo-captured cigar. The bourbon branch (lines 45–51) has the correct logic.
+  Fix is deleting one line. Impact: cigars without this fix never get Apify reviews, never get
+  wheel_vector, never get trait_vector. Pairing quality for cigars is silently degraded. Plan
+  written, status `planned`. **Highest-priority fix in the backlog.**
+
+- **FIX-035: GroupVoice.member_count is tasting count, not distinct member count.** The
+  RecommendBar shows "{recommendCount} of {memberCount}" using `tastings.length` as the
+  denominator. With the upsert key `(user_id, product_id, release_label)`, a member who logs
+  two different releases of the same product gets counted twice. The bar would show 2 icons
+  instead of 1 and display "2 of 2 recommended" when 1 member tried both. Fix:
+  `new Set(tastings.map(t => t.user_id)).size`. Low-severity for 12-person club.
+
+- **IDEA-031 seeded and planned (20 min grab).** Pairing detail page never shows the computed
+  score for the headline pair. Both trait vectors are already fetched; `scorePair` is one
+  in-process call. `pairingTierLabel` already imported. Tier label goes in the header between
+  "Winston suggests" and the cigar name. 20 minutes with no new imports needed beyond `scorePair`.
+
+- **IDEA-029 promoted to planned (20 min grab).** Re-taste shortcut from tasting history. Add
+  `showRetaste?: boolean` prop to `TastingCard` + `TastingsSection`, pass `true` from
+  `/you/tastings/page.tsx`. Inner `<a>` with `e.stopPropagation()` prevents outer card Link
+  from firing. Dev plan written and executable immediately.
+
+- **IDEA-022 parked.** Admin product merge tool hit 3-day stale threshold at `planned`. Dev
+  plan still fully written and ready to reclaim for a 2-hour admin session.
+
+- **All primary lib/ areas now scanned.** lib/taste/, lib/aggregation/, lib/identity/,
+  lib/enrich/, lib/pairing/engine, rationale generation, group-voice pipeline all scanned and
+  generally clean beyond the issues tracked above. No Next.js 16 async-API misuse found.
+  No RLS gaps beyond the already-tracked FIX-026.
+
+### Plans Ready to Execute
+
+- `docs/nightshift/plans/FIXPLAN-FIX-038-cigar-enrichment-logic.md` — **5 min, CRITICAL**:
+  delete 1 line in needs-enrichment.ts; unblocks cigar Apify enrichment chain
+- `docs/nightshift/plans/DEVPLAN-IDEA-029-retaste-shortcut.md` — **20 min**: "Try again →"
+  link in tasting history; self-contained JSX change across 3 files
+- `docs/nightshift/plans/DEVPLAN-IDEA-031-pairing-score-display.md` — **20 min**: pairing tier
+  badge in pairing detail header; import `scorePair`, 4 lines of JSX
+- `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md` — **30 min**: "Tasted by N of
+  12" in ClubVoice; `ready`, zero new DB queries
+- `docs/nightshift/plans/DEVPLAN-IDEA-027-cellar-hint-dots.md` — **45 min**: cellar hint dots
+  on WinstonSuggests cards
+- `docs/nightshift/plans/FIXPLAN-FIX-031-pwa-manifest-icons.md` — **5 min**: fix 404 icons
+- `docs/nightshift/plans/FIXPLAN-FIX-033-voice-pairing-pages.md` — **10 min**: Voice violations
+  on 2 pairing pages
+
+### Recommendations
+
+- **If you have 15 min:** FIX-038 (5 min, CRITICAL — fixes broken cigar enrichment) + IDEA-029
+  (10 min warm-up). FIX-038 is the single highest-value change in the entire backlog right now —
+  one line deleted unblocks the entire cigar catalog enrichment pipeline.
+- **If you have 30 min:** FIX-038 (5 min) + IDEA-029 (20 min) = first re-taste shortcut
+  shipped + critical enrichment path restored.
+- **If you have 1 hour:** FIX-038 + IDEA-029 + IDEA-031 (pairing score, 20 min). Three focused
+  improvements: enrichment fix, UX friction fix, pairing page polish — all executable back-to-back.
+
+---
+
 ## Run: 2026-06-12
 
 ### Summary
