@@ -4,6 +4,78 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-14
+
+### Summary
+- Scanned: No new code commits since 2026-06-13 nightshift. Direct reads: lib/cellar/actions.ts,
+  lib/cellar/load.ts, products/[id]/recommend/page.tsx, products/[id]/session/page.tsx,
+  you/settings/actions.ts (uploadAvatar), auth/callback/route.ts, reset-password/actions.ts,
+  update-password/actions.ts, settings/actions.ts, you/settings/actions.ts, lib/find-next/load.ts,
+  lib/aggregation/group-voice.ts. Parallel subagents: pairing detail, session/page, search/page,
+  you/pairings, lib/find-next, admin/meetup; lib/cellar, you/cellar, depth, members/[id], club-voice, you/page.
+- Issues: 1 new found + planned (FIX-039 avatar upload storage leak). FIX-035/036/037 promoted
+  found → planned with fix plans written. 22 planned fixes remain open; none resolved overnight.
+- Ideas: IDEA-023, IDEA-026, IDEA-028 parked (3-day stale rule). IDEA-032 promoted seed → planned
+  (dev plan written). IDEA-033 seeded and immediately promoted to planned (dev plan written).
+  IDEA-034 seeded at Category 2 (monthly club pulse summary card).
+- Plans written: FIXPLAN-FIX-035, FIXPLAN-FIX-036, FIXPLAN-FIX-037, FIXPLAN-FIX-039,
+  DEVPLAN-IDEA-032-group-chip-hints.md, DEVPLAN-IDEA-033-admin-cost-dashboard.md.
+- Lint/build: node_modules not installed in environment; manual code scan + subagent analysis.
+  No new TypeScript type errors found.
+
+### Key Findings
+
+- **FIX-035/036/037 plans written (all low-severity but now actionable).** FIX-035: GroupVoice
+  member_count uses row count, not distinct user count — 2-line Set dedup + test update.
+  FIX-036: welcome/page.tsx queries DB with empty user ID — add early return for unauthenticated
+  users. FIX-037: taste/load.ts update has no error check — add console.warn on cache write failure.
+
+- **FIX-039 (new): avatar upload storage leak.** `uploadAvatar` in you/settings/actions.ts uploads
+  to the `avatars` bucket then updates `users.avatar_url`. If the DB update fails, the uploaded
+  file is orphaned. Severity is low (deterministic path, at most 1 file per extension per user),
+  but the pattern is inconsistent. Fix: add `void supabase.storage.from("avatars").remove([path])`
+  before the dbError return — same pattern as resolved FIX-003.
+
+- **IDEA-032 promoted to planned (45 min grab).** Group chip hints on the recommend form —
+  surfaces the top 4–5 `tag_cloud` labels as tappable ghost chips above the picker. One extra
+  `loadGroupVoice` call on the server page; a new `GroupChipHints` client component threads the
+  chips to the existing `handleChipToggle` in RecommendForm. Zero AI cost, no DB changes.
+
+- **IDEA-033 seeded and planned (1 hour).** Admin AI cost dashboard at `/admin/usage`. The
+  `usage_logs` table has been recording every AI call since the cellar insight work — the data
+  exists but has no UI. A simple server component with two tables (by-model summary + recent 20
+  calls) using the existing `requireAdminUserId` pattern closes the observability gap.
+
+- **3 ideas parked.** IDEA-023 (Tasted by N members, ready for 3 days) parked — note that
+  FIX-035 (member_count distinct-user fix) is now planned and makes IDEA-023 nearly free to
+  reclaim. IDEA-026 (event recap page) and IDEA-028 (new-to-shelf feed section) parked at seed.
+
+- **Scanned cellar and settings actions.** lib/cellar/actions.ts has no error checks on
+  upsert/delete — deliberate per NCCC "trust internal invariants" philosophy; not flagged.
+  lib/cellar/load.ts is clean. reset-password/update-password auth flow is clean. settings/actions.ts
+  has good allowlist validation on preferences form. No new Next.js 16 async-API misuse found.
+
+### Plans Ready to Execute
+
+- `docs/nightshift/plans/FIXPLAN-FIX-038-cigar-enrichment-logic.md` — **5 min, CRITICAL**: delete 1 line; unblocks entire cigar enrichment chain
+- `docs/nightshift/plans/FIXPLAN-FIX-035-group-voice-member-count.md` — **10 min**: distinct user Sets in group-voice.ts + test update
+- `docs/nightshift/plans/FIXPLAN-FIX-036-welcome-empty-user-query.md` — **5 min**: skip DB query for unauthenticated welcome page
+- `docs/nightshift/plans/FIXPLAN-FIX-037-taste-update-error-check.md` — **5 min**: add console.warn on taste_recommendations cache write failure
+- `docs/nightshift/plans/FIXPLAN-FIX-039-avatar-upload-storage-leak.md` — **5 min**: cleanup orphaned avatar on DB update failure
+- `docs/nightshift/plans/DEVPLAN-IDEA-029-retaste-shortcut.md` — **20 min**: "Try again →" link in tasting history
+- `docs/nightshift/plans/DEVPLAN-IDEA-031-pairing-score-display.md` — **20 min**: pairing tier badge in pairing detail header
+- `docs/nightshift/plans/DEVPLAN-IDEA-032-group-chip-hints.md` — **45 min**: group chip hints above the recommend form picker
+- `docs/nightshift/plans/DEVPLAN-IDEA-033-admin-cost-dashboard.md` — **1 hour**: admin AI cost dashboard at /admin/usage
+- `docs/nightshift/plans/DEVPLAN-IDEA-027-cellar-hint-dots.md` — **45 min**: cellar hint dots on WinstonSuggests cards
+
+### Recommendations
+
+- **If you have 15 min:** FIX-038 (5 min, CRITICAL — unblocks cigar enrichment) + FIX-036 (5 min) + FIX-037 (5 min). Three tiny fixes that eliminate real issues and cost nothing architecturally.
+- **If you have 30 min:** FIX-038 (5 min) + FIX-035 (10 min, then immediately reclaim IDEA-023 tasted-by count which is 5 min on top) + IDEA-029 (re-taste shortcut, 10 min).
+- **If you have 1 hour:** FIX-038 + FIX-035 + IDEA-032 (group chip hints, 45 min). The chip hints plan is fully executable — one extra DB call in the recommend server page, one new ghost-chip component. Makes tasting UX meaningfully better for the whole club.
+
+---
+
 ## Run: 2026-06-13
 
 ### Summary

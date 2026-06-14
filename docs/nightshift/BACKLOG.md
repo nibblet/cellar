@@ -335,16 +335,17 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-023] "Tasted by N members" count in ClubVoice
-- **Status:** ready
+- **Status:** parked
 - **Category:** enhance
 - **Seeded:** 2026-06-09
-- **Last Updated:** 2026-06-11
+- **Last Updated:** 2026-06-14
 - **Priority:** P2
 - **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-023-tasted-by-count.md`
 - **Summary:** Add `taster_count: number` to `GroupVoice` and display "Tasted by N of 12 members" in the ClubVoice section on product detail. Computed from the already-fetched tastings array as `new Set(tastings.map(t => t.user_id)).size` — zero extra DB queries. Gives members an instant quorum signal before reading the aggregate voice: "9 of 12 members weighed in" vs. "2 of 12." 30 minutes, zero AI cost, no migrations.
 - **Night Notes:**
   - 2026-06-09: Seeded and immediately promoted to `planned`. `loadGroupVoice` already fetches all tasting rows for the product. The distinct-user count is a client-side dedup of an already-loaded array. Three touch points: type, computation, rendering. Dev plan written with unit test coverage.
   - 2026-06-11: Promoted to `ready`. Dev plan is fully self-contained (DEVPLAN-IDEA-023). No dependencies. Zero new queries. Executable in 30 minutes.
+  - 2026-06-14: 3-day stale rule (3 days at `ready`, no commits). Parked. Note: FIX-035 (GroupVoice member_count distinct-user fix) is now planned — when that fix lands, the `taster_count` field becomes nearly free to add. Reclaim immediately after FIX-035 is applied.
 
 ---
 
@@ -393,28 +394,30 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-028] "New to the shelf" catalog additions section in For You feed
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-11
-- **Last Updated:** 2026-06-11
+- **Last Updated:** 2026-06-14
 - **Priority:** P2
 - **Plan:** (not yet written)
 - **Summary:** When Paul adds a new bourbon or cigar to the catalog (sets `catalog_included = true`), club members have no way to discover it except browsing the full catalog. Adding a "New to the NCCC shelf" section at the top of the For You feed tab — showing products with `catalog_included = true` and `created_at` within the last 30 days (or a `catalog_added_at` timestamp if we want precision) — makes catalog additions feel like events. Each new product gets the same card treatment as catalog browse cards, with a "Recently added" pill. Zero AI cost; one extra query on the For You feed load: `SELECT * FROM products WHERE catalog_included = true AND created_at > now() - interval '30 days' LIMIT 5`. If no new products in 30 days, the section is hidden silently. ~1 hour.
 - **Night Notes:**
   - 2026-06-11: Seeded. The 30-day window + `catalog_included` filter is straightforward. Potential refinement: track `catalog_added_at` separately from `created_at` since a product created months ago might be added to the catalog now — `created_at` would not reflect the catalog-add event. Could use `products.updated_at` as a proxy when `catalog_included` changes, but that column is set by trigger for all updates. A cleaner approach: add a `catalog_included_at` timestamp column (nullable; set when `catalog_included` transitions true → false → true is tracked). For now, using `created_at` is an acceptable approximation for Phase-10 scope. P2 because it closes the discovery loop for new catalog additions without requiring any notifications infrastructure.
+  - 2026-06-14: 3-day stale rule (3 days at seed, no commits). Parked. Reclaim when the catalog CSV workflow picks up again and Paul needs a way to signal new additions to the club.
 
 ---
 
 ### [IDEA-026] Event tasting recap page
-- **Status:** seed
+- **Status:** parked
 - **Category:** new
 - **Seeded:** 2026-06-10
-- **Last Updated:** 2026-06-10
+- **Last Updated:** 2026-06-14
 - **Priority:** P2
 - **Plan:** (not yet written)
 - **Summary:** A per-event recap page at `/events/[id]` (member-readable, not admin-only) showing all tastings from that specific meetup: products covered, who recommended what, combined flavor chips, and the best pairing score among pairings captured that night. The `tastings.event_id` field already exists; this is a simple group-by query with product joins. Complements IDEA-015 (parked admin digest) but from a member-facing, in-app perspective. Gives the club a lightweight meetup history that lives in the app rather than a group text. ~1.5 hours, zero AI cost, no new migrations.
 - **Night Notes:**
   - 2026-06-10: Seeded. `tastings.event_id`, `events`, and `pairing_sessions` tables are all in place. The event-night context already surfaces in the feed's "Last meetup" card — this extends that into a full-page view. Key data points: products tasted (unique product_ids from event tastings), recommend rate per product, top chips, and best pairing score from `pairings_cache` for any pair captured that night. The recap page could also serve as a landing for future push-notification links ("Last night's meetup recap is ready"). P2 because it adds long-term club memory without any complexity or cost.
+  - 2026-06-14: 3-day stale rule (4 days at seed, no commits). Parked. Concept is sound — reclaim when members start asking "where can I see last night's recap?"
 
 ---
 
@@ -459,12 +462,39 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-032] Group chip hints on the recommend form
-- **Status:** seed
+- **Status:** planned
 - **Category:** new
 - **Seeded:** 2026-06-13
-- **Last Updated:** 2026-06-13
+- **Last Updated:** 2026-06-14
 - **Priority:** P2
-- **Plan:** (not yet written)
-- **Summary:** When a member starts a new tasting on `/products/[id]/recommend`, the chip picker shows every chip from the full flavor wheel — no guidance on what the club has found relevant for this product. The product's `GroupVoice.tag_cloud` already aggregates all previous tastings into a ranked set of flavor labels. Surfacing the top 4–5 as tappable "Others have noted: earthy, cedar, medium body" chips above the main picker gives new members context and helps experienced members quickly re-confirm shared notes. Server-side: `tag_cloud` is computed by `loadGroupVoice` and already exists on the product detail page — it needs to be passed to the recommend page as well. Client-side: a small `GroupChipHints` component renders the top cloud entries as selectable ghost chips. Tapping one pre-selects it in the active chip state. Zero AI cost, no DB changes. ~45 minutes (threading GroupVoice from server page to client chip picker is the main work).
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-032-group-chip-hints.md`
+- **Summary:** When a member starts a new tasting on `/products/[id]/recommend`, the chip picker shows every chip from the full flavor wheel — no guidance on what the club has found relevant for this product. The product's `GroupVoice.tag_cloud` already aggregates all previous tastings into a ranked set of flavor labels. Surfacing the top 4–5 as tappable "Others have noted: earthy, cedar, medium body" chips above the main picker gives new members context and helps experienced members quickly re-confirm shared notes. Server-side: `tag_cloud` is computed by `loadGroupVoice` and already exists on the product detail page — it needs to be passed to the recommend page as well. Client-side: a small `GroupChipHints` component renders the top cloud entries as selectable ghost chips. Tapping one pre-selects it in the active chip state. Zero AI cost, no DB changes. ~45 minutes.
 - **Night Notes:**
   - 2026-06-13: Seeded. The recommend page (`/products/[id]/recommend/page.tsx`) currently loads tasting history for release-label detection but not the full group voice. Adding `loadGroupVoice(supabase, productId, productType)` to the server page is one extra call. The chip picker is a client component — the tag_cloud would be passed as a prop serialized from the server. Key constraint: the chip picker must remain the single source of truth for selection state; hint chips only pre-populate it, not replace it. P2 because it directly improves tasting quality by reducing "I don't know what to pick" friction for less-experienced members.
+  - 2026-06-14: Promoted seed → `planned`. Architecture confirmed (no ambiguity). Dev plan written at DEVPLAN-IDEA-032-group-chip-hints.md. Three-phase: (1) add `loadGroupVoice` to recommend page server component, (2) create `GroupChipHints` client component + wire into RecommendForm, (3) edge-case polish. Estimated 45 minutes.
+
+---
+
+### [IDEA-033] Admin AI cost/usage dashboard at /admin/usage
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-14
+- **Last Updated:** 2026-06-14
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-033-admin-cost-dashboard.md`
+- **Summary:** Every AI call logs to `usage_logs` via `logUsage()`, but Paul has no way to see the data. A simple `/admin/usage` server-rendered page shows: total calls and tokens over the last 30 days, a by-model breakdown table (call count, prompt tokens, completion tokens), and a recent-20-calls detail log. Zero AI cost; one DB query on an existing table. Closes the observability gap noted in STATUS.md ("not yet built"). ~1 hour.
+- **Night Notes:**
+  - 2026-06-14: Seeded and immediately promoted to `planned`. The `usage_logs` table exists; `logUsage()` is already called on every AI interaction. The admin pattern (`requireAdminUserId` + server component) is established by other admin pages. Dev plan written at DEVPLAN-IDEA-033-admin-cost-dashboard.md. Must verify `usage_logs` column names match the plan before implementing.
+
+---
+
+### [IDEA-034] Monthly club pulse summary card on For You feed
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-14
+- **Last Updated:** 2026-06-14
+- **Priority:** P2
+- **Plan:** (not yet written)
+- **Summary:** A server-rendered "This month at the club" summary card pinned near the top of the For You feed tab showing aggregate club stats for the current calendar month: total tastings logged, unique products tried, total pairings captured. Zero AI cost; one lightweight aggregate query on `tastings` and `pairings_cache`. Gives Paul and new members an at-a-glance pulse of club activity without requiring a dedicated analytics page. Card is hidden if the current month has fewer than 5 tastings (not enough signal). ~30–45 minutes, no migrations.
+- **Night Notes:**
+  - 2026-06-14: Seeded. The MCP server has a `club-pulse` prompt that generates a prose summary — this in-app card would be the visual equivalent with hard numbers instead of prose. Key constraints: (1) card must not use Winston voice (it's a feed card, not an empty state or recommendation intro); (2) the aggregate query runs per page load — should be a fast COUNT(*) with a date filter, not a full row fetch; (3) if the data shows 0 tastings this month (club dormant), hide the card silently. Architecture is straightforward: add a `loadClubPulse(supabase)` function in `lib/feed/` that returns `{ tastings: number, products: number, pairings: number, month: string }`. Render in a `ClubPulseCard` server component added to `FeedList` above the daily pour section.

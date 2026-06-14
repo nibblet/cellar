@@ -381,9 +381,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-035 — `GroupVoice.member_count` uses tasting row count, not distinct member count
 
-- **Status:** found
+- **Status:** planned
 - **Found:** 2026-06-13
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-035-group-voice-member-count.md`
 - **File:** `apps/web/src/lib/aggregation/group-voice.ts` line 84
 - **Summary:** `loadGroupVoice` returns `member_count: tastings.length` (tasting row count) and `recommend_count: tastings.reduce(...)` (recommended-tasting count). The upsert key on `tastings` is `(user_id, product_id, release_label)`, so one member can have multiple rows per product if they've logged different releases. The `RecommendBar` component uses `memberCount` to render one icon per "member" and shows "{recommendCount} of {memberCount}" — misrepresenting the bar as per-person when it's actually per-tasting-row. Fix: `member_count: new Set(tastings.map(t => t.user_id)).size` and `recommend_count: new Set(tastings.filter(t => t.recommend).map(t => t.user_id)).size`. Low-severity for 12-person club (multi-release per product is rare) but semantically incorrect.
 
@@ -391,9 +391,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-036 — `welcome/page.tsx` fires DB query with empty user ID when unauthenticated
 
-- **Status:** found
+- **Status:** planned
 - **Found:** 2026-06-13
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-036-welcome-empty-user-query.md`
 - **File:** `apps/web/src/app/(app)/welcome/page.tsx` line 13
 - **Summary:** `WelcomePage` queries `users` with `.eq("id", auth.user?.id ?? "")` before confirming auth. If `auth.user` is null (unauthenticated), the query runs with an empty string ID, returns null, and the page proceeds to show the welcome flow (graceful fallback). However it fires a wasted DB round-trip. Same class as FIX-004 (shell layout, now resolved). Fix: add `if (!auth.user) { /* show welcome flow with no profile */ }` or short-circuit to the welcome flow before querying. Note: the onboarding page is intentionally accessible without auth (members are mid-invite-flow), so the fix should not hard-redirect — it should skip the DB query, not block the page.
 
@@ -401,9 +401,9 @@ Format: FIX-XXX | Title | Status | Plan
 
 ## FIX-037 — `taste/load.ts` missing error check on `UPDATE users SET taste_recommendations`
 
-- **Status:** found
+- **Status:** planned
 - **Found:** 2026-06-13
-- **Plan:** (not yet written)
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-037-taste-update-error-check.md`
 - **File:** `apps/web/src/lib/taste/load.ts` lines 191–194
 - **Summary:** After rebuilding taste recommendations, `rebuild()` calls `await supabase.from("users").update({ taste_recommendations: recommendations }).eq("id", memberId)` with no error destructuring or check. If this write fails silently, the function returns the freshly-computed recommendations (correct for this call) but the cache is not updated — so the next page load recomputes everything from scratch and calls the LLM rationale generator again. Low-severity (DB writes rarely fail) but adds unnecessary LLM cost on repeated failures. Fix: destructure the error and log a warning with `console.warn` if `updateErr` is truthy, matching the pattern in `specs-enrich.ts`.
 
@@ -416,3 +416,13 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-038-cigar-enrichment-logic.md`
 - **File:** `apps/web/src/lib/enrich/needs-enrichment.ts` line 59
 - **Summary:** `hasVisionOnlySpecs` for cigars contains a stray `return false` (line 59) inside the loop that fires as soon as a vision-only key (vitola, country, strength, wrapper_color, binder, filler, body) has a non-empty value. Since line 55 already `continue`s on empty values, the check at line 59 is always true — meaning the function exits with `return false` ("doesn't need enrichment") for virtually every captured cigar, because any cigar with even one populated vision-only spec (country, vitola, etc.) hits this early return. In contrast, the bourbon branch (lines 45–51) has the correct logic: skip empty values, return false only if a NON-vision-only key has a real value, then return true. The fix is one line: delete line 59. This unblocks cigar Apify enrichment (reviews → wheel_vector → trait_vector), which is critical for pairing quality for cigars.
+
+---
+
+## FIX-039 — Storage leak in avatar upload action on DB update failure
+
+- **Status:** planned
+- **Found:** 2026-06-14
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-039-avatar-upload-storage-leak.md`
+- **File:** `apps/web/src/app/(app)/(shell)/you/settings/actions.ts` lines 70–81
+- **Summary:** In `uploadAvatar`, if the storage upload succeeds but the `users.avatar_url` DB update fails, the action returns an error without cleaning up the uploaded file in the `avatars` bucket. Same class as FIX-003/021/023/034. Severity is lower than product-photo leaks: the avatar path is deterministic (`{userId}/avatar.{ext}`) so at most one file per extension per user can accumulate. However, if a user uploads jpeg then png (different extensions), the old file is never cleaned up. Fix: add `void supabase.storage.from("avatars").remove([path])` before the dbError return — matching the resolved FIX-003 pattern.

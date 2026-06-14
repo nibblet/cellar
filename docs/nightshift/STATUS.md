@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-13 (Nightshift run)
+Last updated: 2026-06-14 (Nightshift run)
 
 ---
 
@@ -315,9 +315,12 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - session/actions.ts `release_label` no max-length cap (FIX-032, planned — companion to FIX-027, one-liner)
 - `<Voice />` on `pairings/capture/page.tsx` and `pairings/[cigarId]/[bourbonId]/taste/page.tsx` (FIX-033, planned — 2 additional capture-page Voice violations beyond FIX-028; replace with plain `<p>` italic serif)
 - Storage leak in `pairings/[cigarId]/[bourbonId]/taste/actions.ts` on DB insert failure (FIX-034, planned — same class as FIX-003/021/023; add storage cleanup before error return)
-- `GroupVoice.member_count` uses tasting row count not distinct member count — RecommendBar overcounts when a member has multiple release tastings (FIX-035, found — 2-line fix in group-voice.ts)
-- `welcome/page.tsx` fires DB query with empty user ID if unauthenticated — same class as FIX-004 (FIX-036, found — add auth check before query or skip query for unauthenticated users)
-- `taste/load.ts` missing error check on `UPDATE users SET taste_recommendations` (FIX-037, found — add console.warn on updateErr)
+- `GroupVoice.member_count` uses tasting row count not distinct member count — RecommendBar overcounts when a member has multiple release tastings (FIX-035, planned — 2-line fix in group-voice.ts + test update)
+- `welcome/page.tsx` fires DB query with empty user ID if unauthenticated — same class as FIX-004 (FIX-036, planned — add auth guard before query)
+- `taste/load.ts` missing error check on `UPDATE users SET taste_recommendations` (FIX-037, planned — add console.warn on updateErr)
+- Storage leak in `uploadAvatar` (you/settings/actions.ts): DB update failure after successful storage upload leaves orphaned avatar file (FIX-039, planned — add storage cleanup before dbError return, same class as FIX-003)
+- Admin AI cost dashboard at `/admin/usage` not yet built — `usage_logs` data exists but has no UI (IDEA-033, planned — dev plan written, ~1 hour)
+- Group chip hints on recommend form not yet built — top tag_cloud chips surfaced as tappable shortcuts above the picker (IDEA-032, planned — dev plan written, ~45 min)
 - **CRITICAL**: `needs-enrichment.ts` cigar `hasVisionOnlySpecs` logic bug — stray `return false` on line 59 means cigar catalog enrichment (Apify + wheel vector) is never triggered for any cigar with populated vision-only specs (FIX-038, planned — delete 1 line)
 - Event tasting recap page `/events/[id]` (IDEA-026, seed — ~1.5 hours, no migrations)
 - Cellar hint dots on WinstonSuggests suggestion cards (IDEA-027, planned — dev plan written, 45 min, zero new DB queries)
