@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-14 (Nightshift run)
+Last updated: 2026-06-15 (Nightshift run)
 
 ---
 
@@ -322,6 +322,9 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Admin AI cost dashboard at `/admin/usage` not yet built — `usage_logs` data exists but has no UI (IDEA-033, planned — dev plan written, ~1 hour)
 - Group chip hints on recommend form not yet built — top tag_cloud chips surfaced as tappable shortcuts above the picker (IDEA-032, planned — dev plan written, ~45 min)
 - **CRITICAL**: `needs-enrichment.ts` cigar `hasVisionOnlySpecs` logic bug — stray `return false` on line 59 means cigar catalog enrichment (Apify + wheel vector) is never triggered for any cigar with populated vision-only specs (FIX-038, planned — delete 1 line)
+- `enrich-draft` API route missing creator/admin ownership check — any authenticated member can trigger Apify + OpenAI enrichment on any unconfirmed product they didn't create (FIX-040, planned — add `created_by` to product SELECT and ownership guard after the product-fetch)
+- Type filter (cigar/bourbon/all) on `/you/tastings` history page (IDEA-035, planned — 30 min, dev plan written; combine with IDEA-029 re-taste shortcut in one session)
+- "Most wanted by the club" aggregate view (IDEA-036, seed — 45 min, no migrations, no AI cost)
 - Event tasting recap page `/events/[id]` (IDEA-026, seed — ~1.5 hours, no migrations)
 - Cellar hint dots on WinstonSuggests suggestion cards (IDEA-027, planned — dev plan written, 45 min, zero new DB queries)
 - "New to the shelf" catalog additions section in For You feed (IDEA-028, seed — ~1 hour)

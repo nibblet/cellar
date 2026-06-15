@@ -426,3 +426,13 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-039-avatar-upload-storage-leak.md`
 - **File:** `apps/web/src/app/(app)/(shell)/you/settings/actions.ts` lines 70–81
 - **Summary:** In `uploadAvatar`, if the storage upload succeeds but the `users.avatar_url` DB update fails, the action returns an error without cleaning up the uploaded file in the `avatars` bucket. Same class as FIX-003/021/023/034. Severity is lower than product-photo leaks: the avatar path is deterministic (`{userId}/avatar.{ext}`) so at most one file per extension per user can accumulate. However, if a user uploads jpeg then png (different extensions), the old file is never cleaned up. Fix: add `void supabase.storage.from("avatars").remove([path])` before the dbError return — matching the resolved FIX-003 pattern.
+
+---
+
+## FIX-040 — `enrich-draft` route missing creator/admin ownership check
+
+- **Status:** planned
+- **Found:** 2026-06-15
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-040-enrich-draft-ownership.md`
+- **File:** `apps/web/src/app/api/enrich-draft/route.ts` lines 35–44, 46–54
+- **Summary:** `POST /api/enrich-draft` checks for admin role only when `force === true` or `imageOnly === true`. In the default enrichment path (neither flag set), any authenticated member can trigger Apify web scraping + OpenAI spec extraction on any unconfirmed product they didn't create — consuming API budget and overwriting AI-curated data on another member's draft. The product is fetched via the user's RLS client (correct for the read), but the enrichment write uses the service-role admin client (bypasses RLS). A `productNeedsCatalogEnrichment()` guard mitigates the blast radius (already-enriched products are skipped), but any product that legitimately needs enrichment is vulnerable. Fix: after the product-fetch guard, add a check that `product.created_by === auth.user.id` OR the caller is an admin. Also: add `created_by` to the product SELECT (currently missing). Medium severity — 12 trusted friends, but inconsistent with the rest of the app's authorization model.

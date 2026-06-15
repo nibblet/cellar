@@ -4,6 +4,83 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-15
+
+### Summary
+- Scanned: No new code commits since 2026-06-14 nightshift. Parallel subagent scans:
+  lib/pairing/score.ts + group-validation.ts, lib/suggestions/ (all files), lib/feed/queries.ts +
+  catalog-queries.ts + page.tsx; admin/catalog/actions.ts, admin/meetup/actions.ts,
+  admin/invites/actions.ts, products/[id]/edit/actions.ts, api/enrich-draft/route.ts,
+  lib/auth/require-admin.ts; capture/actions.ts, products/[id]/recommend/actions.ts +
+  page.tsx, you/settings/actions.ts, you/cellar/page.tsx, lib/enrich/needs-enrichment.ts.
+- Issues: 1 new found + immediately planned (FIX-040 enrich-draft ownership). All 22 existing
+  planned fixes remain open; none resolved overnight.
+- Ideas: IDEA-027 (cellar hint dots, planned 3 days) and IDEA-030 (Club Bulletin Board, seed 3
+  days) demoted to parked by 3-day stale rule. IDEA-029 (re-taste shortcut) and IDEA-031
+  (pairing score display) promoted from `planned` → `ready` (plans fully self-contained).
+  IDEA-035 seeded and immediately promoted to `planned` (tasting type filter, Category 1
+  enhance). IDEA-036 seeded at Category 2 new (most wanted by the club).
+- Plans written: FIXPLAN-FIX-040-enrich-draft-ownership.md,
+  DEVPLAN-IDEA-035-tastings-type-filter.md.
+- Lint/build: node_modules not installed in environment; manual code scan + subagent analysis.
+  No new TypeScript type errors found.
+
+### Key Findings
+
+- **FIX-040 (new, medium): `enrich-draft` route missing creator/admin ownership check.**
+  `POST /api/enrich-draft` only enforces admin role when `force=true` or `imageOnly=true`. In
+  the default enrichment path, any authenticated member can pass any `productId` and trigger
+  Apify scraping + OpenAI spec extraction on another member's unconfirmed draft product. The
+  write is done via the service-role `admin` client (bypasses RLS). The `productNeedsCatalogEnrichment()`
+  guard limits blast radius to products that haven't been enriched yet, but unauthorized enrichment
+  overwrites AI-curated `wheel_vector` + `specs` and burns API budget. Fix: add `created_by` to
+  the product SELECT and a creator/admin check after the product-fetch guard. Plan written and
+  promoted to `planned`.
+
+- **IDEA-029 + IDEA-031 promoted to `ready`.** IDEA-029 (re-taste shortcut, 20 min) and
+  IDEA-031 (pairing score display, 20 min) are both fully planned, self-contained, and free of
+  dependencies. Either is a "pick up and implement in 20 minutes" grab. Combine them with
+  IDEA-035 (type filter, 30 min) for a clean 1-hour `/you/tastings` + pairing detail session.
+
+- **IDEA-035 (new, planned, 30 min): Type filter on tasting history.** Once a member has 20+
+  tastings, the `/you/tastings` history mixes cigars and bourbons with no way to segment. A
+  three-pill (All / Cigars / Bourbons) client-side filter using `useSearchParams` + `useRouter`
+  is the minimal fix. Client-side filter over already-loaded data — zero extra DB queries. Full
+  dev plan written. Combine with IDEA-029 (re-taste shortcut) in the same 50-minute session for
+  a complete tasting history UX polish pass.
+
+- **IDEA-036 (new, seed): Most wanted by the club.** Aggregate `member_saves.want` counts per
+  product into a ranked list. Surfaces group hunting priorities (e.g., "7 of 12 members want
+  the Pappy 15") that Paul can act on for batch buys. Architecture question pending: new route
+  vs. sort option in existing catalog browse. `member_saves` SELECT RLS is already club-wide.
+
+- **2 stale demotions.** IDEA-027 (cellar hint dots, planned since 2026-06-12) and IDEA-030
+  (Club Bulletin Board, seeded 2026-06-12) demoted to parked. Both have written plans or clear
+  architecture notes — reclaim when session time allows.
+
+- **Confirmed: all existing planned fixes still open.** The subagent scans confirmed FIX-038
+  (stray `return false` at needs-enrichment.ts line 59), FIX-024 (UTC weekday), FIX-027
+  (release_label no max-length in recommend page), FIX-032 (session/actions.ts release_label),
+  and FIX-039 (avatar upload storage leak) are all still unresolved in the codebase.
+
+### Plans Ready to Execute
+
+- `docs/nightshift/plans/FIXPLAN-FIX-038-cigar-enrichment-logic.md` — **5 min, CRITICAL**: delete 1 line; unblocks entire cigar enrichment chain
+- `docs/nightshift/plans/FIXPLAN-FIX-040-enrich-draft-ownership.md` — **15 min**: add `created_by` to SELECT + ownership guard in enrich-draft route
+- `docs/nightshift/plans/DEVPLAN-IDEA-031-pairing-score-display.md` — **20 min (ready)**: pairing tier badge in pairing detail header
+- `docs/nightshift/plans/DEVPLAN-IDEA-029-retaste-shortcut.md` — **20 min (ready)**: "Try again →" link in tasting history
+- `docs/nightshift/plans/DEVPLAN-IDEA-035-tastings-type-filter.md` — **30 min (planned)**: cigar/bourbon/all toggle on tasting history page
+- `docs/nightshift/plans/DEVPLAN-IDEA-032-group-chip-hints.md` — **45 min (planned)**: group chip hints above the recommend form picker
+- `docs/nightshift/plans/DEVPLAN-IDEA-033-admin-cost-dashboard.md` — **1 hour (planned)**: admin AI cost dashboard at /admin/usage
+
+### Recommendations
+
+- **If you have 15 min:** FIX-038 (5 min, CRITICAL) + FIX-040 (15 min). Two tiny security-hygiene fixes that close real gaps and cost nothing architecturally.
+- **If you have 1 hour:** FIX-038 (5 min) + IDEA-029 (20 min, ready) + IDEA-031 (20 min, ready) + IDEA-035 (30 min, planned). The tasting-history session — re-taste shortcut, type filter, and the pairing detail score badge all fall naturally together. Start with FIX-038, then work through the three UX improvements in order.
+- **If you have 2 hours:** The full tasting-history session above (55 min) + IDEA-032 (45 min, group chip hints) + FIX-035 (10 min, then immediately reclaim IDEA-023 tasted-by count as a 5-min add-on since FIX-035 computes the field anyway).
+
+---
+
 ## Run: 2026-06-14
 
 ### Summary
