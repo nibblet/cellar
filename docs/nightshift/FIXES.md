@@ -436,3 +436,55 @@ Format: FIX-XXX | Title | Status | Plan
 - **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-040-enrich-draft-ownership.md`
 - **File:** `apps/web/src/app/api/enrich-draft/route.ts` lines 35–44, 46–54
 - **Summary:** `POST /api/enrich-draft` checks for admin role only when `force === true` or `imageOnly === true`. In the default enrichment path (neither flag set), any authenticated member can trigger Apify web scraping + OpenAI spec extraction on any unconfirmed product they didn't create — consuming API budget and overwriting AI-curated data on another member's draft. The product is fetched via the user's RLS client (correct for the read), but the enrichment write uses the service-role admin client (bypasses RLS). A `productNeedsCatalogEnrichment()` guard mitigates the blast radius (already-enriched products are skipped), but any product that legitimately needs enrichment is vulnerable. Fix: after the product-fetch guard, add a check that `product.created_by === auth.user.id` OR the caller is an admin. Also: add `created_by` to the product SELECT (currently missing). Medium severity — 12 trusted friends, but inconsistent with the rest of the app's authorization model.
+
+---
+
+## FIX-041 — `<Voice />` on recommend page — design system violation
+
+- **Status:** planned
+- **Found:** 2026-06-16
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-041-voice-recommend-page.md`
+- **Files:** `apps/web/src/app/(app)/(shell)/products/[id]/recommend/page.tsx` lines 83–88, 91–97
+- **Summary:** `<Voice />` (Winston's italic Playfair prose) is used twice on the recommend page: once in the post-capture status card ("Good. I'm still filling in the details…") and once as an unconditional form prompt ("Care to revise?" / "What stood out?" / "How is the pour treating you?"). The recommend flow is a tasting capture form — the design system is explicit that Winston never appears on capture pages. Same class as FIX-028 (capture-form.tsx) and FIX-033 (pairing capture pages). Fix: replace both `<Voice>` usages with plain `<p className="... italic font-serif">` and remove the Voice import. Estimated 10 min.
+
+---
+
+## FIX-042 — Duplicate `<Divider label="The archive" />` on tastings history page
+
+- **Status:** planned
+- **Found:** 2026-06-16
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-042-duplicate-divider-tastings.md`
+- **Files:**
+  - `apps/web/src/app/(app)/(shell)/you/tastings/page.tsx` line 30
+  - `apps/web/src/components/members/sections/tastings-section.tsx` line 33 (correct location — keep)
+- **Summary:** The tastings history page renders `<Divider label="The archive" />` at the page level (page.tsx line 30), and then `TastingsSection` renders the same divider again (tastings-section.tsx line 33). Members see two consecutive etched "THE ARCHIVE" headers. The page-level Divider is redundant — `TastingsSection` already owns it. Fix: delete the Divider from page.tsx and its now-unused import. Estimated 2 min.
+
+---
+
+## FIX-043 — `<Voice />` in DailyPourCard on main feed — design system clarification needed
+
+- **Status:** planned
+- **Found:** 2026-06-16
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-043-voice-daily-pour-card.md`
+- **File:** `apps/web/src/components/feed/daily-pour-card.tsx` lines 42–44
+- **Summary:** `DailyPourCard` renders `<Voice>` for Winston's pairing rationale. The card appears on the For You feed tab. The design system says "Never on feed." However, the Daily Pour card is arguably a "recommendation intro" — a special context where Winston narrates the club sommelier pick, not a member tasting card. Paul to decide: if intentional (recommendation intro on system card), add a comment documenting the exception; if not, replace with plain `<p className="... italic font-serif">`. Either path is 5 minutes. Plan documents both options.
+
+---
+
+## FIX-044 — Missing server-side length caps on `note` and `releaseLabel` in recommend action
+
+- **Status:** planned
+- **Found:** 2026-06-16
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-044-recommend-action-server-caps.md`
+- **File:** `apps/web/src/app/(app)/(shell)/products/[id]/recommend/actions.ts` lines ~34, ~36
+- **Summary:** The recommend Server Action applies `.trim()` to `note` and `releaseLabel` but no `.slice(n)` cap. The client-side textarea has `maxLength={500}` for the note but a direct POST to the action bypasses it. Same class as FIX-027 (recommend page URL param) and FIX-032 (session/actions.ts). Fix: add `.slice(0, 500)` on `note` and `.slice(0, 100)` on `releaseLabel`. Low severity in a 12-person trusted app but completes the input-validation sweep. Estimated 5 min.
+
+---
+
+## FIX-045 — MCP endpoint open when `NCCC_MCP_TOKEN` env var is unset
+
+- **Status:** planned
+- **Found:** 2026-06-16
+- **Plan:** `docs/nightshift/plans/FIXPLAN-FIX-045-mcp-token-env-guard.md`
+- **File:** `apps/web/src/app/api/[transport]/route.ts` lines 390–398
+- **Summary:** When `NCCC_MCP_TOKEN` is not set in the environment, `verifyToken` returns `undefined` (same as "invalid token"). Whether `withMcpAuth` from `mcp-handler` then accepts or rejects the request is library-dependent. A fresh deploy with the env var accidentally missing could leave the MCP server open — exposing member cellar data and palate picks via `get_my_cellar` and `suggest_try_next`. Fix: hoist the token to a module-level constant, add a startup `console.error` warning when absent, and add an early 503 return to the GET/POST exports when the token is not configured. Medium severity (realistic misconfiguration scenario). Estimated 15 min.

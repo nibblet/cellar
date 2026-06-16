@@ -493,15 +493,16 @@ Maturity: seed → exploring → planned → ready → parked
 ---
 
 ### [IDEA-034] Monthly club pulse summary card on For You feed
-- **Status:** seed
+- **Status:** planned
 - **Category:** new
 - **Seeded:** 2026-06-14
-- **Last Updated:** 2026-06-14
+- **Last Updated:** 2026-06-16
 - **Priority:** P2
-- **Plan:** (not yet written)
-- **Summary:** A server-rendered "This month at the club" summary card pinned near the top of the For You feed tab showing aggregate club stats for the current calendar month: total tastings logged, unique products tried, total pairings captured. Zero AI cost; one lightweight aggregate query on `tastings` and `pairings_cache`. Gives Paul and new members an at-a-glance pulse of club activity without requiring a dedicated analytics page. Card is hidden if the current month has fewer than 5 tastings (not enough signal). ~30–45 minutes, no migrations.
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-034-monthly-club-pulse.md`
+- **Summary:** A server-rendered "This month at NCCC" summary card near the top of the For You feed tab showing aggregate club stats: tastings logged, unique products tried, pairings captured. Hidden if < 5 tastings in the month. Zero AI cost, no migrations. ~45 minutes.
 - **Night Notes:**
   - 2026-06-14: Seeded. The MCP server has a `club-pulse` prompt that generates a prose summary — this in-app card would be the visual equivalent with hard numbers instead of prose. Key constraints: (1) card must not use Winston voice (it's a feed card, not an empty state or recommendation intro); (2) the aggregate query runs per page load — should be a fast COUNT(*) with a date filter, not a full row fetch; (3) if the data shows 0 tastings this month (club dormant), hide the card silently. Architecture is straightforward: add a `loadClubPulse(supabase)` function in `lib/feed/` that returns `{ tastings: number, products: number, pairings: number, month: string }`. Render in a `ClubPulseCard` server component added to `FeedList` above the daily pour section.
+  - 2026-06-16: Architecture confirmed. Two DB queries via `Promise.all` (solo tasting COUNT + pairing_sessions COUNT); JS dedup for unique product count. `ClubPulseCard` uses plain informational text — no Winston voice. Dev plan written. Promoted to `planned`.
 
 ---
 
@@ -528,3 +529,29 @@ Maturity: seed → exploring → planned → ready → parked
 - **Summary:** A section or page showing which products are on the most club members' Want shelf — sorted by want count descending. Surfaces group hunting priorities: "7 of 12 members want the Pappy 15." Currently the only way to see the Want list is your own personal shelf; there's no aggregate club Want view. This would help Paul coordinate batch purchases and lets members discover what the group is chasing. Zero AI cost, no migrations. One DB query: `SELECT product_id, COUNT(*) as want_count FROM member_saves WHERE want=true GROUP BY product_id ORDER BY want_count DESC LIMIT 20`. Could live at `/club/wants` (new page) or as a "Most Wanted" tab/section in the existing catalog browse. ~45 minutes.
 - **Night Notes:**
   - 2026-06-15: Seeded. The `member_saves` SELECT RLS is club-wide (FIX-029 documents this), so any authenticated member can query want counts across all members. The product join (name, brand, type, image_url) is a standard select. Architecture question: (a) New route `/club/wants` with its own page, or (b) A "Most Wanted" sort option in the existing catalog browse (adding a `MOST_WANTED` sort key to `loadCatalogBrowse`). Option (b) is more composable but requires threading a new sort path through the catalog query. Option (a) is simpler and self-contained — a single server component page with a static list. P2 because it makes group hunting coordination effortless and requires zero new infrastructure.
+
+---
+
+### [IDEA-037] Enriched tasting count breakdown on `/you/tastings`
+- **Status:** planned
+- **Category:** enhance
+- **Seeded:** 2026-06-16
+- **Last Updated:** 2026-06-16
+- **Priority:** P2
+- **Plan:** `docs/nightshift/plans/DEVPLAN-IDEA-037-tastings-count-breakdown.md`
+- **Summary:** Replace the current "X tastings · Y recommended" stat header in `TastingsSection` with a richer breakdown: "12 cigars · 8 bourbons · 3 pairings · 18 recommended." Fixes an existing counting bug (pairings count as 2 tastings but only 1 recommended), and surfaces portfolio composition at a glance. Zero extra DB queries — pure arithmetic over the already-loaded feed entries. ~30 min.
+- **Night Notes:**
+  - 2026-06-16: Seeded and immediately promoted to `planned`. Discovered while auditing `tastings-section.tsx`: the `recommended` count is wrong for pairing entries (they count as 1 but `tastingCount` inflates them to 2). Architecture is trivially clear — filter the `entries` array by `kind` and `product_type`. Full dev plan written. Combine with IDEA-035 (type filter) and IDEA-029 (re-taste shortcut) in a single tastings-history polish session.
+
+---
+
+### [IDEA-038] Per-release group voice breakdown on product detail
+- **Status:** seed
+- **Category:** new
+- **Seeded:** 2026-06-16
+- **Last Updated:** 2026-06-16
+- **Priority:** P3
+- **Plan:** (not yet written)
+- **Summary:** The group voice on product detail aggregates all member tastings regardless of `release_label` — so Buffalo Trace Single Oak #6 and #7 are combined into one voice. For annual releases this obscures which vintage the club prefers. Adding a "By release" accordion or toggle in the ClubVoice section would let members see the group opinion per label. Zero new DB schema needed (`release_label` is already on tastings). The tasting rows are already fetched in `loadGroupVoice` — just need to group them by `release_label` before computing `tag_cloud` and `takes` per release. ~1 hour, zero AI cost.
+- **Night Notes:**
+  - 2026-06-16: Seeded. Relevant when a product has multiple tasting releases (e.g., BTAC bourbons, single-barrel allocations). Low priority for 12-person club at current stage — most products will have < 3 release labels logged. Promote to `exploring` once `release_pattern` is reliably populated for catalog products.

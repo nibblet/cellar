@@ -4,6 +4,86 @@ Append-only. Most recent run at top.
 
 ---
 
+## Run: 2026-06-16
+
+### Summary
+- Scanned: No new code commits since 2026-06-15 nightshift. Four parallel subagent scans:
+  (1) pairings/score.ts, pairing/engine.ts, pairings detail page, pairings/capture/actions.ts,
+  pairings/[cigarId]/[bourbonId]/taste/actions.ts; (2) you/tastings/page.tsx,
+  tastings-section.tsx, tasting-card.tsx, you/cellar/page.tsx; (3) needs-enrichment.ts,
+  enrich-draft/route.ts, recommend/page.tsx + actions.ts; (4) admin/catalog/actions.ts,
+  roadmap/actions.ts, lib/mcp/tools.ts, api/[transport]/route.ts, admin/page.tsx.
+  Direct reads: you/tastings/page.tsx, you/pairings/page.tsx, you/page.tsx,
+  you/cellar/page.tsx, group-voice.ts, session/actions.ts, recommend/page.tsx, welcome/page.tsx.
+- Issues: 5 new found + planned (FIX-041 through FIX-045). All 27 existing planned fixes
+  remain open; none resolved overnight. FIX-024 (UTC weekday), FIX-036 (welcome page empty ID
+  query), FIX-035 (group voice member_count), FIX-038 (cigar enrichment stray return false),
+  FIX-023 + FIX-034 (storage leaks) all confirmed still present.
+- Ideas: IDEA-034 promoted seed → `planned` (dev plan written). IDEA-037 seeded and immediately
+  promoted to `planned` (Category 1 enhance, tasting count breakdown). IDEA-038 seeded at
+  Category 2 (per-release group voice breakdown). No 3-day stale rule triggers tonight (all
+  active ideas < 3 days without commits).
+- Plans written: FIXPLAN-FIX-041 through FIXPLAN-FIX-045, DEVPLAN-IDEA-034,
+  DEVPLAN-IDEA-037.
+- Lint/build: node_modules not installed in environment; manual code scan + subagent analysis.
+  No new TypeScript type errors found.
+
+### Key Findings
+
+- **FIX-042 (new, HIGH): Duplicate `<Divider label="The archive" />` on tastings page.**
+  `you/tastings/page.tsx` line 30 and `tastings-section.tsx` line 33 both render the same
+  etched divider. Every member with any tastings sees two consecutive "THE ARCHIVE" headers.
+  Fix is 2 minutes: delete the page-level Divider (TastingsSection owns it). Plan written.
+
+- **FIX-041 (new, medium): `<Voice />` on recommend/page.tsx.** Two usages at lines 83–88
+  and 91–97 — one in the post-capture status card, one as an unconditional form prompt. Same
+  class as FIX-028 (capture-form.tsx, planned) and FIX-033 (pairing pages, planned). Replace
+  with plain `<p className="... italic font-serif">`. 10-minute fix; apply all three Voice
+  violations (FIX-028, FIX-033, FIX-041) in a single 30-min sweep. Plan written.
+
+- **FIX-043 (new, decision needed): `<Voice />` in DailyPourCard on main feed.** Winston
+  appears in the Daily Pour card rationale on the For You feed, violating "Never on feed."
+  However, this may be an intentional "recommendation intro" exception — the Daily Pour is
+  Winston's system pick, not a member tasting card. Paul to decide: document exception (5 min)
+  or replace with plain `<p>` (5 min). Plan documents both options.
+
+- **FIX-044 + FIX-045 (new, medium): Input validation and MCP token guard.** `recommend/
+  actions.ts` is missing `.slice()` caps on `note` (500 char client limit not server-enforced)
+  and `releaseLabel` (no cap at all). Completing the FIX-027/032 input-validation sweep.
+  Separately, missing `NCCC_MCP_TOKEN` env var causes library-dependent behavior on the MCP
+  endpoint — could be open access on a misconfigured deploy. Both have 5–15 min plans.
+
+- **IDEA-037 (new, planned, 30 min): Enriched tasting count breakdown.** Discovered while
+  auditing `tastings-section.tsx`: the stat line "X tastings · Y recommended" has a counting
+  bug (pairing entries inflate `tastingCount` by 2 but add only 1 to `recommended`). The fix
+  — showing "12 cigars · 8 bourbons · 3 pairings · 18 recommended" — fixes the bug and adds
+  useful portfolio-composition context. Dev plan written; combine with IDEA-029 (re-taste
+  shortcut, ready) and IDEA-035 (type filter, planned) for a complete tastings-history session.
+
+- **IDEA-034 promoted to `planned` (45 min): Monthly club pulse card.** Architecture
+  confirmed — two DB count queries (solo tastings + pairing_sessions), JS dedup for unique
+  products, no Winston voice (feed card), hidden when < 5 tastings. Dev plan written.
+
+### Plans Ready to Execute
+
+- `docs/nightshift/plans/FIXPLAN-FIX-038-cigar-enrichment-logic.md` — **5 min, CRITICAL**: delete 1 stray `return false`; unblocks entire cigar enrichment chain
+- `docs/nightshift/plans/FIXPLAN-FIX-042-duplicate-divider-tastings.md` — **2 min**: delete 1 line; immediately visible cosmetic fix
+- `docs/nightshift/plans/FIXPLAN-FIX-041-voice-recommend-page.md` — **10 min**: remove Voice from recommend page; part of the FIX-028+033+041 sweep
+- `docs/nightshift/plans/FIXPLAN-FIX-044-recommend-action-server-caps.md` — **5 min**: add 2 `.slice()` calls completing input-validation sweep
+- `docs/nightshift/plans/FIXPLAN-FIX-045-mcp-token-env-guard.md` — **15 min**: startup guard for missing MCP token
+- `docs/nightshift/plans/DEVPLAN-IDEA-029-retaste-shortcut.md` — **20 min (ready)**: "Try again →" on tasting history
+- `docs/nightshift/plans/DEVPLAN-IDEA-031-pairing-score-display.md` — **20 min (ready)**: pairing tier badge in pairing detail header
+- `docs/nightshift/plans/DEVPLAN-IDEA-037-tastings-count-breakdown.md` — **30 min (planned)**: enriched cigar/bourbon/pairing breakdown header
+- `docs/nightshift/plans/DEVPLAN-IDEA-035-tastings-type-filter.md` — **30 min (planned)**: type toggle on tasting history
+
+### Recommendations
+
+- **If you have 10 min:** FIX-042 (2 min duplicate divider) + FIX-038 (5 min cigar enrichment critical fix). Both are single-line or near-single-line changes with zero architectural risk.
+- **If you have 1 hour:** The complete tastings-history polish session — FIX-042 (2 min) + FIX-038 (5 min) + FIX-044 (5 min, finish input validation sweep) + IDEA-029 (20 min, re-taste shortcut, ready) + IDEA-037 (30 min, enriched count breakdown). Total ~62 min.
+- **If you have 2 hours:** Above session + IDEA-035 (30 min, type filter) + IDEA-031 (20 min, pairing score badge) + FIX-041+028+033 Voice sweep (30 min, clear all three Winston-on-form violations in one pass). Total ~2 hours.
+
+---
+
 ## Run: 2026-06-15
 
 ### Summary

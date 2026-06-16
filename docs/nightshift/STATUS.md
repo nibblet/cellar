@@ -1,6 +1,6 @@
 # NCCC — Codebase Status
 
-Last updated: 2026-06-15 (Nightshift run)
+Last updated: 2026-06-16 (Nightshift run)
 
 ---
 
@@ -328,6 +328,15 @@ RLS: all user-facing tables have RLS. Invites and suggestions are admin-gated at
 - Event tasting recap page `/events/[id]` (IDEA-026, seed — ~1.5 hours, no migrations)
 - Cellar hint dots on WinstonSuggests suggestion cards (IDEA-027, planned — dev plan written, 45 min, zero new DB queries)
 - "New to the shelf" catalog additions section in For You feed (IDEA-028, seed — ~1 hour)
-- Re-taste shortcut from tasting history (IDEA-029, seed — 20 min, zero AI cost)
+- Re-taste shortcut from tasting history (IDEA-029, ready — 20 min, zero AI cost, dev plan written)
 - Club Bulletin Board — admin-pinned message in For You feed (IDEA-030, seed — 1.5 hours, 1 migration)
+- **`<Voice />` on recommend page** — 2 usages in `recommend/page.tsx` (lines 83–88, 91–97) violate design system (Winston never on form/capture pages); FIX-041 planned — 10 min, 3-file Voice sweep with FIX-028 and FIX-033
+- **Duplicate `<Divider label="The archive" />` on tastings page** — page.tsx line 30 and tastings-section.tsx line 33 both render the same divider; FIX-042 planned — 2 min
+- **`<Voice />` in DailyPourCard on main feed** — design system says never on feed; may be intentional "recommendation intro" exception; FIX-043 planned — needs Paul's decision, 5 min either way
+- **Missing server-side length caps in recommend/actions.ts** — `note` and `releaseLabel` trimmed but not capped at the server action boundary; FIX-044 planned — 5 min input-validation sweep
+- **MCP token absent behavior undefined** — missing `NCCC_MCP_TOKEN` env var causes library-dependent behavior; FIX-045 planned — 15 min startup guard
+- Monthly club pulse card on For You feed (IDEA-034, planned — 45 min, dev plan written)
+- Enriched tasting count breakdown on `/you/tastings` header (IDEA-037, planned — 30 min, dev plan written)
+- Per-release group voice breakdown on product detail (IDEA-038, seed)
 - **Note (2026-06-11):** `CellarCardControls` (tried/have/want/love) has been present on `CatalogCard` since at least 2026-06-02. IDEA-024 and IDEA-025 were incorrectly seeded as missing features — both were already implemented. Marked done.
+- **Note (2026-06-16):** `DailyPourCard` Voice usage (FIX-043) may be an intentional "recommendation intro" exception to the "Never on feed" rule. Winston's Daily Pour card is the one system-curated pick — its Voice narration could be valid as a recommendation intro. Paul to confirm.
