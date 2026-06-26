@@ -1,7 +1,7 @@
 export { BrandFamilyDivider } from "./brand-family-divider";
 export { CatalogCard } from "./catalog-card";
 export { CatalogFilterControls } from "./catalog-filter-controls";
-export { CatalogViewToggle, type CatalogView } from "./catalog-view-toggle";
+export { type CatalogView, CatalogViewToggle } from "./catalog-view-toggle";
 export { DailyPourCard } from "./daily-pour-card";
 export { DailyPourSkeleton } from "./daily-pour-skeleton";
 export { FeedBodySkeleton } from "./feed-body-skeleton";
@@ -9,6 +9,7 @@ export { FEED_TABS, type FeedTab, FeedTabs } from "./feed-tabs";
 export { FindYourNextHero } from "./find-your-next-hero";
 export { FindYourNextSkeleton } from "./find-your-next-skeleton";
 export { MeetupCard } from "./meetup-card";
+export { MeetupTonightBanner } from "./meetup-tonight-banner";
 export { PairingFeedCard } from "./pairing-feed-card";
 export { PhotoFrame, PhotoPlaceholder } from "./photo-frame";
 export { PickPourButton } from "./pick-pour-button";

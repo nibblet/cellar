@@ -120,6 +120,7 @@ export async function POST(req: Request) {
     contributed_by: auth.userId,
   });
   if (insertErr) {
+    void admin.storage.from(PHOTOS_BUCKET).remove([storagePath]);
     return NextResponse.json({ error: `DB insert failed: ${insertErr.message}` }, { status: 500 });
   }
 

@@ -14,12 +14,12 @@ type Props = {
   onSettled?: () => void;
 };
 
-/** Client-side ceiling — Apify sync runs can exceed Vercel's 60s function limit. */
+/** Client-side ceiling — web search runs can exceed Vercel's 60s function limit. */
 const ENRICH_FETCH_TIMEOUT_MS = 55_000;
 
 /**
  * Fires POST /api/enrich-draft once when a capture-created product still lacks
- * catalog reviews/specs/wheel data. Safe to mount on every product page visit —
+ * catalog specs/wheel data. Safe to mount on every product page visit —
  * the API route is idempotent.
  */
 export function EnrichmentTrigger({

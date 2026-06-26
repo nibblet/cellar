@@ -1,25 +1,27 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { NCCCLogo, Winston } from "@/components/brand";
-import { MakerSummaryList } from "@/components/makers/maker-summary-list";
 import {
   BrandFamilyDivider,
   CatalogCard,
   CatalogFilterControls,
-  CatalogViewToggle,
   type CatalogView,
+  CatalogViewToggle,
   FeedBodySkeleton,
   type FeedTab,
   FeedTabs,
   FindYourNextHero,
   FindYourNextSkeleton,
   MeetupCard,
+  MeetupTonightBanner,
   PairingFeedCard,
   TastingCard,
 } from "@/components/feed";
 import { AppShell } from "@/components/layout/app-shell";
+import { MakerSummaryList } from "@/components/makers/maker-summary-list";
 import { PairingDraftEnrichment } from "@/components/pairing/pairing-draft-enrichment";
 import { Button, Card, Divider, Voice } from "@/components/primitives";
+import type { AvailabilityRarity } from "@/lib/catalog/normalize-specs";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import { loadEnrichmentJobsForProducts } from "@/lib/enrich/enrichment-jobs";
@@ -32,6 +34,7 @@ import {
 import { loadFeed, signImagePaths } from "@/lib/feed/queries";
 import { loadFindNextSuggestions } from "@/lib/find-next/load";
 import { loadMakerSummaries } from "@/lib/makers/browse";
+import { meetupCountdownDays } from "@/lib/meetup/countdown";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import { productMatchesPreferences } from "@/lib/preferences/match";
 import type {
@@ -67,6 +70,7 @@ type SearchParams = Promise<{
   // Bourbon filters
   styles?: string;
   proof?: string;
+  availability?: string;
   age?: string;
   // Shared
   brand?: string;
@@ -107,6 +111,13 @@ const VALID_STYLES = new Set([
   "single-barrel",
 ]);
 const VALID_PROOF_BANDS = new Set(["low", "mid", "high"]);
+const VALID_AVAILABILITY = new Set([
+  "everyday",
+  "seasonal",
+  "allocated",
+  "lottery",
+  "secondary-only",
+]);
 const VALID_AGE_BANDS = new Set(["nas", "4-8", "8-12", "12+"]);
 const VALID_RING_BANDS = new Set(["lt50", "50-54", "54+"]);
 const VALID_SORTS = new Set([
@@ -137,6 +148,11 @@ function parseFilters(sp: Awaited<SearchParams>): {
   const proofBand =
     sp.proof && VALID_PROOF_BANDS.has(sp.proof) ? (sp.proof as BourbonProofBand) : undefined;
 
+  const availability =
+    sp.availability && VALID_AVAILABILITY.has(sp.availability)
+      ? (sp.availability as AvailabilityRarity)
+      : undefined;
+
   const ageBand =
     sp.age && VALID_AGE_BANDS.has(sp.age) ? (sp.age as "nas" | "4-8" | "8-12" | "12+") : undefined;
 
@@ -155,6 +171,7 @@ function parseFilters(sp: Awaited<SearchParams>): {
       brand: sp.brand || undefined,
       styles: styles?.length ? styles : undefined,
       proofBand,
+      availability,
       ageBand,
       clubOnly: sp.club === "1",
       enrichedOnly: sp.enriched === "1",
@@ -223,7 +240,11 @@ async function FeedBody({
       <>
         {viewerId ? (
           <Suspense fallback={<FindYourNextSkeleton />}>
-            <FindYourNextSection supabase={supabase} viewerId={viewerId} preferences={preferences} />
+            <FindYourNextSection
+              supabase={supabase}
+              viewerId={viewerId}
+              preferences={preferences}
+            />
           </Suspense>
         ) : null}
         <Suspense fallback={<FeedBodySkeleton />}>
@@ -344,6 +365,7 @@ async function FeedList({
   };
 
   const upcoming = (upcomingResult.data as MeetupEvent[] | null)?.[0] ?? null;
+  const meetupDaysUntil = upcoming ? meetupCountdownDays(today, upcoming.date) : null;
   const lastRaw = (lastResult.data as LastEventRow[] | null)?.[0] ?? null;
   const last: MeetupEvent | null = lastRaw
     ? {
@@ -367,6 +389,9 @@ async function FeedList({
           </div>
         ) : null}
         {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
+        {meetupDaysUntil != null && upcoming ? (
+          <MeetupTonightBanner eventName={upcoming.name} daysUntil={meetupDaysUntil} />
+        ) : null}
         {upcoming || last ? (
           <div className="mb-4">
             <MeetupCard upcoming={upcoming} last={last} />
@@ -398,6 +423,9 @@ async function FeedList({
         </div>
       ) : null}
       {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
+      {meetupDaysUntil != null && upcoming ? (
+        <MeetupTonightBanner eventName={upcoming.name} daysUntil={meetupDaysUntil} />
+      ) : null}
       {upcoming || last ? (
         <div className="mb-4">
           <MeetupCard upcoming={upcoming} last={last} />

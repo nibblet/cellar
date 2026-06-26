@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CellarToggle } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
-import { Card, Divider } from "@/components/primitives";
+import { Divider, VoiceProseSkeleton } from "@/components/primitives";
 import {
   CaptureConfirmBanner,
   ClubVoice,
@@ -193,7 +193,9 @@ export default async function ProductDetailPage({
           ) : null}
         </div>
         {specs.club_staple === true ? (
-          <p className="text-[11px] uppercase tracking-widest text-moss-500 mt-2">Club staple</p>
+          <p className="text-[11px] uppercase tracking-widest text-foreground-muted mt-2">
+            Club staple
+          </p>
         ) : null}
         {subtitle ? <p className="text-sm text-foreground-muted mt-2">{subtitle}</p> : null}
         {productType === "bourbon" && knownReleaseLabels.length > 0 ? (
@@ -239,7 +241,14 @@ export default async function ProductDetailPage({
         <EnrichmentTrigger productId={product.id} productType={productType} needsEnrichment />
       ) : null}
 
-      <Suspense fallback={<WinstonSkeleton />}>
+      <Suspense
+        fallback={
+          <>
+            <Divider label="Winston's take" />
+            <VoiceProseSkeleton className="px-5 py-5" />
+          </>
+        }
+      >
         <WinstonSection
           productId={product.id}
           productType={productType}
@@ -290,11 +299,9 @@ export default async function ProductDetailPage({
         />
       </div>
 
-      {productType === "cigar" ? (
-        <div className="mt-6">
-          <ExploreLinks brand={product.brand ?? null} name={product.name} />
-        </div>
-      ) : null}
+      <div className="mt-6">
+        <ExploreLinks brand={product.brand ?? null} name={product.name} productType={productType} />
+      </div>
     </AppShell>
   );
 }
@@ -342,21 +349,6 @@ async function WinstonSection({
     <>
       <Divider label="Winston's take" />
       <WinstonTastingNote text={text} />
-    </>
-  );
-}
-
-function WinstonSkeleton() {
-  return (
-    <>
-      <Divider label="Winston's take" />
-      <Card className="px-5 py-5">
-        <div className="space-y-2.5 animate-pulse">
-          <div className="h-[17px] bg-surface-2 rounded w-full" />
-          <div className="h-[17px] bg-surface-2 rounded w-11/12" />
-          <div className="h-[17px] bg-surface-2 rounded w-9/12" />
-        </div>
-      </Card>
     </>
   );
 }

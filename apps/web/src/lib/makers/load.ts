@@ -64,7 +64,11 @@ export async function ensureMaker(
 ): Promise<MakerRow> {
   const slug = makerSlug(brand);
 
-  const { data: existing } = await supabase.from("makers").select("*").eq("slug", slug).maybeSingle();
+  const { data: existing } = await supabase
+    .from("makers")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
 
   if (existing?.blurb) return existing as MakerRow;
 
@@ -127,4 +131,12 @@ export async function loadMakerBySlug(
 ): Promise<MakerRow | null> {
   const { data } = await supabase.from("makers").select("*").eq("slug", slug).maybeSingle();
   return (data as MakerRow | null) ?? null;
+}
+
+export async function loadMakerRow(
+  supabase: SupabaseClient,
+  brand: string,
+  _type: ProductType,
+): Promise<MakerRow | null> {
+  return loadMakerBySlug(supabase, makerSlug(brand));
 }

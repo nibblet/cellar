@@ -164,16 +164,16 @@ export function EditForm({ product, canReEnrich }: Props) {
             step="0.1"
             placeholder="e.g. 90"
           />
-          <SpecField name="age_label" label="Age" value={product.specs.age_label} placeholder="e.g. 12 yr or NAS" />
+          <SpecField
+            name="age_label"
+            label="Age"
+            value={product.specs.age_label}
+            placeholder="e.g. 12 yr or NAS"
+          />
 
           <Divider label="CATALOG" />
 
-          <TierSelectField
-            name="tier"
-            label="Tier"
-            value={product.specs.tier}
-            tiers={COBB_TIERS}
-          />
+          <TierSelectField name="tier" label="Tier" value={product.specs.tier} tiers={COBB_TIERS} />
           <AvailabilitySelectField value={product.specs.availability_rarity} />
           <NumberSpecField
             name="price_usd"
@@ -222,7 +222,7 @@ export function EditForm({ product, canReEnrich }: Props) {
             {enriching ? "Re-enriching…" : "Re-enrich from web"}
           </Button>
           {enrichResult?.ok ? (
-            <p className="text-xs text-moss-500 mt-2 text-center">
+            <p className="text-xs text-foreground-muted mt-2 text-center">
               Done — {enrichResult.reviewsWritten ?? 0} reviews pulled. Return to detail page to see
               updates.
             </p>

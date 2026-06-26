@@ -47,7 +47,7 @@ export function AvatarUploader({
         </Button>
       </div>
       {state.message ? (
-        <span className={state.ok ? "text-sm text-moss-600" : "text-sm text-ember-500"}>
+        <span className={state.ok ? "text-sm text-foreground-muted" : "text-sm text-ember-500"}>
           {state.message}
         </span>
       ) : null}

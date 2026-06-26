@@ -1,13 +1,15 @@
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 import { CatalogCard } from "@/components/feed";
 import { AppShell } from "@/components/layout/app-shell";
-import { WinstonTastingNote } from "@/components/product";
-import { Divider, Voice } from "@/components/primitives";
+import { Divider, Voice, VoiceProseSkeleton } from "@/components/primitives";
 import { loadCatalogBrowse } from "@/lib/feed/catalog-queries";
 import { signImagePaths } from "@/lib/feed/queries";
-import { ensureMaker, resolveMakerIdentity } from "@/lib/makers/load";
+import { loadMakerBySlug, resolveMakerIdentity } from "@/lib/makers/load";
+import { makerSlug } from "@/lib/makers/slug";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { MakerAdminActions } from "./maker-admin-actions";
+import { MakerBlurbSection } from "./maker-blurb-section";
 
 type Params = Promise<{ slug: string }>;
 
@@ -20,15 +22,17 @@ export default async function MakerPage({ params }: { params: Params }) {
   const identity = await resolveMakerIdentity(supabase, slug);
   if (!identity) notFound();
 
-  const [{ data: profile }, maker] = await Promise.all([
+  const [{ data: profile }, makerRow] = await Promise.all([
     supabase.from("users").select("role").eq("id", auth.user.id).maybeSingle(),
-    ensureMaker(supabase, identity.brand, identity.type, auth.user.id),
+    loadMakerBySlug(supabase, slug),
   ]);
 
   const isAdmin = profile?.role === "admin";
+  const name = makerRow?.name ?? identity.brand;
+  const type = makerRow?.type ?? identity.type;
 
-  const entries = await loadCatalogBrowse(supabase, maker.type, null, 200, {
-    brand: maker.name,
+  const entries = await loadCatalogBrowse(supabase, type, null, 200, {
+    brand: name,
     sort: "az",
   });
 
@@ -41,37 +45,39 @@ export default async function MakerPage({ params }: { params: Params }) {
     <AppShell>
       <header className="mb-6">
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">
-          {maker.type === "cigar" ? "Cigar maker" : "Distillery"}
+          {type === "cigar" ? "Cigar maker" : "Distillery"}
         </p>
-        <h1 className="text-3xl mt-1">{maker.name}</h1>
-        {maker.country ? (
-          <p className="text-sm text-foreground-muted mt-1">{maker.country}</p>
+        <h1 className="text-3xl mt-1">{name}</h1>
+        {makerRow?.country ? (
+          <p className="text-sm text-foreground-muted mt-1">{makerRow.country}</p>
         ) : null}
-        {maker.website ? (
+        {makerRow?.website ? (
           <a
-            href={maker.website}
+            href={makerRow.website}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-foreground-muted hover:text-foreground mt-1 inline-block transition-colors"
           >
-            {maker.website.replace(/^https?:\/\//, "")}
+            {makerRow.website.replace(/^https?:\/\//, "")}
           </a>
         ) : null}
-        {maker.house_style ? (
+        {makerRow?.house_style ? (
           <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-2">
-            {maker.house_style}
+            {makerRow.house_style}
           </p>
         ) : null}
       </header>
 
-      {maker.blurb ? (
-        <>
-          <Divider label="Winston's take" />
-          <div className="mb-5">
-            <WinstonTastingNote text={maker.blurb} />
-          </div>
-        </>
-      ) : null}
+      <Suspense
+        fallback={
+          <>
+            <Divider label="Winston's take" />
+            <VoiceProseSkeleton className="mb-5 px-5 py-5" />
+          </>
+        }
+      >
+        <MakerBlurbSection brand={identity.brand} type={identity.type} userId={auth.user.id} />
+      </Suspense>
 
       <Divider label="In the club's catalog" />
 
@@ -95,9 +101,9 @@ export default async function MakerPage({ params }: { params: Params }) {
 
       {isAdmin ? (
         <MakerAdminActions
-          slug={maker.slug}
-          initialBlurb={maker.blurb}
-          blurbSource={maker.blurb_source}
+          slug={makerRow?.slug ?? makerSlug(identity.brand)}
+          initialBlurb={makerRow?.blurb ?? null}
+          blurbSource={makerRow?.blurb_source ?? "ai"}
         />
       ) : null}
     </AppShell>

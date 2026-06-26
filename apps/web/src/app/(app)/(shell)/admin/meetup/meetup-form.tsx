@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { Button, Card } from "@/components/primitives";
-import { type UpsertMeetupState, deleteMeetup, upsertMeetup } from "./actions";
+import { deleteMeetup, type UpsertMeetupState, upsertMeetup } from "./actions";
 
 type MeetupFormProps = {
   existing: {
@@ -20,8 +20,18 @@ export function MeetupForm({ existing }: MeetupFormProps) {
   const [deleteState, deleteAction, deletePending] = useActionState(deleteMeetup, idle);
 
   const pending = savePending || deletePending;
-  const error = saveState.status === "error" ? saveState.message : deleteState.status === "error" ? deleteState.message : null;
-  const success = saveState.status === "ok" ? saveState.message : deleteState.status === "ok" ? deleteState.message : null;
+  const error =
+    saveState.status === "error"
+      ? saveState.message
+      : deleteState.status === "error"
+        ? deleteState.message
+        : null;
+  const success =
+    saveState.status === "ok"
+      ? saveState.message
+      : deleteState.status === "ok"
+        ? deleteState.message
+        : null;
 
   return (
     <Card>
@@ -53,7 +63,8 @@ export function MeetupForm({ existing }: MeetupFormProps) {
 
         <label className="flex flex-col gap-1">
           <span className="text-xs uppercase tracking-widest text-foreground-subtle">
-            Notes <span className="normal-case tracking-normal text-foreground-subtle">(optional)</span>
+            Notes{" "}
+            <span className="normal-case tracking-normal text-foreground-subtle">(optional)</span>
           </span>
           <textarea
             name="notes"
@@ -64,13 +75,9 @@ export function MeetupForm({ existing }: MeetupFormProps) {
           />
         </label>
 
-        {error ? (
-          <p className="text-sm text-red-400">{error}</p>
-        ) : null}
+        {error ? <p className="text-sm text-red-400">{error}</p> : null}
 
-        {success ? (
-          <p className="text-sm text-moss-500">{success}</p>
-        ) : null}
+        {success ? <p className="text-sm text-foreground-muted">{success}</p> : null}
 
         <Button type="submit" disabled={pending}>
           {savePending ? "Saving…" : existing ? "Update meetup" : "Create meetup"}

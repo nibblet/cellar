@@ -151,6 +151,11 @@ export function WinstonSuggests({
                     {p.brand ? (
                       <p className="text-xs text-foreground-muted truncate mt-1">{p.brand}</p>
                     ) : null}
+                    {p.subtitle ? (
+                      <p className="text-[10px] text-foreground-muted truncate mt-1">
+                        {p.subtitle}
+                      </p>
+                    ) : null}
                   </Card>
                 </Link>
               ))}

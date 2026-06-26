@@ -3,7 +3,7 @@
  *
  * Recommended pipeline (bourbon):
  *   1. pnpm seed:enrich-bourbon-tier --limit 2500        # fast nano pass on full catalog
- *   2. pnpm seed:enrich-apify --type bourbon --limit 100 --catalog-only
+ *   2. pnpm seed:enrich-web --type bourbon --limit 100 --catalog-only
  *   3. pnpm seed:enrich-specs --type bourbon --limit 100 --catalog-only
  *
  *   pnpm seed:enrich-bourbon-tier --limit 20 --dry-run

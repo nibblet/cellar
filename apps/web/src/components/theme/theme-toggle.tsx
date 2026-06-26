@@ -104,7 +104,7 @@ export function ThemeToggle() {
  * itself runs on the client.
  */
 export function ThemeInitScript() {
-  const js = `(function(){try{var m=localStorage.getItem('${STORAGE_KEY}');var r=document.documentElement;r.classList.remove('light','dark');if(m==='light'){r.classList.add('light');}else if(m==='dark'){r.classList.add('dark');}else if(m===null||m==='auto'){/* leave both off */}}catch(e){r.classList.add('dark');}})();`;
+  const js = `(function(){try{var r=document.documentElement;r.classList.remove('light','dark');var m=localStorage.getItem('${STORAGE_KEY}');if(m==='light'){r.classList.add('light');r.style.backgroundColor='#F7F1E6';}else if(m==='dark'){r.classList.add('dark');r.style.backgroundColor='#15110C';}else{r.style.backgroundColor=window.matchMedia('(prefers-color-scheme: dark)').matches?'#15110C':'#F7F1E6';}}catch(e){document.documentElement.style.backgroundColor='#15110C';}})();`;
   // biome-ignore lint/security/noDangerouslySetInnerHtml: required for pre-paint theme application
   return <script dangerouslySetInnerHTML={{ __html: js }} />;
 }

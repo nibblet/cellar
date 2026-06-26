@@ -40,7 +40,7 @@ type OrchestrateArgs = {
  *
  * Catalog enrichment of fresh drafts runs ASYNCHRONOUSLY in a follow-up
  * /api/enrich-draft fetch fired from the product detail page. We deliberately
- * don't enrich inline here because the Apify pass takes 30-60s, which would
+ * don't enrich inline here because the web search pass takes 30-60s, which would
  * push this server action past Vercel Hobby's 60s function timeout.
  */
 export async function identifyAndPersist(args: OrchestrateArgs): Promise<IdentifyOutcome> {

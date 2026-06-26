@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter, Playfair_Display } from "next/font/google";
+import { BootSplash } from "@/components/layout/boot-splash";
 import { ThemeInitScript } from "@/components/theme";
 import "./globals.css";
 
@@ -69,9 +70,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <head>
+        <style
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: critical pre-CSS background to prevent white flash
+          dangerouslySetInnerHTML={{
+            __html: "html,body{background:#15110C}html.light,html.light body{background:#F7F1E6}",
+          }}
+        />
         <ThemeInitScript />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+        <BootSplash />
         {children}
       </body>
     </html>

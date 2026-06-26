@@ -1,7 +1,7 @@
 /**
  * Structured specs extraction — CLI wrapper.
  *
- * Run after enrich-apify. Bourbon defaults to tier order so shelf staples
+ * Run after enrich-web. Bourbon defaults to tier order so shelf staples
  * get structured specs before allocated bottles.
  *
  *   pnpm seed:enrich-specs --type bourbon --limit 100

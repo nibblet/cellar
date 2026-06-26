@@ -41,6 +41,7 @@ export async function identifyPairingPhoto(
     .createSignedUrl(storagePath, 300);
 
   if (signedError || !signed) {
+    void supabase.storage.from(BUCKET).remove([storagePath]);
     return { status: "error", message: `Could not sign URL: ${signedError?.message}` };
   }
 
@@ -58,6 +59,7 @@ export async function identifyPairingPhoto(
       bourbon: toPayload(result.bourbon),
     };
   } catch (err) {
+    void supabase.storage.from(BUCKET).remove([storagePath]);
     const message = err instanceof Error ? err.message : "Couldn't read that photo.";
     return { status: "error", message };
   }

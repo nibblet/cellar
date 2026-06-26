@@ -1,9 +1,11 @@
 import { ArrowUpRight } from "lucide-react";
 import { Divider } from "@/components/primitives";
+import type { ProductType } from "@/lib/wheel";
 
 type ExploreLinksProps = {
   brand: string | null;
   name: string;
+  productType: ProductType;
 };
 
 function buildSearchQuery(brand: string | null, name: string): string {
@@ -11,27 +13,37 @@ function buildSearchQuery(brand: string | null, name: string): string {
   return encodeURIComponent(raw);
 }
 
-const LINKS = [
+const CIGAR_LINKS = [
   {
     label: "Check CigarPage for deals",
-    buildUrl: (q: string) =>
-      `https://www.cigarpage.com/catalogsearch/result/?q=${q}`,
+    buildUrl: (q: string) => `https://www.cigarpage.com/catalogsearch/result/?q=${q}`,
   },
   {
     label: "Cigar Aficionado ratings",
-    buildUrl: (q: string) =>
-      `https://www.cigaraficionado.com/ratings/search?q=${q}`,
+    buildUrl: (q: string) => `https://www.cigaraficionado.com/ratings/search?q=${q}`,
   },
 ] as const;
 
-export function ExploreLinks({ brand, name }: ExploreLinksProps) {
+const BOURBON_LINKS = [
+  {
+    label: "Whiskybase ratings",
+    buildUrl: (q: string) => `https://www.whiskybase.com/search?q=${q}`,
+  },
+  {
+    label: "Distiller.com community notes",
+    buildUrl: (q: string) => `https://distiller.com/search?q=${q}`,
+  },
+] as const;
+
+export function ExploreLinks({ brand, name, productType }: ExploreLinksProps) {
   const q = buildSearchQuery(brand, name);
+  const links = productType === "bourbon" ? BOURBON_LINKS : CIGAR_LINKS;
 
   return (
     <div className="mt-8">
       <Divider label="Explore" />
       <div className="mt-3 flex flex-col gap-3">
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <a
             key={link.label}
             href={link.buildUrl(q)}

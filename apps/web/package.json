@@ -44,7 +44,7 @@
     "repair:after-dedupe": "tsx --env-file=.env.local scripts/seed/repair-after-dedupe.ts",
     "repair:bourbon-apostrophes": "tsx --env-file=.env.local scripts/seed/repair-bourbon-apostrophes.ts",
     "seed:enrich": "tsx --env-file=.env.local scripts/seed/enrich-descriptors.ts",
-    "seed:enrich-apify": "tsx --env-file=.env.local scripts/seed/enrich-apify.ts",
+    "seed:enrich-web": "tsx --env-file=.env.local scripts/seed/enrich-web.ts",
     "seed:enrich-specs": "tsx --env-file=.env.local scripts/seed/enrich-specs.ts",
     "seed:enrich-bourbon-tier": "tsx --env-file=.env.local scripts/seed/enrich-bourbon-tier.ts",
     "seed:export-bourbon-catalog": "tsx --env-file=.env.local scripts/seed/export-bourbon-catalog.ts",

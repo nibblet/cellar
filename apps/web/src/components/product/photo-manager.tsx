@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { Camera, RefreshCw, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 import { Button, Divider } from "@/components/primitives";
 import { compressPhotoForUpload } from "@/lib/image/compress-for-upload";
 import { cn } from "@/lib/utils";
@@ -126,8 +126,8 @@ export function PhotoManager({ productId, catalogUrl, memberPhotos }: PhotoManag
       } else {
         setFeedback({
           type: "error",
-          text: data.apifyError
-            ? `Apify error: ${data.apifyError}`
+          text: data.searchError
+            ? `Search error: ${data.searchError}`
             : "No suitable image found on the web",
         });
       }
@@ -148,7 +148,7 @@ export function PhotoManager({ productId, catalogUrl, memberPhotos }: PhotoManag
         <p
           className={cn(
             "text-xs mt-3 text-center",
-            feedback.type === "ok" ? "text-moss-500" : "text-ember-500",
+            feedback.type === "ok" ? "text-foreground" : "text-ember-500",
           )}
           role="status"
         >

@@ -113,7 +113,9 @@ export function PreferencesForm({ initial }: { initial: MemberPreferences }) {
         </Button>
         {state.message ? (
           <span
-            className={state.ok ? "text-sm text-moss-600" : "text-sm text-foreground-subtle"}
+            className={
+              state.ok ? "text-sm text-foreground-muted" : "text-sm text-foreground-subtle"
+            }
             aria-live="polite"
           >
             {state.message}

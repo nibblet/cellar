@@ -3,14 +3,17 @@
  *
  * Called by the product detail page after a /capture redirect, *not* by the
  * capture server action itself — splitting the work across two HTTP requests
- * gives the long-running Apify pass its own 60s budget on Vercel Hobby,
+ * gives the long-running web search pass its own 60s budget on Vercel Hobby,
  * separate from the capture action's 60s budget.
  */
 
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { ApifyClient } from "@/lib/enrich/apify-client";
-import { enrichDraftProduct, enrichProductFromWeb, productNeedsCatalogEnrichment } from "@/lib/enrich";
+import {
+  enrichDraftProduct,
+  enrichProductFromWeb,
+  productNeedsCatalogEnrichment,
+} from "@/lib/enrich";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -41,6 +44,14 @@ export async function POST(req: Request) {
     if (profile?.role !== "admin") {
       return NextResponse.json({ error: "Admin only" }, { status: 403 });
     }
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("[api/enrich-draft] Missing OPENAI_API_KEY");
+    return NextResponse.json(
+      { error: "Catalog enrichment is not configured (OPENAI_API_KEY missing)" },
+      { status: 503 },
+    );
   }
 
   const { data: product, error } = await supabase
@@ -75,18 +86,9 @@ export async function POST(req: Request) {
     }
   }
 
-  if (!process.env.APIFY_TOKEN) {
-    console.error("[api/enrich-draft] Missing APIFY_TOKEN");
-    return NextResponse.json(
-      { error: "Catalog enrichment is not configured (APIFY_TOKEN missing)" },
-      { status: 503 },
-    );
-  }
-
   if (imageOnly) {
     try {
       const admin = createSupabaseAdminClient();
-      const apify = new ApifyClient(process.env.APIFY_TOKEN);
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
       await admin.from("products").update({ image_url: null }).eq("id", productId);
@@ -99,14 +101,14 @@ export async function POST(req: Request) {
           brand: product.brand,
           line: product.line ?? null,
         },
-        { apify, openai, supabase: admin },
+        { openai, supabase: admin, userId: auth.user.id },
         { imageOnly: true },
       );
 
       return NextResponse.json({
         ok: true,
         imageUrl: result.imageUrl,
-        apifyError: result.apifyError,
+        searchError: result.searchError,
         mirrorError: result.mirrorError,
       });
     } catch (err) {
@@ -121,11 +123,23 @@ export async function POST(req: Request) {
   try {
     const admin = createSupabaseAdminClient();
 
+    let workingSpecs = specs;
+    let workingWheel = wheelVector;
+
     if (force) {
-      await admin.from("product_reviews").delete().eq("product_id", productId);
+      workingSpecs = { ...specs };
+      delete workingSpecs.web_enriched_at;
+      delete workingSpecs.enrichment_source;
+      delete workingSpecs.enrichment_source_urls;
+      workingWheel = null;
       await admin
         .from("products")
-        .update({ wheel_vector: null })
+        .update({
+          specs: workingSpecs,
+          wheel_vector: null,
+          trait_vector: null,
+          winston_prose: null,
+        })
         .eq("id", productId);
     }
 
@@ -137,28 +151,28 @@ export async function POST(req: Request) {
         brand: product.brand,
         line: product.line ?? null,
         source: product.source,
-        specs,
-        wheel_vector: wheelVector,
+        specs: workingSpecs,
+        wheel_vector: workingWheel,
       },
       admin,
+      auth.user.id,
+      { force },
     );
 
-    if (result.apify.apifyError) {
-      console.warn("[api/enrich-draft] apify:", result.apify.apifyError);
+    if (result.web.searchError) {
+      console.warn("[api/enrich-draft] web search:", result.web.searchError);
     }
-    if (result.apify.mirrorError) {
-      console.warn("[api/enrich-draft] mirror:", result.apify.mirrorError);
+    if (result.web.mirrorError) {
+      console.warn("[api/enrich-draft] mirror:", result.web.mirrorError);
     }
 
     return NextResponse.json({
       ok: true,
-      imageUrl: result.apify.imageUrl,
-      reviewsWritten: result.apify.reviewsWritten,
-      specsFilled: result.specs?.fieldsFilled.length ?? 0,
-      wheelLeaves: result.wheel?.leavesFilled ?? 0,
-      apifyError: result.apify.apifyError,
-      mirrorError: result.apify.mirrorError,
-      specsError: result.specs?.error,
+      imageUrl: result.web.imageUrl,
+      specsFilled: result.web.specsFieldsFilled.length,
+      wheelLeaves: result.web.wheelLeavesFilled,
+      searchError: result.web.searchError,
+      mirrorError: result.web.mirrorError,
     });
   } catch (err) {
     console.error("[api/enrich-draft]", (err as Error).message);

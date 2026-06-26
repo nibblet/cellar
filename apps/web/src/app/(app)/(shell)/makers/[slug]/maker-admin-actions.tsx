@@ -2,11 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button, Card } from "@/components/primitives";
-import {
-  type MakerAdminState,
-  regenerateMakerBlurb,
-  updateMakerBlurb,
-} from "./admin-actions";
+import { type MakerAdminState, regenerateMakerBlurb, updateMakerBlurb } from "./admin-actions";
 
 type MakerAdminActionsProps = {
   slug: string;
@@ -69,7 +65,7 @@ export function MakerAdminActions({ slug, initialBlurb, blurbSource }: MakerAdmi
       </form>
 
       {error ? <p className="text-sm text-red-400 mt-3">{error}</p> : null}
-      {success ? <p className="text-sm text-moss-500 mt-3">{success}</p> : null}
+      {success ? <p className="text-sm text-foreground-muted mt-3">{success}</p> : null}
     </Card>
   );
 }

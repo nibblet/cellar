@@ -10,6 +10,21 @@ export type SubmitSuggestionState = {
   message?: string;
 };
 
+async function requireAdminSupabase() {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { supabase: null, error: "Not signed in." as const };
+
+  const { data: profile } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", auth.user.id)
+    .maybeSingle();
+
+  if (profile?.role !== "admin") return { supabase: null, error: "Not authorized." as const };
+  return { supabase, error: null };
+}
+
 const VALID_KINDS: SuggestionKind[] = ["feature", "bug", "other"];
 
 export async function submitSuggestion(
@@ -63,7 +78,9 @@ export async function updateSuggestionStatus(
 
   if (!id || !status) return { status: "error", message: "Bad request." };
 
-  const supabase = await createSupabaseServerClient();
+  const { supabase, error: authError } = await requireAdminSupabase();
+  if (!supabase) return { status: "error", message: authError };
+
   const { error } = await supabase.from("suggestions").update({ status }).eq("id", id);
   if (error) return { status: "error", message: error.message };
 
@@ -78,7 +95,9 @@ export async function deleteSuggestion(
   const id = String(formData.get("id") ?? "");
   if (!id) return { status: "error", message: "Missing id." };
 
-  const supabase = await createSupabaseServerClient();
+  const { supabase, error: authError } = await requireAdminSupabase();
+  if (!supabase) return { status: "error", message: authError };
+
   const { error } = await supabase.from("suggestions").delete().eq("id", id);
   if (error) return { status: "error", message: error.message };
 

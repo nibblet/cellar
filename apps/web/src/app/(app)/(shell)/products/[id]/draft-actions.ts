@@ -8,7 +8,7 @@ type State = { ok: boolean; error?: string };
 /**
  * Flip a draft product to confirmed and send the member straight to the
  * tasting form. Catalog enrichment keeps running in the background on the
- * product page — we don't make them wait for Apify here.
+ * product page — we don't make them wait for web search here.
  */
 export async function confirmDraftProduct(_prev: State, formData: FormData): Promise<State> {
   const productId = String(formData.get("product_id") ?? "");

@@ -10,3 +10,4 @@ export {
 export { MemberTag } from "./member-tag";
 export { Spinner } from "./spinner";
 export { Voice } from "./voice";
+export { VoiceProseSkeleton } from "./voice-prose-skeleton";

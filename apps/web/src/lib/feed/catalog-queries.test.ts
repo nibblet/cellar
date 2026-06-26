@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { type CatalogEntry, groupCatalogByBrand } from "./catalog-queries";
+import {
+  type CatalogEntry,
+  type CatalogFilters,
+  groupCatalogByBrand,
+  passesCatalogFilters,
+} from "./catalog-queries";
 
 function entry(over: Partial<CatalogEntry> & { product_id: string }): CatalogEntry {
   return {
@@ -52,5 +57,36 @@ describe("groupCatalogByBrand", () => {
     ]);
     const nullGroup = groups.find((g) => g.brand_family === null);
     expect(nullGroup?.entries.map((e) => e.product_id)).toEqual(["cigarA", "cigarB"]);
+  });
+});
+
+describe("passesCatalogFilters", () => {
+  const baseProduct = {
+    id: "p1",
+    name: "Test Bourbon",
+    brand: "Test",
+    brand_family: null,
+    expression: null,
+    is_core_range: true,
+    type: "bourbon" as const,
+    image_url: null,
+    specs: {},
+    created_at: "2024-01-01",
+  };
+
+  function passes(specs: Record<string, unknown>, filters: CatalogFilters) {
+    return passesCatalogFilters(baseProduct, specs, null, null, undefined, filters);
+  }
+
+  it("includes products matching availability filter", () => {
+    expect(passes({ availability_rarity: "allocated" }, { availability: "allocated" })).toBe(true);
+  });
+
+  it("excludes everyday products when filtering to allocated", () => {
+    expect(passes({ availability_rarity: "everyday" }, { availability: "allocated" })).toBe(false);
+  });
+
+  it("excludes products with no availability when filtering to allocated", () => {
+    expect(passes({}, { availability: "allocated" })).toBe(false);
   });
 });

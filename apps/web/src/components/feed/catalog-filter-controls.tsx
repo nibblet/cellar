@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
+import type { AvailabilityRarity } from "@/lib/catalog/normalize-specs";
+import { formatAvailabilityRarity } from "@/lib/catalog/normalize-specs";
 import type { CatalogFilters, CatalogSortKey } from "@/lib/feed/catalog-queries";
 import {
   BOURBON_PROOF_BAND_LABEL,
@@ -46,6 +48,14 @@ const AGE_BAND_LABELS: Record<string, string> = {
   "12+": "12+ yr",
 };
 
+const AVAILABILITY_FILTER_OPTIONS: { value: AvailabilityRarity; label: string }[] = [
+  { value: "everyday", label: "Everyday" },
+  { value: "seasonal", label: "Seasonal" },
+  { value: "allocated", label: "Allocated" },
+  { value: "lottery", label: "Lottery" },
+  { value: "secondary-only", label: "Secondary" },
+];
+
 /**
  * Filter + sort control bar for the Cigars / Bourbons catalog tabs.
  * State lives in URL search params so it survives navigation and is shareable.
@@ -79,6 +89,7 @@ export function CatalogFilterControls({ productType, activeFilters, activeSort }
       "origin",
       "styles",
       "proof",
+      "availability",
       "age",
       "brand",
       "vitola",
@@ -443,6 +454,30 @@ function BourbonFilters({
       </section>
 
       <section>
+        <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">
+          Availability
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {AVAILABILITY_FILTER_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                onUpdate({ availability: activeFilters.availability === value ? null : value })
+              }
+              className={`text-xs px-2.5 py-2 rounded-full border transition-colors ${
+                activeFilters.availability === value
+                  ? "border-accent bg-accent-tint text-foreground"
+                  : "border-border text-foreground-subtle hover:border-foreground-subtle"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section>
         <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mb-2">Age</p>
         <div className="flex flex-wrap gap-1.5">
           {ageBands.map((b) => (
@@ -521,6 +556,7 @@ function countActiveFilters(f: CatalogFilters): number {
   if (f.ringGauge) n++;
   if (f.styles?.length) n++;
   if (f.proofBand) n++;
+  if (f.availability) n++;
   if (f.ageBand) n++;
   if (f.clubOnly) n++;
   if (f.enrichedOnly) n++;
@@ -541,6 +577,7 @@ function buildFilterSummary(f: CatalogFilters, type: ProductType): string {
   } else {
     if (f.styles?.length) parts.push(f.styles.map((s) => BOURBON_STYLE_LABEL[s]).join(", "));
     if (f.proofBand) parts.push(BOURBON_PROOF_BAND_LABEL[f.proofBand]);
+    if (f.availability) parts.push(formatAvailabilityRarity(f.availability));
     if (f.ageBand) parts.push(AGE_BAND_LABELS[f.ageBand]);
   }
   return parts.join(" · ");

@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { CellarInsightCard, TryNext } from "@/components/cellar";
+import {
+  CellarInsightCard,
+  CellarInsightSkeleton,
+  TonightsPickSkeleton,
+  TryNext,
+  TryNextSkeleton,
+} from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
 import { CellarSection } from "@/components/members/sections";
 import { Divider, Voice } from "@/components/primitives";
@@ -36,15 +42,15 @@ export default async function YouCellarPage() {
         <h1 className="text-3xl mt-1">Your cellar</h1>
       </header>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<TonightsPickSkeleton />}>
         <TonightsPickSection memberId={auth.user.id} />
       </Suspense>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<CellarInsightSkeleton />}>
         <CellarInsightSection memberId={auth.user.id} />
       </Suspense>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<TryNextSkeleton />}>
         <TryNextSection memberId={auth.user.id} />
       </Suspense>
 
@@ -81,8 +87,10 @@ async function TonightsPickSection({ memberId }: { memberId: string }) {
   const cigarDisplay = cigar.brand ? `${cigar.brand} ${cigar.name}` : cigar.name;
   const bourbonDisplay = bourbon.brand ? `${bourbon.brand} ${bourbon.name}` : bourbon.name;
 
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const day = days[new Date().getUTCDay()];
+  const day = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    timeZone: "America/New_York",
+  });
   const line = `"For a ${day} on the porch: ${cigarDisplay} with the ${bourbonDisplay}."`;
 
   return (

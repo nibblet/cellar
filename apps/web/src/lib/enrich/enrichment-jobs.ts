@@ -8,7 +8,7 @@ export type EnrichmentJob = {
 };
 
 /**
- * Products from a pairing save that still need the async Apify/specs pass.
+ * Products from a pairing save that still need the async web enrichment pass.
  */
 export async function loadEnrichmentJobsForProducts(
   supabase: SupabaseClient,

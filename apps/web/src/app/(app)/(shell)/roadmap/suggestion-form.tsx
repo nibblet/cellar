@@ -66,7 +66,7 @@ export function SuggestionForm() {
           </p>
         ) : null}
         {state.status === "sent" ? (
-          <p className="text-sm text-moss-600">Thanks — Paul will see this.</p>
+          <p className="text-sm text-foreground-muted">Thanks — Paul will see this.</p>
         ) : null}
       </form>
     </Card>
