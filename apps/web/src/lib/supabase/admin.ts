@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { supabaseEnv } from "./env";
 
 /**
@@ -8,9 +8,11 @@ import { supabaseEnv } from "./env";
  */
 export function createSupabaseAdminClient() {
   return createClient(supabaseEnv.url(), supabaseEnv.serviceRoleKey(), {
+    // Solo fork lives in an isolated `cellar` schema in the shared project.
+    db: { schema: "cellar" },
     auth: {
       autoRefreshToken: false,
       persistSession: false,
     },
-  });
+  }) as unknown as SupabaseClient;
 }
