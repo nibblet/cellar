@@ -39,7 +39,6 @@ export async function updateDisplayName(
 
   revalidatePath("/you");
   revalidatePath("/you/settings");
-  revalidatePath("/members");
   return { ok: true, message: "Saved." };
 }
 
