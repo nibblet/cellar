@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { PairingCaptureFlow } from "@/components/pairing/pairing-capture-flow";
 import { Voice } from "@/components/primitives";
+import { PERSONAL_PAIRINGS_PATH } from "@/lib/navigation/paths";
 import { loadPickerProductById } from "@/lib/pairing/picker-products";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 export const maxDuration = 60;
@@ -28,8 +29,11 @@ export default async function PairingCapturePage({ searchParams }: { searchParam
   return (
     <AppShell spacious>
       <header className="mb-4">
-        <Link href="/pairings" className="text-sm text-foreground-muted hover:text-foreground">
-          ← Pairings
+        <Link
+          href={PERSONAL_PAIRINGS_PATH}
+          className="text-sm text-foreground-muted hover:text-foreground"
+        >
+          ← Your pairings
         </Link>
         <h1 className="text-3xl mt-3">Capture a pairing</h1>
         <p className="text-sm text-foreground-muted mt-1">

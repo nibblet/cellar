@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { CellarInsight } from "@/lib/cellar/insight";
 import { Card, Voice } from "@/components/primitives";
+import type { CellarInsight } from "@/lib/cellar/insight";
 
 type CellarInsightCardProps = {
   insight: CellarInsight;
+  label?: string;
 };
 
 function firstSentence(text: string): string {
@@ -13,7 +14,10 @@ function firstSentence(text: string): string {
   return match ? match[0] : text;
 }
 
-export function CellarInsightCard({ insight }: CellarInsightCardProps) {
+export function CellarInsightCard({
+  insight,
+  label = "Winston on your shelf",
+}: CellarInsightCardProps) {
   const [expanded, setExpanded] = useState(false);
   const hasBourbons = Boolean(insight.bourbons);
   const hasCigars = Boolean(insight.cigars);
@@ -33,9 +37,7 @@ export function CellarInsightCard({ insight }: CellarInsightCardProps) {
         onClick={() => hasMore && setExpanded(!expanded)}
         className="w-full text-left"
       >
-        <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-3">
-          Winston on your shelf
-        </p>
+        <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-3">{label}</p>
         {hasBourbons ? (
           <div className={hasCigars ? "mb-3" : undefined}>
             <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-1">

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { APP_HOME_PATH, SETTINGS_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type DisplayNameFormState = {
@@ -37,8 +38,8 @@ export async function updateDisplayName(
 
   if (error) return { ok: false, message: error.message };
 
-  revalidatePath("/you");
-  revalidatePath("/you/settings");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath(SETTINGS_PATH);
   return { ok: true, message: "Saved." };
 }
 
@@ -79,7 +80,7 @@ export async function uploadAvatar(
 
   if (dbError) return { ok: false, message: dbError.message };
 
-  revalidatePath("/you");
-  revalidatePath("/you/settings");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath(SETTINGS_PATH);
   return { ok: true, message: "Avatar updated." };
 }

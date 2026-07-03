@@ -15,11 +15,8 @@ export function TryNext({ cigars, bourbons }: TryNextProps) {
 
   return (
     <section className="mb-5">
-      <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mb-2">
-        Worth hunting
-      </p>
       <Voice className="block text-sm mb-4">
-        "Going off what you keep reaching for — a few you haven't poured yet."
+        "From the catalog, going off what you keep reaching for — a few you don't already have."
       </Voice>
 
       {bourbons.length > 0 ? <PickGroup label="Bourbons" picks={bourbons} /> : null}

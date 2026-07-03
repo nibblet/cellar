@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { APP_HOME_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type LoginState = { status: "idle" | "error"; message?: string };
@@ -30,5 +31,5 @@ export async function signInWithPassword(
     return { status: "error", message: "Email or password is incorrect." };
   }
 
-  redirect("/");
+  redirect(APP_HOME_PATH);
 }

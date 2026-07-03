@@ -1,8 +1,9 @@
 "use client";
 
-import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
+import { BookOpen, Boxes, Plus, Settings2, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { APP_HOME_PATH, CELLAR_PATH, SETTINGS_PATH } from "@/lib/navigation/paths";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -12,14 +13,20 @@ type NavItem = {
   match: (pathname: string) => boolean;
 };
 
-// Solo fork nav: [Cellar] [Catalog] [⊕ Capture] [Pairings] [You]
-// The club feed and members surfaces are gone; the humidor is home.
+// Solo fork nav: [You] [Cellar] [⊕ Capture] [Catalog] [Settings]
+// Pairings is now a secondary archive/detail flow rather than a shell pillar.
 const SIDE_ITEMS: NavItem[] = [
   {
-    href: "/",
+    href: APP_HOME_PATH,
+    label: "You",
+    icon: User,
+    match: (p) => p.startsWith("/you"),
+  },
+  {
+    href: CELLAR_PATH,
     label: "Cellar",
     icon: BookOpen,
-    match: (p) => p === "/",
+    match: (p) => p === CELLAR_PATH,
   },
   {
     href: "/catalog",
@@ -28,16 +35,10 @@ const SIDE_ITEMS: NavItem[] = [
     match: (p) => p.startsWith("/catalog"),
   },
   {
-    href: "/pairings",
-    label: "Pairings",
-    icon: Sparkles,
-    match: (p) => p.startsWith("/pairings"),
-  },
-  {
-    href: "/you",
-    label: "You",
-    icon: User,
-    match: (p) => p.startsWith("/you") || p.startsWith("/admin"),
+    href: SETTINGS_PATH,
+    label: "Settings",
+    icon: Settings2,
+    match: (p) => p.startsWith("/settings") || p.startsWith("/admin"),
   },
 ];
 

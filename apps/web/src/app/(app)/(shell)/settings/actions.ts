@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { APP_HOME_PATH, CELLAR_PATH, SETTINGS_PATH } from "@/lib/navigation/paths";
 import {
   BOURBON_PROOF_BANDS,
   BOURBON_STYLES,
@@ -63,8 +64,8 @@ export async function updateClubJoinedAt(
 
   if (error) return { ok: false, message: error.message };
 
-  revalidatePath("/you/settings");
-  revalidatePath("/settings");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath(SETTINGS_PATH);
   return { ok: true, message: "Saved." };
 }
 
@@ -125,9 +126,11 @@ export async function savePreferences(
 
   if (error) return { ok: false, message: error.message };
 
-  revalidatePath("/you/settings");
-  revalidatePath("/settings");
-  revalidatePath("/");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath(CELLAR_PATH);
+  revalidatePath(SETTINGS_PATH);
+  revalidatePath("/catalog");
+  revalidatePath("/makers");
   return { ok: true, message: "Saved." };
 }
 

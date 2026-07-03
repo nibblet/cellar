@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { APP_HOME_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function requireAdminSupabase() {
@@ -48,6 +49,7 @@ export async function setCatalogIncluded(
   if (updateError) return { status: "error", message: updateError.message };
 
   revalidatePath("/admin/catalog");
-  revalidatePath("/");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath("/catalog");
   return { status: "ok" };
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { APP_HOME_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type UpdatePasswordState = {
@@ -41,5 +42,5 @@ export async function updatePassword(
     return { status: "error", message: error.message };
   }
 
-  redirect("/");
+  redirect(APP_HOME_PATH);
 }

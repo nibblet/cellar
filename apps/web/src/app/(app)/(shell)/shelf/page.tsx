@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { CELLAR_PATH } from "@/lib/navigation/paths";
 
-export default async function ShelfRedirect() {
-  const supabase = await createSupabaseServerClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/login");
-  redirect("/you/cellar");
+export default function ShelfRedirect() {
+  redirect(CELLAR_PATH);
 }

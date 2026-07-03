@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { APP_HOME_PATH, CELLAR_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CellarPatch, CellarRow } from "./types";
 import { applyPatch, isZeroRow, ZERO_ROW } from "./types";
@@ -56,7 +57,10 @@ export async function setCellarState(productId: string, patch: CellarPatch): Pro
 
   revalidatePath(`/products/${productId}`);
   revalidatePath(`/members/${memberId}`);
-  revalidatePath("/");
+  revalidatePath(APP_HOME_PATH);
+  revalidatePath(CELLAR_PATH);
+  revalidatePath("/catalog");
+  revalidatePath("/makers");
 }
 
 /**

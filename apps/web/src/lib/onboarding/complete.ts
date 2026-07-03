@@ -1,14 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getOnboardingExitPath } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { OnboardingExit } from "./types";
-
-const EXIT_PATH: Record<OnboardingExit, string> = {
-  capture: "/capture",
-  preferences: "/you/settings#preferences",
-  lounge: "/",
-};
 
 export async function completeOnboarding(exit: OnboardingExit): Promise<never> {
   const supabase = await createSupabaseServerClient();
@@ -21,5 +16,5 @@ export async function completeOnboarding(exit: OnboardingExit): Promise<never> {
     .eq("id", auth.user.id)
     .is("onboarding_completed_at", null);
 
-  redirect(EXIT_PATH[exit]);
+  redirect(getOnboardingExitPath(exit));
 }
