@@ -7,9 +7,10 @@ pairings driven by their own taste — not a group's.
 Working title: **the Cellar** (rename later; app constant, trivial to swap — same
 posture as Winston's name in NCCC).
 
-> **This is a clean separate-repo fork.** Copy NCCC, delete the club layer, keep the
-> engine. The solo app does not inherit NCCC's ongoing changes and does not carry a
-> `SOLO_MODE` flag — the club code is *removed*, not gated. This doc is the cut list.
+> **This is a clean fork of the NCCC codebase** (club layer removed, not gated). It runs
+> against the **same Supabase project** as NCCC but in a dedicated, isolated `cellar`
+> Postgres schema — the NCCC `public.*` tables are never touched. See §12 for the shipped
+> architecture (this supersedes the earlier "separate repo + reset migration" framing).
 
 ---
 
@@ -256,9 +257,24 @@ pre-existing unrelated test-file error), 439 unit tests passing at each step.
   roadmap suggestion form, and admin links. App is **login-only**; `/auth/callback`
   simplified to a plain code exchange (password-reset still works).
 
-**Account bootstrap (solo):** no public signup surface. Create the single account
-directly in Supabase — add the auth user (dashboard or `scripts/admin/set-password.ts`)
-and insert one `public.users` row — then sign in with email + password.
+- **F6 (data architecture, shipped on-branch)** — **Same project, isolated `cellar`
+  schema** (supersedes separate-repo + `solo_reset.sql`, which was removed). The three
+  Supabase client factories set `db: { schema: "cellar" }`.
+  `supabase/migrations/20260703000002_cellar_schema.sql` clones the 13 NCCC tables
+  (`LIKE INCLUDING ALL`), re-adds FKs/triggers/RLS, and backfills the full catalog plus
+  Paul Cobb's cellar (187 saves, 23 tastings, 1 preference, 5 pairing sessions). NCCC
+  `public.*` is read-only-sourced, never altered. Storage buckets are shared (schema-
+  independent); catalog image rows reference the same objects, no duplication.
+
+**To bring the cellar app online (two manual steps — can't be run from here):**
+1. Apply the migration: `supabase db push` (or paste the migration into the Supabase SQL
+   editor). Re-runnable — it drops and rebuilds the `cellar` schema.
+2. Expose the schema: Supabase Dashboard → Settings → API → **Exposed schemas** → add
+   `cellar`. Without this PostgREST won't serve the tables.
+
+**Account bootstrap (solo):** no public signup surface. The single account is Paul's
+existing `auth.users` row (shared across the project); his profile is backfilled into
+`cellar.users`. Sign in with his email + password.
 
 **Still open / deferred:**
 - Apply `solo_reset.sql` on the forked Supabase project (`supabase db push`) — can't be
@@ -284,3 +300,6 @@ and insert one `public.users` row — then sign in with email + password.
 and F1 single-account pending sign-off / infra.*
 *v0.3 · 2026-07-03 · F4b palette + F1 (reset migration, invites/suggestions removed,
 login-only) shipped on-branch. Remaining: apply migration on forked Supabase, name decision.*
+*v0.4 · 2026-07-03 · Architecture change: same Supabase project, isolated `cellar` schema
+(F6). Cellar-schema clone+backfill migration shipped; app repointed via db.schema. Remaining:
+apply migration + expose `cellar` schema in Supabase; name decision.*
