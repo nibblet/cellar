@@ -1,6 +1,5 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { Card, Divider, Voice } from "@/components/primitives";
-import { SuggestionForm } from "./suggestion-form";
 
 type Item = {
   title: string;
@@ -9,20 +8,16 @@ type Item = {
 
 const today: Item[] = [
   {
-    title: "Capture & recommend",
-    body: "Snap a cigar band or bourbon label, tap Recommend to NCCC, optionally add a few flavor words.",
+    title: "Capture & log",
+    body: "Snap a cigar band or bourbon label, save a tasting, optionally add a few flavor words.",
   },
   {
-    title: "Browse the club",
-    body: "See what the rest of the club has been smoking and pouring in the Lounge.",
+    title: "Your humidor & cellar",
+    body: "Track Have / Want / Tried, and see tonight's pick and what to try next on the home screen.",
   },
   {
-    title: "The group's voice",
-    body: "Tap any product to see who recommends it, what flavors keep coming up, and what bourbon pairs with that cigar.",
-  },
-  {
-    title: "Meetups",
-    body: "Tag your tastings to the night and see the screenshot-friendly recap card after.",
+    title: "How it tastes to you",
+    body: "Tap any product to see the flavors that keep coming up in your notes and what bourbon pairs with that cigar.",
   },
   {
     title: "The Daily Pour",
@@ -57,13 +52,13 @@ export default function RoadmapPage() {
   return (
     <AppShell>
       <header className="mb-6">
-        <p className="text-sm tracking-widest uppercase text-foreground-subtle">The Club</p>
+        <p className="text-sm tracking-widest uppercase text-foreground-subtle">The app</p>
         <h1 className="text-4xl mt-1">Roadmap</h1>
       </header>
 
       <Voice className="block mb-6">
-        "NCCC is live and we're starting to use it. Winston has the bourbon shelf cataloged, the
-        cigar lounge is open, and the pairing engine is reading the room. Here's the path forward."
+        "The humidor's cataloged, the cellar's open, and the pairing engine is reading your taste.
+        Here's the path forward."
       </Voice>
 
       <Divider label="What you can do today" />
@@ -92,12 +87,6 @@ export default function RoadmapPage() {
           </li>
         ))}
       </ol>
-
-      <Divider label="Send Paul a suggestion" />
-      <Voice className="block mb-4">
-        "This is a hobby project for us — what you ask for is what gets built next."
-      </Voice>
-      <SuggestionForm />
     </AppShell>
   );
 }

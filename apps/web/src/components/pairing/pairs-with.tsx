@@ -7,7 +7,6 @@ type PairsWithProps = {
   sourceType: ProductType;
   sourceId: string;
   candidates: PairsWithEntry[];
-  validatedPairs: Set<string>; // set of candidate product_ids that are group-validated
 };
 
 function pairingHref(sourceType: ProductType, sourceId: string, candidateId: string): string {
@@ -18,7 +17,7 @@ function pairingHref(sourceType: ProductType, sourceId: string, candidateId: str
     : `/pairings/${candidateId}/${sourceId}`;
 }
 
-export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: PairsWithProps) {
+export function PairsWith({ sourceType, sourceId, candidates }: PairsWithProps) {
   if (candidates.length === 0) {
     return (
       <Card>
@@ -32,36 +31,31 @@ export function PairsWith({ sourceType, sourceId, candidates, validatedPairs }: 
   return (
     <div className="flex flex-col gap-3">
       {candidates.map((c) => {
-        const isValidated = validatedPairs.has(c.product_id);
+        // Moss = on your shelf. A candidate you already own gets the moss
+        // treatment — the pour you can reach for right now.
+        const onShelf = c.source === "cellar";
         return (
           <Link key={c.product_id} href={pairingHref(sourceType, sourceId, c.product_id)}>
             <Card
               className={
-                isValidated
+                onShelf
                   ? "border border-moss-600 bg-gradient-to-br from-surface to-moss-600/5 hover:bg-surface-2 transition-colors"
                   : "hover:bg-surface-2 transition-colors"
               }
             >
-              {c.source === "cellar" ? (
-                <p className="text-[10px] uppercase tracking-widest text-foreground-subtle">
-                  On your shelf
-                </p>
-              ) : null}
-              <div
-                className={`flex items-baseline justify-between gap-3${c.source === "cellar" ? " mt-1" : ""}`}
-              >
+              <div className="flex items-baseline justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-base text-foreground truncate">{c.name}</p>
                   {c.brand ? (
                     <p className="text-xs text-foreground-muted truncate">{c.brand}</p>
                   ) : null}
                 </div>
-                {isValidated ? (
+                {onShelf ? (
                   <span
                     className="text-[10px] uppercase tracking-widest text-moss-600 shrink-0"
-                    title="The club has tasted this pairing"
+                    title="A pour you already own"
                   >
-                    ● club tried
+                    ● on your shelf
                   </span>
                 ) : null}
               </div>

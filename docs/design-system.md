@@ -35,8 +35,8 @@ The palette is the logo: black ink on cream, with brass as the only chromatic ac
 | `--brass-500` | `#B08A4A` | The accent. Buttons, recommend bar fill, highlighted links. |
 | `--brass-600` | `#8E6E38` | Hovered/pressed brass. |
 | `--brass-100` | `#E8DCC0` | Brass tint for subtle backgrounds (chip selected state). |
-| `--ember-500` | `#C2410C` | Reserved. The lit-cigar tip color. Used only for the "recommend" icons (lit cigars / filled glencairns) and nowhere else. |
-| `--moss-600` | `#4A5D3A` | Reserved. The "club has tested this" pairing indicator. Used sparingly. |
+| `--ember-500` | `#C2410C` | The lit-cigar tip color. Marks the **loved** signal (the filled heart on tried items) and transient warm emphasis (save confirmations, draft flags, inline errors). Never a button fill. |
+| `--moss-600` | `#4A5D3A` | Marks **"on your shelf"** — a cigar/bourbon you already own, surfaced on pairing suggestions so you can reach for what you have. Used sparingly. |
 
 **Dark mode** (because most use is at night, in dim rooms):
 
@@ -137,11 +137,12 @@ box-shadow: 0 1px 0 rgba(26, 22, 19, 0.06);
 - **Active (touch):** `scale(0.99)` — subtle press feedback on iPhone.
 - Use inside `<Link className="group">` or on `<button>` directly.
 
-**Validated card** — club-validated pairings only. Export: `validatedCardClassName`.
+**Shelf card** — pairing suggestions you already own. Export: `validatedCardClassName`.
 
 - Extends interactive card behavior.
 - Rest: moss left border (`--moss-600`), faint moss tint gradient (`from-surface to-moss-600/5`).
 - Hover: moss border strengthens, tint slightly deepens.
+- Marks a pour that's **on your shelf** — the one you can reach for right now.
 
 **Glass / blur** — reserved for floating chrome and photo overlays only:
 
@@ -291,10 +292,15 @@ Restrained. We're a library, not a TikTok.
 
 The full active palette is intentionally warm and three-accented:
 - **Brass** carries primary action and emphasis.
-- **Ember** lights the recommend icons (the only place this color appears).
-- **Moss** marks group-validated pairings (the only place this color appears).
+- **Ember** marks the **loved** signal — the filled heart on a tried item (and the warm tint for transient save/draft/error emphasis).
+- **Moss** marks **"on your shelf"** — a pairing candidate you already own.
 
-Each accent has exactly one job. No re-using brass for status, no re-using ember for buttons. This discipline is what keeps a three-color palette from feeling busy.
+Each accent has exactly one status job. No re-using brass for status, no re-using ember for buttons. This discipline is what keeps a three-color palette from feeling busy.
+
+> **Solo fork note (v0.3):** ember and moss were reassigned from their club jobs
+> (recommend icons / group-validated pairings) when the club layer was removed. The
+> recommend bar and group validation no longer exist; ember now belongs to the private
+> `loved` signal and moss to shelf ownership.
 
 ---
 

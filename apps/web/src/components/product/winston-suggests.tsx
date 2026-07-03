@@ -30,28 +30,25 @@ function SuggestionBadge({ kind }: { kind: "try_tonight" | "hunt_next" }) {
 }
 
 function CrossTypeCard({ pick, shelfLabel }: { pick: CrossTypePick; shelfLabel?: string | null }) {
+  // Moss = on your shelf (a bottle/cigar you already own). It marks the pours
+  // you can reach for right now, not one you'd have to go buy.
   return (
     <Link href={pairingHref(pick.cigar_id, pick.bourbon_id)} className="block group">
       <Card
         className={cn(
           "hover:bg-surface-2 transition-colors",
-          pick.clubValidated &&
-            "border border-moss-600 bg-gradient-to-br from-surface to-moss-600/5",
+          pick.onShelf && "border border-moss-600 bg-gradient-to-br from-surface to-moss-600/5",
         )}
       >
         <div className="flex items-baseline justify-between gap-3">
           <SuggestionBadge kind="try_tonight" />
-          {pick.clubValidated ? (
+          {pick.onShelf ? (
             <span className="text-[10px] uppercase tracking-widest text-moss-600">
-              ● club tried
+              ● {shelfLabel ?? "on your shelf"}
             </span>
           ) : null}
         </div>
-        {shelfLabel ? (
-          <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mt-1">
-            {shelfLabel}
-          </p>
-        ) : pick.source === "catalog" && !pick.onShelf ? (
+        {pick.source === "catalog" && !pick.onShelf ? (
           <p className="text-[10px] uppercase tracking-widest text-foreground-subtle mt-1">
             Not on your shelf yet
           </p>
