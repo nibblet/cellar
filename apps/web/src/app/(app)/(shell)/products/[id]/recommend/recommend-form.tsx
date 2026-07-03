@@ -94,17 +94,7 @@ export function RecommendForm({
           disabled={pending}
           className="w-full"
         >
-          {pending ? "Saving…" : "Recommend to NCCC"}
-        </Button>
-        <Button
-          type="submit"
-          name="recommend"
-          value="no"
-          variant="ghost"
-          disabled={pending}
-          className="w-full"
-        >
-          Just logging it
+          {pending ? "Saving…" : "Save tasting"}
         </Button>
       </div>
     </form>

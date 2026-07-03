@@ -83,7 +83,7 @@ export default async function RecommendPage({
           <Voice className="text-base">
             {enriching
               ? "Good. I'm still filling in the details — save your take below, and check back at the product page when you like."
-              : "Good. The club has the name — tell us what you thought."}
+              : "Good. The name's down — tell me what you thought."}
           </Voice>
         </Card>
       ) : null}

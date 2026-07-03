@@ -31,7 +31,7 @@ export function TastingActionSegment({ productId, hasTasting, event }: TastingAc
           "border-r border-ink-900/10",
         )}
       >
-        {hasTasting ? "Edit tasting" : "Recommend"}
+        {hasTasting ? "Edit tasting" : "Log tasting"}
       </Link>
       <Link
         href={sessionHref}
