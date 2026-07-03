@@ -71,8 +71,17 @@ insert into cellar.member_saves       select * from public.member_saves
   where member_id = 'cf7290be-99e5-458f-aec7-71f3825107a4';
 insert into cellar.pairing_sessions   select * from public.pairing_sessions
   where user_id  = 'cf7290be-99e5-458f-aec7-71f3825107a4';
-insert into cellar.tastings           select * from public.tastings
-  where user_id  = 'cf7290be-99e5-458f-aec7-71f3825107a4';
+-- tastings: explicit column list — release_label_key is a GENERATED column
+-- (COALESCE(release_label,'')) and cannot be inserted into.
+insert into cellar.tastings
+  (id, user_id, product_id, event_id, recommend, chips, note, wheel_version, wheel_vector,
+   photo_image_id, created_at, pairing_session_id, release_label, release_year,
+   release_label_source, release_kind)
+  select id, user_id, product_id, event_id, recommend, chips, note, wheel_version, wheel_vector,
+   photo_image_id, created_at, pairing_session_id, release_label, release_year,
+   release_label_source, release_kind
+  from public.tastings
+  where user_id = 'cf7290be-99e5-458f-aec7-71f3825107a4';
 -- usage_logs intentionally left empty (fresh cost tracking).
 
 -- ── 3. Null out cross-user attribution ──────────────────────────────────────
