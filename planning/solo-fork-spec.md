@@ -232,5 +232,41 @@ cellar) are inherited working.
 
 ---
 
+## 12. Execution progress (on branch `claude/personal-humidor-cellar-fork-p4iz1h`)
+
+Executed as verified, committed increments — build green, typecheck clean (one
+pre-existing unrelated test-file error), 439 unit tests passing at each step.
+
+**Done:**
+- **F2a** — Cellar is the home screen; catalog browse moved to `/catalog` (cigar/bourbon
+  tabs); club feed removed; nav → `[Cellar][Catalog][⊕][Pairings][You]`.
+- **F2b** — Deleted `/members`, `/admin/meetup`, meetup feed cards, `lib/meetup`.
+- **F3a** — Product detail: "THE CLUB SAYS" → "YOUR NOTES"; removed recommend bar +
+  member takes; deleted `ClubVoice`/`RecommendBar`/`MemberTakes` (tag cloud already
+  reflects only my tastings in a single-user DB).
+- **F3b** — Tasting flow: "Recommend to NCCC / Just logging it" → one "Save tasting";
+  product-detail action relabeled "Recommend" → "Log tasting".
+- **F5a** — Winston/club voice pass on always-rendered copy (login, onboarding, empty
+  states, makers, `/you`).
+
+**Pending decisions (blocking the rest):**
+- **F4b palette** — reassign `moss`/`ember` (spec rec: moss→shelf, ember→loved) vs.
+  retire moss. *Not yet applied — awaiting sign-off.*
+- **F1 single-account** — dropping `events`/`invites`/`suggestions` ripples into a
+  Supabase not yet provisioned (event-querying code in badges etc. must go with it), and
+  the reset migration can't be applied from here. *Deferred to infra setup.*
+
+**Deviations from the plan above:**
+- Group-validated pairings (F4a) are **not surgically removed** — they go dormant once
+  `events` are gone (validation requires tasting both at one event), so the engine
+  degrades to purely theoretical on its own.
+- Recommended keeping the `role` column as a solo **owner flag** rather than removing it,
+  to avoid a wide admin-gating ripple; the sole user is the owner/admin.
+- The `NCCC` brand mark is intentionally left until the app **name** is decided (§11).
+
+---
+
 *v0.1 · 2026-07-02 · Fork spec. Decisions locked: separate repo (1a), loved/tried signal
 (2a), Cellar home (3a).*
+*v0.2 · 2026-07-03 · Added §12 execution progress. F2/F3/F5a shipped on-branch; F4b palette
+and F1 single-account pending sign-off / infra.*
