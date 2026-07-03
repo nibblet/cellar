@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Plus, Sparkles, User, Users } from "lucide-react";
+import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,26 +12,26 @@ type NavItem = {
   match: (pathname: string) => boolean;
 };
 
-// Final shape (UX-2, 2026-05-20): [Lounge] [Pairings] [⊕ Capture] [Members] [You]
-// Meetups moved off the primary nav into the You section per roadmap.
+// Solo fork nav: [Cellar] [Catalog] [⊕ Capture] [Pairings] [You]
+// The club feed and members surfaces are gone; the humidor is home.
 const SIDE_ITEMS: NavItem[] = [
   {
     href: "/",
-    label: "Lounge",
+    label: "Cellar",
     icon: BookOpen,
     match: (p) => p === "/",
+  },
+  {
+    href: "/catalog",
+    label: "Catalog",
+    icon: Boxes,
+    match: (p) => p.startsWith("/catalog"),
   },
   {
     href: "/pairings",
     label: "Pairings",
     icon: Sparkles,
     match: (p) => p.startsWith("/pairings"),
-  },
-  {
-    href: "/members",
-    label: "Members",
-    icon: Users,
-    match: (p) => p.startsWith("/members"),
   },
   {
     href: "/you",

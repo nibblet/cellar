@@ -1,583 +1,159 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { NCCCLogo, Winston } from "@/components/brand";
+import { Winston } from "@/components/brand";
 import {
-  BrandFamilyDivider,
-  CatalogCard,
-  CatalogFilterControls,
-  type CatalogView,
-  CatalogViewToggle,
-  FeedBodySkeleton,
-  type FeedTab,
-  FeedTabs,
-  FindYourNextHero,
-  FindYourNextSkeleton,
-  MeetupCard,
-  MeetupTonightBanner,
-  PairingFeedCard,
-  TastingCard,
-} from "@/components/feed";
+  CellarInsightCard,
+  CellarInsightSkeleton,
+  TonightsPickSkeleton,
+  TryNext,
+  TryNextSkeleton,
+} from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
-import { MakerSummaryList } from "@/components/makers/maker-summary-list";
-import { PairingDraftEnrichment } from "@/components/pairing/pairing-draft-enrichment";
-import { Button, Card, Divider, Voice } from "@/components/primitives";
-import type { AvailabilityRarity } from "@/lib/catalog/normalize-specs";
+import { CellarSection } from "@/components/members/sections";
+import { Button, Divider, Voice } from "@/components/primitives";
+import { ensureCellarInsight } from "@/lib/cellar/insight";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
-import { ZERO_ROW } from "@/lib/cellar/types";
-import { loadEnrichmentJobsForProducts } from "@/lib/enrich/enrichment-jobs";
-import {
-  type CatalogFilters,
-  type CatalogSortKey,
-  groupCatalogByBrand,
-  loadCatalogBrowse,
-} from "@/lib/feed/catalog-queries";
-import { loadFeed, signImagePaths } from "@/lib/feed/queries";
-import { loadFindNextSuggestions } from "@/lib/find-next/load";
-import { loadMakerSummaries } from "@/lib/makers/browse";
-import { meetupCountdownDays } from "@/lib/meetup/countdown";
-import { loadMemberPreferences } from "@/lib/preferences/load";
-import { productMatchesPreferences } from "@/lib/preferences/match";
-import type {
-  BourbonProofBand,
-  BourbonStyle,
-  CigarStrength,
-  CigarWrapperBucket,
-} from "@/lib/preferences/types";
-import {
-  CATALOG_TIER_CEILING,
-  DEFAULT_MAX_CATALOG_TIER,
-  hasAnyPreferences,
-} from "@/lib/preferences/types";
+import { todayKey } from "@/lib/daily-pour/select";
+import { loadPickPourCandidates } from "@/lib/pick-pour/load";
+import { selectPickPour } from "@/lib/pick-pour/select";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { ensureTasteRecommendations } from "@/lib/taste";
+import { cn } from "@/lib/utils";
 
-type MeetupEvent = {
-  id: string;
-  name: string;
-  date: string;
-  notes: string | null;
-  tasting_count?: number;
-};
+export default async function CellarHomePage() {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) redirect("/login");
 
-type SearchParams = Promise<{
-  tab?: string;
-  view?: string;
-  // Cigar filters
-  strength?: string;
-  wrappers?: string;
-  origin?: string;
-  vitola?: string;
-  ring?: string;
-  // Bourbon filters
-  styles?: string;
-  proof?: string;
-  availability?: string;
-  age?: string;
-  // Shared
-  brand?: string;
-  club?: string;
-  enriched?: string;
-  sort?: string;
-  just_saved_pairing?: string;
-  pair_cigar?: string;
-  pair_bourbon?: string;
-}>;
+  const { data: profile } = await supabase
+    .from("users")
+    .select("name_first")
+    .eq("id", auth.user.id)
+    .maybeSingle();
 
-function parseTab(raw: string | undefined): FeedTab {
-  if (raw === "cigars" || raw === "bourbons") return raw;
-  return "for-you";
-}
-
-function parseCatalogView(raw: string | undefined): CatalogView {
-  return raw === "makers" || raw === "brands" ? "makers" : "products";
-}
-
-const VALID_STRENGTHS = new Set(["mild", "mild-medium", "medium", "medium-full", "full"]);
-const VALID_WRAPPERS = new Set([
-  "connecticut",
-  "habano",
-  "maduro",
-  "san-andres",
-  "corojo",
-  "sumatra",
-  "cameroon",
-  "oscuro",
-]);
-const VALID_STYLES = new Set([
-  "bourbon",
-  "rye",
-  "wheated",
-  "high-rye",
-  "bottled-in-bond",
-  "single-barrel",
-]);
-const VALID_PROOF_BANDS = new Set(["low", "mid", "high"]);
-const VALID_AVAILABILITY = new Set([
-  "everyday",
-  "seasonal",
-  "allocated",
-  "lottery",
-  "secondary-only",
-]);
-const VALID_AGE_BANDS = new Set(["nas", "4-8", "8-12", "12+"]);
-const VALID_RING_BANDS = new Set(["lt50", "50-54", "54+"]);
-const VALID_SORTS = new Set([
-  "recommended",
-  "az",
-  "recent",
-  "tasted",
-  "strength-asc",
-  "proof-asc",
-  "age-asc",
-]);
-
-function parseFilters(sp: Awaited<SearchParams>): {
-  filters: CatalogFilters;
-  sort: CatalogSortKey;
-} {
-  const strength =
-    sp.strength && VALID_STRENGTHS.has(sp.strength) ? (sp.strength as CigarStrength) : undefined;
-
-  const wrappers = sp.wrappers
-    ? (sp.wrappers.split(",").filter((w) => VALID_WRAPPERS.has(w)) as CigarWrapperBucket[])
-    : undefined;
-
-  const styles = sp.styles
-    ? (sp.styles.split(",").filter((s) => VALID_STYLES.has(s)) as BourbonStyle[])
-    : undefined;
-
-  const proofBand =
-    sp.proof && VALID_PROOF_BANDS.has(sp.proof) ? (sp.proof as BourbonProofBand) : undefined;
-
-  const availability =
-    sp.availability && VALID_AVAILABILITY.has(sp.availability)
-      ? (sp.availability as AvailabilityRarity)
-      : undefined;
-
-  const ageBand =
-    sp.age && VALID_AGE_BANDS.has(sp.age) ? (sp.age as "nas" | "4-8" | "8-12" | "12+") : undefined;
-
-  const ringGauge =
-    sp.ring && VALID_RING_BANDS.has(sp.ring) ? (sp.ring as "lt50" | "50-54" | "54+") : undefined;
-
-  const sort = sp.sort && VALID_SORTS.has(sp.sort) ? (sp.sort as CatalogSortKey) : "recommended";
-
-  return {
-    filters: {
-      strength,
-      wrappers: wrappers?.length ? wrappers : undefined,
-      origin: sp.origin || undefined,
-      vitola: sp.vitola || undefined,
-      ringGauge,
-      brand: sp.brand || undefined,
-      styles: styles?.length ? styles : undefined,
-      proofBand,
-      availability,
-      ageBand,
-      clubOnly: sp.club === "1",
-      enrichedOnly: sp.enriched === "1",
-      sort,
-    },
-    sort,
-  };
-}
-
-export default async function FeedPage({ searchParams }: { searchParams: SearchParams }) {
-  const sp = await searchParams;
-  const tab = parseTab(sp.tab);
-  const catalogView = parseCatalogView(sp.view);
-  const { filters, sort } = parseFilters(sp);
-  const pairingSaved = sp.just_saved_pairing === "1";
-  const pairCigarId = sp.pair_cigar?.trim() || null;
-  const pairBourbonId = sp.pair_bourbon?.trim() || null;
+  if (!profile) redirect("/login");
 
   return (
     <AppShell>
-      <header className="text-center mb-6 flex flex-col items-center">
-        <NCCCLogo size={80} decorative />
+      <header className="mb-5">
+        <p className="text-sm tracking-widest uppercase text-foreground-subtle">
+          {profile.name_first}
+        </p>
+        <h1 className="text-3xl mt-1">Your humidor</h1>
       </header>
 
-      <FeedTabs active={tab} />
+      <Suspense fallback={<TonightsPickSkeleton />}>
+        <TonightsPickSection memberId={auth.user.id} />
+      </Suspense>
 
-      <Suspense fallback={<FeedBodySkeleton />}>
-        <FeedBody
-          tab={tab}
-          catalogView={catalogView}
-          filters={filters}
-          sort={sort}
-          pairingSaved={pairingSaved}
-          pairCigarId={pairCigarId}
-          pairBourbonId={pairBourbonId}
-        />
+      <Suspense fallback={<CellarInsightSkeleton />}>
+        <CellarInsightSection memberId={auth.user.id} />
+      </Suspense>
+
+      <Suspense fallback={<TryNextSkeleton />}>
+        <TryNextSection memberId={auth.user.id} />
+      </Suspense>
+
+      <Divider label="The shelf" />
+
+      <Suspense fallback={null}>
+        <ShelfSection memberId={auth.user.id} memberFirstName={profile.name_first} />
       </Suspense>
     </AppShell>
   );
 }
 
-async function FeedBody({
-  tab,
-  catalogView,
-  filters,
-  sort,
-  pairingSaved,
-  pairCigarId,
-  pairBourbonId,
+async function ShelfSection({
+  memberId,
+  memberFirstName,
 }: {
-  tab: FeedTab;
-  catalogView: CatalogView;
-  filters: CatalogFilters;
-  sort: CatalogSortKey;
-  pairingSaved: boolean;
-  pairCigarId: string | null;
-  pairBourbonId: string | null;
+  memberId: string;
+  memberFirstName: string;
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: auth } = await supabase.auth.getUser();
-  const viewerId = auth.user?.id ?? null;
-  const preferences = viewerId ? await loadMemberPreferences(supabase, viewerId) : null;
-
-  if (tab === "for-you") {
+  const snapshot = await loadCellarSnapshot(supabase, memberId);
+  if (snapshot.have.size === 0 && snapshot.want.size === 0 && snapshot.tried.size === 0) {
     return (
-      <>
-        {viewerId ? (
-          <Suspense fallback={<FindYourNextSkeleton />}>
-            <FindYourNextSection
-              supabase={supabase}
-              viewerId={viewerId}
-              preferences={preferences}
-            />
-          </Suspense>
-        ) : null}
-        <Suspense fallback={<FeedBodySkeleton />}>
-          <FeedList
-            supabase={supabase}
-            viewerId={viewerId}
-            preferences={preferences}
-            pairingSaved={pairingSaved}
-            pairCigarId={pairCigarId}
-            pairBourbonId={pairBourbonId}
-          />
-        </Suspense>
-      </>
+      <div className="flex flex-col items-center text-center gap-4 py-4">
+        <Winston variant="bust" size={88} className="rounded-full" />
+        <Voice className="block">
+          "The shelf is bare. Snap something the next time you light up."
+        </Voice>
+        <Link href="/capture" className="block w-full">
+          <Button size="large" className="w-full">
+            Open the humidor
+          </Button>
+        </Link>
+      </div>
     );
   }
-
   return (
-    <CatalogBody
-      supabase={supabase}
-      viewerId={viewerId}
-      catalogTab={tab}
-      catalogView={catalogView}
-      productType={tab === "cigars" ? "cigar" : "bourbon"}
-      preferences={preferences}
-      filters={filters}
-      sort={sort}
-    />
+    <CellarSection memberId={memberId} memberFirstName={memberFirstName} isOwnProfile={true} />
   );
 }
 
-async function FindYourNextSection({
-  supabase,
-  viewerId,
-  preferences,
-}: {
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
-  viewerId: string;
-  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
-}) {
-  const suggestions = await loadFindNextSuggestions(supabase, viewerId, preferences);
-  return <FindYourNextHero suggestions={suggestions} />;
-}
+async function TonightsPickSection({ memberId }: { memberId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const candidates = await loadPickPourCandidates(supabase, memberId);
+  const pick = selectPickPour({ memberId, date: todayKey(), rollIndex: 0 }, candidates);
+  if (!pick) return null;
 
-async function FeedList({
-  supabase,
-  viewerId,
-  preferences,
-  pairingSaved,
-  pairCigarId,
-  pairBourbonId,
-}: {
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
-  viewerId: string | null;
-  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
-  pairingSaved: boolean;
-  pairCigarId: string | null;
-  pairBourbonId: string | null;
-}) {
-  const enrichmentJobs =
-    pairingSaved && pairCigarId && pairBourbonId
-      ? await loadEnrichmentJobsForProducts(supabase, [pairCigarId, pairBourbonId])
-      : [];
+  const { data: products } = await supabase
+    .from("products")
+    .select("id, name, brand, type")
+    .in("id", [pick.cigar_id, pick.bourbon_id]);
 
-  const today = new Date().toISOString().slice(0, 10);
+  type ProductRow = { id: string; name: string; brand: string | null; type: string };
+  const rows = (products as ProductRow[] | null) ?? [];
+  if (rows.length < 2) return null;
 
-  const [entries, upcomingResult, lastResult] = await Promise.all([
-    loadFeed(supabase, { limit: 50 }),
-    supabase
-      .from("events")
-      .select("id, name, date, notes")
-      .gte("date", today)
-      .order("date", { ascending: true })
-      .limit(1),
-    supabase
-      .from("events")
-      .select("id, name, date, notes, tastings(count)")
-      .lt("date", today)
-      .order("date", { ascending: false })
-      .limit(1),
-  ]);
+  const cigar = rows.find((p) => p.type === "cigar");
+  const bourbon = rows.find((p) => p.type === "bourbon");
+  if (!cigar || !bourbon) return null;
 
-  const signed = await signImagePaths(
-    supabase,
-    entries.map((e) => e.hero_image_path),
-  );
+  const cigarDisplay = cigar.brand ? `${cigar.brand} ${cigar.name}` : cigar.name;
+  const bourbonDisplay = bourbon.brand ? `${bourbon.brand} ${bourbon.name}` : bourbon.name;
 
-  const matchesEnabled = preferences != null && hasAnyPreferences(preferences);
-  const forYouByEntry = new Map<string, boolean>();
-  if (matchesEnabled && preferences) {
-    for (const e of entries) {
-      if (e.user_id === viewerId) continue;
-      if (e.kind === "pairing") {
-        const cigarMatch = productMatchesPreferences(
-          { type: "cigar", specs: e.cigar_specs },
-          preferences,
-        );
-        const bourbonMatch = productMatchesPreferences(
-          { type: "bourbon", specs: e.bourbon_specs },
-          preferences,
-        );
-        if (cigarMatch && bourbonMatch) forYouByEntry.set(e.tasting_id, true);
-      } else {
-        const matches = productMatchesPreferences(
-          { type: e.product_type, specs: e.product_specs },
-          preferences,
-        );
-        if (matches) forYouByEntry.set(e.tasting_id, true);
-      }
-    }
-  }
-
-  type LastEventRow = {
-    id: string;
-    name: string;
-    date: string;
-    notes: string | null;
-    tastings: [{ count: number }] | null;
-  };
-
-  const upcoming = (upcomingResult.data as MeetupEvent[] | null)?.[0] ?? null;
-  const meetupDaysUntil = upcoming ? meetupCountdownDays(today, upcoming.date) : null;
-  const lastRaw = (lastResult.data as LastEventRow[] | null)?.[0] ?? null;
-  const last: MeetupEvent | null = lastRaw
-    ? {
-        id: lastRaw.id,
-        name: lastRaw.name,
-        date: lastRaw.date,
-        notes: lastRaw.notes,
-        tasting_count: lastRaw.tastings?.[0]?.count ?? 0,
-      }
-    : null;
-
-  if (entries.length === 0) {
-    return (
-      <>
-        {pairingSaved ? (
-          <div className="mb-4">
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
-              <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
-              Pairing saved
-            </div>
-          </div>
-        ) : null}
-        {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
-        {meetupDaysUntil != null && upcoming ? (
-          <MeetupTonightBanner eventName={upcoming.name} daysUntil={meetupDaysUntil} />
-        ) : null}
-        {upcoming || last ? (
-          <div className="mb-4">
-            <MeetupCard upcoming={upcoming} last={last} />
-          </div>
-        ) : null}
-        <Card className="flex flex-col items-center text-center">
-          <Winston variant="bust" size={96} className="mb-4 rounded-full" />
-          <Voice className="block mb-4">
-            "Porch is empty so far tonight. Pour something — let's see where it sits."
-          </Voice>
-          <Link href="/capture" className="block w-full">
-            <Button size="large" className="w-full">
-              Open the humidor
-            </Button>
-          </Link>
-        </Card>
-      </>
-    );
-  }
+  const day = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    timeZone: "America/New_York",
+  });
+  const line = `"For a ${day} on the porch: ${cigarDisplay} with the ${bourbonDisplay}."`;
 
   return (
-    <>
-      {pairingSaved ? (
-        <div className="mb-4">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-foreground-subtle">
-            <span className="block w-1.5 h-1.5 rounded-full bg-ember-500" aria-hidden="true" />
-            Pairing saved
-          </div>
-        </div>
-      ) : null}
-      {enrichmentJobs.length > 0 ? <PairingDraftEnrichment jobs={enrichmentJobs} /> : null}
-      {meetupDaysUntil != null && upcoming ? (
-        <MeetupTonightBanner eventName={upcoming.name} daysUntil={meetupDaysUntil} />
-      ) : null}
-      {upcoming || last ? (
-        <div className="mb-4">
-          <MeetupCard upcoming={upcoming} last={last} />
-        </div>
-      ) : null}
-      <div className="flex flex-col gap-3">
-        {entries.map((entry) =>
-          entry.kind === "pairing" ? (
-            <PairingFeedCard
-              key={entry.pairing_session_id}
-              entry={entry}
-              signedHero={
-                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-              }
-              forYou={forYouByEntry.get(entry.tasting_id) ?? false}
-            />
-          ) : (
-            <TastingCard
-              key={entry.tasting_id}
-              entry={entry}
-              signedHero={
-                entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null
-              }
-              forYou={forYouByEntry.get(entry.tasting_id) ?? false}
-            />
-          ),
+    <section className="mb-5">
+      <Divider label="Tonight's pick" />
+      <Voice className="block mb-2">{line}</Voice>
+      <Link
+        href={`/pairings/${pick.cigar_id}/${pick.bourbon_id}`}
+        className={cn(
+          "inline-flex items-center justify-center gap-2 rounded-[12px] transition-colors",
+          "h-12 px-5 text-base",
+          "bg-surface text-foreground-muted border border-border hover:bg-surface-2",
         )}
-      </div>
-      <Divider label="That's all" />
-      <p className="text-sm text-foreground-subtle text-center">
-        Snap something to add to the archive.
-      </p>
-    </>
+      >
+        See the pairing →
+      </Link>
+    </section>
   );
 }
 
-async function CatalogBody({
-  supabase,
-  viewerId,
-  catalogTab,
-  catalogView,
-  productType,
-  preferences,
-  filters,
-  sort,
-}: {
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
-  viewerId: string | null;
-  catalogTab: "cigars" | "bourbons";
-  catalogView: CatalogView;
-  productType: "cigar" | "bourbon";
-  preferences: Awaited<ReturnType<typeof loadMemberPreferences>> | null;
-  filters: CatalogFilters;
-  sort: CatalogSortKey;
-}) {
-  if (catalogView === "makers") {
-    const maxCatalogTier = preferences?.max_catalog_tier ?? DEFAULT_MAX_CATALOG_TIER;
-    const summaries = await loadMakerSummaries(supabase, productType, maxCatalogTier);
-    const emptyMessage =
-      productType === "cigar"
-        ? '"No cigar brands in the catalog yet."'
-        : '"No bourbon brands in the catalog yet."';
+async function CellarInsightSection({ memberId }: { memberId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const insight = await ensureCellarInsight(supabase, memberId);
+  if (!insight) return null;
+  return <CellarInsightCard insight={insight} />;
+}
 
-    return (
-      <>
-        <CatalogViewToggle tab={catalogTab} activeView="makers" />
-        <MakerSummaryList summaries={summaries} emptyMessage={emptyMessage} />
-      </>
-    );
-  }
-
-  const [entries, cellarSnapshot] = await Promise.all([
-    loadCatalogBrowse(supabase, productType, preferences, 500, filters),
-    viewerId ? loadCellarSnapshot(supabase, viewerId) : null,
-  ]);
-  const signed = await signImagePaths(
-    supabase,
-    entries.map((e) => e.hero_image_path),
-  );
-
+async function TryNextSection({ memberId }: { memberId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const recommendations = await ensureTasteRecommendations(supabase, memberId);
+  if (recommendations.cigars.length === 0 && recommendations.bourbons.length === 0) return null;
   return (
     <>
-      <CatalogViewToggle tab={catalogTab} activeView="products" />
-      <CatalogFilterControls productType={productType} activeFilters={filters} activeSort={sort} />
-
-      {entries.length === 0 ? (
-        <Card className="text-center">
-          <Voice className="block">
-            {(preferences?.max_catalog_tier ?? 2) < CATALOG_TIER_CEILING
-              ? '"Nothing in the catalog under those terms. Widen the filter, or stretch the allocation in Settings."'
-              : '"Nothing in the catalog under those terms. Widen the filter."'}
-          </Voice>
-        </Card>
-      ) : (
-        <CatalogList
-          entries={entries}
-          grouped={productType === "bourbon"}
-          signed={signed}
-          cellarSnapshot={cellarSnapshot}
-          showCellar={Boolean(viewerId)}
-        />
-      )}
+      <Divider label="Try next" />
+      <TryNext cigars={recommendations.cigars} bourbons={recommendations.bourbons} />
     </>
   );
-}
-
-function CatalogList({
-  entries,
-  grouped,
-  signed,
-  cellarSnapshot,
-  showCellar,
-}: {
-  entries: Awaited<ReturnType<typeof loadCatalogBrowse>>;
-  grouped: boolean;
-  signed: Map<string, string>;
-  cellarSnapshot: Awaited<ReturnType<typeof loadCellarSnapshot>> | null;
-  showCellar: boolean;
-}) {
-  const renderCard = (entry: (typeof entries)[number]) => {
-    const cellarState = cellarSnapshot
-      ? {
-          have: cellarSnapshot.have.has(entry.product_id),
-          want: cellarSnapshot.want.has(entry.product_id),
-          tried: cellarSnapshot.tried.has(entry.product_id),
-          loved: cellarSnapshot.loved.has(entry.product_id),
-        }
-      : ZERO_ROW;
-    return (
-      <CatalogCard
-        key={entry.product_id}
-        entry={entry}
-        signedHero={entry.hero_image_path ? (signed.get(entry.hero_image_path) ?? null) : null}
-        cellarState={showCellar ? cellarState : null}
-      />
-    );
-  };
-
-  // Bourbons cluster under their brand family (etched divider per brand);
-  // cigars and any un-grouped tail render flat.
-  if (grouped) {
-    return (
-      <div className="flex flex-col gap-3">
-        {groupCatalogByBrand(entries).map((group) => (
-          <section key={group.brand_family ?? "_ungrouped"} className="flex flex-col gap-3">
-            {group.brand_family ? <BrandFamilyDivider group={group} /> : null}
-            {group.entries.map(renderCard)}
-          </section>
-        ))}
-      </div>
-    );
-  }
-
-  return <div className="flex flex-col gap-3">{entries.map(renderCard)}</div>;
 }
