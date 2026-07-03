@@ -16,11 +16,61 @@
  * created. Existing profiles are left alone.
  */
 
+import { pathToFileURL } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 
 function required(name: string, value: string | undefined): string {
   if (!value) throw new Error(`Missing env var: ${name}`);
   return value;
+}
+
+type ProfileAdminClient = {
+  schema(schemaName: string): {
+    from(tableName: string): {
+      select(columns: string): {
+        eq(column: string, value: string): {
+          maybeSingle(): Promise<{ data: { id: string } | null }>;
+        };
+      };
+      insert(values: {
+        id: string;
+        name_first: string;
+        name_last_initial: string;
+      }): Promise<{ error: Error | null }>;
+    };
+  };
+};
+
+export async function ensureCellarUserProfile({
+  supabase,
+  userId,
+  nameFirst,
+  nameLastInitial,
+}: {
+  supabase: ProfileAdminClient;
+  userId: string;
+  nameFirst?: string;
+  nameLastInitial?: string;
+}): Promise<"existing" | "created" | "missing_names"> {
+  const users = supabase.schema("cellar").from("users");
+  const { data: profile } = await users.select("id").eq("id", userId).maybeSingle();
+
+  if (profile) {
+    return "existing";
+  }
+
+  if (!nameFirst || !nameLastInitial) {
+    return "missing_names";
+  }
+
+  const { error } = await supabase.schema("cellar").from("users").insert({
+    id: userId,
+    name_first: nameFirst,
+    name_last_initial: nameLastInitial.charAt(0).toUpperCase(),
+  });
+  if (error) throw error;
+
+  return "created";
 }
 
 async function main() {
@@ -67,36 +117,33 @@ async function main() {
     console.log(`[set-password] created new auth user ${userId} (${email})`);
   }
 
-  // Ensure a public.users profile row exists. Only fill in name fields when
+  // Ensure a cellar.users profile row exists. Only fill in name fields when
   // creating a profile from scratch — leave existing profiles untouched.
-  const { data: profile } = await supabase
-    .from("users")
-    .select("id")
-    .eq("id", userId)
-    .maybeSingle();
+  const profileStatus = await ensureCellarUserProfile({
+    supabase,
+    userId,
+    nameFirst,
+    nameLastInitial,
+  });
 
-  if (!profile) {
-    if (!nameFirst || !nameLastInitial) {
-      console.warn(
-        "[set-password] no public.users row exists and no name args supplied — auth user created but the (app) layout will redirect to /login until you supply a profile.",
-      );
-    } else {
-      const { error } = await supabase.from("users").insert({
-        id: userId,
-        name_first: nameFirst,
-        name_last_initial: nameLastInitial.charAt(0).toUpperCase(),
-      });
-      if (error) throw error;
-      console.log(`[set-password] inserted public.users profile for ${nameFirst} ${nameLastInitial.charAt(0).toUpperCase()}`);
-    }
+  if (profileStatus === "missing_names") {
+    console.warn(
+      "[set-password] no cellar.users row exists and no name args supplied — auth user created but the (app) layout will redirect to /login until you supply a cellar profile.",
+    );
+  } else if (profileStatus === "created") {
+    console.log(
+      `[set-password] inserted cellar.users profile for ${nameFirst} ${nameLastInitial?.charAt(0).toUpperCase()}`,
+    );
   } else {
-    console.log("[set-password] public.users profile already exists; left untouched");
+    console.log("[set-password] cellar.users profile already exists; left untouched");
   }
 
   console.log("[set-password] done.");
 }
 
-main().catch((err) => {
-  console.error("[set-password] failed:", err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error("[set-password] failed:", err);
+    process.exit(1);
+  });
+}
