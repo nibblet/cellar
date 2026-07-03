@@ -248,13 +248,25 @@ pre-existing unrelated test-file error), 439 unit tests passing at each step.
   product-detail action relabeled "Recommend" → "Log tasting".
 - **F5a** — Winston/club voice pass on always-rendered copy (login, onboarding, empty
   states, makers, `/you`).
+- **F4b** — Palette reassigned: `moss` → "on your shelf" (driven off real ownership in
+  `winston-suggests` + `pairs-with`, not dormant group-validation); `ember` → `loved`
+  (already wired). `docs/design-system.md` updated (v0.3 note).
+- **F1 (partial)** — `supabase/migrations/20260703000001_solo_reset.sql` drops `invites`
+  + `suggestions`; removed `/accept-invite`, `/admin/invites`, `/admin/suggestions`, the
+  roadmap suggestion form, and admin links. App is **login-only**; `/auth/callback`
+  simplified to a plain code exchange (password-reset still works).
 
-**Pending decisions (blocking the rest):**
-- **F4b palette** — reassign `moss`/`ember` (spec rec: moss→shelf, ember→loved) vs.
-  retire moss. *Not yet applied — awaiting sign-off.*
-- **F1 single-account** — dropping `events`/`invites`/`suggestions` ripples into a
-  Supabase not yet provisioned (event-querying code in badges etc. must go with it), and
-  the reset migration can't be applied from here. *Deferred to infra setup.*
+**Account bootstrap (solo):** no public signup surface. Create the single account
+directly in Supabase — add the auth user (dashboard or `scripts/admin/set-password.ts`)
+and insert one `public.users` row — then sign in with email + password.
+
+**Still open / deferred:**
+- Apply `solo_reset.sql` on the forked Supabase project (`supabase db push`) — can't be
+  run from here.
+- `events` and `role` intentionally kept (see deviations). Reframing `events` into
+  personal tasting "nights", and the dormant club-`moss` stamps on non-pairing surfaces
+  (`find-your-next-hero`, `daily-pour-card`, `pairings` page), are optional later cleanup.
+- The `NCCC` brand mark still awaits the app-name decision (§11).
 
 **Deviations from the plan above:**
 - Group-validated pairings (F4a) are **not surgically removed** — they go dormant once
@@ -270,3 +282,5 @@ pre-existing unrelated test-file error), 439 unit tests passing at each step.
 (2a), Cellar home (3a).*
 *v0.2 · 2026-07-03 · Added §12 execution progress. F2/F3/F5a shipped on-branch; F4b palette
 and F1 single-account pending sign-off / infra.*
+*v0.3 · 2026-07-03 · F4b palette + F1 (reset migration, invites/suggestions removed,
+login-only) shipped on-branch. Remaining: apply migration on forked Supabase, name decision.*
