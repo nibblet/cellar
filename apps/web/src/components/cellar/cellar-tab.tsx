@@ -68,7 +68,7 @@ export function CellarTab({
       ? '"Nothing on the wishlist yet. Tap Want on any product to start one."'
       : `"${memberFirstName}'s wishlist is empty."`,
     tried: isOwnProfile
-      ? '"No history yet. Recommend something to NCCC and it will appear here."'
+      ? '"No history yet. Log a tasting and it will appear here."'
       : `"${memberFirstName} hasn't marked anything as tried yet."`,
   };
 

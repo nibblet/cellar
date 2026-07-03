@@ -184,17 +184,17 @@ export default async function YouHubPage() {
         />
       </div>
 
-      <Divider label="The Club" />
+      <Divider label="Roadmap" />
 
       <Card className="mb-3">
         <Link
           href="/roadmap"
           className="block text-base text-foreground hover:text-foreground-muted"
         >
-          Roadmap & Suggestions →
+          Roadmap & ideas →
         </Link>
         <p className="text-sm text-foreground-subtle mt-1">
-          See what's coming and send Paul a feature idea or bug report.
+          See what's coming and jot down an idea or bug for later.
         </p>
       </Card>
 
@@ -217,7 +217,7 @@ export default async function YouHubPage() {
           >
             Admin tools →
           </Link>
-          <p className="text-sm text-foreground-subtle mt-1">Invites, suggestions, usage.</p>
+          <p className="text-sm text-foreground-subtle mt-1">Catalog, usage.</p>
         </Card>
       ) : null}
     </AppShell>

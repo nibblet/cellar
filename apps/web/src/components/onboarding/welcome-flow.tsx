@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Plus, Sparkles, User, Users } from "lucide-react";
+import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Winston } from "@/components/brand";
 import { Button, Divider, Voice } from "@/components/primitives";
@@ -12,20 +12,20 @@ type Props = { firstName: string };
 
 const HOW_IT_WORKS = [
   {
-    label: "Snap and recommend",
+    label: "Snap and log",
     body: (
       <>
-        Photograph a cigar band or bourbon label. One tap on <em>Recommend to NCCC</em> adds your
-        voice to the archive — optional flavor chips, no scores.
+        Photograph a cigar band or bourbon label. One tap logs a tasting — optional flavor chips, no
+        scores. Love the ones you'd reach for again.
       </>
     ),
   },
   {
-    label: "The club speaks",
+    label: "Your taste, read back",
     body: (
       <>
-        Every product shows what members actually taste. Winston pairs cigars and bourbons; moss
-        marks what the club has validated together.
+        Every product shows how it tastes to you. Winston pairs cigars and bourbons and points you
+        toward what to try next.
       </>
     ),
   },
@@ -41,14 +41,18 @@ const HOW_IT_WORKS = [
 ] as const;
 
 const NAV_MAP = [
-  { icon: BookOpen, label: "Lounge", line: "Daily Pour, club tastings, and catalog shelves." },
+  { icon: BookOpen, label: "Cellar", line: "Your humidor, tonight's pick, and what to try next." },
+  {
+    icon: Boxes,
+    label: "Catalog",
+    line: "Browse every cigar and bourbon; filter to your taste.",
+  },
   {
     icon: Plus,
     label: "Capture",
-    line: "The center button — snap and recommend.",
+    line: "The center button — snap and log.",
     captureFab: true,
   },
-  { icon: Users, label: "Members", line: "Roster and everyone's Cellar." },
   { icon: Sparkles, label: "Pairings", line: "Winston's matches; capture a pairing from here." },
   { icon: User, label: "You", line: "Settings, preferences, your Cellar and tastings." },
 ] as const;
@@ -94,8 +98,8 @@ export function WelcomeFlow({ firstName }: Props) {
           </header>
 
           <Voice className="text-center mb-8">
-            &ldquo;Glad you walked over, {firstName}. Gas lamps are on, chair&apos;s open on
-            the porch. Come sit.&rdquo;
+            &ldquo;Glad you walked over, {firstName}. Gas lamps are on, chair&apos;s open on the
+            porch. Come sit.&rdquo;
           </Voice>
 
           <Button type="button" size="large" className="w-full" onClick={() => setStep(2)}>
@@ -187,7 +191,7 @@ export function WelcomeFlow({ firstName }: Props) {
             className="w-full"
             onClick={() => finish("lounge")}
           >
-            Explore the lounge
+            Explore my cellar
           </Button>
         </div>
       )}

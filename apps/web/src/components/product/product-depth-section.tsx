@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { Divider } from "@/components/primitives";
 import { buildTagCloud, type TagCloudEntry } from "@/lib/aggregation/group-voice";
 import type { ProductType, WheelVector } from "@/lib/wheel";
@@ -60,11 +60,7 @@ export function ProductDepthSection({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full"
-      >
+      <button type="button" onClick={() => setOpen((v) => !v)} className="w-full">
         <Divider
           label={
             <span className="inline-flex items-center gap-1.5">
@@ -114,13 +110,13 @@ export function ProductDepthSection({
               </dl>
               {isBaseline ? (
                 <p className="text-[11px] uppercase tracking-widest text-foreground-subtle mt-4">
-                  Catalog baseline · Fills in as the club weighs in
+                  Catalog baseline · Fills in as you log tastings
                 </p>
               ) : null}
             </>
           ) : (
             <p className="text-sm text-foreground-subtle">
-              No tastings logged yet — the profile fills in as the club weighs in.
+              No tastings logged yet — the profile fills in as you log tastings.
             </p>
           )}
         </div>

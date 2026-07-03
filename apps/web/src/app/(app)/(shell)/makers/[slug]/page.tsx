@@ -79,7 +79,7 @@ export default async function MakerPage({ params }: { params: Params }) {
         <MakerBlurbSection brand={identity.brand} type={identity.type} userId={auth.user.id} />
       </Suspense>
 
-      <Divider label="In the club's catalog" />
+      <Divider label="In the catalog" />
 
       {entries.length === 0 ? (
         <Voice className="block text-sm mt-4">
