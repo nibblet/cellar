@@ -1,10 +1,10 @@
 export { CaptureConfirmBanner } from "./capture-confirm-banner";
-export { ClubVoice } from "./club-voice";
 export { ConstructionPanel } from "./construction-panel";
 export { DepthAffordance } from "./depth-affordance";
 export { EnrichmentTrigger } from "./enrichment-trigger";
 export { ExploreLinks } from "./explore-links";
 export { FactsStrip } from "./facts-strip";
+export { MyNotes } from "./my-notes";
 export { type MemberPhoto, PhotoManager } from "./photo-manager";
 export { ProductDepthSection } from "./product-depth-section";
 export { ProductHero, type ProductHeroImage } from "./product-hero";

@@ -7,9 +7,9 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Divider, VoiceProseSkeleton } from "@/components/primitives";
 import {
   CaptureConfirmBanner,
-  ClubVoice,
   EnrichmentTrigger,
   ExploreLinks,
+  MyNotes,
   ProductDepthSection,
   ProductHero,
   type ProductHeroImage,
@@ -104,7 +104,6 @@ export default async function ProductDetailPage({
   ]);
 
   const myTake = userId ? groupVoice.takes.find((t) => t.user_id === userId) : undefined;
-  const otherTakes = groupVoice.takes.filter((t) => t.user_id !== userId);
 
   type ImageRow = {
     image_url: string;
@@ -263,15 +262,12 @@ export default async function ProductDetailPage({
       </Suspense>
       {isAdmin ? <RerollWinstonButton productId={product.id} /> : null}
 
-      <div className="mt-6">
-        <Divider label="The club says" />
-        <ClubVoice
-          productType={productType}
-          groupVoice={groupVoice}
-          otherTakes={otherTakes}
-          myTake={myTake}
-        />
-      </div>
+      {myTake ? (
+        <div className="mt-6">
+          <Divider label="Your notes" />
+          <MyNotes take={myTake} />
+        </div>
+      ) : null}
 
       {userId ? (
         <div className="mt-6">
