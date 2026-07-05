@@ -1,5 +1,5 @@
 export const APP_HOME_PATH = "/you";
-export const CELLAR_PATH = "/cellar";
+export const CELLAR_PATH = "/";
 export const SETTINGS_PATH = "/settings";
 export const SETTINGS_PREFERENCES_PATH = "/settings#preferences";
 export const PERSONAL_TASTINGS_PATH = "/you/tastings";

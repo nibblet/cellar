@@ -39,7 +39,6 @@ export default async function SettingsPage() {
   const preferences = await loadMemberPreferences(supabase, auth.user.id);
   const badges = badgesForMember(badgeMap, me);
   const nextBadge = nextBadgeForMember(badgeInputs, me);
-  const isAdmin = profile.role === "admin";
 
   const joinedSource: string | null = profile.club_joined_at ?? profile.joined_at ?? null;
   const joinedDate = joinedSource ? new Date(joinedSource) : null;
@@ -113,10 +112,10 @@ export default async function SettingsPage() {
       </Card>
 
       <Divider label="Identity" />
-      <Card className="mb-3">
+      <Card id="hero" className="mb-3 scroll-mt-28">
         <AvatarUploader currentSignedUrl={avatarSignedUrl} initial={initial} />
       </Card>
-      <Card className="mb-3">
+      <Card id="name" className="mb-3 scroll-mt-28">
         <DisplayNameForm
           initialFirst={profile.name_first ?? ""}
           initialInitial={profile.name_last_initial ?? ""}
@@ -131,30 +130,17 @@ export default async function SettingsPage() {
       </Card>
 
       <Divider label="Appearance" />
-      <ThemeToggle />
+      <section id="appearance" className="mb-3 scroll-mt-28">
+        <ThemeToggle />
+      </section>
 
       {preferences ? (
-        <section id="preferences">
+        <section id="preferences" className="scroll-mt-28">
           <Divider label="Taste preferences" />
           <Card className="mb-3">
             <PreferencesForm initial={preferences} />
           </Card>
         </section>
-      ) : null}
-
-      {isAdmin ? (
-        <>
-          <Divider label="Admin" />
-          <Card className="mb-3">
-            <a
-              href="/admin"
-              className="block text-base text-foreground hover:text-foreground-muted"
-            >
-              Admin tools →
-            </a>
-            <p className="text-sm text-foreground-subtle mt-1">Catalog, usage.</p>
-          </Card>
-        </>
       ) : null}
     </AppShell>
   );

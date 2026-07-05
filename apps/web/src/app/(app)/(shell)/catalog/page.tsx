@@ -4,6 +4,7 @@ import {
   BrandFamilyDivider,
   CatalogCard,
   CatalogFilterControls,
+  CatalogSearchInput,
   type CatalogView,
   CatalogViewToggle,
   FeedBodySkeleton,
@@ -12,6 +13,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { MakerSummaryList } from "@/components/makers/maker-summary-list";
 import { Card, Voice } from "@/components/primitives";
 import type { AvailabilityRarity } from "@/lib/catalog/normalize-specs";
+import { sanitizeCatalogQuery } from "@/lib/catalog/search";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
 import {
@@ -38,6 +40,7 @@ type CatalogTab = "cigars" | "bourbons";
 type SearchParams = Promise<{
   type?: string;
   view?: string;
+  q?: string;
   strength?: string;
   wrappers?: string;
   origin?: string;
@@ -129,6 +132,7 @@ function parseFilters(sp: Awaited<SearchParams>): {
     sp.ring && VALID_RING_BANDS.has(sp.ring) ? (sp.ring as "lt50" | "50-54" | "54+") : undefined;
 
   const sort = sp.sort && VALID_SORTS.has(sp.sort) ? (sp.sort as CatalogSortKey) : "recommended";
+  const sanitizedQuery = sanitizeCatalogQuery(sp.q ?? "");
 
   return {
     filters: {
@@ -138,6 +142,7 @@ function parseFilters(sp: Awaited<SearchParams>): {
       vitola: sp.vitola || undefined,
       ringGauge,
       brand: sp.brand || undefined,
+      query: sanitizedQuery.length >= 2 ? sanitizedQuery : undefined,
       styles: styles?.length ? styles : undefined,
       proofBand,
       availability,
@@ -155,6 +160,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
   const tab = parseTab(sp.type);
   const catalogView = parseCatalogView(sp.view);
   const { filters, sort } = parseFilters(sp);
+  const searchQuery = sp.q?.trim() ?? "";
 
   return (
     <AppShell>
@@ -171,6 +177,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
           productType={tab === "cigars" ? "cigar" : "bourbon"}
           filters={filters}
           sort={sort}
+          searchQuery={searchQuery}
         />
       </Suspense>
     </AppShell>
@@ -210,12 +217,14 @@ async function CatalogBody({
   productType,
   filters,
   sort,
+  searchQuery,
 }: {
   catalogTab: CatalogTab;
   catalogView: CatalogView;
   productType: "cigar" | "bourbon";
   filters: CatalogFilters;
   sort: CatalogSortKey;
+  searchQuery: string;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -250,6 +259,9 @@ async function CatalogBody({
   return (
     <>
       <CatalogViewToggle tab={catalogTab} activeView="products" />
+      <Suspense fallback={null}>
+        <CatalogSearchInput initialQuery={searchQuery} />
+      </Suspense>
       <CatalogFilterControls productType={productType} activeFilters={filters} activeSort={sort} />
 
       {entries.length === 0 ? (

@@ -11,32 +11,18 @@ type CatalogCardProps = {
 };
 
 /**
- * Catalog-browse card used by the Cigars / Bourbons feed tabs. Same
- * photo-as-card vocabulary as the chronological feed, minus the member
- * tag / chips / ember dot since these are unrecommended catalog rows.
- *
- * If the product matches the viewer's preferences, the same FOR YOU pill
- * lights at the top-left of the photo. Otherwise the card stays clean.
+ * Catalog-browse card used by the Cigars / Bourbons tabs. Same photo-as-card
+ * vocabulary as the chronological feed, minus member tags since these are
+ * unrecommended catalog rows.
  */
 export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps) {
-  const Overlays = entry.matches_preferences ? (
-    <div className="absolute top-3 left-3 z-10">
-      <span className="px-2 py-0.5 rounded-full text-[10px] tracking-widest uppercase text-paper-50 bg-ink-900/40 border border-paper-50/40 backdrop-blur-[2px]">
-        For you
-      </span>
-    </div>
-  ) : null;
-
   return (
     <Link href={`/products/${entry.product_id}`} className="block group">
-      <article className="mx-0.5 rounded-[16px] border border-border bg-surface overflow-hidden transition-shadow group-hover:shadow-[0_2px_12px_rgba(0,0,0.12)]">
+      <article className="mx-0.5 rounded-[16px] border border-border bg-surface overflow-hidden transition-shadow group-hover:shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
         <div className="relative aspect-[4/5]">
           {signedHero ? (
-            <PhotoFrame src={signedHero} alt={entry.name}>
-              {Overlays}
-            </PhotoFrame>
+            <PhotoFrame src={signedHero} alt={entry.name} />
           ) : entry.catalog_image_url ? (
-            // Public catalog mirror — no signing needed (product-catalog bucket is public)
             <div className="relative w-full h-full bg-surface">
               {/* biome-ignore lint/performance/noImgElement: external public catalog URL */}
               <img
@@ -44,10 +30,9 @@ export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps
                 alt={entry.name}
                 className="absolute inset-0 w-full h-full object-contain p-4"
               />
-              {Overlays}
             </div>
           ) : (
-            <PhotoPlaceholder productType={entry.type}>{Overlays}</PhotoPlaceholder>
+            <PhotoPlaceholder productType={entry.type} />
           )}
         </div>
 

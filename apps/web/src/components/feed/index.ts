@@ -1,4 +1,5 @@
 export { BrandFamilyDivider } from "./brand-family-divider";
+export { CatalogSearchInput } from "./catalog-search-input";
 export { CatalogCard } from "./catalog-card";
 export { CatalogFilterControls } from "./catalog-filter-controls";
 export { type CatalogView, CatalogViewToggle } from "./catalog-view-toggle";

@@ -14,10 +14,6 @@ type Props = {
 
 const BRANDS_VIEW_LABEL = "Brands";
 
-function browseBrandsLabel(tab: "cigars" | "bourbons"): string {
-  return tab === "cigars" ? "Browse cigar brands" : "Browse bourbon brands";
-}
-
 /**
  * Products vs houses toggle for Cigars / Bourbons catalog tabs.
  * State is `view=makers` in the URL; default is products.
@@ -30,21 +26,21 @@ export function CatalogViewToggle({ tab, activeView }: Props) {
 
   const baseParams = () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", tab);
+    params.set("type", tab);
+    params.delete("tab");
     return params;
   };
 
   const productsHref = () => {
     const params = baseParams();
     params.delete("view");
-    const q = params.toString();
-    return q ? `/?${q}` : "/";
+    return `/catalog?${params.toString()}`;
   };
 
   const brandsHref = () => {
     const params = baseParams();
-    params.set("view", "brands");
-    return `/?${params.toString()}`;
+    params.set("view", "makers");
+    return `/catalog?${params.toString()}`;
   };
 
   const fullIndexHref = `/makers?type=${productType}`;
@@ -60,23 +56,16 @@ export function CatalogViewToggle({ tab, activeView }: Props) {
         <ViewTab href={brandsHref()} active={activeView === "makers"} label={BRANDS_VIEW_LABEL} />
       </div>
 
-      <div className="flex justify-end mt-2 min-h-5">
-        {activeView === "products" ? (
-          <Link
-            href={brandsHref()}
-            className="text-xs text-foreground-muted hover:text-foreground transition-colors"
-          >
-            {browseBrandsLabel(tab)} →
-          </Link>
-        ) : (
+      {activeView === "makers" ? (
+        <div className="flex justify-end mt-2">
           <Link
             href={fullIndexHref}
             className="text-xs text-foreground-muted hover:text-foreground transition-colors"
           >
             Full brand index →
           </Link>
-        )}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }

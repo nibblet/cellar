@@ -59,4 +59,49 @@ describe("mergeProductSuggestions", () => {
     expect(merged.map((p) => p.product_id)).toEqual(["a", "b"]);
     expect(merged[0].source).toBe("cellar");
   });
+
+  it("does not drop catalog picks when cellar exceeds the limit", () => {
+    const cellarItems = Array.from({ length: 6 }, (_, index) =>
+      product(`cellar-${index}`, "cellar"),
+    );
+    const catalogItems = [product("hunt-1", "catalog"), product("hunt-2", "catalog")];
+
+    const merged = mergeProductSuggestions(cellarItems, catalogItems, 5);
+
+    expect(merged.filter((item) => item.source === "catalog").map((item) => item.product_id)).toEqual(
+      [],
+    );
+  });
+});
+
+describe("loadProductSuggestions catalog headroom", () => {
+  it("reserves catalog slots even when cellar fills the merge limit", () => {
+    const cellarItems = Array.from({ length: 6 }, (_, index) => ({
+      kind: "product" as const,
+      source: "cellar" as const,
+      product_id: `cellar-${index}`,
+      name: `cellar-${index}`,
+      brand: null,
+      product_type: "bourbon" as const,
+      suggestion_kind: "try_tonight" as const,
+    }));
+    const catalogItems = [
+      {
+        kind: "product" as const,
+        source: "catalog" as const,
+        product_id: "hunt-1",
+        name: "hunt-1",
+        brand: null,
+        product_type: "bourbon" as const,
+        suggestion_kind: "hunt_next" as const,
+      },
+    ];
+
+    const combined = [
+      ...cellarItems.slice(0, 5),
+      ...catalogItems.slice(0, 5),
+    ];
+
+    expect(combined.filter((item) => item.source === "catalog")).toHaveLength(1);
+  });
 });

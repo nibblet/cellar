@@ -369,7 +369,7 @@ function BrandFilter({
           Brand / maker
         </p>
         <Link
-          href={`/?tab=${catalogTab}&view=brands`}
+          href={`/catalog?type=${catalogTab}&view=makers`}
           className="text-[10px] uppercase tracking-widest text-foreground-muted hover:text-foreground transition-colors shrink-0"
         >
           {browseLabel} →

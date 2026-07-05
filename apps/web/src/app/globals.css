@@ -292,10 +292,42 @@ html.light .nccc-logo-mark {
 }
 
 /* ============================================================
+   Home V2 palate ticker
+   ============================================================ */
+
+.home-palate-ticker-mask {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.home-palate-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  animation: home-palate-scroll 22s linear infinite;
+}
+
+@keyframes home-palate-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+/* ============================================================
    Restrained motion preference
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
+  .home-palate-ticker-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
   *,
   *::before,
   *::after {

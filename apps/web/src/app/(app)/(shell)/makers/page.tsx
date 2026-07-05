@@ -88,13 +88,13 @@ export default async function MakersBrowsePage({ searchParams }: { searchParams:
 
       <div className="mt-8 flex flex-col gap-2 text-sm">
         <Link
-          href="/?tab=cigars&view=brands"
+          href="/catalog?type=cigars&view=makers"
           className="text-foreground-muted hover:text-foreground transition-colors"
         >
           Cigar brands in catalog tab →
         </Link>
         <Link
-          href="/?tab=bourbons&view=brands"
+          href="/catalog?type=bourbons&view=makers"
           className="text-foreground-muted hover:text-foreground transition-colors"
         >
           Bourbon brands in catalog tab →

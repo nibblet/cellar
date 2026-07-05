@@ -1,18 +1,15 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { TonightsPickSkeleton, TryNext, TryNextSkeleton } from "@/components/cellar";
 import { AppShell } from "@/components/layout/app-shell";
+import { CellarSection } from "@/components/members/sections";
 import { Divider, Voice } from "@/components/primitives";
-import { TonightsPickSection } from "@/components/you/tonights-pick-section";
-import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { loadCachedInsight } from "@/lib/cellar/insight";
 import {
-  CELLAR_PATH,
+  APP_HOME_PATH,
   PERSONAL_PAIRINGS_PATH,
   PERSONAL_TASTINGS_PATH,
 } from "@/lib/navigation/paths";
 import { countMemberPairingSessions, loadMemberPairingSessions } from "@/lib/pairing/sessions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { ensureTasteRecommendations } from "@/lib/taste";
 import { PersonalCard, type PersonalCardThumb } from "./_components/personal-card";
 
 export default async function YouHubPage() {
@@ -21,9 +18,13 @@ export default async function YouHubPage() {
   if (!auth.user) redirect("/login");
   const me = auth.user.id;
 
-  const [cellarSnapshot, recentTastingsResult, tastingsCountResult, pairingsCount, recentPairings] =
+  const [profileResult, recentTastingsResult, tastingsCountResult, pairingsCount, recentPairings, cachedInsight] =
     await Promise.all([
-      loadCellarSnapshot(supabase, me),
+      supabase
+        .from("users")
+        .select("id, name_first, name_last_initial")
+        .eq("id", me)
+        .maybeSingle(),
       supabase
         .from("tastings")
         .select("id, product_id, product:products(id, name, image_url, type), created_at")
@@ -33,7 +34,11 @@ export default async function YouHubPage() {
       supabase.from("tastings").select("id", { count: "exact", head: true }).eq("user_id", me),
       countMemberPairingSessions(supabase, me),
       loadMemberPairingSessions(supabase, me, 3),
+      loadCachedInsight(supabase, me),
     ]);
+
+  if (!profileResult.data) redirect("/login");
+  const profile = profileResult.data;
 
   type TastingRow = {
     id: string;
@@ -53,20 +58,7 @@ export default async function YouHubPage() {
       imageUrl: t.product.image_url,
     }));
 
-  const haveIds = Array.from(cellarSnapshot.have).slice(0, 3);
-  let cellarThumbs: PersonalCardThumb[] = [];
-  if (haveIds.length > 0) {
-    const { data: products } = await supabase
-      .from("products")
-      .select("id, name, image_url")
-      .in("id", haveIds);
-    cellarThumbs = (
-      (products ?? []) as { id: string; name: string; image_url: string | null }[]
-    ).map((p) => ({ productId: p.id, name: p.name, imageUrl: p.image_url }));
-  }
-
   const tastingsCount = tastingsCountResult.count ?? 0;
-  const cellarCounts = `${cellarSnapshot.have.size} have · ${cellarSnapshot.want.size} want · ${cellarSnapshot.tried.size} tried`;
   const tastingsCountStr = `${tastingsCount} logged`;
   const pairingsCountStr = `${pairingsCount} captured`;
   const pairingThumbs: PersonalCardThumb[] = recentPairings.map((p) => ({
@@ -81,6 +73,8 @@ export default async function YouHubPage() {
       : `"You lit ${lastTasting.product.name} last."`
     : null;
 
+  const insightTeaser = cachedInsight?.bourbons ?? cachedInsight?.cigars ?? null;
+
   return (
     <AppShell>
       <header className="mb-5">
@@ -89,24 +83,9 @@ export default async function YouHubPage() {
 
       {lastVoice ? <Voice className="block mb-4 text-sm">{lastVoice}</Voice> : null}
 
-      <Suspense fallback={<TonightsPickSkeleton />}>
-        <TonightsPickSection memberId={me} />
-      </Suspense>
-
-      <Suspense fallback={<TryNextSkeleton />}>
-        <TryNextSection memberId={me} />
-      </Suspense>
-
-      <Divider label="Your archive" />
+      <Divider label="Personal" />
 
       <div className="flex flex-col gap-3">
-        <PersonalCard
-          title="Your cellar"
-          counts={cellarCounts}
-          thumbs={cellarThumbs}
-          href={CELLAR_PATH}
-          emptyVoice='"The shelf is bare. Mark a few on hand."'
-        />
         <PersonalCard
           title="Your tastings"
           counts={tastingsCountStr}
@@ -122,19 +101,14 @@ export default async function YouHubPage() {
           emptyVoice='"No pairings captured yet. Pick a cigar and a pour."'
         />
       </div>
+
+      <Divider label="Your cellar" />
+
+      {insightTeaser ? <Voice className="block mb-4 text-sm">{insightTeaser}</Voice> : null}
+
+      <div id="shelf">
+        <CellarSection memberId={me} memberFirstName={profile.name_first} isOwnProfile={true} />
+      </div>
     </AppShell>
-  );
-}
-
-async function TryNextSection({ memberId }: { memberId: string }) {
-  const supabase = await createSupabaseServerClient();
-  const recommendations = await ensureTasteRecommendations(supabase, memberId);
-  if (recommendations.cigars.length === 0 && recommendations.bourbons.length === 0) return null;
-
-  return (
-    <>
-      <Divider label="Worth hunting" />
-      <TryNext cigars={recommendations.cigars} bourbons={recommendations.bourbons} />
-    </>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { BookOpen, Boxes, Plus, Settings2, User } from "lucide-react";
+import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { APP_HOME_PATH, CELLAR_PATH, SETTINGS_PATH } from "@/lib/navigation/paths";
+import { APP_HOME_PATH, CELLAR_PATH } from "@/lib/navigation/paths";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -13,8 +13,6 @@ type NavItem = {
   match: (pathname: string) => boolean;
 };
 
-// Solo fork nav: [You] [Cellar] [⊕ Capture] [Catalog] [Settings]
-// Pairings is now a secondary archive/detail flow rather than a shell pillar.
 const SIDE_ITEMS: NavItem[] = [
   {
     href: APP_HOME_PATH,
@@ -35,25 +33,13 @@ const SIDE_ITEMS: NavItem[] = [
     match: (p) => p.startsWith("/catalog"),
   },
   {
-    href: SETTINGS_PATH,
-    label: "Settings",
-    icon: Settings2,
-    match: (p) => p.startsWith("/settings") || p.startsWith("/admin"),
+    href: "/pairings",
+    label: "Pairings",
+    icon: Sparkles,
+    match: (p) => p.startsWith("/pairings"),
   },
 ];
 
-/**
- * Fixed-bottom nav with a center brass FAB (UX-2).
- *
- * Five slots arranged in a grid; the middle slot holds an elevated Capture
- * button that visually breaks out of the bar plane. Brass-fill is allowed
- * here per the design system because Capture IS the primary action of the
- * authenticated shell.
- *
- * The four side tabs use outline icons over short ALL-CAPS labels with a
- * brass underline for the active state — brass-as-fill stays reserved for
- * primary actions per the design system.
- */
 export function BottomNav() {
   const pathname = usePathname();
   const captureActive = pathname.startsWith("/capture");
@@ -67,7 +53,6 @@ export function BottomNav() {
         <SideTab item={SIDE_ITEMS[0]} pathname={pathname} />
         <SideTab item={SIDE_ITEMS[1]} pathname={pathname} />
 
-        {/* Center Capture FAB — lifted above the bar plane via -translate-y */}
         <li className="flex items-start justify-center">
           <Link
             href="/capture"

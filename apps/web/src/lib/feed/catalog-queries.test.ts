@@ -89,4 +89,9 @@ describe("passesCatalogFilters", () => {
   it("excludes products with no availability when filtering to allocated", () => {
     expect(passes({}, { availability: "allocated" })).toBe(false);
   });
+
+  it("matches inline catalog search against name and brand fields", () => {
+    expect(passes({}, { query: "bourbon" })).toBe(true);
+    expect(passes({}, { query: "missing" })).toBe(false);
+  });
 });

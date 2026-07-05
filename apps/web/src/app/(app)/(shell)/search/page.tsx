@@ -5,7 +5,6 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Divider, Voice } from "@/components/primitives";
 import { sanitizeCatalogQuery, searchCatalogProducts } from "@/lib/catalog/search";
 import { signImagePaths } from "@/lib/feed/queries";
-import { APP_HOME_PATH } from "@/lib/navigation/paths";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import type { ProductType } from "@/lib/wheel";
@@ -86,7 +85,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   return (
     <AppShell>
       <Link
-        href={APP_HOME_PATH}
+        href="/catalog"
         className="inline-flex items-center gap-1 text-sm text-foreground-muted hover:text-foreground mb-4"
       >
         <ChevronLeft className="w-4 h-4" aria-hidden="true" /> Back

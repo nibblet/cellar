@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function RoadmapPage() {
+export default function AdminLayout() {
   redirect("/");
 }

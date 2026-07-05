@@ -26,8 +26,8 @@ export function AppShell({
         "mx-auto max-w-md px-6 flex-1",
         "pt-[max(1.5rem,env(safe-area-inset-top))]",
         auth && "py-10",
-        !auth && spacious && "py-8 pb-24",
-        !auth && !spacious && "py-6 pb-24",
+        !auth && spacious && "py-8 pb-24 pr-14",
+        !auth && !spacious && "py-6 pb-24 pr-14",
         className,
       )}
     >

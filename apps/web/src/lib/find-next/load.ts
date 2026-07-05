@@ -176,5 +176,10 @@ async function loadProductSuggestions(
     rationale: p.rationale,
   }));
 
-  return mergeProductSuggestions(cellarProducts, catalog);
+  // Keep separate headroom for Try Next (cellar) and Hunt Next (catalog). A shared
+  // merge cap starves catalog picks when the member has a large Have shelf.
+  return [
+    ...cellarProducts.slice(0, FIND_NEXT_LIMIT),
+    ...catalog.slice(0, FIND_NEXT_LIMIT),
+  ];
 }
