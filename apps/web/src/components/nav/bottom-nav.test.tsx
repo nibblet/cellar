@@ -11,22 +11,30 @@ vi.mock("next/navigation", () => ({
 
 describe("BottomNav", () => {
   beforeEach(() => {
-    mockedUsePathname.mockReturnValue("/you");
+    mockedUsePathname.mockReturnValue("/");
   });
 
-  it("renders You, Cellar, Catalog, Settings, and Capture", () => {
+  it("renders Cellar, Catalog, Pairings, You, and Capture in order", () => {
     render(<BottomNav />);
 
-    expect(screen.getByRole("link", { name: /you/i })).toHaveAttribute("href", "/you");
-    expect(screen.getByRole("link", { name: /cellar/i })).toHaveAttribute("href", "/cellar");
+    const links = screen.getAllByRole("link");
+    expect(links.map((link) => link.getAttribute("aria-label") ?? link.textContent?.trim())).toEqual([
+      "Cellar",
+      "Catalog",
+      "Capture",
+      "Pairings",
+      "You",
+    ]);
+
+    expect(screen.getByRole("link", { name: /cellar/i })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: /catalog/i })).toHaveAttribute("href", "/catalog");
-    expect(screen.getByRole("link", { name: /settings/i })).toHaveAttribute("href", "/settings");
+    expect(screen.getByRole("link", { name: /pairings/i })).toHaveAttribute("href", "/pairings");
+    expect(screen.getByRole("link", { name: /you/i })).toHaveAttribute("href", "/you");
     expect(screen.getByRole("link", { name: /capture/i })).toHaveAttribute("href", "/capture");
-    expect(screen.queryByRole("link", { name: /pairings/i })).toBeNull();
   });
 
-  it("marks You as current on the home route", () => {
+  it("marks Cellar as current on the home route", () => {
     render(<BottomNav />);
-    expect(screen.getByRole("link", { name: /you/i })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /cellar/i })).toHaveAttribute("aria-current", "page");
   });
 });

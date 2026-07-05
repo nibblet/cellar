@@ -13,7 +13,7 @@ import {
 describe("navigation paths", () => {
   it("locks the canonical personal IA routes", () => {
     expect(APP_HOME_PATH).toBe("/you");
-    expect(CELLAR_PATH).toBe("/cellar");
+    expect(CELLAR_PATH).toBe("/");
     expect(SETTINGS_PATH).toBe("/settings");
     expect(SETTINGS_PREFERENCES_PATH).toBe("/settings#preferences");
     expect(PERSONAL_TASTINGS_PATH).toBe("/you/tastings");

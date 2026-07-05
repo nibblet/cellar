@@ -15,12 +15,6 @@ type NavItem = {
 
 const SIDE_ITEMS: NavItem[] = [
   {
-    href: APP_HOME_PATH,
-    label: "You",
-    icon: User,
-    match: (p) => p.startsWith("/you"),
-  },
-  {
     href: CELLAR_PATH,
     label: "Cellar",
     icon: BookOpen,
@@ -37,6 +31,12 @@ const SIDE_ITEMS: NavItem[] = [
     label: "Pairings",
     icon: Sparkles,
     match: (p) => p.startsWith("/pairings"),
+  },
+  {
+    href: APP_HOME_PATH,
+    label: "You",
+    icon: User,
+    match: (p) => p.startsWith("/you"),
   },
 ];
 
