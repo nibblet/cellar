@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #3a332b; }
+  doc-page:not(:defined) { visibility: hidden; }
+  h1,h2,h3 { text-wrap: balance; }
+  code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.86em; background: #f2ede3; color: #8a5a1a; padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
+  .kv code { background: transparent; padding: 0; color: #9a6518; }
+</style>
+</helmet>
+
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="letter" margin="0.85in" hint-size="816px,1056px">
+
+  <div slot="header" style="display:flex;justify-content:space-between;align-items:center;font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:#b0a892;padding-bottom:6px;">
+    <span>The Cellar · Engineering</span>
+    <span>Build Spec — Home v2 &amp; Hunt Next</span>
+  </div>
+  <div slot="footer" style="display:flex;justify-content:space-between;align-items:center;font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:0.06em;color:#b0a892;padding-top:6px;">
+    <span>nibblet/cellar</span>
+    <span>Confidential · Draft v1</span>
+  </div>
+
+  <!-- ================= TITLE ================= -->
+  <div style="font-family:'Inter',sans-serif;color:#2a2521;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:#b08a3a;">Front-End Build Spec · Home Screen v2</div>
+    <h1 style="font-family:'Playfair Display',serif;font-weight:800;font-size:40px;line-height:1.05;letter-spacing:-0.015em;margin:12px 0 0;color:#1c1813;">Home v2, “Try Next” &amp; the new “Hunt Next”</h1>
+    <p style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#6b6152;margin:16px 0 0;line-height:1.5;">A developer-facing plan to ship the redesigned Cellar home. Most of it wires up engine code that already exists; one net-new data field and one net-new surface carry the real work.</p>
+    <div style="display:flex;gap:24px;margin:22px 0 0;font-size:11.5px;color:#6b6152;border-top:1px solid #ddd4c4;border-bottom:1px solid #ddd4c4;padding:12px 0;">
+      <span><b style="color:#2a2521;">Owner</b> &nbsp;Web team</span>
+      <span><b style="color:#2a2521;">Surface</b> &nbsp;<code>/(app)/(shell)/you/cellar</code></span>
+      <span><b style="color:#2a2521;">Est.</b> &nbsp;~4–6 dev-days</span>
+      <span><b style="color:#2a2521;">Design ref</b> &nbsp;Cellar Home — Remix (2A)</span>
+    </div>
+  </div>
+
+  <!-- ================= 0. TL;DR ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:34px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">0 · What ships</h2>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:14px 0 0;">The home screen is recomposed into five stacked modules. Four of them re-skin data the backend already returns; the reasoning engines are untouched. The two items that need real backend work are called out in <b>bold</b>.</p>
+  <ol style="font-size:13.5px;line-height:1.6;color:#332e27;margin:12px 0 0;padding-left:20px;">
+    <li style="margin-bottom:6px;"><b>Masthead + stat strip</b> — bottle/cigar/hunting counts from the cellar snapshot.</li>
+    <li style="margin-bottom:6px;"><b>Palate ticker</b> — the member's dominant traits, marquee-scrolled.</li>
+    <li style="margin-bottom:6px;"><b>Tonight's Pick</b> — the existing deterministic Daily Pour, restyled as a poster.</li>
+    <li style="margin-bottom:6px;"><b>Try Next</b> — “reach for what you own”: the cellar branch of Find Next, <b>plus a net-new pour-depth field</b>.</li>
+    <li style="margin-bottom:6px;"><b>Hunt Next</b> <span style="color:#b04a1a;font-weight:600;">(new surface)</span> — palate-matched bottles you don't own yet, with allocation-rarity stamps and a Want action.</li>
+  </ol>
+
+  <!-- ================= 1. MODULE MAP ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">1 · Module → existing code map</h2>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:14px 0 0;">Each module and the module/library it already binds to. Almost nothing here is new logic — it is a presentation pass over loaders that exist and are unit-tested.</p>
+
+  <div style="margin:16px 0 0;border:1px solid #ddd4c4;border-radius:8px;overflow:hidden;">
+    <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;background:#efe8da;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6b6152;">
+      <div style="padding:9px 12px;">Module</div><div style="padding:9px 12px;">Backs onto</div><div style="padding:9px 12px;">Status</div>
+    </div>
+    <div class="kv" style="font-size:12px;color:#332e27;">
+      <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;border-top:1px solid #e6ddcd;">
+        <div style="padding:10px 12px;font-weight:600;">Stat strip</div><div style="padding:10px 12px;"><code>loadCellarSnapshot</code> — <code>have</code>/<code>want</code> set sizes</div><div style="padding:10px 12px;color:#4a7a3a;font-weight:600;">Reuse</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;border-top:1px solid #e6ddcd;background:#faf7f0;">
+        <div style="padding:10px 12px;font-weight:600;">Palate ticker</div><div style="padding:10px 12px;"><code>dominantTraits(tasteVector)</code> · <code>cellar/insight.ts</code></div><div style="padding:10px 12px;color:#4a7a3a;font-weight:600;">Reuse</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;border-top:1px solid #e6ddcd;">
+        <div style="padding:10px 12px;font-weight:600;">Tonight's Pick</div><div style="padding:10px 12px;"><code>daily-pour/select.ts</code> (deterministic daily seed)</div><div style="padding:10px 12px;color:#4a7a3a;font-weight:600;">Reuse</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;border-top:1px solid #e6ddcd;background:#faf7f0;">
+        <div style="padding:10px 12px;font-weight:600;">Try Next</div><div style="padding:10px 12px;"><code>find-next</code> → <code>suggestion_kind: "try_tonight"</code> (cellar branch)</div><div style="padding:10px 12px;color:#b08a3a;font-weight:600;">Reuse + field</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.15fr 1.5fr 0.7fr;border-top:1px solid #e6ddcd;">
+        <div style="padding:10px 12px;font-weight:600;">Hunt Next</div><div style="padding:10px 12px;"><code>find-next</code> → <code>suggestion_kind: "hunt_next"</code> · <code>ensureTasteRecommendations</code></div><div style="padding:10px 12px;color:#b04a1a;font-weight:600;">New UI</div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:12px;line-height:1.55;color:#6b6152;margin:12px 0 0;font-style:italic;font-family:'Fraunces',serif;">Note: <code>find-next/types.ts</code> already defines both <code>try_tonight</code> and <code>hunt_next</code> as suggestion kinds — this design is the UI the type system was already anticipating.</p>
+
+  <!-- ================= 2. TRY NEXT ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">2 · Try Next — “from your humidor”</h2>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:14px 0 0;">Two cards, the palate-fit-ranked products you already <code>have</code>. This is the cellar branch of <code>loadProductSuggestions</code> — cosine similarity of each Have product's <code>trait_vector</code> against the per-type taste vector. No changes to the ranking.</p>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:12px 0 0;">The only new thing the card shows is <b>pour depth</b> (“¾ full”, “3 left”). That value does not exist today — see §4. Until the field ships, render the card without the depth chip rather than faking it.</p>
+  <div style="background:#f5f0e6;border-left:3px solid #b08a3a;border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0 0;font-size:12.5px;line-height:1.55;color:#4a4237;">
+    <b>Winston one-liner</b> — the italic line under each product reuses the existing rationale generator (<code>taste/rationale.ts</code> / <code>generateRationales</code>). It is already cached per pick; do not call it per render.
+  </div>
+
+  <!-- ================= 3. HUNT NEXT ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">3 · Hunt Next — the new surface</h2>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:14px 0 0;">A horizontally-scrolling rail of bottles the member does <i>not</i> own but that fit the palate — the “chase” list. This is the catalog branch of Find Next, i.e. <code>ensureTasteRecommendations</code>, which already excludes everything in the cellar (<code>have/want/tried/loved</code>) and ranks the confirmed catalog by taste-vector cosine plus a preference boost.</p>
+
+  <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:#1c1813;margin:20px 0 0;">3.1 Data source</h3>
+  <ul style="font-size:13px;line-height:1.6;color:#332e27;margin:8px 0 0;padding-left:20px;">
+    <li style="margin-bottom:5px;">Call <code>loadFindNextSuggestions()</code> and read <code>pour</code> + <code>smoke</code>, filtering to <code>source === "catalog"</code> (these carry <code>suggestion_kind: "hunt_next"</code>).</li>
+    <li style="margin-bottom:5px;">Interleave bourbon + cigar picks into one rail, palate-score descending.</li>
+    <li style="margin-bottom:5px;"><b>Raise the cap.</b> <code>RECOMMENDATIONS_PER_TYPE</code> is currently <code>3</code>; the rail wants ~6–8. Bump the limit passed into <code>recommendForType</code> for this surface only (do not change the Try Next default).</li>
+  </ul>
+
+  <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:#1c1813;margin:20px 0 0;">3.2 Rarity stamp (“Allocated” / “Lottery”)</h3>
+  <p style="font-size:13px;line-height:1.6;color:#332e27;margin:8px 0 0;">The rotated wanted-poster stamp is driven by the bourbon allocation tier already produced by <code>bourbon-tier.ts</code> and stored on <code>specs.tier</code> (1–5):</p>
+  <ul style="font-size:13px;line-height:1.6;color:#332e27;margin:8px 0 0;padding-left:20px;">
+    <li style="margin-bottom:5px;"><code>tier 5</code> → <b>“Lottery”</b> stamp (BTAC, Pappy-class).</li>
+    <li style="margin-bottom:5px;"><code>tier 4</code> → <b>“Allocated”</b> stamp.</li>
+    <li style="margin-bottom:5px;"><code>tier ≤ 3</code> → no stamp (findable; the stamp should feel earned).</li>
+    <li style="margin-bottom:5px;">Cigars have no tier model — omit the stamp, or gate behind a future cigar-rarity signal.</li>
+  </ul>
+  <div style="background:#f5f0e6;border-left:3px solid #b04a1a;border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0 0;font-size:12.5px;line-height:1.55;color:#4a4237;">
+    <b>Respect <code>hide_rare</code>.</b> Members have a <code>member_preferences.hide_rare</code> flag and a <code>max_catalog_tier</code>. Hunt Next must honor both — a member who hid rare bottles should not see a rail that is nothing but lottery stamps. Filter candidates by <code>max_catalog_tier</code> before capping.
+  </div>
+
+  <h3 style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:#1c1813;margin:20px 0 0;">3.3 The “＋ Want” action</h3>
+  <p style="font-size:13px;line-height:1.6;color:#332e27;margin:8px 0 0;">Tapping Want writes <code>member_saves.want = true</code> for that product via the existing cellar action (<code>cellar/actions.ts</code>). Two consequences to wire:</p>
+  <ul style="font-size:13px;line-height:1.6;color:#332e27;margin:8px 0 0;padding-left:20px;">
+    <li style="margin-bottom:5px;">The product immediately leaves Hunt Next (it is now in the cellar exclude set) — optimistically remove the card, don't wait for refetch.</li>
+    <li style="margin-bottom:5px;">The “Hunting” count in the stat strip increments. Source that count from <code>want</code>-set size so the two always agree.</li>
+    <li style="margin-bottom:5px;">The want list itself is palate-re-ranked by <code>rankWants()</code> — already built, feeds the You/Want view.</li>
+  </ul>
+
+  <!-- ================= 4. NET-NEW: POUR DEPTH ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">4 · Net-new backend — pour depth</h2>
+  <p style="font-size:13.5px;line-height:1.62;color:#332e27;margin:14px 0 0;">The one genuine data-model addition. Today <code>member_saves</code> is binary (have/want/tried/loved); the design shows <i>how much is left</i>. This is the deferred Phase 5.5 “fill level”.</p>
+
+  <div style="background:#1c1813;border-radius:8px;padding:16px 18px;margin:16px 0 0;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7;color:#e8dcc4;overflow-x:auto;">
+    <span style="color:#8a7a5c;">-- migration: member_saves fill level</span><br>
+    <span style="color:#c98a4a;">alter table</span> cellar.member_saves<br>
+    &nbsp;&nbsp;<span style="color:#c98a4a;">add column</span> fill_level <span style="color:#7aa86a;">smallint</span><br>
+    &nbsp;&nbsp;<span style="color:#c98a4a;">check</span> (fill_level <span style="color:#e8dcc4;">between</span> 0 <span style="color:#e8dcc4;">and</span> 4)<br>
+    &nbsp;&nbsp;<span style="color:#c98a4a;">default</span> <span style="color:#7aa86a;">null</span>;<br>
+    <span style="color:#8a7a5c;">-- 4=full · 3=¾ · 2=½ · 1=heel · 0=empty · null=untracked</span><br>
+    <span style="color:#8a7a5c;">-- cigars: reuse as a count instead (see below)</span>
+  </div>
+  <ul style="font-size:13px;line-height:1.6;color:#332e27;margin:12px 0 0;padding-left:20px;">
+    <li style="margin-bottom:5px;"><b>Bourbon</b> uses the 0–4 fill band → renders as the “¾ full” chip and the 4-segment meter.</li>
+    <li style="margin-bottom:5px;"><b>Cigars</b> are discrete — add a parallel <code>count_remaining smallint</code> (renders “3 left”), or overload one nullable <code>quantity</code> column and branch on product type in the loader. Pick one; don't ship both.</li>
+    <li style="margin-bottom:5px;"><code>null</code> = untracked → show no chip. Never assume “full”.</li>
+    <li style="margin-bottom:5px;">RLS: the new columns inherit the existing <code>member_saves</code> row policies — no new policy, but confirm the update policy covers the added columns.</li>
+    <li style="margin-bottom:5px;">Follow-on (out of scope here): an “empty” transition can auto-set <code>tried = true</code> and feed a restock nudge. Note it; don't build it yet.</li>
+  </ul>
+
+  <!-- ================= 5. WORK BREAKDOWN ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">5 · Work breakdown &amp; sequence</h2>
+  <div style="margin:14px 0 0;border:1px solid #ddd4c4;border-radius:8px;overflow:hidden;">
+    <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;background:#efe8da;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6b6152;">
+      <div style="padding:9px 12px;">#</div><div style="padding:9px 12px;">Task</div><div style="padding:9px 12px;">Layer</div><div style="padding:9px 12px;">Est.</div>
+    </div>
+    <div style="font-size:12px;color:#332e27;">
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;"><div style="padding:9px 12px;font-weight:700;color:#b08a3a;">1</div><div style="padding:9px 12px;">Home v2 layout shell + stat strip + palate ticker (data already available)</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">1.0d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;background:#faf7f0;"><div style="padding:9px 12px;font-weight:700;color:#b08a3a;">2</div><div style="padding:9px 12px;">Tonight's Pick poster restyle over existing Daily Pour</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">0.5d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;"><div style="padding:9px 12px;font-weight:700;color:#b04a1a;">3</div><div style="padding:9px 12px;"><code>fill_level</code> migration + loader + RLS check</div><div style="padding:9px 12px;">DB</div><div style="padding:9px 12px;">0.75d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;background:#faf7f0;"><div style="padding:9px 12px;font-weight:700;color:#b04a1a;">4</div><div style="padding:9px 12px;">Fill-level edit control (set on product detail) + depth chip/meter</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">0.75d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;"><div style="padding:9px 12px;font-weight:700;color:#b04a1a;">5</div><div style="padding:9px 12px;">Hunt Next rail: catalog-branch fetch, tier stamps, <code>hide_rare</code>/<code>max_catalog_tier</code> filter</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">1.0d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;background:#faf7f0;"><div style="padding:9px 12px;font-weight:700;color:#b08a3a;">6</div><div style="padding:9px 12px;">Want action wiring: optimistic remove + stat-strip sync</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">0.5d</div></div>
+      <div style="display:grid;grid-template-columns:0.4fr 2fr 0.6fr 0.7fr;border-top:1px solid #e6ddcd;"><div style="padding:9px 12px;font-weight:700;color:#4a7a3a;">7</div><div style="padding:9px 12px;">Empty/cold-start states (no Have, no palate signal) + reduced-motion</div><div style="padding:9px 12px;">FE</div><div style="padding:9px 12px;">0.5d</div></div>
+    </div>
+  </div>
+  <p style="font-size:12px;line-height:1.55;color:#6b6152;margin:10px 0 0;">Critical path: <code>3 → 4</code> (pour depth) and <code>5 → 6</code> (Hunt Next) are independent and can run in parallel. Tasks 1–2 unblock everything visual and should land first.</p>
+
+  <!-- ================= 6. EDGE / COLD START ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">6 · Edge &amp; cold-start states</h2>
+  <ul style="font-size:13px;line-height:1.62;color:#332e27;margin:12px 0 0;padding-left:20px;">
+    <li style="margin-bottom:6px;"><b>Empty cellar</b> (no <code>have</code>): Try Next has nothing to rank. Collapse it and let Hunt Next lead — it works from preferences alone on a cold start (<code>recommendForType</code> preference-only path).</li>
+    <li style="margin-bottom:6px;"><b>No palate + no preferences</b>: both recommenders return empty by design (“we don't guess from an empty palate”). Show a single capture CTA, not empty rails.</li>
+    <li style="margin-bottom:6px;"><b>Untracked fill</b>: chip and meter hidden; never render a default level.</li>
+    <li style="margin-bottom:6px;"><b>Reduced motion</b>: the palate marquee and ember pulses must freeze — the design already guards this with <code>@media (prefers-reduced-motion)</code>; keep it.</li>
+    <li style="margin-bottom:6px;"><b>Winston on capture</b>: this home screen may show Winston copy, but do <i>not</i> let the voice leak onto any capture form (per the design-system rule and the open FIX tickets).</li>
+  </ul>
+
+  <!-- ================= 7. ACCEPTANCE ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">7 · Acceptance criteria</h2>
+  <ul style="font-size:13px;line-height:1.62;color:#332e27;margin:12px 0 0;padding-left:20px;">
+    <li style="margin-bottom:6px;">Stat-strip “Hunting” count equals the <code>want</code>-set size at all times, including right after a Want tap.</li>
+    <li style="margin-bottom:6px;">A tier-5 bourbon in Hunt Next shows a “Lottery” stamp; a tier-2 shows none.</li>
+    <li style="margin-bottom:6px;">A member with <code>hide_rare = true</code> sees no tier-5 cards in Hunt Next.</li>
+    <li style="margin-bottom:6px;">Tapping Want removes the card without a full reload and the bottle appears in the You/Want list.</li>
+    <li style="margin-bottom:6px;">Setting a bourbon to “empty” shows the empty meter; an untracked bottle shows no meter.</li>
+    <li style="margin-bottom:6px;">Nothing in Hunt Next is already in the member's cellar (have/want/tried/loved all excluded).</li>
+    <li style="margin-bottom:6px;">All existing <code>find-next</code>, <code>taste</code>, and <code>pairing</code> unit tests still pass; new <code>fill_level</code> loader has coverage.</li>
+  </ul>
+
+  <!-- ================= 8. OPEN QUESTIONS ================= -->
+  <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#1c1813;margin:32px 0 0;padding-bottom:8px;border-bottom:2px solid #b08a3a;">8 · Open questions for product</h2>
+  <ol style="font-size:13px;line-height:1.62;color:#332e27;margin:12px 0 0;padding-left:20px;">
+    <li style="margin-bottom:6px;">Cigar fill: discrete count (“3 left”) vs. a box/single distinction — confirm the model before task 3.</li>
+    <li style="margin-bottom:6px;">Should Hunt Next ever surface allocated bottles the member can't realistically buy, or cap at <code>max_catalog_tier</code> strictly? (Aspiration vs. actionability.)</li>
+    <li style="margin-bottom:6px;">Does Want on an allocated bottle eventually feed a “notify me / drop tracker,” or stay a passive wishlist? (Affects whether Want needs a source/store field.)</li>
+    <li style="margin-bottom:6px;">Cigar rarity: is there appetite for a cigar-side tier model so cigars can earn stamps too?</li>
+  </ol>
+
+  <div style="margin:36px 0 0;border-top:1px solid #ddd4c4;padding-top:18px;font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#6b6152;line-height:1.5;">“The engine already knows what to chase, sir. This spec simply gives the chase a shelf to sit on.” — Winston</div>
+
+</x-import>
+</x-dc>
+</body>
+</html>

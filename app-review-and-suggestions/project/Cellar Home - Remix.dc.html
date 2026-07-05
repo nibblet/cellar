@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #06050a; }
+  ::selection { background: rgba(240,200,104,0.28); }
+  .noscroll::-webkit-scrollbar { display: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @keyframes lamp { 0% { opacity: .45; } 100% { opacity: .95; } }
+  @keyframes ember { 0% { box-shadow: 0 0 0 0 rgba(228,87,31,.45), 0 0 18px 2px rgba(228,87,31,.25);} 100% { box-shadow: 0 0 0 6px rgba(228,87,31,0), 0 0 26px 6px rgba(228,87,31,.10);} }
+  @keyframes shimmer { 0% { background-position: -160% 0; } 100% { background-position: 260% 0; } }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</helmet>
+
+<x-import component-from-global-scope="image-slot" from="./image-slot.js" hint-size="1px,1px"></x-import>
+
+<div style="min-height:100vh;background:#06050a;background-image:radial-gradient(120% 60% at 50% -10%, rgba(240,200,104,0.08), transparent 60%);display:flex;justify-content:center;align-items:flex-start;padding:40px 0;font-family:'Inter',-apple-system,sans-serif;">
+
+  <div style="width:400px;max-width:100%;border-radius:44px;overflow:hidden;position:relative;border:9px solid #14100b;background:#0a0806;box-shadow:0 40px 90px -30px rgba(0,0,0,0.9);">
+
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:center;padding:14px 24px 0;font-size:13px;font-weight:600;color:#E8DEC9;">
+      <span>10:24</span>
+      <span style="width:16px;height:9px;border:1px solid #E8DEC9;border-radius:2px;position:relative;opacity:.85;"><span style="position:absolute;inset:1px;right:5px;background:#E8DEC9;border-radius:1px;"></span></span>
+    </div>
+
+    <!-- masthead -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding:20px 24px 12px;animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) both;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:26px;color:#F6ECD8;letter-spacing:-0.02em;line-height:1;">The Cellar</div>
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:#7c6f58;margin-top:7px;">Fri · Jul 4 · Good evening, Paul</div>
+      </div>
+      <span style="width:34px;height:34px;border-radius:50%;background:#171009;border:1px solid #2a2013;display:flex;align-items:center;justify-content:center;color:#B7A88C;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>
+    </div>
+
+    <!-- slim identity stat strip -->
+    <div style="display:flex;gap:18px;padding:2px 24px 14px;border-bottom:1px solid #241a10;">
+      <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#7c6f58;"><b style="font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:#C8923A;">24</b> Bottles</span>
+      <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#7c6f58;"><b style="font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:#C8923A;">12</b> Cigars</span>
+      <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#7c6f58;"><b style="font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:#E4571F;">6</b> Hunting</span>
+    </div>
+
+    <!-- palate ticker (marquee) -->
+    <div style="position:relative;border-bottom:1px solid #241a10;overflow:hidden;padding:12px 0;background:linear-gradient(90deg,#120c08,#0d0908);animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .05s both;">
+      <div style="position:absolute;left:0;top:0;bottom:0;z-index:2;display:flex;align-items:center;padding:0 14px 0 20px;background:linear-gradient(90deg,#0d0908 70%,transparent);font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#E4571F;">Palate →</div>
+      <div style="display:flex;white-space:nowrap;width:max-content;animation:marquee 22s linear infinite;font-family:'Playfair Display',serif;font-weight:700;font-size:22px;">
+        <span style="padding:0 18px;color:#F0C868;">Caramel</span><span style="padding:0 18px;color:#E8DEC9;">Oak</span><span style="padding:0 18px;color:#E4571F;">Full-Proof</span><span style="padding:0 18px;color:#B7A88C;font-style:italic;font-family:'Fraunces',serif;font-weight:400;">char</span><span style="padding:0 18px;color:#C8923A;">Dried Fruit</span><span style="padding:0 18px;color:#E8DEC9;">Leather</span><span style="padding:0 18px;color:#9a8a6c;font-style:italic;font-family:'Fraunces',serif;font-weight:400;">vanilla</span><span style="padding:0 18px;color:#F0C868;">Baking Spice</span>
+        <span style="padding:0 18px;color:#F0C868;">Caramel</span><span style="padding:0 18px;color:#E8DEC9;">Oak</span><span style="padding:0 18px;color:#E4571F;">Full-Proof</span><span style="padding:0 18px;color:#B7A88C;font-style:italic;font-family:'Fraunces',serif;font-weight:400;">char</span><span style="padding:0 18px;color:#C8923A;">Dried Fruit</span><span style="padding:0 18px;color:#E8DEC9;">Leather</span><span style="padding:0 18px;color:#9a8a6c;font-style:italic;font-family:'Fraunces',serif;font-weight:400;">vanilla</span><span style="padding:0 18px;color:#F0C868;">Baking Spice</span>
+      </div>
+    </div>
+
+    <!-- HERO poster -->
+    <section style="position:relative;padding:26px 24px 30px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%, rgba(228,87,31,0.28), transparent 60%), linear-gradient(180deg,#2a0f0a 0%,#160a07 55%,#0a0806 100%);animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) .1s both;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:#F0C868;">Tonight's Pick</span>
+        <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:13px;color:#C8923A;letter-spacing:0.1em;">Nº 01</span>
+      </div>
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;margin:26px 0 8px;height:172px;">
+        <div style="position:relative;width:150px;height:150px;border-radius:50%;overflow:hidden;border:2px solid rgba(240,200,104,0.55);box-shadow:0 16px 40px -12px rgba(0,0,0,0.9);margin-right:-24px;z-index:1;">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-cigar" shape="circle" placeholder="Cigar" hint-size="150px,150px" style="width:150px;height:150px;display:block;"></x-import>
+          <div style="position:absolute;inset:0;background:linear-gradient(150deg, rgba(228,87,31,0.55), rgba(90,30,23,0.35));mix-blend-mode:soft-light;pointer-events:none;"></div>
+        </div>
+        <span style="position:relative;z-index:3;font-family:'Playfair Display',serif;font-weight:800;font-size:56px;color:#F6ECD8;text-shadow:0 4px 18px rgba(0,0,0,0.7);margin:0 -6px;">×</span>
+        <div style="position:relative;width:150px;height:150px;border-radius:50%;overflow:hidden;border:2px solid rgba(240,200,104,0.55);box-shadow:0 16px 40px -12px rgba(0,0,0,0.9);margin-left:-24px;z-index:2;">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-bourbon" shape="circle" placeholder="Bourbon" hint-size="150px,150px" style="width:150px;height:150px;display:block;"></x-import>
+          <div style="position:absolute;inset:0;background:linear-gradient(150deg, rgba(240,200,104,0.5), rgba(200,146,58,0.25));mix-blend-mode:soft-light;pointer-events:none;"></div>
+        </div>
+      </div>
+      <h2 style="margin:16px 0 0;text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:26px;line-height:1.12;color:#F6ECD8;letter-spacing:-0.01em;">Padrón 1964 <span style="color:#E4571F;">×</span> Weller 12</h2>
+      <p style="margin:10px 0 0;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;color:#C9B79A;line-height:1.45;">"The maduro's cocoa wants a wheated pour."</p>
+      <a href="#" style="display:flex;align-items:center;justify-content:space-between;margin-top:22px;height:56px;padding:0 8px 0 22px;text-decoration:none;border:1.5px solid #F0C868;color:#F0C868;font-weight:700;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;">See the pairing<span style="width:40px;height:40px;border-radius:50%;background:#F0C868;color:#1a1206;display:flex;align-items:center;justify-content:center;animation:ember 2.6s ease-in-out infinite;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    </section>
+
+    <!-- TRY NEXT — reach for what you own -->
+    <section style="padding:26px 24px 6px;animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) .18s both;">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+        <h3 style="margin:0;font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:#F6ECD8;letter-spacing:0.02em;text-transform:uppercase;">Try Next</h3>
+        <span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A7A5C;">From your humidor</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="border-radius:14px;border:1px solid #241a10;background:linear-gradient(180deg,#150f0a,#0e0a07);padding:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="width:44px;height:44px;border-radius:10px;overflow:hidden;border:1px solid #2a2013;position:relative;"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-try-1" shape="rounded" radius="10" placeholder="" hint-size="44px,44px" style="width:44px;height:44px;display:block;"></x-import><div style="position:absolute;inset:0;background:rgba(240,200,104,0.16);mix-blend-mode:soft-light;"></div></div>
+            <span style="font-size:9px;color:#C8923A;letter-spacing:0.08em;">¾ full</span>
+          </div>
+          <p style="margin:12px 0 0;font-family:'Playfair Display',serif;font-weight:600;font-size:14px;color:#EFE3CC;line-height:1.15;">Weller 12</p>
+          <p style="margin:5px 0 0;font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:#9a8a6c;line-height:1.35;">"A wheated pour, already on your shelf."</p>
+        </div>
+        <div style="border-radius:14px;border:1px solid #241a10;background:linear-gradient(180deg,#150f0a,#0e0a07);padding:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="width:44px;height:44px;border-radius:10px;overflow:hidden;border:1px solid #2a2013;position:relative;"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-try-2" shape="rounded" radius="10" placeholder="" hint-size="44px,44px" style="width:44px;height:44px;display:block;"></x-import><div style="position:absolute;inset:0;background:rgba(240,200,104,0.16);mix-blend-mode:soft-light;"></div></div>
+            <span style="font-size:9px;color:#C8923A;letter-spacing:0.08em;">3 left</span>
+          </div>
+          <p style="margin:12px 0 0;font-family:'Playfair Display',serif;font-weight:600;font-size:14px;color:#EFE3CC;line-height:1.15;">Blanton's</p>
+          <p style="margin:5px 0 0;font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:#9a8a6c;line-height:1.35;">"Been a while. Give it a Tuesday."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HUNT NEXT — the chase -->
+    <section style="position:relative;padding:24px 0 8px;animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) .24s both;">
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:280px;height:120px;background:radial-gradient(ellipse at center, rgba(228,87,31,0.16), transparent 65%);pointer-events:none;animation:lamp 6s ease-in-out infinite alternate;"></div>
+      <div style="position:relative;display:flex;align-items:center;gap:9px;padding:0 24px;margin-bottom:4px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4571F" stroke-width="1.7"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        <h3 style="margin:0;font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:#F6ECD8;letter-spacing:0.02em;text-transform:uppercase;">Hunt Next</h3>
+        <span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#B5654A;margin-left:auto;padding-right:24px;">Worth the chase</span>
+      </div>
+      <p style="position:relative;margin:0 24px 14px;font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:#9a8a6c;">"Not yet on your shelf — but squarely your palate, sir."</p>
+
+      <div class="noscroll" style="position:relative;display:flex;gap:14px;overflow-x:auto;padding:2px 24px 10px;scrollbar-width:none;">
+        <div style="flex:0 0 auto;width:156px;">
+          <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid #3a1c12;box-shadow:0 14px 30px -14px rgba(0,0,0,0.85);">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-hunt-1" shape="rect" placeholder="Bottle" hint-size="156px,186px" style="width:156px;height:186px;display:block;"></x-import>
+            <div style="position:absolute;inset:0;background:linear-gradient(160deg, rgba(228,87,31,0.35), rgba(90,30,23,0.28));mix-blend-mode:soft-light;pointer-events:none;"></div>
+            <span style="position:absolute;top:10px;left:10px;transform:rotate(-8deg);font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#F09267;border:1.5px solid #E4571F;border-radius:3px;padding:3px 6px;background:rgba(10,7,5,0.55);">Allocated</span>
+          </div>
+          <p style="margin:11px 0 0;font-family:'Playfair Display',serif;font-weight:600;font-size:14px;color:#EFE3CC;line-height:1.15;">Wm. Larue Weller</p>
+          <p style="margin:3px 0 9px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7c6f58;">Buffalo Trace · KY</p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F09267;border:1px solid #7a2a1e;border-radius:999px;padding:5px 12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Want</a>
+        </div>
+        <div style="flex:0 0 auto;width:156px;">
+          <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid #3a1c12;box-shadow:0 14px 30px -14px rgba(0,0,0,0.85);">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-hunt-2" shape="rect" placeholder="Bottle" hint-size="156px,186px" style="width:156px;height:186px;display:block;"></x-import>
+            <div style="position:absolute;inset:0;background:linear-gradient(160deg, rgba(228,87,31,0.35), rgba(90,30,23,0.28));mix-blend-mode:soft-light;pointer-events:none;"></div>
+            <span style="position:absolute;top:10px;left:10px;transform:rotate(-8deg);font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#F09267;border:1.5px solid #E4571F;border-radius:3px;padding:3px 6px;background:rgba(10,7,5,0.55);">Lottery</span>
+          </div>
+          <p style="margin:11px 0 0;font-family:'Playfair Display',serif;font-weight:600;font-size:14px;color:#EFE3CC;line-height:1.15;">Pappy Van Winkle 15</p>
+          <p style="margin:3px 0 9px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7c6f58;">Old Rip · KY</p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F09267;border:1px solid #7a2a1e;border-radius:999px;padding:5px 12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Want</a>
+        </div>
+        <div style="flex:0 0 auto;width:156px;">
+          <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid #3a1c12;box-shadow:0 14px 30px -14px rgba(0,0,0,0.85);">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="c-hunt-3" shape="rect" placeholder="Bottle" hint-size="156px,186px" style="width:156px;height:186px;display:block;"></x-import>
+            <div style="position:absolute;inset:0;background:linear-gradient(160deg, rgba(228,87,31,0.35), rgba(90,30,23,0.28));mix-blend-mode:soft-light;pointer-events:none;"></div>
+            <span style="position:absolute;top:10px;left:10px;transform:rotate(-8deg);font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#F09267;border:1.5px solid #E4571F;border-radius:3px;padding:3px 6px;background:rgba(10,7,5,0.55);">Allocated</span>
+          </div>
+          <p style="margin:11px 0 0;font-family:'Playfair Display',serif;font-weight:600;font-size:14px;color:#EFE3CC;line-height:1.15;">E.H. Taylor B.P.</p>
+          <p style="margin:3px 0 9px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7c6f58;">Buffalo Trace · KY</p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F09267;border:1px solid #7a2a1e;border-radius:999px;padding:5px 12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Want</a>
+        </div>
+      </div>
+    </section>
+
+    <nav style="position:relative;margin-top:22px;background:rgba(10,8,6,0.82);backdrop-filter:blur(16px);border-top:1px solid #241a10;">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:10px 20px 14px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#F0C868;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 5h11a3 3 0 013 3v11H7a3 3 0 01-3-3V5z"/><path d="M4 5v11a3 3 0 003 3"/></svg><span style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">Cellar</span><span style="height:2px;width:20px;border-radius:2px;background:#F0C868;"></span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#6f6350;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">Catalog</span><span style="height:2px;width:20px;"></span></div>
+        <div style="display:flex;justify-content:center;"><span style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1a1206;background:linear-gradient(145deg,#F0C868,#C8923A);box-shadow:0 8px 24px -6px rgba(240,200,104,0.55), 0 0 0 4px #0a0806;transform:translateY(-14px);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#6f6350;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l2.2 5.6L20 10l-4.5 3.8L17 20l-5-3-5 3 1.5-6.2L4 10l5.8-1.4L12 3z"/></svg><span style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">Pairings</span><span style="height:2px;width:20px;"></span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#6f6350;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg><span style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">You</span><span style="height:2px;width:20px;"></span></div>
+      </div>
+    </nav>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

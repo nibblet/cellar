@@ -54,3 +54,4 @@ supabase/.temp
 # Local
 .cache/
 tmp/
+.env*
