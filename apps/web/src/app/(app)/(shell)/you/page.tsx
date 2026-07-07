@@ -4,13 +4,13 @@ import { CellarSection } from "@/components/members/sections";
 import { Divider, Voice } from "@/components/primitives";
 import { loadCachedInsight } from "@/lib/cellar/insight";
 import {
-  APP_HOME_PATH,
   PERSONAL_PAIRINGS_PATH,
   PERSONAL_TASTINGS_PATH,
 } from "@/lib/navigation/paths";
 import { countMemberPairingSessions, loadMemberPairingSessions } from "@/lib/pairing/sessions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PersonalCard, type PersonalCardThumb } from "./_components/personal-card";
+import { YouHubHero } from "./_components/you-hub-hero";
 
 export default async function YouHubPage() {
   const supabase = await createSupabaseServerClient();
@@ -77,15 +77,13 @@ export default async function YouHubPage() {
 
   return (
     <AppShell>
-      <header className="mb-5">
-        <h1 className="text-3xl">You</h1>
-      </header>
+      <YouHubHero firstName={profile.name_first} />
 
       {lastVoice ? <Voice className="block mb-4 text-sm">{lastVoice}</Voice> : null}
 
       <Divider label="Personal" />
 
-      <div className="flex flex-col gap-3">
+      <div id="personal" className="flex flex-col gap-3 scroll-mt-6">
         <PersonalCard
           title="Your tastings"
           counts={tastingsCountStr}
@@ -106,7 +104,7 @@ export default async function YouHubPage() {
 
       {insightTeaser ? <Voice className="block mb-4 text-sm">{insightTeaser}</Voice> : null}
 
-      <div id="shelf">
+      <div id="shelf" className="scroll-mt-6">
         <CellarSection memberId={me} memberFirstName={profile.name_first} isOwnProfile={true} />
       </div>
     </AppShell>

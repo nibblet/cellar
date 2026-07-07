@@ -29,12 +29,12 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "NCCC",
+  title: "The Cellar",
   description: "Norton Commons Cigar Club — a private tasting archive.",
-  applicationName: "NCCC",
+  applicationName: "The Cellar",
   appleWebApp: {
     capable: true,
-    title: "NCCC",
+    title: "The Cellar",
     statusBarStyle: "black-translucent",
   },
   manifest: "/manifest.webmanifest",
@@ -62,18 +62,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html
       lang="en"
-      // Don't hard-code a theme class here — ThemeInitScript runs first
-      // and applies the user's stored choice (or leaves it empty so the
-      // OS preference wins). Default appearance stays dark via the
-      // @media (prefers-color-scheme: dark) block in globals.css.
-      className={`${inter.variable} ${playfair.variable} ${fraunces.variable} h-full antialiased`}
+      // Dark is the design-system default. ThemeInitScript runs first and
+      // swaps to light/auto when the member chose that in Settings.
+      className={`dark ${inter.variable} ${playfair.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <style
           // biome-ignore lint/security/noDangerouslySetInnerHtml: critical pre-CSS background to prevent white flash
           dangerouslySetInnerHTML={{
-            __html: "html,body{background:#15110C}html.light,html.light body{background:#F7F1E6}",
+            __html:
+              "html,body{background:#15110C;color-scheme:dark}html.light,html.light body{background:#F7F1E6;color-scheme:light}",
           }}
         />
         <ThemeInitScript />

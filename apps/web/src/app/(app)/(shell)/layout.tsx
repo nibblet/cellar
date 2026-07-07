@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { AppMenu } from "@/components/nav/app-menu";
 import { BottomNav } from "@/components/nav/bottom-nav";
 import { needsOnboarding } from "@/lib/onboarding/load";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -21,7 +20,6 @@ export default async function ShellLayout({ children }: { children: React.ReactN
 
   return (
     <>
-      <AppMenu />
       {children}
       <BottomNav />
     </>

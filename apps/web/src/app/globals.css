@@ -141,6 +141,11 @@ html.light {
 html {
   height: 100%;
   -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
 }
 
 body {

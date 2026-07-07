@@ -14,16 +14,22 @@ const STORAGE_KEY = "nccc-theme";
 function applyTheme(mode: ThemeMode) {
   const root = document.documentElement;
   root.classList.remove("light", "dark");
-  if (mode === "light") root.classList.add("light");
-  else if (mode === "dark") root.classList.add("dark");
-  // 'auto' leaves both off and lets @media (prefers-color-scheme) decide.
+  if (mode === "light") {
+    root.classList.add("light");
+  } else if (mode === "dark") {
+    root.classList.add("dark");
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    root.classList.add("dark");
+  } else {
+    root.classList.add("light");
+  }
 }
 
 function readStored(): ThemeMode {
-  if (typeof window === "undefined") return "auto";
+  if (typeof window === "undefined") return "dark";
   const v = window.localStorage.getItem(STORAGE_KEY);
   if (v === "light" || v === "dark" || v === "auto") return v;
-  return "auto";
+  return "dark";
 }
 
 /**
@@ -36,7 +42,7 @@ function readStored(): ThemeMode {
  * a flash-of-wrong-theme on first paint.
  */
 export function ThemeToggle() {
-  const [mode, setMode] = useState<ThemeMode>("auto");
+  const [mode, setMode] = useState<ThemeMode>("dark");
   const [mounted, setMounted] = useState(false);
 
   // Hydrate from localStorage on mount; don't trust SSR for the toggle
@@ -104,7 +110,7 @@ export function ThemeToggle() {
  * itself runs on the client.
  */
 export function ThemeInitScript() {
-  const js = `(function(){try{var r=document.documentElement;r.classList.remove('light','dark');var m=localStorage.getItem('${STORAGE_KEY}');if(m==='light'){r.classList.add('light');r.style.backgroundColor='#F7F1E6';}else if(m==='dark'){r.classList.add('dark');r.style.backgroundColor='#15110C';}else{r.style.backgroundColor=window.matchMedia('(prefers-color-scheme: dark)').matches?'#15110C':'#F7F1E6';}}catch(e){document.documentElement.style.backgroundColor='#15110C';}})();`;
+  const js = `(function(){try{var r=document.documentElement;r.classList.remove('light','dark');var m=localStorage.getItem('${STORAGE_KEY}');if(m==='light'){r.classList.add('light');r.style.backgroundColor='#F7F1E6';r.style.colorScheme='light';}else if(m==='dark'||!m){r.classList.add('dark');r.style.backgroundColor='#15110C';r.style.colorScheme='dark';}else if(m==='auto'){var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(d){r.classList.add('dark');r.style.backgroundColor='#15110C';r.style.colorScheme='dark';}else{r.classList.add('light');r.style.backgroundColor='#F7F1E6';r.style.colorScheme='light';}}else{r.classList.add('dark');r.style.backgroundColor='#15110C';r.style.colorScheme='dark';}}catch(e){document.documentElement.classList.add('dark');document.documentElement.style.backgroundColor='#15110C';document.documentElement.style.colorScheme='dark';}})();`;
   // biome-ignore lint/security/noDangerouslySetInnerHtml: required for pre-paint theme application
   return <script dangerouslySetInnerHTML={{ __html: js }} />;
 }

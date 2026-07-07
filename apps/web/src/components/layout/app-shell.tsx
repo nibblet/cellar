@@ -24,10 +24,10 @@ export function AppShell({
       {...props}
       className={cn(
         "mx-auto max-w-md px-6 flex-1",
-        "pt-[max(1.5rem,env(safe-area-inset-top))]",
+        "pt-[calc(env(safe-area-inset-top,0px)+1rem)]",
         auth && "py-10",
-        !auth && spacious && "py-8 pb-24 pr-14",
-        !auth && !spacious && "py-6 pb-24 pr-14",
+        !auth && spacious && "py-8 pb-24",
+        !auth && !spacious && "py-6 pb-24",
         className,
       )}
     >
