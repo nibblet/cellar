@@ -24,10 +24,8 @@ export function AppShell({
       {...props}
       className={cn(
         "mx-auto max-w-md px-6 flex-1",
-        "pt-[calc(env(safe-area-inset-top,0px)+1rem)]",
-        auth && "py-10",
-        !auth && spacious && "py-8 pb-24",
-        !auth && !spacious && "py-6 pb-24",
+        spacious ? "nccc-safe-top-spacious" : "nccc-safe-top",
+        auth ? "pb-10" : "pb-24",
         className,
       )}
     >

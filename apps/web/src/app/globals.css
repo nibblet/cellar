@@ -6,6 +6,11 @@
    ============================================================ */
 
 :root {
+  --nccc-safe-top: env(safe-area-inset-top, 0px);
+  --nccc-safe-right: env(safe-area-inset-right, 0px);
+  --nccc-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nccc-safe-left: env(safe-area-inset-left, 0px);
+
   /* Ink (text) */
   --ink-900: #1a1613;
   --ink-700: #3a3128;
@@ -149,6 +154,10 @@ html.light {
 }
 
 body {
+  /* Standalone PWA + black-translucent status bar draw under the notch. */
+  padding-top: var(--nccc-safe-top);
+  padding-right: var(--nccc-safe-right);
+  padding-left: var(--nccc-safe-left);
   background-color: var(--background);
   background-image:
     radial-gradient(
@@ -175,6 +184,22 @@ body {
   body {
     background-attachment: scroll;
   }
+}
+
+/* Installed PWA fallback when env(safe-area-inset-top) resolves to 0. */
+@media (display-mode: standalone) {
+  body {
+    padding-top: max(var(--nccc-safe-top), 2.75rem);
+  }
+}
+
+/* Content rhythm below the body-level safe area inset. */
+.nccc-safe-top {
+  padding-top: 1rem;
+}
+
+.nccc-safe-top-spacious {
+  padding-top: 1.5rem;
 }
 
 /* Headings default to display face; per-element classes can override */

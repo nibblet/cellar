@@ -21,7 +21,7 @@ export default async function WelcomePage() {
   const firstName = profile?.name_first ?? "friend";
 
   return (
-    <AppShell auth className="py-10 pb-10">
+    <AppShell auth>
       <WelcomeFlow firstName={firstName} />
     </AppShell>
   );
