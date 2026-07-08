@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import type { HomeHuntNextPick, HomeTryNextPick, HomeV2Visibility } from "@/lib/cellar/home-v2";
 import { setCellarState } from "@/lib/cellar/actions";
+import type { HomeHuntNextPick, HomeTryNextPick, HomeV2Visibility } from "@/lib/cellar/home-v2";
 import {
   CellarEmptyState,
   CellarStatStrip,
@@ -31,6 +31,7 @@ type CellarHomeClientProps = {
   initialHuntingCount: number;
   palateTraits: string[];
   tonightsPick: TonightsPickModel | null;
+  tonightsPickRollIndex?: number;
   tryNext: {
     bourbons: HomeTryNextPick[];
     cigars: HomeTryNextPick[];
@@ -46,6 +47,7 @@ export function CellarHomeClient({
   initialHuntingCount,
   palateTraits,
   tonightsPick,
+  tonightsPickRollIndex = 0,
   tryNext,
   initialHuntNext,
   visibility,
@@ -83,6 +85,12 @@ export function CellarHomeClient({
     });
   }
 
+  function handleShuffleTonight() {
+    const nextRoll = tonightsPickRollIndex + 1;
+    router.push(`/?roll=${nextRoll}`);
+    router.refresh();
+  }
+
   return (
     <>
       <header className="mb-6">
@@ -112,6 +120,8 @@ export function CellarHomeClient({
           bourbonImageUrl={tonightsPick.bourbonImageUrl}
           quote={tonightsPick.quote}
           noteNumber={tonightsPick.noteNumber}
+          rollIndex={tonightsPickRollIndex}
+          onShuffle={handleShuffleTonight}
         />
       ) : null}
 
@@ -120,11 +130,7 @@ export function CellarHomeClient({
       ) : null}
 
       {huntNext.length > 0 ? (
-        <HuntNextRail
-          items={huntNext}
-          onWant={handleWant}
-          pendingProductId={pendingProductId}
-        />
+        <HuntNextRail items={huntNext} onWant={handleWant} pendingProductId={pendingProductId} />
       ) : null}
 
       {visibility.showEmptyCta ? <CellarEmptyState href="/capture" /> : null}

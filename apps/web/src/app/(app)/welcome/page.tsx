@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { WelcomeFlow } from "@/components/onboarding/welcome-flow";
-import { APP_HOME_PATH } from "@/lib/navigation/paths";
+import { TONIGHT_PATH } from "@/lib/navigation/paths";
 import { needsOnboarding } from "@/lib/onboarding/load";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -15,7 +15,7 @@ export default async function WelcomePage() {
     .maybeSingle();
 
   if (profile && !needsOnboarding(profile)) {
-    redirect(APP_HOME_PATH);
+    redirect(TONIGHT_PATH);
   }
 
   const firstName = profile?.name_first ?? "friend";

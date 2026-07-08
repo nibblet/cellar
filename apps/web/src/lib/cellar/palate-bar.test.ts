@@ -4,16 +4,7 @@ import { buildRecentPalateTraits, interleaveUniqueLabels } from "./palate-bar";
 describe("interleaveUniqueLabels", () => {
   it("alternates bourbon and cigar labels while deduping case-insensitively", () => {
     expect(
-      interleaveUniqueLabels(
-        [
-          ["Caramel", "Oak"],
-          ["Vanilla"],
-        ],
-        [
-          ["Leather", "Oak"],
-          ["Char"],
-        ],
-      ),
+      interleaveUniqueLabels([["Caramel", "Oak"], ["Vanilla"]], [["Leather", "Oak"], ["Char"]]),
     ).toEqual(["Caramel", "Oak", "Leather", "Vanilla", "Char"]);
   });
 });
@@ -53,10 +44,10 @@ describe("buildRecentPalateTraits", () => {
 
   it("returns an empty list when no recent products have wheel vectors", () => {
     expect(
-      buildRecentPalateTraits(
-        [{ product_id: "b1", type: "bourbon", wheel_vector: null }],
-        { bourbonIds: ["b1"], cigarIds: [] },
-      ),
+      buildRecentPalateTraits([{ product_id: "b1", type: "bourbon", wheel_vector: null }], {
+        bourbonIds: ["b1"],
+        cigarIds: [],
+      }),
     ).toEqual([]);
   });
 });

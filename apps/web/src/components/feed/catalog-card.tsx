@@ -28,6 +28,7 @@ export function CatalogCard({ entry, signedHero, cellarState }: CatalogCardProps
               <img
                 src={entry.catalog_image_url}
                 alt={entry.name}
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-contain p-4"
               />
             </div>

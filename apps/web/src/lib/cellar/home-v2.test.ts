@@ -25,12 +25,16 @@ function productSuggestion(
   };
 }
 
-function detail(overrides: Partial<HomeProductDetail> & Pick<HomeProductDetail, "product_id">): HomeProductDetail {
+function detail(
+  overrides: Partial<HomeProductDetail> & Pick<HomeProductDetail, "product_id">,
+): HomeProductDetail {
   const { product_id, ...rest } = overrides;
   return {
     product_id,
     image_url: null,
     tier: null,
+    created_at: null,
+    specs: null,
     ...rest,
   };
 }
@@ -38,7 +42,9 @@ function detail(overrides: Partial<HomeProductDetail> & Pick<HomeProductDetail, 
 describe("interleaveSuggestions", () => {
   it("alternates bourbon and cigar suggestions while preserving order within each type", () => {
     const bourbons = ["b1", "b2", "b3"].map((id) => productSuggestion({ product_id: id }));
-    const cigars = ["c1", "c2"].map((id) => productSuggestion({ product_id: id, product_type: "cigar" }));
+    const cigars = ["c1", "c2"].map((id) =>
+      productSuggestion({ product_id: id, product_type: "cigar" }),
+    );
 
     expect(interleaveSuggestions(bourbons, cigars).map((item) => item.product_id)).toEqual([
       "b1",
@@ -84,7 +90,11 @@ describe("buildHomeV2Sections", () => {
 
     const details: ProductDetailsById = {
       "owned-bourbon": detail({ product_id: "owned-bourbon", image_url: "/owned-bourbon.png" }),
-      "hunt-bourbon": detail({ product_id: "hunt-bourbon", image_url: "/hunt-bourbon.png", tier: 4 }),
+      "hunt-bourbon": detail({
+        product_id: "hunt-bourbon",
+        image_url: "/hunt-bourbon.png",
+        tier: 4,
+      }),
       "owned-cigar": detail({ product_id: "owned-cigar", image_url: "/owned-cigar.png" }),
       "hunt-cigar": detail({ product_id: "hunt-cigar", image_url: "/hunt-cigar.png" }),
     };
@@ -97,7 +107,10 @@ describe("buildHomeV2Sections", () => {
 
     expect(sections.tryNext.bourbons.map((item) => item.product_id)).toEqual(["owned-bourbon"]);
     expect(sections.tryNext.cigars.map((item) => item.product_id)).toEqual(["owned-cigar"]);
-    expect(sections.huntNext.map((item) => item.product_id)).toEqual(["hunt-bourbon", "hunt-cigar"]);
+    expect(sections.huntNext.map((item) => item.product_id)).toEqual([
+      "hunt-bourbon",
+      "hunt-cigar",
+    ]);
   });
 
   it("filters hunt-next bourbons above the member tier cap but keeps cigars and unknown tiers", () => {
@@ -108,7 +121,9 @@ describe("buildHomeV2Sections", () => {
         productSuggestion({ product_id: "lottery-bourbon", source: "catalog" }),
         productSuggestion({ product_id: "unknown-tier-bourbon", source: "catalog" }),
       ],
-      smoke: [productSuggestion({ product_id: "hunt-cigar", source: "catalog", product_type: "cigar" })],
+      smoke: [
+        productSuggestion({ product_id: "hunt-cigar", source: "catalog", product_type: "cigar" }),
+      ],
     };
 
     const details: ProductDetailsById = {
@@ -138,7 +153,9 @@ describe("buildHomeV2Sections", () => {
         productSuggestion({ product_id: "allocated-bourbon", source: "catalog" }),
         productSuggestion({ product_id: "lottery-bourbon", source: "catalog" }),
       ],
-      smoke: [productSuggestion({ product_id: "hunt-cigar", source: "catalog", product_type: "cigar" })],
+      smoke: [
+        productSuggestion({ product_id: "hunt-cigar", source: "catalog", product_type: "cigar" }),
+      ],
     };
 
     const details: ProductDetailsById = {
@@ -153,7 +170,11 @@ describe("buildHomeV2Sections", () => {
       maxCatalogTier: 5,
     });
 
-    expect(sections.huntNext.map((item) => item.rarityLabel)).toEqual(["Allocated", null, "Lottery"]);
+    expect(sections.huntNext.map((item) => item.rarityLabel)).toEqual([
+      "Allocated",
+      null,
+      "Lottery",
+    ]);
   });
 });
 

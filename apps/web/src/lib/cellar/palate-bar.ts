@@ -28,13 +28,13 @@ export async function loadRecentPalateTraits(
     .select("id, type, wheel_vector")
     .in("id", allIds);
 
-  const rows = ((data ?? []) as Array<{ id: string; type: ProductType; wheel_vector: WheelVector | null }>).map(
-    (row) => ({
-      product_id: row.id,
-      type: row.type,
-      wheel_vector: row.wheel_vector,
-    }),
-  );
+  const rows = (
+    (data ?? []) as Array<{ id: string; type: ProductType; wheel_vector: WheelVector | null }>
+  ).map((row) => ({
+    product_id: row.id,
+    type: row.type,
+    wheel_vector: row.wheel_vector,
+  }));
 
   return buildRecentPalateTraits(rows, { bourbonIds, cigarIds });
 }
@@ -45,9 +45,7 @@ export function buildRecentPalateTraits(
 ): string[] {
   const byId = new Map(products.map((product) => [product.product_id, product]));
 
-  const bourbonLabels = order.bourbonIds.map((productId) =>
-    labelsForProduct(byId.get(productId)),
-  );
+  const bourbonLabels = order.bourbonIds.map((productId) => labelsForProduct(byId.get(productId)));
   const cigarLabels = order.cigarIds.map((productId) => labelsForProduct(byId.get(productId)));
 
   return interleaveUniqueLabels(bourbonLabels, cigarLabels);
@@ -56,12 +54,15 @@ export function buildRecentPalateTraits(
 function labelsForProduct(product: RecentProductRow | undefined): string[] {
   if (!product?.wheel_vector || Object.keys(product.wheel_vector).length === 0) return [];
 
-  return buildTagCloud(product.type, [product.wheel_vector], PALATE_LABELS_PER_PRODUCT).map((entry) =>
-    formatPalateLabel(entry.label),
+  return buildTagCloud(product.type, [product.wheel_vector], PALATE_LABELS_PER_PRODUCT).map(
+    (entry) => formatPalateLabel(entry.label),
   );
 }
 
-export function interleaveUniqueLabels(bourbonGroups: string[][], cigarGroups: string[][]): string[] {
+export function interleaveUniqueLabels(
+  bourbonGroups: string[][],
+  cigarGroups: string[][],
+): string[] {
   const merged: string[] = [];
   const seen = new Set<string>();
   const max = Math.max(bourbonGroups.length, cigarGroups.length);

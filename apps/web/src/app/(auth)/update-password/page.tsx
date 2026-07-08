@@ -23,9 +23,7 @@ export default async function UpdatePasswordPage() {
         <p className="text-sm tracking-widest uppercase text-foreground-subtle">New passphrase</p>
       </header>
 
-      <Voice className="text-center mb-8">
-        "A fresh one. Choose something you'll remember."
-      </Voice>
+      <Voice className="text-center mb-8">"A fresh one. Choose something you'll remember."</Voice>
 
       <UpdateForm />
     </AppShell>

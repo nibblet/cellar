@@ -4,6 +4,7 @@ import {
   extractReleaseYear,
   finalizeCollapseProposals,
   formatBrandExpression,
+  type NormalizationInput,
   namesMatchSurvivor,
   normalizeAgeTier,
   proposeNormalization,
@@ -39,9 +40,9 @@ describe("formatBrandExpression", () => {
 
 describe("namesMatchSurvivor", () => {
   it("ignores comma and apostrophe differences", () => {
-    expect(namesMatchSurvivor("Baker's Single Barrel, 7 Year", "Baker's Single Barrel 7 Year")).toBe(
-      true,
-    );
+    expect(
+      namesMatchSurvivor("Baker's Single Barrel, 7 Year", "Baker's Single Barrel 7 Year"),
+    ).toBe(true);
   });
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
+import { Archive, BookOpen, Layers, Plus, User } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Winston } from "@/components/brand";
 import { Button, Divider, Voice } from "@/components/primitives";
@@ -41,20 +41,11 @@ const HOW_IT_WORKS = [
 ] as const;
 
 const NAV_MAP = [
-  { icon: BookOpen, label: "Cellar", line: "Your humidor, tonight's pick, and what to try next." },
-  {
-    icon: Boxes,
-    label: "Catalog",
-    line: "Browse every cigar and bourbon; filter to your taste.",
-  },
-  {
-    icon: Plus,
-    label: "Capture",
-    line: "The center button — snap and log.",
-    captureFab: true,
-  },
-  { icon: Sparkles, label: "Pairings", line: "Winston's matches; capture a pairing from here." },
-  { icon: User, label: "You", line: "Settings, preferences, your Cellar and tastings." },
+  { icon: BookOpen, label: "Cellar", line: "Tonight's pick, try next, and hunt next." },
+  { icon: Layers, label: "Shelf", line: "What you own, want, and have tried." },
+  { icon: Plus, label: "Capture", line: "The center button — snap and log.", captureFab: true },
+  { icon: Archive, label: "Log", line: "Your tastings and pairings in one timeline." },
+  { icon: User, label: "You", line: "Your taste profile, catalog, and settings." },
 ] as const;
 
 export function WelcomeFlow({ firstName }: Props) {

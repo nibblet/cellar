@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { deprioritizeRecent, rotateDaily } from "@/lib/cellar/daily-rotation";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { loadRecentTastedProductIds, todaySeedDate } from "@/lib/cellar/recent-tastings";
 import { loadDailyPourCandidates } from "@/lib/daily-pour/load";
 import { loadPickPourCandidates } from "@/lib/pick-pour/load";
 import { cosineSimilarity } from "@/lib/similarity/cosine";
@@ -176,10 +178,13 @@ async function loadProductSuggestions(
     rationale: p.rationale,
   }));
 
-  // Keep separate headroom for Try Next (cellar) and Hunt Next (catalog). A shared
-  // merge cap starves catalog picks when the member has a large Have shelf.
-  return [
-    ...cellarProducts.slice(0, FIND_NEXT_LIMIT),
-    ...catalog.slice(0, FIND_NEXT_LIMIT),
-  ];
+  const recentIds = await loadRecentTastedProductIds(supabase, memberId);
+  const date = todaySeedDate();
+  const rotatedCellar = rotateDaily(
+    deprioritizeRecent(cellarProducts, recentIds),
+    `${memberId}|${date}|${productType}`,
+    FIND_NEXT_LIMIT,
+  );
+
+  return [...rotatedCellar, ...catalog.slice(0, FIND_NEXT_LIMIT)];
 }

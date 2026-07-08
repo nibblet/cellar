@@ -1,34 +1,44 @@
 import { redirect } from "next/navigation";
 import { CellarHomeClient } from "@/components/cellar/home-v2-client";
 import { AppShell } from "@/components/layout/app-shell";
-import { buildHomeV2Sections, deriveHomeV2Visibility, type ProductDetailsById } from "@/lib/cellar/home-v2";
+import { isProductFresh } from "@/lib/catalog/fresh-drops";
+import {
+  buildHomeV2Sections,
+  deriveHomeV2Visibility,
+  type ProductDetailsById,
+} from "@/lib/cellar/home-v2";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { loadRecentPalateTraits } from "@/lib/cellar/palate-bar";
 import { todayKey } from "@/lib/daily-pour/select";
 import { loadFindNextSuggestions } from "@/lib/find-next/load";
 import type { MemberNameFields } from "@/lib/identity";
-import { hasAnyPreferences } from "@/lib/preferences/types";
 import { ensurePairingProse } from "@/lib/pairing/prose-cache";
 import { loadPickPourCandidates } from "@/lib/pick-pour/load";
 import { selectPickPour } from "@/lib/pick-pour/select";
+import { hasAnyPreferences } from "@/lib/preferences/types";
 import { loadProductTypes, splitIdsByProductType } from "@/lib/products/split-by-type";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { loadMemberTasteContext } from "@/lib/taste/context";
 
-export default async function CellarHomePage() {
+type SearchParams = Promise<{ roll?: string }>;
+
+function parseRollIndex(raw: string | undefined): number {
+  const parsed = Number.parseInt(String(raw ?? "0"), 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+}
+
+export default async function CellarHomePage({ searchParams }: { searchParams: SearchParams }) {
+  const { roll } = await searchParams;
+  const rollIndex = parseRollIndex(roll);
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) redirect("/login");
   const memberId = auth.user.id;
 
   const [profileResult, tasteContext, tonightsPick] = await Promise.all([
-    supabase
-      .from("users")
-      .select("name_first, name_last_initial")
-      .eq("id", memberId)
-      .maybeSingle(),
+    supabase.from("users").select("name_first, name_last_initial").eq("id", memberId).maybeSingle(),
     loadMemberTasteContext(supabase, memberId),
-    loadTonightsPick(supabase, memberId),
+    loadTonightsPick(supabase, memberId, rollIndex),
   ]);
 
   if (!profileResult.data) redirect("/login");
@@ -41,10 +51,16 @@ export default async function CellarHomePage() {
   ]);
 
   const detailsById = await loadSuggestionProductDetails(supabase, findNextSuggestions);
+  const freshProductIds = new Set(
+    Object.values(detailsById)
+      .filter((row) => isProductFresh(row.created_at, row.specs))
+      .map((row) => row.product_id),
+  );
   const sections = buildHomeV2Sections({
     suggestions: findNextSuggestions,
     detailsById,
     maxCatalogTier: tasteContext.preferences.max_catalog_tier,
+    freshProductIds,
   });
 
   const visibility = deriveHomeV2Visibility({
@@ -65,6 +81,7 @@ export default async function CellarHomePage() {
         initialHuntingCount={tasteContext.snapshot.want.size}
         palateTraits={palateTraits}
         tonightsPick={tonightsPick}
+        tonightsPickRollIndex={rollIndex}
         tryNext={sections.tryNext}
         initialHuntNext={sections.huntNext}
         visibility={visibility}
@@ -76,6 +93,7 @@ export default async function CellarHomePage() {
 async function loadTonightsPick(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
   memberId: string,
+  rollIndex: number,
 ): Promise<{
   line: string;
   href: string;
@@ -90,7 +108,7 @@ async function loadTonightsPick(
   if (snapshot.have.size === 0) return null;
 
   const candidates = await loadPickPourCandidates(supabase, memberId);
-  const pick = selectPickPour({ memberId, date: todayKey(), rollIndex: 0 }, candidates);
+  const pick = selectPickPour({ memberId, date: todayKey(), rollIndex }, candidates);
   if (!pick) return null;
 
   const { data: products } = await supabase
@@ -140,24 +158,32 @@ async function loadSuggestionProductDetails(
   const uniqueIds = [...new Set(ids)];
   if (uniqueIds.length === 0) return {};
 
-  const { data } = await supabase.from("products").select("id, image_url, specs").in("id", uniqueIds);
+  const { data } = await supabase
+    .from("products")
+    .select("id, image_url, specs, created_at")
+    .in("id", uniqueIds);
 
   return Object.fromEntries(
-    ((data ?? []) as Array<{ id: string; image_url: string | null; specs: Record<string, unknown> | null }>).map(
-      (row) => [
-        row.id,
-        {
-          product_id: row.id,
-          image_url: row.image_url,
-          tier:
-            typeof row.specs?.tier === "number" &&
-            row.specs.tier >= 1 &&
-            row.specs.tier <= 5
-              ? row.specs.tier
-              : null,
-        },
-      ],
-    ),
+    (
+      (data ?? []) as Array<{
+        id: string;
+        image_url: string | null;
+        specs: Record<string, unknown> | null;
+        created_at: string;
+      }>
+    ).map((row) => [
+      row.id,
+      {
+        product_id: row.id,
+        image_url: row.image_url,
+        created_at: row.created_at,
+        specs: row.specs,
+        tier:
+          typeof row.specs?.tier === "number" && row.specs.tier >= 1 && row.specs.tier <= 5
+            ? row.specs.tier
+            : null,
+      },
+    ]),
   );
 }
 

@@ -4,6 +4,8 @@ export type HomeProductDetail = {
   product_id: string;
   image_url: string | null;
   tier: number | null;
+  created_at: string | null;
+  specs: Record<string, unknown> | null;
 };
 
 export type ProductDetailsById = Record<string, HomeProductDetail>;
@@ -16,6 +18,7 @@ export type HomeHuntNextPick = FindNextProductSuggestion & {
   image_url: string | null;
   tier: number | null;
   rarityLabel: "Allocated" | "Lottery" | null;
+  lane: "forYou" | "fresh";
 };
 
 export type HomeV2Sections = {
@@ -36,6 +39,7 @@ type BuildHomeV2SectionsParams = {
   suggestions: FindNextSuggestions;
   detailsById: ProductDetailsById;
   maxCatalogTier: number;
+  freshProductIds?: Set<string>;
 };
 
 export function interleaveSuggestions<T>(first: T[], second: T[]): T[] {
@@ -54,12 +58,23 @@ export function buildHomeV2Sections({
   suggestions,
   detailsById,
   maxCatalogTier,
+  freshProductIds,
 }: BuildHomeV2SectionsParams): HomeV2Sections {
   const tryNextBourbons = enrichTryNextPicks(suggestions.pour, detailsById);
   const tryNextCigars = enrichTryNextPicks(suggestions.smoke, detailsById);
 
-  const huntNextBourbons = enrichHuntNextPicks(suggestions.pour, detailsById, maxCatalogTier);
-  const huntNextCigars = enrichHuntNextPicks(suggestions.smoke, detailsById, maxCatalogTier);
+  const huntNextBourbons = enrichHuntNextPicks(
+    suggestions.pour,
+    detailsById,
+    maxCatalogTier,
+    freshProductIds,
+  );
+  const huntNextCigars = enrichHuntNextPicks(
+    suggestions.smoke,
+    detailsById,
+    maxCatalogTier,
+    freshProductIds,
+  );
 
   return {
     tryNext: {
@@ -103,17 +118,20 @@ function enrichHuntNextPicks(
   suggestions: FindNextProductSuggestion[],
   detailsById: ProductDetailsById,
   maxCatalogTier: number,
+  freshProductIds?: Set<string>,
 ): HomeHuntNextPick[] {
   return suggestions
     .filter((item) => item.source === "catalog")
     .map((item) => {
       const detail = detailsById[item.product_id];
       const tier = detail?.tier ?? null;
+      const lane: "forYou" | "fresh" = freshProductIds?.has(item.product_id) ? "fresh" : "forYou";
       return {
         ...item,
         image_url: detail?.image_url ?? null,
         tier,
         rarityLabel: rarityLabelForTier(item.product_type, tier),
+        lane,
       };
     })
     .filter((item) => shouldIncludeInHuntNext(item, maxCatalogTier));

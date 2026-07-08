@@ -1,16 +1,15 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { PairingFeedCard, TastingCard } from "@/components/feed";
 import { AppShell } from "@/components/layout/app-shell";
-import { CellarSection } from "@/components/members/sections";
 import { Divider, Voice } from "@/components/primitives";
+import { TasteProfileHero } from "@/components/you/taste-profile-hero";
 import { loadCachedInsight } from "@/lib/cellar/insight";
-import {
-  PERSONAL_PAIRINGS_PATH,
-  PERSONAL_TASTINGS_PATH,
-} from "@/lib/navigation/paths";
-import { countMemberPairingSessions, loadMemberPairingSessions } from "@/lib/pairing/sessions";
+import { loadCellarSnapshot } from "@/lib/cellar/load";
+import { loadFeed, signImagePaths } from "@/lib/feed/queries";
+import { loadProductTypes, splitIdsByProductType } from "@/lib/products/split-by-type";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { PersonalCard, type PersonalCardThumb } from "./_components/personal-card";
-import { YouHubHero } from "./_components/you-hub-hero";
+import { buildLastActivityLine } from "@/lib/you/last-activity";
 
 export default async function YouHubPage() {
   const supabase = await createSupabaseServerClient();
@@ -18,95 +17,83 @@ export default async function YouHubPage() {
   if (!auth.user) redirect("/login");
   const me = auth.user.id;
 
-  const [profileResult, recentTastingsResult, tastingsCountResult, pairingsCount, recentPairings, cachedInsight] =
+  const [profileResult, snapshot, tastingsCountResult, cachedInsight, recentFeed] =
     await Promise.all([
-      supabase
-        .from("users")
-        .select("id, name_first, name_last_initial")
-        .eq("id", me)
-        .maybeSingle(),
-      supabase
-        .from("tastings")
-        .select("id, product_id, product:products(id, name, image_url, type), created_at")
-        .eq("user_id", me)
-        .order("created_at", { ascending: false })
-        .limit(3),
+      supabase.from("users").select("id, name_first, name_last_initial").eq("id", me).maybeSingle(),
+      loadCellarSnapshot(supabase, me),
       supabase.from("tastings").select("id", { count: "exact", head: true }).eq("user_id", me),
-      countMemberPairingSessions(supabase, me),
-      loadMemberPairingSessions(supabase, me, 3),
       loadCachedInsight(supabase, me),
+      loadFeed(supabase, { userId: me, limit: 1 }),
     ]);
 
   if (!profileResult.data) redirect("/login");
   const profile = profileResult.data;
 
-  type TastingRow = {
-    id: string;
-    product_id: string;
-    created_at: string;
-    product: { id: string; name: string; image_url: string | null; type: string } | null;
-  };
-  const recentTastings = (recentTastingsResult.data as TastingRow[] | null) ?? [];
-  const lastTasting = recentTastings[0] ?? null;
-  const tastingThumbs: PersonalCardThumb[] = recentTastings
-    .filter((t): t is TastingRow & { product: NonNullable<TastingRow["product"]> } =>
-      Boolean(t.product),
-    )
-    .map((t) => ({
-      productId: t.product.id,
-      name: t.product.name,
-      imageUrl: t.product.image_url,
-    }));
-
+  const haveTypeRows = await loadProductTypes(supabase, snapshot.have);
+  const { bourbons, cigars } = splitIdsByProductType(haveTypeRows);
   const tastingsCount = tastingsCountResult.count ?? 0;
-  const tastingsCountStr = `${tastingsCount} logged`;
-  const pairingsCountStr = `${pairingsCount} captured`;
-  const pairingThumbs: PersonalCardThumb[] = recentPairings.map((p) => ({
-    productId: p.cigar_id,
-    name: `${p.cigar_name} + ${p.bourbon_name}`,
-    imageUrl: null,
-  }));
+  const lastEntry = recentFeed[0] ?? null;
 
-  const lastVoice = lastTasting?.product
-    ? lastTasting.product.type === "bourbon"
-      ? `"You poured ${lastTasting.product.name} last."`
-      : `"You lit ${lastTasting.product.name} last."`
-    : null;
+  const lastTastingProduct =
+    lastEntry?.kind === "tasting"
+      ? { type: lastEntry.product_type, name: lastEntry.product_name }
+      : null;
+  const lastLine = buildLastActivityLine(lastTastingProduct);
 
   const insightTeaser = cachedInsight?.bourbons ?? cachedInsight?.cigars ?? null;
 
+  const signed =
+    lastEntry?.hero_image_path != null
+      ? await signImagePaths(supabase, [lastEntry.hero_image_path])
+      : new Map<string, string>();
+
   return (
     <AppShell>
-      <YouHubHero firstName={profile.name_first} />
+      <TasteProfileHero
+        firstName={profile.name_first}
+        bottleCount={bourbons.length}
+        cigarCount={cigars.length}
+        huntingCount={snapshot.want.size}
+        tastingsCount={tastingsCount}
+      />
 
-      {lastVoice ? <Voice className="block mb-4 text-sm">{lastVoice}</Voice> : null}
+      {lastLine ? <Voice className="block mb-4 text-sm">{lastLine}</Voice> : null}
 
-      <Divider label="Personal" />
+      {insightTeaser ? (
+        <>
+          <Divider label="Your palate" />
+          <Voice className="block mb-5 text-sm">{insightTeaser}</Voice>
+        </>
+      ) : null}
 
-      <div id="personal" className="flex flex-col gap-3 scroll-mt-6">
-        <PersonalCard
-          title="Your tastings"
-          counts={tastingsCountStr}
-          thumbs={tastingThumbs}
-          href={PERSONAL_TASTINGS_PATH}
-          emptyVoice='"Nothing logged yet. Snap something next time you light up."'
-        />
-        <PersonalCard
-          title="Your pairings"
-          counts={pairingsCountStr}
-          thumbs={pairingThumbs}
-          href={PERSONAL_PAIRINGS_PATH}
-          emptyVoice='"No pairings captured yet. Pick a cigar and a pour."'
-        />
-      </div>
-
-      <Divider label="Your cellar" />
-
-      {insightTeaser ? <Voice className="block mb-4 text-sm">{insightTeaser}</Voice> : null}
-
-      <div id="shelf" className="scroll-mt-6">
-        <CellarSection memberId={me} memberFirstName={profile.name_first} isOwnProfile={true} />
-      </div>
+      {lastEntry ? (
+        <>
+          <Divider label="Last session" />
+          <div className="mb-5">
+            {lastEntry.kind === "pairing" ? (
+              <PairingFeedCard
+                entry={lastEntry}
+                signedHero={
+                  lastEntry.hero_image_path ? (signed.get(lastEntry.hero_image_path) ?? null) : null
+                }
+              />
+            ) : (
+              <TastingCard
+                entry={lastEntry}
+                signedHero={
+                  lastEntry.hero_image_path ? (signed.get(lastEntry.hero_image_path) ?? null) : null
+                }
+              />
+            )}
+            <Link
+              href="/log"
+              className="mt-3 inline-block text-sm text-foreground-muted hover:text-accent"
+            >
+              See full log →
+            </Link>
+          </div>
+        </>
+      ) : null}
     </AppShell>
   );
 }

@@ -13,6 +13,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { MakerSummaryList } from "@/components/makers/maker-summary-list";
 import { Card, Voice } from "@/components/primitives";
 import type { AvailabilityRarity } from "@/lib/catalog/normalize-specs";
+import { parseCatalogPage } from "@/lib/catalog/paginate";
 import { sanitizeCatalogQuery } from "@/lib/catalog/search";
 import { loadCellarSnapshot } from "@/lib/cellar/load";
 import { ZERO_ROW } from "@/lib/cellar/types";
@@ -22,7 +23,7 @@ import {
   groupCatalogByBrand,
   loadCatalogBrowse,
 } from "@/lib/feed/catalog-queries";
-import { signImagePaths } from "@/lib/feed/queries";
+import { signThumbnailPaths } from "@/lib/feed/queries";
 import { loadMakerSummaries } from "@/lib/makers/browse";
 import { loadMemberPreferences } from "@/lib/preferences/load";
 import type {
@@ -53,14 +54,33 @@ type SearchParams = Promise<{
   brand?: string;
   enriched?: string;
   sort?: string;
+  page?: string;
 }>;
 
 function parseTab(raw: string | undefined): CatalogTab {
   return raw === "bourbons" ? "bourbons" : "cigars";
 }
 
-function parseCatalogView(raw: string | undefined): CatalogView {
-  return raw === "makers" || raw === "brands" ? "makers" : "products";
+function parseCatalogView(raw: string | undefined, filters: CatalogFilters): CatalogView {
+  if (raw === "makers" || raw === "brands") return "makers";
+  if (raw === "products") return "products";
+  if (filters.query) return "products";
+  if (
+    filters.strength ||
+    filters.wrappers?.length ||
+    filters.origin ||
+    filters.vitola ||
+    filters.ringGauge ||
+    filters.styles?.length ||
+    filters.proofBand ||
+    filters.availability ||
+    filters.ageBand ||
+    filters.brand ||
+    filters.enrichedOnly
+  ) {
+    return "products";
+  }
+  return "makers";
 }
 
 const VALID_STRENGTHS = new Set(["mild", "mild-medium", "medium", "medium-full", "full"]);
@@ -158,9 +178,10 @@ function parseFilters(sp: Awaited<SearchParams>): {
 export default async function CatalogPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams;
   const tab = parseTab(sp.type);
-  const catalogView = parseCatalogView(sp.view);
   const { filters, sort } = parseFilters(sp);
+  const catalogView = parseCatalogView(sp.view, filters);
   const searchQuery = sp.q?.trim() ?? "";
+  const pagination = parseCatalogPage(sp);
 
   return (
     <AppShell>
@@ -178,6 +199,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
           filters={filters}
           sort={sort}
           searchQuery={searchQuery}
+          pagination={pagination}
         />
       </Suspense>
     </AppShell>
@@ -218,6 +240,7 @@ async function CatalogBody({
   filters,
   sort,
   searchQuery,
+  pagination,
 }: {
   catalogTab: CatalogTab;
   catalogView: CatalogView;
@@ -225,6 +248,7 @@ async function CatalogBody({
   filters: CatalogFilters;
   sort: CatalogSortKey;
   searchQuery: string;
+  pagination: ReturnType<typeof parseCatalogPage>;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -248,10 +272,17 @@ async function CatalogBody({
   }
 
   const [entries, cellarSnapshot] = await Promise.all([
-    loadCatalogBrowse(supabase, productType, preferences, 500, filters),
+    loadCatalogBrowse(
+      supabase,
+      productType,
+      preferences,
+      pagination.pageSize,
+      filters,
+      pagination.offset,
+    ),
     viewerId ? loadCellarSnapshot(supabase, viewerId) : null,
   ]);
-  const signed = await signImagePaths(
+  const signed = await signThumbnailPaths(
     supabase,
     entries.map((e) => e.hero_image_path),
   );
@@ -279,6 +310,7 @@ async function CatalogBody({
           signed={signed}
           cellarSnapshot={cellarSnapshot}
           showCellar={Boolean(viewerId)}
+          pagination={pagination}
         />
       )}
     </>
@@ -291,12 +323,14 @@ function CatalogList({
   signed,
   cellarSnapshot,
   showCellar,
+  pagination,
 }: {
   entries: Awaited<ReturnType<typeof loadCatalogBrowse>>;
   grouped: boolean;
   signed: Map<string, string>;
   cellarSnapshot: Awaited<ReturnType<typeof loadCellarSnapshot>> | null;
   showCellar: boolean;
+  pagination: ReturnType<typeof parseCatalogPage>;
 }) {
   const renderCard = (entry: (typeof entries)[number]) => {
     const cellarState = cellarSnapshot
@@ -326,9 +360,29 @@ function CatalogList({
             {group.entries.map(renderCard)}
           </section>
         ))}
+        {entries.length >= pagination.pageSize ? (
+          <Link
+            href={`?page=${pagination.page + 1}`}
+            className="mt-2 block text-center text-sm text-foreground-muted hover:text-accent"
+          >
+            Load more →
+          </Link>
+        ) : null}
       </div>
     );
   }
 
-  return <div className="flex flex-col gap-3">{entries.map(renderCard)}</div>;
+  return (
+    <div className="flex flex-col gap-3">
+      {entries.map(renderCard)}
+      {entries.length >= pagination.pageSize ? (
+        <Link
+          href={`?page=${pagination.page + 1}`}
+          className="mt-2 block text-center text-sm text-foreground-muted hover:text-accent"
+        >
+          Load more →
+        </Link>
+      ) : null}
+    </div>
+  );
 }

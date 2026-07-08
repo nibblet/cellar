@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Button, Card, Voice } from "@/components/primitives";
 import { Winston } from "@/components/brand/winston";
+import { Button, Card, Voice } from "@/components/primitives";
 import type { HomeHuntNextPick, HomeTryNextPick } from "@/lib/cellar/home-v2";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +25,8 @@ type TonightsPickCardProps = {
   bourbonImageUrl: string | null;
   quote: string | null;
   noteNumber: string;
+  rollIndex?: number;
+  onShuffle?: () => void;
 };
 
 type TryNextSectionProps = {
@@ -82,7 +84,10 @@ export function PalateTicker({ traits }: PalateTickerProps) {
     <section className="-mx-6 mb-6 overflow-hidden border-y border-border bg-[#1b1510]">
       <div className="flex items-center gap-4 px-6 py-3">
         <div className="shrink-0 whitespace-nowrap text-[11px] uppercase tracking-[0.18em] text-accent">
-          Palate <span className="font-display text-xl lowercase italic tracking-normal text-[#a88a63]">bar</span>
+          Palate{" "}
+          <span className="font-display text-xl lowercase italic tracking-normal text-[#a88a63]">
+            bar
+          </span>
         </div>
         <div className="home-palate-ticker-mask min-w-0 flex-1">
           <div className="home-palate-ticker-track">
@@ -110,13 +115,30 @@ export function TonightsPickCard({
   bourbonImageUrl,
   quote,
   noteNumber,
+  rollIndex = 0,
+  onShuffle,
 }: TonightsPickCardProps) {
   return (
     <section className="-mx-6 mb-8 overflow-hidden border-y border-border bg-[radial-gradient(circle_at_top,#7d2f17_0%,#43170f_33%,#160f0b_68%,#0e0b09_100%)]">
       <div className="px-6 py-6">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-[#f0cf95]">Tonight&apos;s pick</p>
-          <p className="font-display text-lg tracking-[0.14em] text-[#d3a86b]">{noteNumber}</p>
+          <p className="text-[11px] uppercase tracking-[0.24em] text-[#f0cf95]">
+            Tonight&apos;s pick
+          </p>
+          <div className="flex items-center gap-3">
+            {onShuffle ? (
+              <button
+                type="button"
+                onClick={onShuffle}
+                className="text-[10px] uppercase tracking-[0.18em] text-[#d3a86b] hover:text-[#f0cf95]"
+              >
+                Shuffle
+              </button>
+            ) : null}
+            <p className="font-display text-lg tracking-[0.14em] text-[#d3a86b]">
+              No {String(rollIndex + 1).padStart(2, "0")}
+            </p>
+          </div>
         </div>
 
         <div className="relative mt-6 h-44 overflow-hidden">
@@ -147,9 +169,7 @@ export function TonightsPickCard({
         <Voice className="mt-3 block max-w-[28rem] text-[1.15rem] leading-relaxed text-[#e5d0bb] italic">
           &quot;{quote ?? line}&quot;
         </Voice>
-        {quote && quote !== line ? (
-          <p className="mt-2 text-sm text-[#cdb399]">{line}</p>
-        ) : null}
+        {quote && quote !== line ? <p className="mt-2 text-sm text-[#cdb399]">{line}</p> : null}
 
         <Link
           href={href}
@@ -158,7 +178,9 @@ export function TonightsPickCard({
             "text-[#f0cf95] hover:bg-[rgba(255,214,125,0.06)]",
           )}
         >
-          <span className="text-[14px] uppercase tracking-[0.24em] font-medium">See the pairing</span>
+          <span className="text-[14px] uppercase tracking-[0.24em] font-medium">
+            See the pairing
+          </span>
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f1cb68] text-ink-900 text-2xl">
             →
           </span>
@@ -236,7 +258,7 @@ export function TryNextSection({ bourbons, cigars }: TryNextSectionProps) {
       <div className="mb-4 flex items-end justify-between gap-3">
         <h2 className="text-[2rem] leading-none">Try next</h2>
         <p className="text-[11px] uppercase tracking-[0.22em] text-foreground-subtle">
-          From your humidor
+          From your shelf
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -254,6 +276,9 @@ export function TryNextSection({ bourbons, cigars }: TryNextSectionProps) {
 export function HuntNextRail({ items, onWant, pendingProductId }: HuntNextRailProps) {
   if (items.length === 0) return null;
 
+  const forYou = items.filter((item) => item.lane !== "fresh");
+  const fresh = items.filter((item) => item.lane === "fresh");
+
   return (
     <section className="mb-5">
       <div className="mb-3 flex items-end justify-between gap-3">
@@ -262,68 +287,126 @@ export function HuntNextRail({ items, onWant, pendingProductId }: HuntNextRailPr
             <span className="text-[12px] text-accent">✦</span>
             <h2 className="text-[2rem] leading-none">Hunt next</h2>
           </div>
-          <Voice className="block text-sm mt-1">&quot;Not yet on your shelf, but squarely your palate.&quot;</Voice>
+          <Voice className="block text-sm mt-1">
+            &quot;Not yet on your shelf, but squarely your palate.&quot;
+          </Voice>
         </div>
         <p className="shrink-0 text-[11px] uppercase tracking-[0.22em] text-foreground-subtle">
           Worth the chase
         </p>
       </div>
+
+      {fresh.length > 0 ? (
+        <HuntNextLane
+          label="Fresh drops"
+          items={fresh}
+          onWant={onWant}
+          pendingProductId={pendingProductId}
+        />
+      ) : null}
+
+      <HuntNextLane
+        label={fresh.length > 0 ? "For your palate" : undefined}
+        items={forYou}
+        onWant={onWant}
+        pendingProductId={pendingProductId}
+      />
+    </section>
+  );
+}
+
+function HuntNextLane({
+  label,
+  items,
+  onWant,
+  pendingProductId,
+}: {
+  label?: string;
+  items: HomeHuntNextPick[];
+  onWant: (productId: string) => void;
+  pendingProductId?: string | null;
+}) {
+  if (items.length === 0) return null;
+
+  return (
+    <div className={label ? "mb-4" : undefined}>
+      {label ? (
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-foreground-subtle">
+          {label}
+        </p>
+      ) : null}
       <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => (
-          <div
+          <HuntNextCard
             key={item.product_id}
-            className="min-w-[215px] max-w-[215px] shrink-0 snap-start"
-          >
-            <Card className="relative min-h-[246px] overflow-hidden border-[rgba(184,137,88,0.12)] bg-[linear-gradient(180deg,#25170f_0%,#1b130e_100%)] px-4 py-4">
-              {item.rarityLabel ? (
-                <span className="absolute left-3 top-3 -rotate-[8deg] rounded-[8px] border border-[rgba(211,168,107,0.55)] px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[#f0cf95]">
-                  {item.rarityLabel}
-                </span>
-              ) : null}
-              <div className="mt-8 h-[108px] overflow-hidden rounded-[18px] border border-[rgba(184,137,88,0.18)] bg-[radial-gradient(circle_at_top,#6b2818_0%,#26160f_60%,#1a130e_100%)]">
-                {item.image_url ? (
-                  // biome-ignore lint/performance/noImgElement: product images are public catalog URLs
-                  <img
-                    src={item.image_url}
-                    alt={item.name}
-                    className="h-full w-full object-cover nccc-photo nccc-photo--sepia"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[rgba(240,207,149,0.18)]">
-                    <span className="text-[12px] uppercase tracking-[0.18em]">
-                      {item.product_type === "bourbon" ? "Bottle" : "Cigar"}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <Link href={`/products/${item.product_id}`} className="mt-4 block">
-                <p className="text-[1.45rem] leading-tight text-[#f5e9d5]">{item.name}</p>
-                {item.brand ? (
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-foreground-subtle">
-                    {item.brand}
-                  </p>
-                ) : null}
-              </Link>
-              {item.rationale ? (
-                <Voice className="block text-sm text-[#d7c2ab] mt-2 italic line-clamp-2">
-                  &quot;{item.rationale}&quot;
-                </Voice>
-              ) : null}
-              <div className="mt-4">
-                <Button
-                  variant="secondary"
-                  className="h-10 rounded-full border-[rgba(184,137,88,0.28)] bg-transparent px-4 text-[12px] uppercase tracking-[0.18em] text-[#f0cf95] hover:bg-[rgba(255,214,125,0.06)]"
-                  onClick={() => onWant(item.product_id)}
-                  disabled={pendingProductId === item.product_id}
-                >
-                  {pendingProductId === item.product_id ? "Saving..." : "+ Want"}
-                </Button>
-              </div>
-            </Card>
-          </div>
+            item={item}
+            onWant={onWant}
+            pendingProductId={pendingProductId}
+          />
         ))}
       </div>
-    </section>
+    </div>
+  );
+}
+
+function HuntNextCard({
+  item,
+  onWant,
+  pendingProductId,
+}: {
+  item: HomeHuntNextPick;
+  onWant: (productId: string) => void;
+  pendingProductId?: string | null;
+}) {
+  return (
+    <div className="min-w-[215px] max-w-[215px] shrink-0 snap-start">
+      <Card className="relative min-h-[246px] overflow-hidden border-[rgba(184,137,88,0.12)] bg-[linear-gradient(180deg,#25170f_0%,#1b130e_100%)] px-4 py-4">
+        {item.rarityLabel ? (
+          <span className="absolute left-3 top-3 -rotate-[8deg] rounded-[8px] border border-[rgba(211,168,107,0.55)] px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[#f0cf95]">
+            {item.rarityLabel}
+          </span>
+        ) : null}
+        <div className="mt-8 h-[108px] overflow-hidden rounded-[18px] border border-[rgba(184,137,88,0.18)] bg-[radial-gradient(circle_at_top,#6b2818_0%,#26160f_60%,#1a130e_100%)]">
+          {item.image_url ? (
+            // biome-ignore lint/performance/noImgElement: product images are public catalog URLs
+            <img
+              src={item.image_url}
+              alt={item.name}
+              className="h-full w-full object-cover nccc-photo nccc-photo--sepia"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-[rgba(240,207,149,0.18)]">
+              <span className="text-[12px] uppercase tracking-[0.18em]">
+                {item.product_type === "bourbon" ? "Bottle" : "Cigar"}
+              </span>
+            </div>
+          )}
+        </div>
+        <Link href={`/products/${item.product_id}`} className="mt-4 block">
+          <p className="text-[1.45rem] leading-tight text-[#f5e9d5]">{item.name}</p>
+          {item.brand ? (
+            <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-foreground-subtle">
+              {item.brand}
+            </p>
+          ) : null}
+        </Link>
+        {item.rationale ? (
+          <Voice className="block text-sm text-[#d7c2ab] mt-2 italic line-clamp-2">
+            &quot;{item.rationale}&quot;
+          </Voice>
+        ) : null}
+        <div className="mt-4">
+          <Button
+            variant="secondary"
+            className="h-10 rounded-full border-[rgba(184,137,88,0.28)] bg-transparent px-4 text-[12px] uppercase tracking-[0.18em] text-[#f0cf95] hover:bg-[rgba(255,214,125,0.06)]"
+            onClick={() => onWant(item.product_id)}
+            disabled={pendingProductId === item.product_id}
+          >
+            {pendingProductId === item.product_id ? "Saving..." : "+ Want"}
+          </Button>
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -332,7 +415,8 @@ export function CellarEmptyState({ href }: CellarEmptyStateProps) {
     <Card className="mb-5 flex flex-col items-center text-center gap-4 py-6">
       <Winston variant="bust" size={84} className="rounded-full" />
       <Voice className="block max-w-[24rem]">
-        Nothing to read yet. Snap a bottle or cigar, or set your preferences and I&apos;ll start the chase.
+        Nothing to read yet. Snap a bottle or cigar, or set your preferences and I&apos;ll start the
+        chase.
       </Voice>
       <Link
         href={href}
@@ -348,13 +432,7 @@ export function CellarEmptyState({ href }: CellarEmptyStateProps) {
   );
 }
 
-function ProductCard({
-  pick,
-  eyebrow,
-}: {
-  pick: HomeTryNextPick;
-  eyebrow: string;
-}) {
+function ProductCard({ pick, eyebrow }: { pick: HomeTryNextPick; eyebrow: string }) {
   return (
     <Link
       href={`/products/${pick.product_id}`}
@@ -383,7 +461,9 @@ function ProductCard({
         <p className="text-[11px] uppercase tracking-[0.18em] text-foreground-subtle">{eyebrow}</p>
         <p className="text-[1.55rem] leading-tight text-[#f4e7d2]">{pick.name}</p>
         {pick.brand ? (
-          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-foreground-subtle">{pick.brand}</p>
+          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-foreground-subtle">
+            {pick.brand}
+          </p>
         ) : null}
         {pick.rationale ? (
           <Voice className="mt-2 block text-[15px] leading-snug text-[#d6c0aa] italic line-clamp-2">

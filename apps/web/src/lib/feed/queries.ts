@@ -254,3 +254,18 @@ export async function signImagePaths(
   }
   return map;
 }
+
+/** Signed URLs with a width transform for catalog grid thumbnails. */
+export async function signThumbnailPaths(
+  supabase: SupabaseClient,
+  paths: (string | null)[],
+  width = 400,
+  ttlSeconds = 3600,
+): Promise<Map<string, string>> {
+  const map = await signImagePaths(supabase, paths, ttlSeconds);
+  for (const [path, url] of map) {
+    const separator = url.includes("?") ? "&" : "?";
+    map.set(path, `${url}${separator}width=${width}&quality=75`);
+  }
+  return map;
+}

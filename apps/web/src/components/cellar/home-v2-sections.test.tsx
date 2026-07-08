@@ -4,7 +4,8 @@ import type { HomeHuntNextPick, HomeTryNextPick } from "@/lib/cellar/home-v2";
 import { HuntNextRail, TonightsPickCard, TryNextSection } from "./home-v2-sections";
 
 function tryNextPick(
-  overrides: Partial<HomeTryNextPick> & Pick<HomeTryNextPick, "product_id" | "name" | "product_type">,
+  overrides: Partial<HomeTryNextPick> &
+    Pick<HomeTryNextPick, "product_id" | "name" | "product_type">,
 ): HomeTryNextPick {
   const { product_id, name, product_type, ...rest } = overrides;
   return {
@@ -38,6 +39,7 @@ function huntNextPick(
     image_url: null,
     tier: null,
     rarityLabel: null,
+    lane: "forYou",
     ...rest,
   };
 }
@@ -90,7 +92,7 @@ describe("TryNextSection", () => {
     );
 
     expect(screen.getByText("Try next")).toBeInTheDocument();
-    expect(screen.getByText("From your humidor")).toBeInTheDocument();
+    expect(screen.getByText("From your shelf")).toBeInTheDocument();
     expect(screen.getByText("Weller 12")).toBeInTheDocument();
     expect(screen.getByText("Blanton's")).toBeInTheDocument();
     expect(screen.getByText("Padron 1964")).toBeInTheDocument();

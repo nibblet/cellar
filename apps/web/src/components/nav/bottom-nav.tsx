@@ -1,9 +1,9 @@
 "use client";
 
-import { BookOpen, Boxes, Plus, Sparkles, User } from "lucide-react";
+import { Archive, BookOpen, Layers, Plus, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { APP_HOME_PATH, CELLAR_PATH } from "@/lib/navigation/paths";
+import { APP_HOME_PATH, LOG_PATH, SHELF_PATH, TONIGHT_PATH } from "@/lib/navigation/paths";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -15,28 +15,28 @@ type NavItem = {
 
 const SIDE_ITEMS: NavItem[] = [
   {
-    href: CELLAR_PATH,
+    href: TONIGHT_PATH,
     label: "Cellar",
     icon: BookOpen,
-    match: (p) => p === CELLAR_PATH,
+    match: (p) => p === TONIGHT_PATH,
   },
   {
-    href: "/catalog",
-    label: "Catalog",
-    icon: Boxes,
-    match: (p) => p.startsWith("/catalog"),
+    href: SHELF_PATH,
+    label: "Shelf",
+    icon: Layers,
+    match: (p) => p.startsWith(SHELF_PATH),
   },
   {
-    href: "/pairings",
-    label: "Pairings",
-    icon: Sparkles,
-    match: (p) => p.startsWith("/pairings"),
+    href: LOG_PATH,
+    label: "Log",
+    icon: Archive,
+    match: (p) => p.startsWith(LOG_PATH),
   },
   {
     href: APP_HOME_PATH,
     label: "You",
     icon: User,
-    match: (p) => p.startsWith("/you"),
+    match: (p) => p.startsWith("/you") || p.startsWith("/settings"),
   },
 ];
 
