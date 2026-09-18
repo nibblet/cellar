@@ -1,15 +1,15 @@
 # Breaking Bourbon → catalog: diff report
 
-- Review pages parsed: **2405**; in scope (American whiskey): 2201; excluded: 204
-- Collapsed to **1857** expressions
+- Review pages parsed: **2405**; in scope (American whiskey): 2199; excluded: 206
+- Collapsed to **1855** expressions
 - Matched to existing products: **158** — 193 fills, 226 replacements, 7 blocked (verified rows)
 - Proposed matches needing a yes/no: **95**
-- New expressions: **1604** (76 core-range from makers already on the shelf → auto-included; rest hidden drafts)
-- New makers: 160; family guesses to check: 610
+- New expressions: **1602** (75 core-range from makers already on the shelf → auto-included; rest hidden drafts)
+- New makers: 160; family guesses to check: 609
 
 ## Auto-included new expressions (core range, maker already on the shelf)
 
-Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel, Benchmark Small Batch, Benchmark Top Floor, Blanton's Gold Edition, Blanton's Special Reserve, Blanton's Straight From the Barrel, Eagle Rare 12 Year, Early Times Bottled in Bond, Elijah Craig 12 Year, Evan Williams 12 Year Old, Evan Williams 1783 Small Batch, Evan Williams 23 Years Old, Evan Williams Bottled in Bond, Evan Williams Master Blend, Evan Williams “Black Label”, Ezra B 12 Year Single Barrel, Fighting Cock, Four Roses Super Premium, Four Roses Yellow Label, Heaven Hill Select Stock Cognac Finished, J.T.S. Brown Bottled in Bond, Jack Daniel's Single Barrel Barrel Proof Rye, Jack Daniel's Single Barrel Heritage Barrel, Jack Daniel's Single Barrel Select, Jim Beam Black XA Extra Aged, Jim Beam Double Oak, Jim Beam White Label, Kentucky Gentleman, Knob Creek 10 Year Rye, Knob Creek Rye, Knob Creek Single Barrel, Knob Creek Small Batch, Knob Creek Small Batch 9 Year, Maker's Mark 46, Mellow Corn, Old Bardstown Estate Bottled, Old Crow, Old Grand-Dad, Old Grand-Dad Bonded, Old Overholt Bottled in Bond Rye, Old Overholt Rye, Old Weller Antique, Quality House Old Style, Rittenhouse Bottled in Bond Rye, Rock Hill Farms Single Barrel, Rock Town Column Still Collection Small Batch, Rock Town Column Still Collection Toasted French Oak Barrel Finish, Russell's Reserve 6 Year Rye, Russell's Reserve Single Barrel Rye, Sazerac Rye, Starlight Carl T. Huber's Double Oaked, Starlight Carl T. Huber's Single Barrel Bourbon Finished in Honey Barrels, Starlight Carl T. Huber's Single Barrel Rye Finished in Honey Barrels, Starlight Carl T. Huber's Small Batch, Starlight Distillery Bottled in Bond, Starlight Distillery Bottled in Bond Rye, Starlight Distillery Carl. T. Huber's Bourbon Finished in Madeira Casks, Starlight Huber's Rickhouse Select Single Barrel, Starlight Old Rickhouse Double Oaked Rye, Starlight Old Rickhouse Rye, Starlight Old Rickhouse Rye Whiskey Finished in Sherry Barrels, Starlight Single Barrel Rye Finished in Triple Sec Barrels, Suntory World Whisky Ao, Ten High Sour Mash, The Mattie Gladden Bottled in Bond, Town Branch 6 Year Wheated, Town Branch 7 Year Kentucky Single Malt, Weller Special Reserve, Wild Turkey, Wilderness Trail High Rye Bourbon Bottled in Bond, Willett Family Estate Small Batch 4 Year, Woodford Reserve Distiller's Select Rye, Woodinville Finished in Port Casks
+Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel, Benchmark Small Batch, Benchmark Top Floor, Blanton's Gold Edition, Blanton's Special Reserve, Blanton's Straight From the Barrel, Eagle Rare 12 Year, Early Times Bottled in Bond, Elijah Craig 12 Year, Evan Williams 12 Year Old, Evan Williams 1783 Small Batch, Evan Williams 23 Years Old, Evan Williams Bottled in Bond, Evan Williams Master Blend, Evan Williams “Black Label”, Ezra B 12 Year Single Barrel, Fighting Cock, Four Roses Super Premium, Four Roses Yellow Label, Heaven Hill Select Stock Cognac Finished, J.T.S. Brown Bottled in Bond, Jack Daniel's Single Barrel Barrel Proof Rye, Jack Daniel's Single Barrel Heritage Barrel, Jack Daniel's Single Barrel Select, Jim Beam Black XA Extra Aged, Jim Beam Double Oak, Jim Beam White Label, Kentucky Gentleman, Knob Creek 10 Year Rye, Knob Creek Rye, Knob Creek Single Barrel, Knob Creek Small Batch, Knob Creek Small Batch 9 Year, Maker's Mark 46, Mellow Corn, Old Bardstown Estate Bottled, Old Crow, Old Grand-Dad, Old Grand-Dad Bonded, Old Overholt Bottled in Bond Rye, Old Overholt Rye, Old Weller Antique, Quality House Old Style, Rittenhouse Bottled in Bond Rye, Rock Hill Farms Single Barrel, Rock Town Column Still Collection Small Batch, Rock Town Column Still Collection Toasted French Oak Barrel Finish, Russell's Reserve 6 Year Rye, Russell's Reserve Single Barrel Rye, Sazerac Rye, Starlight Carl T. Huber's Double Oaked, Starlight Carl T. Huber's Single Barrel Bourbon Finished in Honey Barrels, Starlight Carl T. Huber's Single Barrel Rye Finished in Honey Barrels, Starlight Carl T. Huber's Small Batch, Starlight Distillery Bottled in Bond, Starlight Distillery Bottled in Bond Rye, Starlight Distillery Carl. T. Huber's Bourbon Finished in Madeira Casks, Starlight Huber's Rickhouse Select Single Barrel, Starlight Old Rickhouse Double Oaked Rye, Starlight Old Rickhouse Rye, Starlight Old Rickhouse Rye Whiskey Finished in Sherry Barrels, Starlight Single Barrel Rye Finished in Triple Sec Barrels, Ten High Sour Mash, The Mattie Gladden Bottled in Bond, Town Branch 6 Year Wheated, Town Branch 7 Year Kentucky Single Malt, Weller Special Reserve, Wild Turkey, Wilderness Trail High Rye Bourbon Bottled in Bond, Willett Family Estate Small Batch 4 Year, Woodford Reserve Distiller's Select Rye, Woodinville Finished in Port Casks
 
 ## Replacements on non-verified rows (BB wins), by field
 
@@ -438,7 +438,6 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Wild Turkey** (8): 101 8 Year Old, Austin Nichols Archives: Gold Foil Edition, ★ (flagship), Master's Keep Cornerstone Rye, Master's Keep Decades, Master's Keep Revival, Master's Keep Unforgotten, Rare Breed Rye
 - **Woodinville** (8): 100% Rye Aged 8 Years, 6 Year, Sauternes Finish, Founder's Find, Port Finished, Aged 9 Years, ★ Finished in Port Casks, Aged 8 Years
 - **15 Stars** (7): Artisan Collection, First West Fine Aged Rye, Founder's Reserve Fine Aged Rye, Platinum Fine Aged, Three Ports Fine-Aged, Timeless Reserve, Vino De Naranja
-- **Balcones** (7): “1” Texas Single Malt, Lineage Single Malt, Mirador Single Malt, Texas Pot Still, Texas Rye, Tres Hombres, True Blue Cask Strength
 - **Basil Hayden** (7): Cognac Cask Reserve, Golden Rye, Malted Rye, Subtle Smoke, 10 Year, 10 Year Rye, Two by Two
 - **Blue Note** (7): Honey Bourbon Cask, Honey Cask Rye, Honey Rye Cask, Las Notas, Rye, Single Barrel Rye, Wheated
 - **Broken Barrel** (7): Americana, California Oak, Cask Strength, Heresy Rye, Honey Smoke Reserva American, Small Batch, x Los Angeles Distillery Collaboration
@@ -452,6 +451,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Thomas S. Moore** (7): Finished in Cabernet Sauvignon Casks, Finished in Chardonnay Casks, Finished in Port Casks, Finished in Cognac Casks, Finished in Madeira Casks, Finished in Merlot Casks, Finished in Sherry Casks
 - **WhistlePig** (7): CampStock Wheat Wheat Whiskey, PiggyBack Legends Series: Big Papi Barrel Rye, PiggyBack Rye, RoadStock Rye, Snout-to-Tail Bourbon - Aged 10 Years, The Boss Hog The Spirit of Mortimer Rye, The Boss Hog XIII: The Golden Pharaoh Rye
 - **291** (6): All Rye 100% Rye Malt Colorado, Bad Guy Colorado, E Colorado Whiskey “The American Single Malt”, HR, M Colorado, XII Colorado
+- **Balcones** (6): “1” Texas Single Malt, Lineage Single Malt, Mirador Single Malt, Texas Pot Still, Texas Rye, Tres Hombres
 - **Benchmark** (6): ★ Bonded, ★ Full Proof, Old No. 8 Brand, ★ Single Barrel, ★ Small Batch, ★ Top Floor
 - **Evan Williams** (6): ★ 12 Year Old, ★ 1783 Small Batch, ★ 23 Years Old, ★ “Black Label”, ★ Bottled in Bond, ★ Master Blend
 - **Frank August** (6): Case Study: 01 Mizunara Japanese Oak, Case Study: 05 Wheated Reserve, Case Study: 06 Legacy Reserve, Single Barrel, Small Batch, Small Batch Rye
@@ -565,7 +565,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Wheeler's Raid** (3): Original Blend, Original Blend Rye 04, No. 3 French Oak Finish
 - **Whiskey Del Bac** (3): Frontera Single Malt, Frontera, Normandie Single Malt
 - **Whiskey Row** (3): Bottled in Bond, Triple Wood, Cask Strength
-- **2bar** (2): Bottled in Bond, Single Barrel
+- **2Bar** (2): Bottled in Bond, Single Barrel
 - **Adventurous Stills** (2): Peralta, Quinoa
 - **Augusta** (2): Buckner's Single Barrel 10 Year, Old Route 8 Single Barrel 8 Year
 - **Augusta Distillery** (2): Small Batch, Wheated Single Barrel
@@ -887,7 +887,6 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Stave &** (1): Barrel Single Barrel - Barrel Strength
 - **Stillhouse** (1): Original
 - **Stillman's Sonder** (1): 10 Year
-- **Suntory** (1): ★ World Whisky Ao
 - **Taylor Garrett** (1): (flagship)
 - **Ten High** (1): ★ Sour Mash
 - **The Bond** (1): Bottled in Bond
@@ -933,7 +932,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - Mile High Spirits — owner: Mile High Spirits (18)
 - Wyoming Whiskey — owner: Wyoming Whiskey (14)
 - Copperworks Distilling Co. — owner: Copperworks Distilling Co. (13)
-- Balcones Distilling — owner: Balcones Distilling (10)
+- Balcones Distilling — owner: Balcones Distilling (9)
 - Still Austin Whiskey Co. — owner: Lost Lantern (9)
 - New Holland Brewing Company — owner: New Holland Brewing Company (7)
 - Bendt Distilling Co. — owner: Bendt Distilling Co. (7)
@@ -1076,5 +1075,5 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 ## Excluded
 
 - flavored / not whiskey: 166
-- not American: 31
+- not American: 33
 - no classification: 7

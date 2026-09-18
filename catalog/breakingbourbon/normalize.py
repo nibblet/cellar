@@ -43,6 +43,8 @@ def in_scope(rec) -> tuple[bool, str]:
         return False, "no classification"
     if NON_AMERICAN.search(re.sub(r"finished? in .*$", "", cls, flags=re.I)) or ORIGIN_HINT.search(dist):
         return False, "not American"
+    if re.search(r"\bwhisky\b", cls, re.I) or re.search(r"\bworld whisky\b", rec["title"], re.I):
+        return False, "not American"
     if FLAVORED.search(cls) or FLAVORED.search(rec["title"]):
         return False, "flavored / not whiskey"
     return True, ""
