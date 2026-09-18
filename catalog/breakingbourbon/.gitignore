@@ -1,0 +1,4 @@
+raw/
+crawl.log
+__pycache__/
+normalized.json
