@@ -129,6 +129,7 @@ def split_title(title: str, families: list[str], company: str | None = None):
     rest = re.sub(r"^'s\b\s*", "", rest)
     rest = re.sub(r"^,?\s*jr\.?\s*", "", rest, flags=re.I)
     family = FAMILY_ALIASES.get(family, family)
+    if family == "Jack Daniels": family = "Jack Daniel's"
     stripped = GENERIC_SUFFIX.sub("", rest).strip(" ,-–—")
     # "Birthday Bourbon", "Cowboy Bourbon": a one-word expression keeps its noun.
     if len(stripped.split()) == 1 and re.search(r"\b(bourbon|whiskey)\b", rest, re.I):
@@ -269,6 +270,8 @@ def diff_for(p, c):
         diff.append({"field": "expression", "catalog": cur_expr, "bb": c["expression"], "action": "fill" if not cur_expr else "replace"})
     if key(c["name"]) != key(p["name"]) and not p["verified"]:
         diff.append({"field": "name", "catalog": p["name"], "bb": c["name"], "action": "replace"})
+        if not c["expression"] and cur_expr:
+            diff.append({"field": "expression", "catalog": cur_expr, "bb": None, "action": "replace"})
     return diff
 
 def maker_key(name: str | None) -> str:

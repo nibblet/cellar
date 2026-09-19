@@ -85,7 +85,7 @@ def main():
     n_upd = 0
     for m in o["matched"]:
         if m["verified"]: continue
-        sets = [f"{d['field']} = {q(d['bb'], d['field'])}" for d in m["diff"] if d["action"] in ("fill", "replace")]
+        sets = [f"{d['field']} = {q(d['bb'], d['field'])}" for d in m["diff"] if d["action"] in ("fill", "replace") and (d["bb"] is not None or d["field"] == "expression")]
         if any(d["field"] == "expression_type" for d in m["diff"]) and "expression_type" in m["candidate"]["facts"]:
             pass
         if any(d["field"] == "age_years" for d in m["diff"] if d["action"] != "same"):
