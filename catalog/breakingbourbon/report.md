@@ -2,8 +2,8 @@
 
 - Review pages parsed: **2405**; in scope (American whiskey): 2199; excluded: 206
 - Collapsed to **1848** expressions
-- Matched to existing products: **161** — 227 fills, 275 replacements, 7 blocked (verified rows)
-- Proposed matches needing a yes/no: **91**
+- Matched to existing products: **162** — 228 fills, 277 replacements, 7 blocked (verified rows)
+- Proposed matches needing a yes/no: **90**
 - New expressions: **1596** (75 core-range from makers already on the shelf → auto-included; rest hidden drafts)
 - New makers: 160; family guesses to check: 609
 
@@ -13,7 +13,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 
 ## Replacements on non-verified rows (BB wins), by field
 
-### proof (64)
+### proof (65)
 
 | Product | Catalog | Breaking Bourbon | Page |
 |---|---|---|---|
@@ -27,6 +27,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 | Barrell Gray Label | 100.6 | 110.12 | [Barrell Craft Spirits Gray Label Bourbon (2024)](https://breakingbourbon.com/review/barrell-craft-spirits-gray-label-bourbon-2024) |
 | Barrell Vantage | 114.4 | 114.44 | [Barrell Vantage](https://breakingbourbon.com/review/barrell-vantage) |
 | Bib & Tucker | 99.0 | 92.0 | [Bib & Tucker Bourbon](https://breakingbourbon.com/review/bib-tucker-bourbon) |
+| Blade and Bow | 92.0 | 91.0 | [Blade & Bow Bourbon](https://breakingbourbon.com/review/blade-bow-bourbon) |
 | Booker's Bourbon | 124.4 | 128.5 | [Booker's Bourbon](https://breakingbourbon.com/review/bookers-bourbon) |
 | Bulleit Barrel Strength | 119.4 | 121.8 | [Bulleit Bourbon Barrel Strength Bourbon (Batch 8)](https://breakingbourbon.com/review/bulleit-bourbon-barrel-strength-bourbon-batch-8) |
 | Restoration Rye | 120.5 | 105.0 | [Castle & Key Restoration Rye 2021 Batch 3](https://breakingbourbon.com/review/castle-key-restoration-rye-2021-batch-3) |
@@ -265,6 +266,25 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 | Sweetens Cove | 12.0 | 13.0 | [Sweetens Cove Bourbon](https://breakingbourbon.com/review/sweetens-cove-bourbon) |
 | Wild Turkey Master's Keep | 10.0 | 17.0 | [Wild Turkey Master's Keep Bourbon](https://breakingbourbon.com/review/wild-turkey-masters-keep-bourbon) |
 
+### producer_id (14)
+
+| Product | Catalog | Breaking Bourbon | Page |
+|---|---|---|---|
+| Barterhouse | 40bb89ba-a912-4e00-9e16-0f82de788dab | fbcce90d-8935-4561-8067-daa58530c081 | [Barterhouse](https://breakingbourbon.com/review/barterhouse) |
+| Blade and Bow | 941c24f2-0ded-4921-8e71-5173e2a7a101 | acd69a9c-a047-472a-9018-bae403ef553d | [Blade & Bow Bourbon](https://breakingbourbon.com/review/blade-bow-bourbon) |
+| Crossroads | 2778b4e2-1fb0-4e18-982f-7ab1e2bce63a | c5141afb-ab56-4510-ad35-d9cb3e5ef1f5 | [Blue Note Crossroads](https://breakingbourbon.com/review/blue-note-crossroads) |
+| Hardin's Creek Jacob s Well | 58b445f7-aa68-4536-a369-1c70d1b4a2be | 4890088a-d33f-4212-b5a0-74326430f362 | [Hardin's Creek: Jacob’s Well](https://breakingbourbon.com/review/hardins-creek-jacobs-well) |
+| Gentleman Jack | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel’s Gentleman Jack Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-gentleman-jack-tennessee-whiskey) |
+| Jack Daniel's Single Barrel Barrel Proof | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel's Single Barrel Barrel Proof](https://breakingbourbon.com/review/jack-daniels-single-barrel-barrel-proof) |
+| Jack Daniel's | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel’s Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-tennessee-whiskey) |
+| O.K.I. Single Barrel Straight Bourbon | 927e2231-8384-4f4b-b5bc-8ad8f9282fc2 | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [O.K.I. Single Barrel Bourbon Barrel #4](https://breakingbourbon.com/review/o-k-i-single-barrel-bourbon-barrel-4) |
+| Old Fitzgerald Bottled-In-Bond | 58b445f7-aa68-4536-a369-1c70d1b4a2be | e041a023-e5dd-41c5-8a25-ef93d27831c0 | [Old Fitzgerald Bottled in Bond Bourbon](https://breakingbourbon.com/review/old-fitzgerald-bottled-in-bond-bourbon) |
+| Statesman | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | d188a105-664f-4f94-82a4-2fa86c60f2a4 | [Old Forester Statesman Bourbon](https://breakingbourbon.com/review/old-forester-statesman-bourbon) |
+| Penelope Architect | f063d6dd-bc18-4e6f-aab4-3c3225ca54cb | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Penelope Architect Straight Bourbon](https://breakingbourbon.com/review/penelope-architect-straight-bourbon) |
+| Pinhook Bohemian | c97e82de-a08b-41c5-80eb-b5e95075f50e | 146cd43e-5081-4551-b13c-43fac2399318 | [Pinhook Bohemian Bourbon](https://breakingbourbon.com/review/pinhook-bohemian-bourbon) |
+| Smoke Wagon Uncut Unfiltered | ca9fd6ba-c294-4a22-bca4-3a151559bdac | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Smoke Wagon Uncut Unfiltered Straight Bourbon (Batch 29)](https://breakingbourbon.com/review/smoke-wagon-uncut-unfiltered-straight-bourbon-batch-29) |
+| Old Scout Bourbon | 998e8f0b-4587-45e0-acd9-6202eac3b58f | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Smooth Ambler Old Scout Bourbon (NAS - Batch 32)](https://breakingbourbon.com/review/smooth-ambler-old-scout-bourbon-nas-batch-32) |
+
 ### mash_style (13)
 
 | Product | Catalog | Breaking Bourbon | Page |
@@ -282,24 +302,6 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 | Contradiction Bourbon | high_rye | four_grain | [Smooth Ambler Contradiction](https://breakingbourbon.com/review/smooth-ambler-contradiction) |
 | Stellum Bourbon | traditional | high_rye | [Stellum Bourbon](https://breakingbourbon.com/review/stellum-bourbon) |
 | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | wheated | four_grain | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
-
-### producer_id (13)
-
-| Product | Catalog | Breaking Bourbon | Page |
-|---|---|---|---|
-| Barterhouse | 40bb89ba-a912-4e00-9e16-0f82de788dab | fbcce90d-8935-4561-8067-daa58530c081 | [Barterhouse](https://breakingbourbon.com/review/barterhouse) |
-| Crossroads | 2778b4e2-1fb0-4e18-982f-7ab1e2bce63a | c5141afb-ab56-4510-ad35-d9cb3e5ef1f5 | [Blue Note Crossroads](https://breakingbourbon.com/review/blue-note-crossroads) |
-| Hardin's Creek Jacob s Well | 58b445f7-aa68-4536-a369-1c70d1b4a2be | 4890088a-d33f-4212-b5a0-74326430f362 | [Hardin's Creek: Jacob’s Well](https://breakingbourbon.com/review/hardins-creek-jacobs-well) |
-| Gentleman Jack | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel’s Gentleman Jack Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-gentleman-jack-tennessee-whiskey) |
-| Jack Daniel's Single Barrel Barrel Proof | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel's Single Barrel Barrel Proof](https://breakingbourbon.com/review/jack-daniels-single-barrel-barrel-proof) |
-| Jack Daniel's | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | cc780290-0e4c-413e-a92d-4893327810f5 | [Jack Daniel’s Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-tennessee-whiskey) |
-| O.K.I. Single Barrel Straight Bourbon | 927e2231-8384-4f4b-b5bc-8ad8f9282fc2 | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [O.K.I. Single Barrel Bourbon Barrel #4](https://breakingbourbon.com/review/o-k-i-single-barrel-bourbon-barrel-4) |
-| Old Fitzgerald Bottled-In-Bond | 58b445f7-aa68-4536-a369-1c70d1b4a2be | e041a023-e5dd-41c5-8a25-ef93d27831c0 | [Old Fitzgerald Bottled in Bond Bourbon](https://breakingbourbon.com/review/old-fitzgerald-bottled-in-bond-bourbon) |
-| Statesman | 0edf3b8b-d01e-4662-a4af-224154cdbd18 | d188a105-664f-4f94-82a4-2fa86c60f2a4 | [Old Forester Statesman Bourbon](https://breakingbourbon.com/review/old-forester-statesman-bourbon) |
-| Penelope Architect | f063d6dd-bc18-4e6f-aab4-3c3225ca54cb | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Penelope Architect Straight Bourbon](https://breakingbourbon.com/review/penelope-architect-straight-bourbon) |
-| Pinhook Bohemian | c97e82de-a08b-41c5-80eb-b5e95075f50e | 146cd43e-5081-4551-b13c-43fac2399318 | [Pinhook Bohemian Bourbon](https://breakingbourbon.com/review/pinhook-bohemian-bourbon) |
-| Smoke Wagon Uncut Unfiltered | ca9fd6ba-c294-4a22-bca4-3a151559bdac | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Smoke Wagon Uncut Unfiltered Straight Bourbon (Batch 29)](https://breakingbourbon.com/review/smoke-wagon-uncut-unfiltered-straight-bourbon-batch-29) |
-| Old Scout Bourbon | 998e8f0b-4587-45e0-acd9-6202eac3b58f | b8f80dd7-68bd-4e59-af8b-b6d7a25ba1fd | [Smooth Ambler Old Scout Bourbon (NAS - Batch 32)](https://breakingbourbon.com/review/smooth-ambler-old-scout-bourbon-nas-batch-32) |
 
 ### expression_type (12)
 
@@ -370,7 +372,6 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 | [Basil Hayden 10 Year](https://breakingbourbon.com/review/basil-hayden-aged-10-years-bourbon) | Basil Hayden | existing review link, but names disagree |
 | [Bernheim Original Wheat Wheat Whiskey](https://breakingbourbon.com/review/bernheim-original-wheat-whiskey) | Bernheim Straight Wheat Whiskey | 0.4 |
 | [Black Button Cask Strength Four Grain](https://breakingbourbon.com/review/black-button-cask-strength-four-grain-bourbon-batch-4) | Black Button Distilling | 0.235 |
-| [Blade and Bow ourbon](https://breakingbourbon.com/review/blade-bow-bourbon) | Blade and Bow | 0.542 |
 | [Blanton's Original Single Barrel](https://breakingbourbon.com/review/blantons-original-single-barrel-bourbon-2021) | Blanton's Single Barrel | product already matched by another candidate |
 | [Blue Note Special Reserve Cask Finish Series](https://breakingbourbon.com/review/blue-note-special-reserve-cask-finish-series) | Blue Note Special Reserve | 0.612 |
 | [Blue Run Reflection 1](https://breakingbourbon.com/review/blue-run-reflection-1-straight-bourbon) | Blue Run Flight Series | 0.32 |
@@ -590,7 +591,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **High N' Wicked** (3): Cask Strength, Cask Strength Rye, No. 8 The Jury Cask Strength
 - **Hinterhaus** (3): American Single Malt Discovery, Calaveras Finish, Single Malt Discovery
 - **Kooper Family** (3): Runaway Rye, (flagship), Single Barrel
-- **Leopold Bros.** (3): 8 Year Cask Strength Three Chamber Finished, Three Chamber Rye, Three Chambers Rye Holiday Edition
+- **Leopold Bros.** (3): 8 Year Cask Strength Three Chamber Finished, . Three Chamber Rye, . Three Chambers Rye Holiday Edition
 - **MB Roland** (3): (flagship), Dark Fired, Rye
 - **Minden Mill** (3): American Single Malt, (flagship), Rye
 - **Nashville Barrel Company** (3): Small Batch Rye, Single Barrel, The Compromise
@@ -612,9 +613,9 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Tincup** (3): 10 Year American, American Whiskey, Rye
 - **Traverse City** (3): Co. Cab Franc Barrel Finish Rye, Co. Port Barrel Finish, Co. Sherry Barrel Finish
 - **Unbendt Unblended** (3): Bottled in Bond, Bottled-In-Bond Rye, Straight Wheat Whiskey Bottled-in-Bond
-- **Very Olde St.** (3): Nick Ancient Cask Rye: Faith + Conviction, Nick Immaculata Ancient Cask, Nick Winter Maple
+- **Very Olde St.** (3): . Nick Ancient Cask Rye: Faith + Conviction, . Nick Immaculata Ancient Cask, . Nick Winter Maple
 - **Village** (3): Bonfire, Bonfire, (flagship)
-- **Virginia Distillery Co.** (3): Blue Ridge American Single Malt, The Brewer's Coalition - Goose Island Stout Finish Single Malt, The Brewer's Collection - Hardywood Gingerbread Stout Cask Finish Single Malt
+- **Virginia Distillery Co.** (3): . Blue Ridge American Single Malt, . The Brewer's Coalition - Goose Island Stout Finish Single Malt, . The Brewer's Collection - Hardywood Gingerbread Stout Cask Finish Single Malt
 - **Walleye Run** (3): 5 Year, Single Malt, Very Small Batch : Cigar Batch Rye
 - **Wheeler's Raid** (3): Original Blend, Original Blend Rye 04, No. 3 French Oak Finish
 - **Whiskey Del Bac** (3): Frontera Single Malt, Frontera, Normandie Single Malt
@@ -666,7 +667,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Nelson Brothers** (2): Classic Bourbon, Reserve Bourbon
 - **Never Say Die** (2): Rye, Small Batch
 - **New England Barrel Company** (2): Single Barrel Rye (Gordan's Fine Wine Select), Small Batch Select
-- **O.K.I.** (2): 10 Year, Reserve
+- **O.K.I.** (2): . 10 Year, . Reserve
 - **Oak & Eden** (2): Reserve Series: Bourbon & Amburana, Wheat & Honey
 - **Old 55** (2): 100% Sweet Corn Bourbon Bottled in Bond, Single Barrel Bourbon Bottled in Bond
 - **Old Hickory** (2): Black Label, Hermitage Reserve 10 Year Barrel Proof
@@ -825,7 +826,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Good Fucking** (1): (flagship)
 - **Good Trouble** (1): (flagship)
 - **Goodwood** (1): Walnut Brown Ale Barrel Finish
-- **Henry A. Sipes'** (1): Smoked Barrel
+- **Henry A. Sipes'** (1): ' Smoked Barrel
 - **High Bank** (1): Small Batch
 - **High n' Wicked** (1): (flagship)
 - **High ‘N Wicked** (1): Warlander
@@ -924,7 +925,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Sentinel of** (1): the Desert
 - **Sentinel** (1): Finished in Mesquited Casks Rye
 - **Shady Mile High** (1): (flagship)
-- **Shāng‍ East +** (1): West
+- **Shāng‍ East +** (1): + West
 - **Shenk's** (1): Homestead Sour Mash
 - **Shiner Texas Legend** (1): Rye
 - **Shucked Bourbon** (1): (flagship)

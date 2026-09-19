@@ -117,7 +117,15 @@ def split_title(title: str, families: list[str], company: str | None = None):
         family = " ".join(words[:take])
         guessed = True
 
-    rest = t[len(family):].strip(" ,-–—:") if norm(t).startswith(norm(family)) else t
+    # The family matched on normalized text; find the raw prefix that normalizes to it
+    # ("Blade & Bow" vs "Blade and Bow", "E.H. Taylor" vs "e h taylor") before slicing.
+    rest = t
+    if norm(t).startswith(norm(family)):
+        target = norm(family)
+        for i in range(1, len(t) + 1):
+            if norm(t[:i]) == target and (i == len(t) or not t[i].isalnum()):
+                rest = t[i:].strip(" ,-–—:")
+                break
     rest = re.sub(r"^'s\b\s*", "", rest)
     rest = re.sub(r"^,?\s*jr\.?\s*", "", rest, flags=re.I)
     family = FAMILY_ALIASES.get(family, family)
