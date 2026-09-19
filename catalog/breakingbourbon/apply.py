@@ -102,9 +102,12 @@ def main():
     # new rows: batched VALUES, guarded by the unique index's key
     L += ["", "-- New expressions (drafts; core range from makers already on the shelf is included)"]
     COLS = ["name", "brand_family", "expression", "producer", "producer_id", *FACT_FIELDS, "nas", "catalog_included", "aliases", "source_url"]
-    rows = []
+    rows, seen = [], set()
     for c in o["new"]:
         f = c["facts"]
+        k = ((c["family"] or "").lower(), (c["expression"] or "").lower())
+        if k in seen: continue          # the unique index would reject a second row with this key
+        seen.add(k)
         rows.append("(" + ", ".join([
             q(c["name"]), q(c["family"]), q(c["expression"]),
             q(f["maker_name"] or (None if f["sourced"] else f["distillery"])), maker_sql(f),
