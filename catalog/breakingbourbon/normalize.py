@@ -70,7 +70,7 @@ RELEASE_PATTERNS = [
     r"\((?:[^)]*\b(?:batch|barrel|lot|release|edition|20\d\d|199\d|chapter|volume|no\.)\b[^)]*)\)",
     r"(?<!small )\bbatch\s+#?(?=[a-z]*\d)[a-z0-9-]+(?!\s*-?\s*(?:year|yr)s?\b)",
     r"\b(?:spring|summer|fall|winter|autumn)\s+(?:199\d|20\d\d)\b",
-    r"\b(?:199\d|20\d\d)(?:\s+(?:release|edition|limited edition|harvest|vintage))?\b",   # 1870/1910/1920 are names
+    r"\b(?:199\d|20\d\d)(?:\s+(?:release|edition|harvest|vintage))?\b",   # 1870/1910/1920 are names; "Limited Edition" stays
     r"\bvoyage\s+\d+\b",
     r"\bchapter\s+\d+[^,(]*",
     r"\bvolume\s+\d+\b",

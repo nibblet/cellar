@@ -1,10 +1,10 @@
 # Breaking Bourbon → catalog: diff report
 
 - Review pages parsed: **2405**; in scope (American whiskey): 2199; excluded: 206
-- Collapsed to **1848** expressions
-- Matched to existing products: **162** — 228 fills, 277 replacements, 7 blocked (verified rows)
+- Collapsed to **1849** expressions
+- Matched to existing products: **161** — 226 fills, 276 replacements, 7 blocked (verified rows)
 - Proposed matches needing a yes/no: **90**
-- New expressions: **1596** (74 core-range from makers already on the shelf → auto-included; rest hidden drafts)
+- New expressions: **1598** (74 core-range from makers already on the shelf → auto-included; rest hidden drafts)
 - New makers: 92; family guesses to check: 609
 
 ## Auto-included new expressions (core range, maker already on the shelf)
@@ -303,7 +303,7 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 | Stellum Bourbon | traditional | high_rye | [Stellum Bourbon](https://breakingbourbon.com/review/stellum-bourbon) |
 | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | wheated | four_grain | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
 
-### expression_type (12)
+### expression_type (11)
 
 | Product | Catalog | Breaking Bourbon | Page |
 |---|---|---|---|
@@ -313,7 +313,6 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 | Restoration Rye | single_barrel | standard | [Castle & Key Restoration Rye 2021 Batch 3](https://breakingbourbon.com/review/castle-key-restoration-rye-2021-batch-3) |
 | Henry McKenna | single_barrel | standard | [Henry McKenna Straight Bourbon](https://breakingbourbon.com/review/henry-mckenna-straight-bourbon) |
 | King of Kentucky | single_barrel | standard | [King of Kentucky (2025)](https://breakingbourbon.com/review/king-of-kentucky-2025) |
-| Knob Creek 18 Year | standard | limited | [Knob Creek 18 Year 2022 Limited Edition](https://breakingbourbon.com/review/knob-creek-18-year-2022-limited-edition) |
 | Larceny | small_batch | standard | [Larceny Bourbon](https://breakingbourbon.com/review/larceny-bourbon) |
 | Russell's Reserve 10 Year | small_batch | standard | [Russell’s Reserve 10 Year Bourbon](https://breakingbourbon.com/review/russells-reserve-10-year-bourbon) |
 | Wheel Horse Straight | small_batch | standard | [Wheel Horse Bourbon (Batch 1)](https://breakingbourbon.com/review/wheel-horse-bourbon-batch-1) |
@@ -364,7 +363,7 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 |---|---|---|
 | [15 Stars Private Stock](https://breakingbourbon.com/review/15-stars-8-15-year-private-stock-bourbon) | 15 Stars | existing review link, but names disagree |
 | [1792 12 Year](https://breakingbourbon.com/review/1792-aged-twelve-years-2023-release) | 1792 Small Batch Bourbon | existing review link, but names disagree |
-| [American Highway Reserve Bourbon Route 2](https://breakingbourbon.com/review/american-highway-reserve-bourbon-route-2) | American Highway Reserve | product already matched by another candidate |
+| [American Highway Reserve Route 2](https://breakingbourbon.com/review/american-highway-reserve-bourbon-route-2) | American Highway Reserve | product already matched by another candidate |
 | [Baker's 13 Year Limited Edition Single Barrel](https://breakingbourbon.com/review/bakers-13-year-old-limited-edition-single-barrel-2025) | Baker's Single Barrel 13 Year | 0.542 |
 | [Baker's 7 Year Single Barrel](https://breakingbourbon.com/review/bakers-bourbon-7-year-single-barrel) | Baker's Single Barrel 7 Year | 0.913 |
 | [Bardstown Bourbon Company Château De Laubade II](https://breakingbourbon.com/review/bardstown-bourbon-company-chateau-de-laubade-ii-2022) | Bardstown Bourbon Company | 0.607 |
@@ -471,9 +470,9 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 - **High West** (14): 14 Year Light, A Midwinter Nights Dram Act 2.1 Rye, Bourye, Campfire, Cask Strength, Double Rye!, Double Rye Campfire Finish, Double Rye Manhattan Finish, Double Rye, High Country American Single Malt, Rendezvous Rye, Rocky Mountain Rye 16 Year, Rocky Mountain Rye 21 Year, Son of Bourye
 - **Wyoming Whiskey** (14): 10 Year Anniversary Edition, Barrel Strength, Buffalo Bill Cody, Double Cask Limited Edition, National Parks: Acadia Edition, National Parks Limited Edition, National Parks Limited Edition No. 2, National Parks Limited Edition No. 3, National Parks No. 4, National Parks No. 5, Outryder Limited Edition, Outryder Whiskey, Single Barrel, Small Batch
 - **Copperworks** (13): Amaro Cask America Single Malt, Color Cask American Single Malt, Craft Malt Month American Single Malt, Distilling Single Cask No. 160-2 Single Malt, Farmsmith American Single Malt, Kilt Lifter, Maltsmith American Single Malt, Peatsmith American Single Malt, Port Cask Finish Single Malt, Scotch Cask American Single Malt, Special Release Pondera Cabernet Cask Single Malt, Special Release Red Wine Cask Single Malt, Special Release: Single Cask No. 440 Single Malt
+- **Knob Creek** (13): ★ 10 Year Rye, 15 Year Limited Edition, 18 Year Limited Edition, 21 Year, 25th Anniversary, Blender's Edition 01, x, Cask Strength Rye - Limited Edition, ★ Single Barrel, ★ Small Batch 9 Year, ★ Small Batch, ★ Rye, Twice Barreled Rye
 - **Parker's Heritage** (13): Collection: 10 Year Heavy Char, Collection: 11 Year Heavy Char Wheat Wheat Whiskey, Collection: 11 Year Single Barrel, Collection: 24 Year Bottled in Bond, Collection: Bourbon Finished in Orange Curaçao Barrels, Collection: Cask Strength Rye, Collection Double Barreled Blend, Collection: Heavy Char Barrels Rye, Collection: Kentucky Straight American, Collection: Malt Finished in Reconstructed Heavy Toast Cognac Barrels, Collection: Malt Single Malt, Collection: Promise of Hope, Collection: Wheat Wheat Whiskey
 - **Barrell** (12): 12 Year Finished in Toasted American Oak, 12 Year French Oak Cask Finish, Cask Finish Series: Amburana, Cask Finish Series: Armagnac, Cask Finish Series: Ice Wine, Cask Finish Series: Mizunara, Cask Finish Series: P.X. Sherry, Foundation Double Barrel, Rye, 18 Year Finished in Cabernet Sauvignon and Sauternes Barrels, (flagship), Whiskey: Infinite Barrel Project - February 12
-- **Knob Creek** (12): ★ 10 Year Rye, 15 Year, 21 Year, 25th Anniversary, Blender's Edition 01, x, Cask Strength Rye, ★ Single Barrel, ★ Small Batch 9 Year, ★ Small Batch, ★ Rye, Twice Barreled Rye
 - **Old Forester** (12): The 117 Series: 1910 Extra Old, The 117 Series: Extra Extra Old, The 117 Series: Scotch Cask Finish, The 117 Series: Warehouse I, 150th Anniversary, Classic Bourbon, President's Choice Rye, Rye, The 117 Series - Whiskey Row Fire, The 117 Series: Bottled in Bond Rye, The 117 Series: Prohibition Era Still Proof, The 117 Series: Triple Char
 - **World Whiskey Society** (12): 10 Year Bourbon Finished in Cognac Cask, 12 Year Kentucky Straight Bourbon Finished in Amontillado Casks, 12 Year Kentucky Straight Bourbon Finished in Armagnac Barrels, 12 Year Kentucky Straight Bourbon Finished in Oloroso Sherry Casks, 12 Year Single Barrel Rye Finished in Awamori Cask, Finished in Mizunara Shochu Barrels, Classic Collection: 10 Year Bourbon Finished in a Port Cask, Couture Collection: 10 Year Bourbon Finished in Sherry Madeira Barrels, Couture Collection 6 Year Straight Bourbon Finished in Sherry Oloroso Barrels, Family Reserve 17 Year, Reserve Collection 9 Year, Wyatt Earp HAZMAT 13 Year American
 - **Elijah Craig** (11): ★ 12 Year, 15 Year Single Barrel, 21 Year, 23 Year, Barrel Proof - M.W. Charity Single Barrel, Barrel Proof Rye, Beer Barrel Finish, European Oak, Rye, Toasted Barrel Finish, Toasted Rye
@@ -510,6 +509,7 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 - **Basil Hayden** (6): Cognac Cask Reserve, Golden Rye, Malted Rye, Subtle Smoke, 10 Year Rye, Two by Two
 - **Benchmark** (6): ★ Bonded Bourbon, ★ Full Proof, Old No. 8 Brand, ★ Single Barrel, ★ Small Batch, ★ Top Floor
 - **Evan Williams** (6): ★ 12 Year, ★ 1783 Small Batch, ★ 23 Year, ★ Black Label, ★ Bottled in Bond, ★ Master Blend
+- **Four Roses** (6): Limited Edition Small Batch, Limited Edition Small Batch 130th Anniversary Edition, Experimental Series 001: Mizunara Finish, Private Selection Medicinal Whiskey, ★ Super Premium, ★ Yellow Label
 - **Frank August** (6): Case Study: 01 Mizunara Japanese Oak, Case Study: 05 Wheated Reserve, Case Study: 06 Legacy Reserve, Single Barrel, Small Batch, Small Batch Rye
 - **George Dickel** (6): 15 Year Single Barrel, Bottled In Bond, (flagship), Whisky Rye, Superior No. 12, x Leopold Bros. Collaboration Blend Rye
 - **Hidden Barn** (6): Double Barreled, Finished in Madeira Casks Perfect Harmony, Series Two, Series One, Organic Wheated, Series One Small Batch Slow Fade
@@ -536,7 +536,6 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 - **Copper &** (5): Cask Cigar Blend, Cask Double Oak, Cask Double Oaked, Cask Limited Edition Small Batch Series Release, Cask Small Batch Series
 - **Dark Arts** (5): Barely Legal, French Oak Stave Finished Small Batch, House Blunt Blend Rye, House Single Barrel, House Straight Bourbon Finished in Red Port & White Port Wine Casks The Empyrean II
 - **Filmland** (5): Spirits Moonlight Mayhem! 2: The White Port Wolf, Spirits Presents Ryes of the Robots Extended Cut, Spirits Presents Town at the End of Tomorrow, Spirits Quadraforce, Spirits The Crimson Cask
-- **Four Roses** (5): Small Batch 130th Anniversary Edition, Experimental Series 001: Mizunara Finish, Private Selection Medicinal Whiskey, ★ Super Premium, ★ Yellow Label
 - **Hooten Young** (5): 12 Year Barrel Proof, American Whiskey 12 Year, Bottled in Bond, Operation Gothic Serpent Rye, Single Barrel Select Norm Hooten Pick
 - **K.Luke** (5): Blended Bourbon, Small Batch Barrel Strength, Small Batch Barrel Strength Rye, Small Batch, Toasted Barrel Barrel Strength
 - **Kings County** (5): Barrel Strength, Barrel Strength Empire Rye, Distillery Bottled in Bond, Empire Rye, Wheat Whiskey
@@ -620,7 +619,7 @@ Ancient Age, Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Ben
 - **Wheeler's Raid** (3): Original Blend, Original Blend Rye 04, No. 3 French Oak Finish
 - **Whiskey Del Bac** (3): Frontera Single Malt, Frontera, Normandie Single Malt
 - **Whiskey Row** (3): Bottled in Bond, Triple Wood, Cask Strength
-- **2bar** (2): Bottled in Bond, Single Barrel
+- **2Bar** (2): Bottled in Bond, Single Barrel
 - **Adventurous Stills** (2): Peralta Bourbon, Quinoa Whiskey
 - **Augusta** (2): Buckner's Single Barrel 10 Year, Old Route 8 Single Barrel 8 Year
 - **Augusta Distillery** (2): Small Batch, Wheated Single Barrel
