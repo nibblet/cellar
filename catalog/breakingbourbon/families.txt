@@ -1,3 +1,4 @@
+117º West Spirits
 13th Colony
 15 Stars
 1792
@@ -5,6 +6,8 @@
 2Bar
 2XO
 3 Howls
+45th Parallel
+503 Distilling
 Alpine
 American Highway Reserve
 Ammunition
@@ -23,18 +26,34 @@ Barmen 1873
 Barrel House
 Barrell
 Barrell Craft Spirits
+Barrica OLO
+Barrica PX
 Basil Hayden
+Beam's Pin Bottle
+Bear Creek
+Bear Fight
 Bear Wallow
+Beer Barrel
 Belle Meade
 Ben Holladay
 Benchmark
+Bend & Steal
 Bendistillery
+Bendt
 Bernheim
 Bhakta
+Bhatka
 Bib & Tucker
+Big Bottom
+Big Easy
 Big Machine
+Bird Creek
+Black Band
 Black Button
+Black Frost
+Black Maple Hill
 Blackened
+Blackfork Farms
 Blade & Bow
 Blade and Bow
 Blanton's
@@ -43,27 +62,38 @@ Blaum Bros.
 Blood Oath
 Blue Note
 Blue Run
+Bluebird
 Bluegrass
 Bluegrass Distillers
 Bomberger's
 Booker's
+Boom Boom
 Boone & Crockett
 Boone County
+Borchetta
+Borrowed Page
 Boulder Spirits
 Boundary Oak
 Bourbon 30
+Bourbon de Luxe
 Bower Hill
+Bradshaw
 Breckenridge
 Brother's Bond
 Buffalo Trace
 Bull Run
 Bulleit
+Burton James
+Bushwood
+Buzzard's Roost
 Cabin Still
 Calumet Farm
+Canongate
 Cardinal Spirits
 Cascade Hollow
 Cascade Moon
 Casey Jones
+Cask & Coast
 Cask & Crew
 Castle & Key
 Catoctin Creek
@@ -80,13 +110,16 @@ Collier and McKeel
 Colonel E.H. Taylor
 Company Distilling
 Conecuh Ridge
+Conviction
 Coopers' Craft
+Copper & Cask
 Copper & Kings
 Copper Fox
 Coppercraft
 Coppersea
 Copperworks
 Corsair
+Courage & Conviction
 Crater Lake
 Cream of Kentucky
 Dad's Hat
@@ -97,6 +130,7 @@ Del Bac
 Dented Brick
 Detroit City
 Distillery 291
+Doc Holliday
 Doc Swinson's
 Driftless Glen
 Dry Fly
@@ -109,13 +143,18 @@ Eight & Sand
 Elijah Craig
 Elmer T. Lee
 Evan Williams
+Ezra B
 Ezra Brooks
 FEW
 Far North
 Fighting Cock
 Finger Lakes
+Five & 20
+Fort Mosé 1738
 Fortuna
 Found North
+Four Branches
+Four Gate
 Four Roses
 Frank August
 Frey Ranch
@@ -135,6 +174,7 @@ Heaven Hill
 Heaven's Door
 Henry McKenna
 Heritage Distilling
+Hidden Barn
 High West
 Hillrock
 Holladay
@@ -149,7 +189,9 @@ Ironroot
 Ironroot Republic
 J. Henry
 J. Henry & Sons
+J. Mattingly 1845
 Jack Daniel's
+Jack Daniels
 Jackson Purchase
 James B. Beam
 James E. Pepper
@@ -259,6 +301,7 @@ Rock Hill Farms
 Rogue
 Ross & Squibb
 Rossville Union
+Row 94
 Rowan's Creek
 Russell's Reserve
 Sagamore
@@ -292,12 +335,14 @@ Templeton
 Ten High
 Tenn South
 Thomas H. Handy
+Three Chord
 Tom's Foolery
 Town Branch
 Traverse City
 Treaty Oak
 Tuthilltown
 Two James
+Two Souls
 Uncle Nearest
 Valentine
 Van Winkle
@@ -324,8 +369,8 @@ Wolves
 Woodford Reserve
 Woodinville
 Woody Creek
+World Whiskey Society
 Wright & Brown
 Wyoming Whiskey
 Yellow Rose
 Yellowstone
-Jack Daniels

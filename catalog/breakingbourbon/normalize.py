@@ -380,7 +380,8 @@ def main():
                           family_style_of.get(fk) if sk != "rye" else None)
         expression = canonical["_expression"]
         suffix = {"rye": "Rye", "american_single_malt": "Single Malt", "wheat_whiskey": "Wheat Whiskey"}.get(sk)
-        if suffix and suffix.lower() not in (expression or "").lower() and suffix.lower() not in canonical["_family"].lower():
+        marker = {"rye": "rye", "american_single_malt": "malt", "wheat_whiskey": "wheat"}.get(sk, "")
+        if suffix and marker not in (expression or "").lower() and marker not in canonical["_family"].lower():
             expression = f"{expression} {suffix}" if expression else suffix
         canonical["_expression"] = expression
         releases = [{"label": r["_release"], "proof": first_number(r["spec"].get("Proof")), "age": r["spec"].get("Age"),
