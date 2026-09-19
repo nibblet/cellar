@@ -79,7 +79,7 @@ RELEASE_PATTERNS = [
     r"#\s*\d+[a-z]?\b",
 ]
 PROOF_IN_TITLE = re.compile(r"\(?\b\d{2,3}(?:\.\d+)?\s*proof\)?", re.I)
-GENERIC_SUFFIX = re.compile(r"\s*(?<!high )(?<!sweet )\b(kentucky\s+)?(straight\s+)?(bourbon|rye|tennessee|whiskey|whisky)(\s+whiskey)?\s*$", re.I)
+GENERIC_SUFFIX = re.compile(r"\s*(?<!high )(?<!sweet )\b(kentucky\s+)?(straight\s+)?(bourbon|rye|tennessee|whiskey)(\s+whiskey)?\s*$", re.I)   # "whisky" is only ever part of a name here
 
 STOP_GUESS = re.compile(r"^(\d+|year|yr|single|small|barrel|bottled|cask|straight|bourbon|rye|whiskey|whisky|tennessee|kentucky|wheated|wheat|four|toasted|double|reserve|special|limited|private|select|edition|batch|proof|finished?|blend(ed)?|american|light|malt|organic|amarone|port|sherry|cognac|rum|maple|cabernet|honey|cigar|gold|black|white|red|blue|green|silver|premium|original|old|the|&|and)\b", re.I)
 

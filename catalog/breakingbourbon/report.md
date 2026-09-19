@@ -198,7 +198,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 | Old Tub | Old Tub | Jim Beam Old Tub | [Jim Beam Old Tub Bourbon](https://breakingbourbon.com/review/jim-beam-old-tub-bourbon) |
 | 117 Series Bottled in Bond | 117 Series Bottled in Bond | Old Forester The 117 Series: Bottled in Bond | [Old Forester The 117 Series: Bottled in Bond (Batch 001)](https://breakingbourbon.com/review/old-forester-117-series-bottled-in-bond-batch-001) |
 | 1870 Original Batch | 1870 Original Batch | Old Forester 1870 Original Batch | [Old Forester 1870 Original Batch Bourbon](https://breakingbourbon.com/review/old-forester-1870-original-batch-bourbon) |
-| 1910 Old Fine Whisky | 1910 Old Fine Whisky | Old Forester 1910 Old Fine | [Old Forester 1910 Old Fine Whisky](https://breakingbourbon.com/review/old-forester-1910-old-fine-whisky) |
+| 1910 Old Fine Whisky | 1910 Old Fine Whisky | Old Forester 1910 Old Fine Whisky | [Old Forester 1910 Old Fine Whisky](https://breakingbourbon.com/review/old-forester-1910-old-fine-whisky) |
 | Birthday Bourbon | Birthday Bourbon | Old Forester Birthday Bourbon | [Old Forester 2025 Birthday Bourbon](https://breakingbourbon.com/review/old-forester-2025-birthday-bourbon) |
 | The President s Choice | The President s Choice | Old Forester President's Choice | [Old Forester President’s Choice Bourbon (2026)](https://breakingbourbon.com/review/old-forester-presidents-choice-bourbon-2026) |
 | Statesman | Statesman | Old Forester Statesman Bourbon | [Old Forester Statesman Bourbon](https://breakingbourbon.com/review/old-forester-statesman-bourbon) |
@@ -505,12 +505,12 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Thomas S. Moore** (7): Finished in Cabernet Sauvignon Casks, Finished in Chardonnay Casks, Finished in Port Casks, Finished in Cognac Casks, Finished in Madeira Casks, Finished in Merlot Casks, Finished in Sherry Casks
 - **WhistlePig** (7): CampStock Wheat Wheat Whiskey, PiggyBack Legends Series: Big Papi Barrel Rye, PiggyBack Rye, RoadStock Whiskey Rye, Snout-to-Tail Bourbon - 10 Year, The Boss Hog The Spirit of Mortimer Rye, The Boss Hog XIII: The Golden Pharaoh Rye
 - **291** (6): All Rye 100% Rye Malt Colorado, Bad Guy Colorado, E Colorado Whiskey The American Single Malt, HR Bourbon, M Colorado, XII Colorado
-- **Balcones** (6): 1 Texas Single Malt, Lineage Single Malt, Mirador Single Malt, Texas Pot Still, Texas Rye, Tres Hombres
+- **Balcones** (6): 1 Texas Single Malt, Lineage Single Malt, Mirador Single Malt Whisky, Texas Pot Still, Texas Rye, Tres Hombres
 - **Basil Hayden** (6): Cognac Cask Reserve, Golden Rye, Malted Rye, Subtle Smoke, 10 Year Rye, Two by Two
 - **Benchmark** (6): ★ Bonded Bourbon, ★ Full Proof, Old No. 8 Brand, ★ Single Barrel, ★ Small Batch, ★ Top Floor
 - **Evan Williams** (6): ★ 12 Year, ★ 1783 Small Batch, ★ 23 Year, ★ Black Label, ★ Bottled in Bond, ★ Master Blend
 - **Frank August** (6): Case Study: 01 Mizunara Japanese Oak, Case Study: 05 Wheated Reserve, Case Study: 06 Legacy Reserve, Single Barrel, Small Batch, Small Batch Rye
-- **George Dickel** (6): 15 Year Single Barrel, Bottled In Bond, (flagship), Rye, Superior No. 12, x Leopold Bros. Collaboration Blend Rye
+- **George Dickel** (6): 15 Year Single Barrel, Bottled In Bond, (flagship), Whisky Rye, Superior No. 12, x Leopold Bros. Collaboration Blend Rye
 - **Hidden Barn** (6): Double Barreled, Finished in Madeira Casks Perfect Harmony, Series Two, Series One, Organic Wheated, Series One Small Batch Slow Fade
 - **Jim Beam** (6): ★ Black XA Extra Aged, ★ Double Oak, Lineage, Sunshine Blend, ★ White Label, Winter Reserve
 - **Peerless** (6): High Rye, Absinthe Barrel Finished Rye, Small Batch Barrel Proof, 2 Year Rye, Toasted Bourbon, Toasted Rye
@@ -607,7 +607,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Samuel Maverick** (3): Barrel Proof, (flagship), Private Reserve Texas
 - **Sazerac** (3): 18 Year Rye, ★ Rye, Full Proof Rye
 - **Southern** (3): Star Bottled in Bond Rye, Star Bourbon Finished in Honey Barrels, Star Paragon Bottled in Bond Wheated
-- **Spirit Hound** (3): Cask Strength Straight Malt Single Malt, Honey Aged Straight Malt Single Malt, Straight Malt Single Malt
+- **Spirit Hound** (3): Cask Strength Straight Malt Whisky Single Malt, Honey Aged Straight Malt Single Malt, Straight Malt Single Malt
 - **The** (3): American Whiskey Barrel Strength, American Whiskey, Original Santa Fe Whiskey Original Mesquite Single Malt
 - **Tincup** (3): 10 Year American, American Whiskey, Rye
 - **Traverse City** (3): Co. Cab Franc Barrel Finish Rye, Co. Port Barrel Finish, Co. Sherry Barrel Finish
@@ -619,7 +619,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Wheeler's Raid** (3): Original Blend, Original Blend Rye 04, No. 3 French Oak Finish
 - **Whiskey Del Bac** (3): Frontera Single Malt, Frontera, Normandie Single Malt
 - **Whiskey Row** (3): Bottled in Bond, Triple Wood, Cask Strength
-- **2Bar** (2): Bottled in Bond, Single Barrel
+- **2bar** (2): Bottled in Bond, Single Barrel
 - **Adventurous Stills** (2): Peralta Bourbon, Quinoa Whiskey
 - **Augusta** (2): Buckner's Single Barrel 10 Year, Old Route 8 Single Barrel 8 Year
 - **Augusta Distillery** (2): Small Batch, Wheated Single Barrel
@@ -683,7 +683,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Smoke Wagon** (2): Small Batch, (flagship)
 - **Smooth Ambler** (2): Contradiction Rye, Old Scout 7 Year
 - **Square** (2): 6 High-Rye, 6 Wheated
-- **Starward** (2): Nova Single Malt, Two-Fold Double Grain Australian
+- **Starward** (2): Nova Single Malt Whisky, Two-Fold Double Grain Australian
 - **Stranahan's** (2): Blue Peak Single Malt, Colorado Whiskey
 - **Templeton** (2): 10 Year Reserve Rye, Midnight Rye
 - **The Wolves** (2): Project - Vol. One Rye, Project - Vol. One, Batch One Rye
@@ -773,7 +773,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **Corner Creek** (1): 10 Year
 - **Courage & Conviction** (1): Batch: Dr. George G. Moore
 - **Crown Royal Noble** (1): Collection Rye 16 Year
-- **Crown Royal** (1): Single Malt Canadian
+- **Crown Royal** (1): Single Malt Canadian Whisky
 - **Cumberland Falls** (1): (flagship)
 - **Daddy Rack** (1): Tennessee Whiskey
 - **Dad's Hat** (1): x Liberty Pole Spirits Pennsylvania Rye
@@ -830,7 +830,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **High n' Wicked** (1): (flagship)
 - **High ‘N Wicked** (1): Warlander
 - **Hillrock Estate** (1): Double Cask Bourbon - Bottled in Bond
-- **Hogback** (1): Wallace Collection Peated Malt Single Malt
+- **Hogback** (1): Wallace Collection Peated Malt Whisky Single Malt
 - **Holladay** (1): Soft Red Wheat Rickhouse Proof
 - **Hooten Young &** (1): Jack Carr Warrior Proof American
 - **Hudson Valley** (1): Excelsior New York Rye
@@ -936,7 +936,7 @@ Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single
 - **St. Elmo** (1): (flagship)
 - **Stanahan's Diamond Peak** (1): (flagship)
 - **Standard** (1): Proof Whiskey Co. Rye
-- **Star Hill Farm** (1): Wheat Whiskey
+- **Star Hill Farm** (1): Whisky Wheat Whiskey
 - **Stauning** (1): Danish Whisky Floor Malted Rye
 - **Stave &** (1): Barrel Single Barrel - Barrel Strength
 - **Stillhouse** (1): Original Whiskey
