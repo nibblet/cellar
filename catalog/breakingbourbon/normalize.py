@@ -63,13 +63,15 @@ def spirit_type(cls: str) -> str:
 # ---------------------------------------------------------------- title → family / expression / release
 
 RELEASE_PATTERNS = [
+    r"\s*[-–—:]\s*[“\"][^”\"]+[”\"]\s*$",                      # trailing nickname: - “The Fruit Bomb”
     r"[“\"]\s*[^”\"]*\bbatch\b[^”\"]*[”\"]",               # “Ronnie's Batch”
     r"\bbatch\s+no\.?\s*[a-z0-9][a-z0-9-]*",
     r"\b(?:19|20)\d\d-\d{1,2}[a-z]?\b",                        # 2022-01
-    r"\((?:[^)]*\b(?:batch|barrel|lot|release|edition|20\d\d|19\d\d|chapter|volume|no\.)\b[^)]*)\)",
+    r"\((?:[^)]*\b(?:batch|barrel|lot|release|edition|20\d\d|199\d|chapter|volume|no\.)\b[^)]*)\)",
     r"(?<!small )\bbatch\s+#?(?=[a-z]*\d)[a-z0-9-]+(?!\s*-?\s*(?:year|yr)s?\b)",
-    r"\b(?:spring|summer|fall|winter|autumn)\s+(?:19|20)\d\d\b",
-    r"\b(?:19|20)\d\d(?:\s+(?:release|edition|limited edition|harvest|vintage))?\b",
+    r"\b(?:spring|summer|fall|winter|autumn)\s+(?:199\d|20\d\d)\b",
+    r"\b(?:199\d|20\d\d)(?:\s+(?:release|edition|limited edition|harvest|vintage))?\b",   # 1870/1910/1920 are names
+    r"\bvoyage\s+\d+\b",
     r"\bchapter\s+\d+[^,(]*",
     r"\bvolume\s+\d+\b",
     r"\bbarrel\s+(?:no\.?|#)\s*[a-z0-9-]+",
@@ -117,8 +119,15 @@ def split_title(title: str, families: list[str], company: str | None = None):
 
     rest = t[len(family):].strip(" ,-–—:") if norm(t).startswith(norm(family)) else t
     rest = re.sub(r"^'s\b\s*", "", rest)
+    rest = re.sub(r"^,?\s*jr\.?\s*", "", rest, flags=re.I)
     family = FAMILY_ALIASES.get(family, family)
-    rest = GENERIC_SUFFIX.sub("", rest).strip(" ,-–—")
+    stripped = GENERIC_SUFFIX.sub("", rest).strip(" ,-–—")
+    # "Birthday Bourbon", "Cowboy Bourbon": a one-word expression keeps its noun.
+    if len(stripped.split()) == 1 and re.search(r"\b(bourbon|whiskey)\b", rest, re.I):
+        rest = stripped + (" Bourbon" if re.search(r"\bbourbon\b", rest, re.I) else " Whiskey")
+    else:
+        rest = stripped
+    rest = rest.replace("“", "").replace("”", "").replace('"', "").strip(" ,-–—")
     # "Aged Twelve Years" → "12 Year", so the same age reads the same way everywhere.
     words = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
              "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20}
@@ -246,10 +255,13 @@ def diff_for(p, c):
         if action != "same": diff.append({"field": f, "catalog": cur, "bb": bb, "action": action})
     if c["facts"]["maker_id"] and c["facts"]["maker_id"] != p["producer_id"]:
         diff.append({"field": "producer_id", "catalog": p["producer_id"], "bb": c["facts"]["maker_id"], "action": "fill" if not p["producer_id"] else "replace"})
-    # A decided proposal often names an expression the catalog row lacks ("15 Stars" → "Private Stock").
-    if not p.get("expression") and c["expression"] and not p["verified"]:
-        diff.append({"field": "expression", "catalog": None, "bb": c["expression"], "action": "fill"})
-        diff.append({"field": "name", "catalog": p["name"], "bb": c["name"], "action": "fill"})
+    # Naming follows the source too: "Single Barrel 7 Year" → "7 Year Single Barrel". The old name
+    # is kept as an alias by apply.py so label matching keeps working.
+    cur_expr = p.get("expression") if p.get("expression") != p["name"] else None
+    if c["expression"] and key(c["expression"]) != key(cur_expr) and not p["verified"]:
+        diff.append({"field": "expression", "catalog": cur_expr, "bb": c["expression"], "action": "fill" if not cur_expr else "replace"})
+    if key(c["name"]) != key(p["name"]) and not p["verified"]:
+        diff.append({"field": "name", "catalog": p["name"], "bb": c["name"], "action": "replace"})
     return diff
 
 def maker_key(name: str | None) -> str:

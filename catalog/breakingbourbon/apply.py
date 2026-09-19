@@ -42,7 +42,9 @@ def main():
         if d is None: undecided.append(pr); continue
         action, overrides = (d, {}) if isinstance(d, str) else (d.get("action"), {k: v for k, v in d.items() if k != "action"})
         c = pr["data"]
-        c["facts"].update(overrides)
+        for k, v in overrides.items():
+            if k in ("expression", "name"): c[k] = v
+            else: c["facts"][k] = v
         if action == "skip": continue
         if action == "new":
             decided_new.append({**c, "catalog_included": c["facts"]["is_core_range"] and c["facts"]["maker_id"] in makers_with_included})
@@ -89,8 +91,10 @@ def main():
             sets.append(f"nas = ({q(m['candidate']['facts']['age_years'])} is null)")
         c = m["candidate"]
         sets.append(f"source_url = {q(c['canonical_url'])}")
-        if c["aliases"]:
-            sets.append(f"aliases = (select array_agg(distinct x) from unnest(coalesce(aliases, '{{}}') || {q(c['aliases'])}) x)")
+        old_name = [d["catalog"] for d in m["diff"] if d["field"] == "name" and d["action"] != "same"]
+        alias_add = c["aliases"] + old_name
+        if alias_add:
+            sets.append(f"aliases = (select array_agg(distinct x) from unnest(coalesce(aliases, '{{}}') || {q(alias_add)}) x)")
         L.append(f"update cellar.products set {', '.join(sets)} where id = {q(m['product_id'])}::uuid and facts_verified_at is null;")
         n_upd += 1
 

@@ -60,7 +60,7 @@
 | 55 | [Jefferson's Tropics Aged in Humidity](https://breakingbourbon.com/review/jeffersons-tropics-aged-in-humidity) | Jefferson's Tropics Aged | → **Jefferson's Tropics Aged** | Same |
 | 56 | [Jeptha Creed 4 Grain Corn](https://breakingbourbon.com/review/jeptha-creed-4-grain-corn-bourbon) | Jeptha Creed | → **Jeptha Creed** | Jeptha Creed's flagship is the 4 Grain |
 | 57 | [Jeptha Creed Bottled in Bond Rye Heavy](https://breakingbourbon.com/review/jeptha-creed-bottled-in-bond-rye-heavy-bourbon) | Jeptha Creed | **new** | Rye Heavy BiB is its own expression |
-| 58 | [Joseph Magnus Cigar Blend Bourbon - “The Fruit Bomb”](https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb) | Joseph Magnus | **new** | Row (113 proof, 15.5 yr) isn't the Cigar Blend |
+| 58 | [Joseph Magnus Cigar Blend Bourbon - “The Fruit Bomb”](https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb) | Joseph Magnus | → **Joseph Magnus** | Confirmed: the row is the Cigar Blend |
 | 59 | [Kentucky Owl Confiscated](https://breakingbourbon.com/review/kentucky-owl-confiscated) | Kentucky Owl | → **Kentucky Owl** | Row (96.4) is Confiscated |
 | 60 | [Kings County Barrel Strength 6 Year Blender's Reserve](https://breakingbourbon.com/review/kings-county-barrel-strength-6-year-blenders-reserve-bourbon) | Kings County | **new** | Barrel Strength 6 Year ≠ the 90-proof standard |
 | 61 | [Knob Creek Quarter Oak](https://breakingbourbon.com/review/knob-creek-quarter-oak-bourbon) | Knob Creek | **new** | Quarter Oak is its own expression; see the separate fix for the Knob Creek row |
@@ -85,7 +85,7 @@
 | 80 | [Penelope Four Grain](https://breakingbourbon.com/review/penelope-four-grain-bourbon) | Penelope | **new** | Four Grain (80 proof) ≠ the 116.6-proof row (Barrel Strength) |
 | 81 | [Rabbit Hole Cavehill 4 Grain](https://breakingbourbon.com/review/rabbit-hole-cavehill-4-grain-bourbon) | Rabbit Hole Cavehill | → **Rabbit Hole Cavehill** | Cavehill is the 4 Grain |
 | 82 | [Ranger Creek .36 Texas](https://breakingbourbon.com/review/ranger-creek-36-texas-bourbon) | Ranger Creek .36 | → **Ranger Creek .36** | Same |
-| 83 | [RD One Small Batch Kentucky Straight Bourbon Double Finished in Oak and Maple Barrels](https://breakingbourbon.com/review/rd-one-small-batch-kentucky-straight-bourbon-double-finished-oak-and-maple) | RD One Smoked Oak & Maple Wood (2nd bottle) | **new** | Different proof and name; keep both until you look |
+| 83 | [RD One Small Batch Kentucky Straight Bourbon Double Finished in Oak and Maple Barrels](https://breakingbourbon.com/review/rd-one-small-batch-kentucky-straight-bourbon-double-finished-oak-and-maple) | RD One Smoked Oak & Maple Wood (2nd bottle) | → **RD One Smoked Oak & Maple Wood** | Merged; catalog's 111.3 proof and shorter name kept |
 | 84 | [Stagg](https://breakingbourbon.com/review/stagg-bourbon-batch-25b) | Stagg Jr. Barrel Proof | → **Stagg Jr. Barrel Proof** | Stagg is the renamed Stagg Jr. |
 | 85 | [Starlight Carl T. Huber's Bottled in Bond](https://breakingbourbon.com/review/starlight-carl-t-hubers-bottled-in-bond-bourbon) | Starlight Distillery Carl T. Huber Signature Indiana Straight | **new** | BiB (100) ≠ Signature (92) |
 | 86 | [Tommyrotter Napa Valley Heritance Cask](https://breakingbourbon.com/review/tommyrotter-napa-valley-heritance-cask-batch-no-4) | Napa Valley Heritage Cask Bourbon | → **Napa Valley Heritage Cask Bourbon** | Trigram 0.96, same bottling |

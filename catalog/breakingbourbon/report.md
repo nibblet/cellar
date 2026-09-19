@@ -1,19 +1,19 @@
 # Breaking Bourbon → catalog: diff report
 
 - Review pages parsed: **2405**; in scope (American whiskey): 2199; excluded: 206
-- Collapsed to **1853** expressions
-- Matched to existing products: **158** — 193 fills, 226 replacements, 7 blocked (verified rows)
-- Proposed matches needing a yes/no: **94**
-- New expressions: **1601** (75 core-range from makers already on the shelf → auto-included; rest hidden drafts)
+- Collapsed to **1848** expressions
+- Matched to existing products: **161** — 227 fills, 275 replacements, 7 blocked (verified rows)
+- Proposed matches needing a yes/no: **91**
+- New expressions: **1596** (75 core-range from makers already on the shelf → auto-included; rest hidden drafts)
 - New makers: 160; family guesses to check: 609
 
 ## Auto-included new expressions (core range, maker already on the shelf)
 
-Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel, Benchmark Small Batch, Benchmark Top Floor, Blanton's Gold Edition, Blanton's Special Reserve, Blanton's Straight From the Barrel, Eagle Rare 12 Year, Early Times Bottled in Bond, Elijah Craig 12 Year, Evan Williams 12 Year, Evan Williams 1783 Small Batch, Evan Williams 23 Year, Evan Williams Bottled in Bond, Evan Williams Master Blend, Evan Williams “Black Label”, Ezra B 12 Year Single Barrel, Fighting Cock, Four Roses Super Premium, Four Roses Yellow Label, Heaven Hill Select Stock Cognac Finished, J.T.S. Brown Bottled in Bond, Jack Daniel's Single Barrel Barrel Proof Rye, Jack Daniel's Single Barrel Heritage Barrel, Jack Daniel's Single Barrel Select, Jim Beam Black XA Extra Aged, Jim Beam Double Oak, Jim Beam White Label, Kentucky Gentleman, Knob Creek 10 Year Rye, Knob Creek Rye, Knob Creek Single Barrel, Knob Creek Small Batch, Knob Creek Small Batch 9 Year, Maker's Mark 46, Mellow Corn, Old Bardstown Estate Bottled, Old Crow, Old Grand-Dad, Old Grand-Dad Bonded, Old Overholt Bottled in Bond Rye, Old Overholt Rye, Old Weller Antique, Quality House Old Style, Rittenhouse Bottled in Bond Rye, Rock Hill Farms Single Barrel, Rock Town Column Still Collection Small Batch, Rock Town Column Still Collection Toasted French Oak Barrel Finish, Russell's Reserve 6 Year Rye, Russell's Reserve Single Barrel Rye, Sazerac Rye, Starlight Carl T. Huber's Double Oaked, Starlight Carl T. Huber's Single Barrel Bourbon Finished in Honey Barrels, Starlight Carl T. Huber's Single Barrel Rye Finished in Honey Barrels, Starlight Carl T. Huber's Small Batch, Starlight Distillery Bottled in Bond, Starlight Distillery Bottled in Bond Rye, Starlight Distillery Carl. T. Huber's Bourbon Finished in Madeira Casks, Starlight Huber's Rickhouse Select Single Barrel, Starlight Old Rickhouse Double Oaked Rye, Starlight Old Rickhouse Rye, Starlight Old Rickhouse Rye Whiskey Finished in Sherry Barrels, Starlight Single Barrel Rye Finished in Triple Sec Barrels, Ten High Sour Mash, The Mattie Gladden Bottled in Bond, Town Branch 6 Year Wheated, Town Branch 7 Year Kentucky Single Malt, Weller Special Reserve, Wild Turkey, Wilderness Trail High Rye Bourbon Bottled in Bond, Willett Family Estate Small Batch 4 Year, Woodford Reserve Distiller's Select Rye, Woodinville Finished in Port Casks
+Baker's 7 Year, Benchmark Bonded Bourbon, Benchmark Full Proof, Benchmark Single Barrel, Benchmark Small Batch, Benchmark Top Floor, Blanton's Gold Edition, Blanton's Special Reserve, Blanton's Straight From the Barrel, Eagle Rare 12 Year, Early Times Bottled in Bond, Elijah Craig 12 Year, Evan Williams 12 Year, Evan Williams 1783 Small Batch, Evan Williams 23 Year, Evan Williams Black Label, Evan Williams Bottled in Bond, Evan Williams Master Blend, Ezra B 12 Year Single Barrel, Fighting Cock, Four Roses Super Premium, Four Roses Yellow Label, Heaven Hill Select Stock Cognac Finished, J.T.S. Brown Bottled in Bond, Jack Daniel's Single Barrel Barrel Proof Rye, Jack Daniel's Single Barrel Heritage Barrel, Jack Daniel's Single Barrel Select, Jim Beam Black XA Extra Aged, Jim Beam Double Oak, Jim Beam White Label, Kentucky Gentleman, Knob Creek 10 Year Rye, Knob Creek Rye, Knob Creek Single Barrel, Knob Creek Small Batch, Knob Creek Small Batch 9 Year, Maker's Mark 46 Bourbon, Mellow Corn, Old Bardstown Estate Bottled, Old Crow, Old Grand-Dad, Old Grand-Dad Bonded Bourbon, Old Overholt Bottled in Bond Rye, Old Overholt Rye, Old Weller Antique, Quality House Old Style, Rittenhouse Bottled in Bond Rye, Rock Hill Farms Single Barrel, Rock Town Column Still Collection Small Batch, Rock Town Column Still Collection Toasted French Oak Barrel Finish, Russell's Reserve 6 Year Rye, Russell's Reserve Single Barrel Rye, Sazerac Rye, Starlight Carl T. Huber's Double Oaked, Starlight Carl T. Huber's Single Barrel Bourbon Finished in Honey Barrels, Starlight Carl T. Huber's Single Barrel Rye Finished in Honey Barrels, Starlight Carl T. Huber's Small Batch, Starlight Distillery Bottled in Bond, Starlight Distillery Bottled in Bond Rye, Starlight Distillery Carl. T. Huber's Bourbon Finished in Madeira Casks, Starlight Huber's Rickhouse Select Single Barrel, Starlight Old Rickhouse Double Oaked Rye, Starlight Old Rickhouse Rye, Starlight Old Rickhouse Rye Whiskey Finished in Sherry Barrels, Starlight Single Barrel Rye Finished in Triple Sec Barrels, Ten High Sour Mash, The Mattie Gladden Bottled in Bond, Town Branch 6 Year Wheated, Town Branch 7 Year Kentucky Single Malt, Weller Special Reserve, Wild Turkey, Wilderness Trail High Rye Bourbon Bottled in Bond, Willett Family Estate Small Batch 4 Year, Woodford Reserve Distiller's Select Rye, Woodinville Finished in Port Casks
 
 ## Replacements on non-verified rows (BB wins), by field
 
-### proof (63)
+### proof (64)
 
 | Product | Catalog | Breaking Bourbon | Page |
 |---|---|---|---|
@@ -32,7 +32,6 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Restoration Rye | 120.5 | 105.0 | [Castle & Key Restoration Rye 2021 Batch 3](https://breakingbourbon.com/review/castle-key-restoration-rye-2021-batch-3) |
 | Iowa Bourbon | 80.0 | 100.0 | [Cedar Ridge Iowa Bourbon Whiskey](https://breakingbourbon.com/review/cedar-ridge-iowa-bourbon-whiskey) |
 | Coopers Craft | 100.0 | 82.2 | [Coopers' Craft](https://breakingbourbon.com/review/coopers-craft) |
-| Colonel E.H. Taylor Jr. Barrel Proof | 134.4 | 130.3 | [E.H. Taylor, Jr. Barrel Proof Bourbon (130.3 Proof) (Batch 9)](https://breakingbourbon.com/review/e-h-taylor-jr-barrel-proof-bourbon-130-3-proof-batch-9) |
 | Four Roses | 104.0 | 80.0 | [Four Roses Bourbon](https://breakingbourbon.com/review/four-roses-bourbon) |
 | Cowboy Bourbon | 140.8 | 146.4 | [Garrison Brothers Cowboy Bourbon (2025)](https://breakingbourbon.com/review/garrison-brothers-cowboy-bourbon-2025) |
 | George T. Stagg | 90.0 | 142.8 | [George T. Stagg (2025)](https://breakingbourbon.com/review/george-t-stagg-2025) |
@@ -41,6 +40,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | High West American Prairie | 100.2 | 92.0 | [High West American Prairie Bourbon](https://breakingbourbon.com/review/high-west-american-prairie-bourbon) |
 | I.W. Harper | 86.0 | 82.0 | [I.W. Harper](https://breakingbourbon.com/review/i-w-harper) |
 | Jack Daniel's | 100.0 | 80.0 | [Jack Daniel’s Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-tennessee-whiskey) |
+| Jefferson's Ocean Aged at Sea | 82.2 | 90.0 | [Jefferson's Ocean Aged at Sea Voyage 4](https://breakingbourbon.com/review/jeffersons-ocean-aged-at-sea-voyage-4) |
 | Jefferson's Very Small Batch Bourbon | 82.2 | 82.3 | [Jefferson's Very Small Batch](https://breakingbourbon.com/review/jeffersons-very-small-batch) |
 | Joseph Magnus | 113.0 | 100.0 | [Joseph Magnus Bourbon](https://breakingbourbon.com/review/joseph-magnus-bourbon) |
 | Kentucky Owl | 96.4 | 113.6 | [Kentucky Owl Bourbon Batch 13](https://breakingbourbon.com/review/kentucky-owl-bourbon-batch-13) |
@@ -51,6 +51,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Larceny | 125.0 | 92.0 | [Larceny Bourbon](https://breakingbourbon.com/review/larceny-bourbon) |
 | Little Book | 118.1 | 121.8 | [Little Book Chapter 9: “None For Granted”](https://breakingbourbon.com/review/little-book-chapter-9-none-for-granted) |
 | Maker's Mark Cellar Aged | 115.8 | 112.1 | [Maker’s Mark Cellar Aged (2026 Release)](https://breakingbourbon.com/review/makers-mark-cellar-aged-2026) |
+| Maker's Mark Wood Finishing Series | 111.8 | 113.3 | [Maker’s Mark Wood Finishing Series: “The Stewards Release”](https://breakingbourbon.com/review/makers-mark-wood-finishing-series-the-stewards-release) |
 | Noah's Mill | 114.2 | 114.3 | [Noah’s Mill (Batch 22-23)](https://breakingbourbon.com/review/noahs-mill-batch-22-23) |
 | O.K.I. Single Barrel Straight Bourbon | 113.3 | 115.5 | [O.K.I. Single Barrel Bourbon Barrel #4](https://breakingbourbon.com/review/o-k-i-single-barrel-bourbon-barrel-4) |
 | Birthday Bourbon | 96.0 | 92.0 | [Old Forester 2025 Birthday Bourbon](https://breakingbourbon.com/review/old-forester-2025-birthday-bourbon) |
@@ -75,13 +76,13 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | William Larue Weller | 90.0 | 129.0 | [William Larue Weller (2025)](https://breakingbourbon.com/review/william-larue-weller-2025) |
 | Woodinville | 94.0 | 90.0 | [Woodinville Straight Bourbon (2024)](https://breakingbourbon.com/review/woodinville-straight-bourbon-2024) |
 | Discovery Series | 111.0 | 110.8 | [Bardstown Bourbon Company Discovery Series #13](https://breakingbourbon.com/review/bardstown-bourbon-company-discovery-series-13) |
+| Colonel E.H. Taylor Jr. Barrel Proof | 134.4 | 127.2 | [E.H. Taylor Barrel Proof Bourbon (127.2 Proof) (Batch 14)](https://breakingbourbon.com/review/e-h-taylor-barrel-proof-bourbon-127-2-proof-batch-14) |
 | Hancock's President's Reserve | 89.0 | 88.9 | [Hancock’s President's Reserve Single Barrel Bourbon](https://breakingbourbon.com/review/hancocks-presidents-reserve-single-barrel-bourbon) |
-| Jefferson's Ocean Aged at Sea | 82.2 | 90.0 | [Jefferson's Ocean Aged at Sea Voyage 4](https://breakingbourbon.com/review/jeffersons-ocean-aged-at-sea-voyage-4) |
 | Barrel Strength | 109.0 | 112.0 | [Michter’s US*1 Barrel Strength Rye](https://breakingbourbon.com/review/michters-us-1-barrel-strength-rye) |
 | Rowan's Creek, 12 Year | 100.0 | 100.1 | [Rowan’s Creek (Batch 22-34)](https://breakingbourbon.com/review/rowans-creek-batch-22-34) |
 | Woodford Reserve Master's Collection | 90.4 | 110.4 | [Woodford Reserve Master’s Collection: Sweet Oak Bourbon](https://breakingbourbon.com/review/woodford-reserve-masters-collection-sweet-oak-bourbon) |
 
-### msrp_usd (53)
+### msrp_usd (55)
 
 | Product | Catalog | Breaking Bourbon | Page |
 |---|---|---|---|
@@ -95,6 +96,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Crossroads | 60.0 | 40.0 | [Blue Note Crossroads](https://breakingbourbon.com/review/blue-note-crossroads) |
 | Juke Joint | 25.0 | 30.0 | [Blue Note Juke Joint Whiskey](https://breakingbourbon.com/review/blue-note-juke-joint-whiskey) |
 | Brother's Bond Straight Bourbon | 45.0 | 35.0 | [Brother’s Bond Bourbon](https://breakingbourbon.com/review/brothers-bond-bourbon) |
+| Colonel E.H. Taylor Single Barrel | 79.99 | 60.0 | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Elmer T. Lee Single Barrel | 40.0 | 80.0 | [Elmer T. Lee Single Barrel Bourbon](https://breakingbourbon.com/review/elmer-t-lee-single-barrel-bourbon-2026) |
 | Four Roses | 25.0 | 20.0 | [Four Roses Bourbon](https://breakingbourbon.com/review/four-roses-bourbon) |
 | Four Roses Single Barrel | 50.0 | 40.0 | [Four Roses Single Barrel](https://breakingbourbon.com/review/four-roses-single-barrel) |
@@ -105,6 +107,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Grain to Glass | 70.0 | 100.0 | [Heaven Hill Grain to Glass Bourbon (2025)](https://breakingbourbon.com/review/heaven-hill-grain-to-glass-bourbon-2025) |
 | I.W. Harper | 30.0 | 35.0 | [I.W. Harper](https://breakingbourbon.com/review/i-w-harper) |
 | Jack Daniel's Single Barrel Barrel Proof | 80.0 | 65.0 | [Jack Daniel's Single Barrel Barrel Proof](https://breakingbourbon.com/review/jack-daniels-single-barrel-barrel-proof) |
+| Jefferson's Ocean Aged at Sea | 75.0 | 85.0 | [Jefferson's Ocean Aged at Sea Voyage 4](https://breakingbourbon.com/review/jeffersons-ocean-aged-at-sea-voyage-4) |
 | Jefferson's Very Small Batch Bourbon | 30.0 | 33.0 | [Jefferson's Very Small Batch](https://breakingbourbon.com/review/jeffersons-very-small-batch) |
 | Jim Beam Black 7 Year | 24.99 | 25.0 | [Jim Beam Black 7 Year Bourbon](https://breakingbourbon.com/review/jim-beam-black-7-year-bourbon) |
 | Vintage Bourbon | 100.0 | 29.0 | [Kentucky Vintage Bourbon](https://breakingbourbon.com/review/kentucky-vintage-bourbon) |
@@ -117,6 +120,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Noah's Mill | 70.0 | 60.0 | [Noah’s Mill (Batch 22-23)](https://breakingbourbon.com/review/noahs-mill-batch-22-23) |
 | Old Fitzgerald Bottled-In-Bond | 45.0 | 15.0 | [Old Fitzgerald Bottled in Bond Bourbon](https://breakingbourbon.com/review/old-fitzgerald-bottled-in-bond-bourbon) |
 | 117 Series Bottled in Bond | 70.0 | 60.0 | [Old Forester The 117 Series: Bottled in Bond (Batch 001)](https://breakingbourbon.com/review/old-forester-117-series-bottled-in-bond-batch-001) |
+| Old Forester 1924 — 10 Year | 115.0 | 120.0 | [Old Forester 1924 10-Year-Old (2026)](https://breakingbourbon.com/review/old-forester-1924-10-year-old-2026) |
 | Birthday Bourbon | 130.0 | 200.0 | [Old Forester 2025 Birthday Bourbon](https://breakingbourbon.com/review/old-forester-2025-birthday-bourbon) |
 | The President s Choice | 300.0 | 225.0 | [Old Forester President’s Choice Bourbon (2026)](https://breakingbourbon.com/review/old-forester-presidents-choice-bourbon-2026) |
 | Old Forester Single Barrel, Barrel Strength | 75.0 | 80.0 | [Old Forester Single Barrel Barrel Strength](https://breakingbourbon.com/review/old-forester-single-barrel-barrel-strength) |
@@ -134,9 +138,8 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Woodford Reserve Double Double Oaked | 130.0 | 50.0 | [Woodford Reserve Double Double Oaked (2017)](https://breakingbourbon.com/review/woodford-reserve-double-double-oaked) |
 | Woodinville | 60.0 | 55.0 | [Woodinville Straight Bourbon (2024)](https://breakingbourbon.com/review/woodinville-straight-bourbon-2024) |
 | Clermont Steep American Single Malt | 50.0 | 60.0 | [Clermont Steep](https://breakingbourbon.com/review/clermont-steep) |
-| Colonel E.H. Taylor Single Barrel | 79.99 | 60.0 | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
+| Colonel E.H. Taylor Jr. Barrel Proof | 75.0 | 80.0 | [E.H. Taylor Barrel Proof Bourbon (127.2 Proof) (Batch 14)](https://breakingbourbon.com/review/e-h-taylor-barrel-proof-bourbon-127-2-proof-batch-14) |
 | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | 70.0 | 60.0 | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
-| Jefferson's Ocean Aged at Sea | 75.0 | 85.0 | [Jefferson's Ocean Aged at Sea Voyage 4](https://breakingbourbon.com/review/jeffersons-ocean-aged-at-sea-voyage-4) |
 | Woodford Reserve Master's Collection | 130.0 | 180.0 | [Woodford Reserve Master’s Collection: Sweet Oak Bourbon](https://breakingbourbon.com/review/woodford-reserve-masters-collection-sweet-oak-bourbon) |
 
 ### is_core_range (36)
@@ -151,6 +154,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Chicken Cock | False | True | [Chicken Cock Kentucky Straight Bourbon (2026)](https://breakingbourbon.com/review/chicken-cock-kentucky-straight-bourbon-2026) |
 | Clyde May's | False | True | [Clyde May’s Straight Bourbon](https://breakingbourbon.com/review/clyde-mays-straight-bourbon) |
 | Coopers Craft | False | True | [Coopers' Craft](https://breakingbourbon.com/review/coopers-craft) |
+| Colonel E.H. Taylor Single Barrel | False | True | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Elmer T. Lee Single Barrel | False | True | [Elmer T. Lee Single Barrel Bourbon](https://breakingbourbon.com/review/elmer-t-lee-single-barrel-bourbon-2026) |
 | Fistful of Bourbon | False | True | [Fistful of Bourbon](https://breakingbourbon.com/review/fistful-of-bourbon) |
 | Frey Ranch Straight Bourbon | False | True | [Frey Ranch Straight Bourbon](https://breakingbourbon.com/review/frey-ranch-straight-bourbon) |
@@ -175,12 +179,51 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Woodford Reserve Double Double Oaked | False | True | [Woodford Reserve Double Double Oaked (2017)](https://breakingbourbon.com/review/woodford-reserve-double-double-oaked) |
 | Yellowstone Select | False | True | [Yellowstone Select Bourbon](https://breakingbourbon.com/review/yellowstone-select-bourbon) |
 | Ammunition Cask Strength Cabernet Sauvignon Barrel Finished | False | True | [Ammunition Bourbon Cask Strength Finished in Cabernet Sauvignon Barrels](https://breakingbourbon.com/review/ammunition-bourbon-cask-strength-finished-cabernet-savignon-barrels) |
-| Colonel E.H. Taylor Single Barrel | False | True | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Hancock's President's Reserve | False | True | [Hancock’s President's Reserve Single Barrel Bourbon](https://breakingbourbon.com/review/hancocks-presidents-reserve-single-barrel-bourbon) |
 | Hillrock Solera Aged Bourbon | False | True | [Hillrock Estate Solera Aged  Bourbon](https://breakingbourbon.com/review/hillrock-estate-solera-aged-bourbon) |
 | Kooper Family Whiskey Sweetheart of the Rodeo Straight | False | True | [Sweetheart of the Rodeo Bourbon](https://breakingbourbon.com/review/sweetheart-of-the-rodeo-bourbon) |
 
-### mash_bill (16)
+### name (35)
+
+| Product | Catalog | Breaking Bourbon | Page |
+|---|---|---|---|
+| Crossroads | Crossroads | Blue Note Crossroads | [Blue Note Crossroads](https://breakingbourbon.com/review/blue-note-crossroads) |
+| Juke Joint | Juke Joint | Blue Note Juke Joint | [Blue Note Juke Joint Whiskey](https://breakingbourbon.com/review/blue-note-juke-joint-whiskey) |
+| Restoration Rye | Restoration Rye | Castle & Key Restoration Rye | [Castle & Key Restoration Rye 2021 Batch 3](https://breakingbourbon.com/review/castle-key-restoration-rye-2021-batch-3) |
+| Iowa Bourbon | Iowa Bourbon | Cedar Ridge Iowa Bourbon | [Cedar Ridge Iowa Bourbon Whiskey](https://breakingbourbon.com/review/cedar-ridge-iowa-bourbon-whiskey) |
+| Cowboy Bourbon | Cowboy Bourbon | Garrison Brothers Cowboy Bourbon | [Garrison Brothers Cowboy Bourbon (2025)](https://breakingbourbon.com/review/garrison-brothers-cowboy-bourbon-2025) |
+| Guadalupe | Guadalupe | Garrison Brothers Guadalupe | [Garrison Brothers Guadalupe (2025)](https://breakingbourbon.com/review/garrison-brothers-guadalupe-2025) |
+| Grain to Glass | Grain to Glass | Heaven Hill Grain to Glass | [Heaven Hill Grain to Glass Bourbon (2025)](https://breakingbourbon.com/review/heaven-hill-grain-to-glass-bourbon-2025) |
+| Gentleman Jack | Gentleman Jack | Jack Daniel's Gentleman Jack | [Jack Daniel’s Gentleman Jack Tennessee Whiskey](https://breakingbourbon.com/review/jack-daniels-gentleman-jack-tennessee-whiskey) |
+| Old Tub | Old Tub | Jim Beam Old Tub | [Jim Beam Old Tub Bourbon](https://breakingbourbon.com/review/jim-beam-old-tub-bourbon) |
+| 117 Series Bottled in Bond | 117 Series Bottled in Bond | Old Forester The 117 Series: Bottled in Bond | [Old Forester The 117 Series: Bottled in Bond (Batch 001)](https://breakingbourbon.com/review/old-forester-117-series-bottled-in-bond-batch-001) |
+| 1870 Original Batch | 1870 Original Batch | Old Forester 1870 Original Batch | [Old Forester 1870 Original Batch Bourbon](https://breakingbourbon.com/review/old-forester-1870-original-batch-bourbon) |
+| 1910 Old Fine Whisky | 1910 Old Fine Whisky | Old Forester 1910 Old Fine | [Old Forester 1910 Old Fine Whisky](https://breakingbourbon.com/review/old-forester-1910-old-fine-whisky) |
+| Birthday Bourbon | Birthday Bourbon | Old Forester Birthday Bourbon | [Old Forester 2025 Birthday Bourbon](https://breakingbourbon.com/review/old-forester-2025-birthday-bourbon) |
+| The President s Choice | The President s Choice | Old Forester President's Choice | [Old Forester President’s Choice Bourbon (2026)](https://breakingbourbon.com/review/old-forester-presidents-choice-bourbon-2026) |
+| Statesman | Statesman | Old Forester Statesman Bourbon | [Old Forester Statesman Bourbon](https://breakingbourbon.com/review/old-forester-statesman-bourbon) |
+| The 117 Series Kentucky Straight | The 117 Series Kentucky Straight | Old Forester The 117 Series | [Old Forester The 117 Series (Batch No. 002)](https://breakingbourbon.com/review/old-forester-the-117-series-batch-no-002) |
+| Big Level Wheated Bourbon | Big Level Wheated Bourbon | Smooth Ambler Big Level Wheated | [Smooth Ambler Big Level Wheated Bourbon](https://breakingbourbon.com/review/smooth-ambler-big-level-wheated-bourbon) |
+| Contradiction Bourbon | Contradiction Bourbon | Smooth Ambler Contradiction | [Smooth Ambler Contradiction](https://breakingbourbon.com/review/smooth-ambler-contradiction) |
+| Old Scout Bourbon | Old Scout Bourbon | Smooth Ambler Old Scout | [Smooth Ambler Old Scout Bourbon (NAS - Batch 32)](https://breakingbourbon.com/review/smooth-ambler-old-scout-bourbon-nas-batch-32) |
+| Fortitude | Fortitude | Templeton Fortitude Bourbon | [Templeton Fortitude Bourbon](https://breakingbourbon.com/review/templeton-fortitude-bourbon) |
+| Trackside Bourbon Whiskey, Founder Release 2025 | Trackside Bourbon Whiskey, Founder Release 2025 | Trackside Founder Release | [Trackside Founder Release 2025](https://breakingbourbon.com/review/trackside-founder-release-2025) |
+| Ammunition Cask Strength Cabernet Sauvignon Barrel Finished | Ammunition Cask Strength Cabernet Sauvignon Barrel Finished | Ammunition Cask Strength Finished in Cabernet Sauvignon Barrels | [Ammunition Bourbon Cask Strength Finished in Cabernet Sauvignon Barrels](https://breakingbourbon.com/review/ammunition-bourbon-cask-strength-finished-cabernet-savignon-barrels) |
+| Discovery Series | Discovery Series | Bardstown Bourbon Company Discovery Series | [Bardstown Bourbon Company Discovery Series #13](https://breakingbourbon.com/review/bardstown-bourbon-company-discovery-series-13) |
+| Clermont Steep American Single Malt | Clermont Steep American Single Malt | Clermont Steep Single Malt | [Clermont Steep](https://breakingbourbon.com/review/clermont-steep) |
+| Colonel E.H. Taylor Jr. Barrel Proof | Colonel E.H. Taylor Jr. Barrel Proof | Colonel E.H. Taylor Barrel Proof | [E.H. Taylor Barrel Proof Bourbon (127.2 Proof) (Batch 14)](https://breakingbourbon.com/review/e-h-taylor-barrel-proof-bourbon-127-2-proof-batch-14) |
+| Eagle Rare Single Barrel, 10 Year | Eagle Rare Single Barrel, 10 Year | Eagle Rare 10 Year Single Barrel | [Eagle Rare 10 Year Single Barrel](https://breakingbourbon.com/review/eagle-rare-10-year-single-barrel) |
+| Hancock's President's Reserve | Hancock's President's Reserve | Hancock's President's Reserve Single Barrel | [Hancock’s President's Reserve Single Barrel Bourbon](https://breakingbourbon.com/review/hancocks-presidents-reserve-single-barrel-bourbon) |
+| Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | Hard Truth Four Grain Bottled in Bond | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
+| Hillrock Solera Aged Bourbon | Hillrock Solera Aged Bourbon | Hillrock Estate Solera Aged | [Hillrock Estate Solera Aged  Bourbon](https://breakingbourbon.com/review/hillrock-estate-solera-aged-bourbon) |
+| James E. Pepper Barrel Proof | James E. Pepper Barrel Proof | James E. Pepper Barrel Proof Decanter | [James E. Pepper Barrel Proof Decanter Bourbon](https://breakingbourbon.com/review/james-e-pepper-barrel-proof-decanter-bourbon) |
+| Lucky Seven The Holiday Toast, Double Oak | Lucky Seven The Holiday Toast, Double Oak | Lucky Seven The Holiday Toast | [Lucky Seven “The Holiday Toast”](https://breakingbourbon.com/review/lucky-seven-the-holiday-toast) |
+| Barrel Strength | Barrel Strength | Michter's US*1 Barrel Strength Rye | [Michter’s US*1 Barrel Strength Rye](https://breakingbourbon.com/review/michters-us-1-barrel-strength-rye) |
+| Rowan's Creek, 12 Year | Rowan's Creek, 12 Year | Rowan's Creek | [Rowan’s Creek (Batch 22-34)](https://breakingbourbon.com/review/rowans-creek-batch-22-34) |
+| Kooper Family Whiskey Sweetheart of the Rodeo Straight | Kooper Family Whiskey Sweetheart of the Rodeo Straight | Sweetheart of the Rodeo | [Sweetheart of the Rodeo Bourbon](https://breakingbourbon.com/review/sweetheart-of-the-rodeo-bourbon) |
+| Woodford Reserve Master's Collection | Woodford Reserve Master's Collection | Woodford Reserve Master's Collection: Sweet Oak | [Woodford Reserve Master’s Collection: Sweet Oak Bourbon](https://breakingbourbon.com/review/woodford-reserve-masters-collection-sweet-oak-bourbon) |
+
+### mash_bill (17)
 
 | Product | Catalog | Breaking Bourbon | Page |
 |---|---|---|---|
@@ -189,17 +232,18 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Crossroads | 60-70% Corn, 21-36% Rye, and 4-9% Malted Barley | 70% Corn, 21% Rye, 9% Malted Barley | [Blue Note Crossroads](https://breakingbourbon.com/review/blue-note-crossroads) |
 | Juke Joint | 70% corn, 21% rye, and 9% malted barley | 70% Corn, 21% Rye, 9% Malted Barley | [Blue Note Juke Joint Whiskey](https://breakingbourbon.com/review/blue-note-juke-joint-whiskey) |
 | Brother's Bond Straight Bourbon | Rye, Malted Barley | Corn, Rye, Wheat, and Malted Barley (Percentages undisclosed) | [Brother’s Bond Bourbon](https://breakingbourbon.com/review/brothers-bond-bourbon) |
+| Colonel E.H. Taylor Single Barrel | corn, rye, wheat, malted barley | Undisclosed (Buffalo Trace's Mashbill #1, believed to be 10% rye or less) | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | New Riff Kentucky Straight Rye | Rye, Malted Barley | 95% Rye, 5% Malted Rye | [New Riff Kentucky Straight Rye](https://breakingbourbon.com/review/new-riff-kentucky-straight-rye) |
 | O.K.I. Single Barrel Straight Bourbon | Corn, Rye, Malted Barley | 60% Corn, 36% Rye, 4% Malted Barley | [O.K.I. Single Barrel Bourbon Barrel #4](https://breakingbourbon.com/review/o-k-i-single-barrel-bourbon-barrel-4) |
+| Old Forester 1920 Prohibition Style | Corn, Rye, Malted Barley | 72% Corn, 18% Rye, 10% Malted Barley | [Old Forester 1920 Prohibition Style Bourbon](https://breakingbourbon.com/review/old-forester-1920-prohibition-style-bourbon) |
+| Old Forester 1924 — 10 Year | Corn, Rye, Malted Barley | 79% Corn, 11% Rye, 10% Malted Barley | [Old Forester 1924 10-Year-Old (2026)](https://breakingbourbon.com/review/old-forester-1924-10-year-old-2026) |
 | Old Forester Single Barrel, Barrel Strength | Corn, Rye, Malted Barley | 72% Corn, 18% Rye, 10% Malted Barley | [Old Forester Single Barrel Barrel Strength](https://breakingbourbon.com/review/old-forester-single-barrel-barrel-strength) |
 | Old Grand-Dad 114 | Corn, Rye, Malted Barley | 63% Corn, 27% Rye, 10% Malted Barley | [Old Grand-Dad 114 Bourbon](https://breakingbourbon.com/review/old-grand-dad-114-bourbon-2025) |
 | Trackside Bourbon Whiskey, Founder Release 2025 | Corn, Rye, Malted Barley | Undisclosed amounts of corn, chocolate malted barley, and two additional grains | [Trackside Founder Release 2025](https://breakingbourbon.com/review/trackside-founder-release-2025) |
 | Woodford Reserve Distiller's Select | Corn, Rye, Malted Barley | 72% Corn, 18% Rye, 10% Malted Barley | [Woodford Reserve Distiller's Select Bourbon](https://breakingbourbon.com/review/woodford-reserve-distillers-select-bourbon-2025) |
 | Clermont Steep American Single Malt | Malted Barley | 80% Standard Malted Barley, 20% Golden Pilsner Malted Barley | [Clermont Steep](https://breakingbourbon.com/review/clermont-steep) |
-| Colonel E.H. Taylor Single Barrel | corn, rye, wheat, malted barley | Undisclosed (Buffalo Trace's Mashbill #1, believed to be 10% rye or less) | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Eagle Rare Single Barrel, 10 Year | Corn, Rye, Malted Barley | Undisclosed (Buffalo Trace Mashbill #1) | [Eagle Rare 10 Year Single Barrel](https://breakingbourbon.com/review/eagle-rare-10-year-single-barrel) |
 | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | Corn, Wheat, Malted Barley | 78% Corn, 9% Rye, 9% Wheat, 4% Malted Barley | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
-| Old Forester 1920 Prohibition Style | Corn, Rye, Malted Barley | 72% Corn, 18% Rye, 10% Malted Barley | [Old Forester 1920 Prohibition Style Bourbon](https://breakingbourbon.com/review/old-forester-1920-prohibition-style-bourbon) |
 
 ### age_years (15)
 
@@ -230,13 +274,13 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Basil Hayden Toast | high_rye | traditional | [Basil Hayden Toast](https://breakingbourbon.com/review/basil-haydens-toast) |
 | Brother's Bond Straight Bourbon | traditional | wheated | [Brother’s Bond Bourbon](https://breakingbourbon.com/review/brothers-bond-bourbon) |
 | Daviess County Bourbon | traditional | wheated | [Daviess County Straight Bourbon Whiskey](https://breakingbourbon.com/review/daviess-county-straight-bourbon-whiskey) |
+| Colonel E.H. Taylor Single Barrel | wheated | traditional | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Green River | traditional | high_rye | [Green River Straight Bourbon (2025)](https://breakingbourbon.com/review/green-river-straight-bourbon-2025) |
 | Grain to Glass | traditional | high_rye | [Heaven Hill Grain to Glass Bourbon (2025)](https://breakingbourbon.com/review/heaven-hill-grain-to-glass-bourbon-2025) |
 | O.K.I. Single Barrel Straight Bourbon | traditional | high_rye | [O.K.I. Single Barrel Bourbon Barrel #4](https://breakingbourbon.com/review/o-k-i-single-barrel-bourbon-barrel-4) |
 | RD One Small Batch | traditional | high_rye | [RD One Small Batch Bourbon](https://breakingbourbon.com/review/rd-one-small-batch-bourbon) |
 | Contradiction Bourbon | high_rye | four_grain | [Smooth Ambler Contradiction](https://breakingbourbon.com/review/smooth-ambler-contradiction) |
 | Stellum Bourbon | traditional | high_rye | [Stellum Bourbon](https://breakingbourbon.com/review/stellum-bourbon) |
-| Colonel E.H. Taylor Single Barrel | wheated | traditional | [E.H. Taylor, Jr. Single Barrel](https://breakingbourbon.com/review/e-h-taylor-jr-single-barrel) |
 | Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | wheated | four_grain | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
 
 ### producer_id (13)
@@ -273,6 +317,21 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | Wheel Horse Straight | small_batch | standard | [Wheel Horse Bourbon (Batch 1)](https://breakingbourbon.com/review/wheel-horse-bourbon-batch-1) |
 | Wild Turkey Master's Keep | standard | limited | [Wild Turkey Master's Keep Bourbon](https://breakingbourbon.com/review/wild-turkey-masters-keep-bourbon) |
 | Hancock's President's Reserve | standard | single_barrel | [Hancock’s President's Reserve Single Barrel Bourbon](https://breakingbourbon.com/review/hancocks-presidents-reserve-single-barrel-bourbon) |
+
+### expression (10)
+
+| Product | Catalog | Breaking Bourbon | Page |
+|---|---|---|---|
+| Ammunition Cask Strength Cabernet Sauvignon Barrel Finished | Cask Strength Cabernet Sauvignon Barrel Finished | Cask Strength Finished in Cabernet Sauvignon Barrels | [Ammunition Bourbon Cask Strength Finished in Cabernet Sauvignon Barrels](https://breakingbourbon.com/review/ammunition-bourbon-cask-strength-finished-cabernet-savignon-barrels) |
+| Clermont Steep American Single Malt | American Single Malt | Single Malt | [Clermont Steep](https://breakingbourbon.com/review/clermont-steep) |
+| Colonel E.H. Taylor Jr. Barrel Proof | Jr. Barrel Proof | Barrel Proof | [E.H. Taylor Barrel Proof Bourbon (127.2 Proof) (Batch 14)](https://breakingbourbon.com/review/e-h-taylor-barrel-proof-bourbon-127-2-proof-batch-14) |
+| Eagle Rare Single Barrel, 10 Year | Single Barrel, 10 Year | 10 Year Single Barrel | [Eagle Rare 10 Year Single Barrel](https://breakingbourbon.com/review/eagle-rare-10-year-single-barrel) |
+| Hancock's President's Reserve | President's Reserve | President's Reserve Single Barrel | [Hancock’s President's Reserve Single Barrel Bourbon](https://breakingbourbon.com/review/hancocks-presidents-reserve-single-barrel-bourbon) |
+| Hard Truth Sweet Mash Four Grain, Bottled-in-Bond | Sweet Mash Four Grain, Bottled-in-Bond | Four Grain Bottled in Bond | [Hard Truth Four Grain Bottled in Bond Bourbon](https://breakingbourbon.com/review/hard-truth-four-grain-bottled-in-bond-bourbon) |
+| Lucky Seven The Holiday Toast, Double Oak | The Holiday Toast, Double Oak | The Holiday Toast | [Lucky Seven “The Holiday Toast”](https://breakingbourbon.com/review/lucky-seven-the-holiday-toast) |
+| Barrel Strength | Barrel Strength Rye | US*1 Barrel Strength Rye | [Michter’s US*1 Barrel Strength Rye](https://breakingbourbon.com/review/michters-us-1-barrel-strength-rye) |
+| Kooper Family Whiskey Sweetheart of the Rodeo Straight | Whiskey Sweetheart of the Rodeo Straight | the Rodeo | [Sweetheart of the Rodeo Bourbon](https://breakingbourbon.com/review/sweetheart-of-the-rodeo-bourbon) |
+| Woodford Reserve Master's Collection | Master's Collection | Master's Collection: Sweet Oak | [Woodford Reserve Master’s Collection: Sweet Oak Bourbon](https://breakingbourbon.com/review/woodford-reserve-masters-collection-sweet-oak-bourbon) |
 
 ### barrel_proof (5)
 
@@ -326,7 +385,6 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | [Daviess County French Oak Cask Finish](https://breakingbourbon.com/review/daviess-county-kentucky-straight-bourbon-french-oak-cask-finish) | Daviess County Bourbon | existing review link, but names disagree |
 | [Doc Swinson's Alter Ego Triple Cask](https://breakingbourbon.com/review/doc-swinsons-alter-ego-triple-cask-release-21-009) | Doc Swinson's | existing review link, but names disagree |
 | [Dread River](https://breakingbourbon.com/review/dread-river-straight-bourbon-batch-1) | Red River | 0.9 |
-| [Colonel E.H. Taylor Barrel Proof](https://breakingbourbon.com/review/e-h-taylor-barrel-proof-bourbon-127-2-proof-batch-14) | Colonel E.H. Taylor Jr. Barrel Proof | 0.954 |
 | [Colonel E.H. Taylor Four Grain](https://breakingbourbon.com/review/e-h-taylor-four-grain) | Colonel E.H. Taylor Single Barrel | 0.174 |
 | [Colonel E.H. Taylor Small Batch](https://breakingbourbon.com/review/e-h-taylor-small-batch) | Colonel E.H. Taylor Single Barrel | 0.417 |
 | [Easy Rider](https://breakingbourbon.com/review/easy-rider-bourbon) | Easy Rider 4 year old Kentucky Straight Bourbon | 0.606 |
@@ -344,7 +402,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | [Frey Ranch Farm Strength Uncut](https://breakingbourbon.com/review/frey-ranch-farm-strength-uncut-bourbon-batch-17) | Farmers + Distillers | 0.432 |
 | [Garrison Brothers Small Batch Texas](https://breakingbourbon.com/review/garrison-brothers-small-batch-texas-bourbon-2021-batch) | Garrison Brothers | existing review link, but names disagree |
 | [Green River Full Proof](https://breakingbourbon.com/review/green-river-full-proof-bourbon) | Silverbelly | 0.19 |
-| [Green River Wheated](https://breakingbourbon.com/review/green-river-wheated-bourbon) | Green River Sour Mash Wheated | 0.583 |
+| [Green River Wheated Bourbon](https://breakingbourbon.com/review/green-river-wheated-bourbon) | Green River Sour Mash Wheated | 0.583 |
 | [Hard Truth Sweet Mash](https://breakingbourbon.com/review/hard-truth-sweet-mash-bourbon-2024) | Hard Truth Four Grain | 0.2 |
 | [Hard Truth Wheated Bourbon Bottled in Bond](https://breakingbourbon.com/review/hard-truth-wheated-bourbon-bottled-in-bond) | Hard Truth Wheated | 0.467 |
 | [Heaven Hill Grain to Glass Wheated](https://breakingbourbon.com/review/heaven-hill-grain-to-glass-wheated-bourbon-2026) | Grain to Glass | product already matched by another candidate |
@@ -355,11 +413,11 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | [I.W. Harper 15 Year](https://breakingbourbon.com/review/i-w-harper-15-year) | I.W. Harper | existing review link, but names disagree |
 | [J.W. Dant Bottled in Bond](https://breakingbourbon.com/review/j-w-dant-bottled-in-bond-bourbon) | J.W. Dant | 0.364 |
 | [Jack Daniels 12 Year](https://breakingbourbon.com/review/jack-daniels-12-year-tennessee-whiskey-batch-2) | Jack Daniel's 12 Yr | 0.968 |
-| [Jack Daniel's Bonded](https://breakingbourbon.com/review/jack-daniels-bonded-tennessee-whiskey) | Jack Daniel's Bottled in Bond | 0.381 |
+| [Jack Daniel's Bonded Whiskey](https://breakingbourbon.com/review/jack-daniels-bonded-tennessee-whiskey) | Jack Daniel's Bottled in Bond | 0.381 |
 | [Jefferson's Tropics Aged in Humidity](https://breakingbourbon.com/review/jeffersons-tropics-aged-in-humidity) | Jefferson's Tropics Aged | 0.667 |
 | [Jeptha Creed 4 Grain Corn](https://breakingbourbon.com/review/jeptha-creed-4-grain-corn-bourbon) | Jeptha Creed | existing review link, but names disagree |
 | [Jeptha Creed Bottled in Bond Rye Heavy](https://breakingbourbon.com/review/jeptha-creed-bottled-in-bond-rye-heavy-bourbon) | Jeptha Creed | existing review link, but names disagree |
-| [Joseph Magnus Cigar Blend Bourbon - “The Fruit Bomb”](https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb) | Joseph Magnus | existing review link, but names disagree |
+| [Joseph Magnus Cigar Blend Bourbon - The Fruit Bomb](https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb) | Joseph Magnus | existing review link, but names disagree |
 | [Kentucky Owl Confiscated](https://breakingbourbon.com/review/kentucky-owl-confiscated) | Kentucky Owl | existing review link, but names disagree |
 | [Kings County Barrel Strength 6 Year Blender's Reserve](https://breakingbourbon.com/review/kings-county-barrel-strength-6-year-blenders-reserve-bourbon) | Kings County | existing review link, but names disagree |
 | [Knob Creek Quarter Oak](https://breakingbourbon.com/review/knob-creek-quarter-oak-bourbon) | Knob Creek | existing review link, but names disagree |
@@ -375,10 +433,8 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 | [Old Ezra 7 Year Barrel Strength](https://breakingbourbon.com/review/old-ezra-7-year-barrel-strength) | Ezra Brooks Old Ezra 7 | 0.3 |
 | [Old Fitzgerald 7 Year Bottled in Bond](https://breakingbourbon.com/review/old-fitzgerald-7-year-old-bottled-in-bond-bourbon) | Old Fitzgerald Bottled-In-Bond | product already matched by another candidate |
 | [Old Forester 1897 Bottled in Bond](https://breakingbourbon.com/review/old-forester-1897-bottle-in-bond-bourbon) | Old Forester 1897 | 0.333 |
-| [Old Forester Old Fine](https://breakingbourbon.com/review/old-forester-1910-old-fine-whisky) | 1910 Old Fine Whisky | 0.615 |
-| [Old Forester 10 Year](https://breakingbourbon.com/review/old-forester-1924-10-year-old-2026) | Old Forester 1924 — 10 Year | 0.444 |
-| [Old Forester](https://breakingbourbon.com/review/old-forester-1924-2024) | Old Forester 1924 — 10 Year | existing review link, but names disagree |
-| [Old Forester Signature](https://breakingbourbon.com/review/old-forester-signature-100-proof-bourbon) | Old Forester 100 Proof Signature | 0.643 |
+| [Old Forester 1924](https://breakingbourbon.com/review/old-forester-1924-2024) | Old Forester 1924 — 10 Year | product already matched by another candidate |
+| [Old Forester Signature Bourbon](https://breakingbourbon.com/review/old-forester-signature-100-proof-bourbon) | Old Forester 100 Proof Signature | 0.643 |
 | [Old Man Winter](https://breakingbourbon.com/review/old-man-winter-bourbon-batch-01) | Preservation Distillery Old Man Winter From the Black Hills | 0.328 |
 | [Orphan Barrel Fanged Pursuit](https://breakingbourbon.com/review/orphan-barrel-fanged-pursuit) | Fanged Pursuit | 0.667 |
 | [Penelope Four Grain](https://breakingbourbon.com/review/penelope-four-grain-bourbon) | Penelope | existing review link, but names disagree |
@@ -398,163 +454,162 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 
 ## New expressions by family
 
-- **Lost Lantern** (94): Single Cask : Cedar Ridge Iowa Single Malt Whiskey Finished in a Sherry Cask, Single Cask : McCarthy's Peated Oregon Single Malt, Single Cask Smooth Ambler, Single Cask : Starlight Distillery Rye, Single Cask : St. George Spirits California Single Malt, Single Cask : Boulder Spirits Peated Colorado Single Malt, Single Cask : Cedar Ridge Iowa 5 Year, Single Cask : Cedar Ridge Iowa 6 Year Straight Malted Rye, Single Cask : Copperworks Distilling Washington Single Malt, Single Cask : Breuckelen Distilling 8 Year NY Malted Wheat Wheat Whiskey, Single Cask : Westward Whiskey Chardonnay Finish Single Malt, Single Cask : Frey Ranch Distillery Four Grain, Single Cask 5 McCarthy's Peated Oregon Single Malt, Single Cask : Frey Ranch Distillery Nevada Three Grain, Single Cask : Starlight Distillery, Single Cask 8: Dad's Hat Rye, Single Cask 9: Dad's Hat Rye Finished in a Vermouth Cask, Single Cask : Westland Distillery 7 Year Single Malt, Single Cask New Riff Distilling, Single Cask New Riff, Single Cask Corbin Cash Rye, Single Cask Andalusia Whiskey Co. Single Malt, Single Cask : Westland Distillery American Single Malt Finished in a Red Wine Cask, Single Cask : Watershed Distillery Ohio, Single Cask : Corbin Cash 7 Year Rye, Single Cask : Frey Ranch, Single Cask : Boulder Spirits, Single Cask Ironroot Republic, Single Cask : Still Austin, Single Cask : Tom's Foolery, Single Cask Balcones Distillery Single Malt, Single Cask : High Wire South Carolina, Single Cask : Leiper's Fork, Single Cask : Rock Town Arkansas, Single Cask : Boulder Spirits Armagnac Finished, Single Cask : Westland Peated American Single Malt 9.99 Year, Single Cask : Tom's Foolery 10 Year Ohio, Single Cask : Spirit Works 10 Year California Rye, Single Cask : New York Distilling Co. 10 Year Rye, Single Cask : Wollersheim Distillery, Single Cask : FEW Spirits, Single Cask : Tom's Foolery Rye, Single Cask : Middle West Spirits Rye, Single Cask : Cedar Ridge Wheat Whiskey, Single Cask : Corbin Cash, Single Cask : Woodinville Washington, Single Cask 9: Union Horse Kansas, Farmers' Fields, Farmers' Fields Rye, Single Cask : Far North Rye, Single Cask : Frey Ranch Nevada Wheat Wheat Whiskey, Single Cask : Santa Fe Spirits New Mexico Single Malt, Single Cask : Ironroot Republic Double Barrel Texas Bourbon Anniversary Release, Single Cask : Cedar Ridge Iowa, Single Cask : Warfield Distilling Idaho Single Malt, Single Cask : Triple Eight Peated Massachusetts Single Malt, Single Cask : Triple Eight Massachusetts Single Malt 10 Years, Single Cask : Triple Eight Sauternes Cask Aged Massachusetts Single Malt 11 Year, Single Cask : McCarthy's Peated Oregon Single Malt 10 Year, Single Cask : Starlight Distillery Straight Bourbon Finished in a Honey Cask, Single Cask : Watershed Distillery Ohio Straight Bourbon Finished in a Nocino Cask, Single Cask : Finger Lakes Distilling Straight Rye Finished in a Pommeau Cask, Single Cask : Frey Ranch Nevada, Single Cask : Whiskey Acres, Single Cask : Frey Ranch Rye, Single Cask : Boulder Spirits Colorado Single Malt, Single Cask : Day's Defile Idaho, Single Cask : Montgomery Distillery Montana, Single Cask Dread River Distilling Co. Alabama, Single Cask : Fiddler Soloist Georgia, Single Cask : Broad Branch Distillery North Carolina Rye, Single Cask New Riff Distilling Rye, American Vatted Malt Edition No. 1 Single Malt, American Vatted Malt Remix (AVM-2), Blend Series: Far-Flung Bourbon 100, Blend Series: Far-Flung Bourbon II, Blend Series: Far-Flung Bourbon III, Blend Series: Far-Flung Bourbon IV, Blend Series: Far Flung, Brooklyn Bakery, Far-Flung Rye, Flame Single Malt, Mountain Meadow St. George Spirits California Single Malt, Shadow Single Malt, Single Cask Balcones Distilling, Single Cask : New York Distilling Co. Rye, Single Distillery Series: Balcones Distilling “Gentle Giant” Single Malt, Single Distillery Series: Mississippi Memory, Single Distillery Series: Whiskey Del Bac “Desert Dessert” Single Malt, Single Distillery Series: Whiskey Del Bac “Mega Mesquite” Single Malt, Soaring Spice, United States of, United States of Bourbon 1776 Edition, United States of Bourbon Cask Strength
+- **Lost Lantern** (94): Single Cask : Cedar Ridge Iowa Single Malt Whiskey Finished in a Sherry Cask, Single Cask : McCarthy's Peated Oregon Single Malt, Single Cask Smooth Ambler, Single Cask : Starlight Distillery Rye, Single Cask : St. George Spirits California Single Malt, Single Cask : Boulder Spirits Peated Colorado Single Malt, Single Cask : Cedar Ridge Iowa 5 Year, Single Cask : Cedar Ridge Iowa 6 Year Straight Malted Rye, Single Cask : Copperworks Distilling Washington Single Malt, Single Cask : Breuckelen Distilling 8 Year NY Malted Wheat Wheat Whiskey, Single Cask : Westward Whiskey Chardonnay Finish Single Malt, Single Cask : Frey Ranch Distillery Four Grain, Single Cask 5 McCarthy's Peated Oregon Single Malt, Single Cask : Frey Ranch Distillery Nevada Three Grain, Single Cask : Starlight Distillery, Single Cask 8: Dad's Hat Rye, Single Cask 9: Dad's Hat Rye Finished in a Vermouth Cask, Single Cask : Westland Distillery 7 Year Single Malt, Single Cask New Riff Distilling, Single Cask New Riff, Single Cask Corbin Cash Rye, Single Cask Andalusia Whiskey Co. Single Malt, Single Cask : Westland Distillery American Single Malt Finished in a Red Wine Cask, Single Cask : Watershed Distillery Ohio, Single Cask : Corbin Cash 7 Year Rye, Single Cask : Frey Ranch, Single Cask : Boulder Spirits, Single Cask Ironroot Republic, Single Cask : Still Austin, Single Cask : Tom's Foolery, Single Cask Balcones Distillery Single Malt, Single Cask : High Wire South Carolina, Single Cask : Leiper's Fork, Single Cask : Rock Town Arkansas, Single Cask : Boulder Spirits Armagnac Finished, Single Cask : Westland Peated American Single Malt 9.99 Year, Single Cask : Tom's Foolery 10 Year Ohio, Single Cask : Spirit Works 10 Year California Rye, Single Cask : New York Distilling Co. 10 Year Rye, Single Cask : Wollersheim Distillery, Single Cask : FEW Spirits, Single Cask : Tom's Foolery Rye, Single Cask : Middle West Spirits Rye, Single Cask : Cedar Ridge Wheat Whiskey, Single Cask : Corbin Cash, Single Cask : Woodinville Washington, Single Cask 9: Union Horse Kansas, Farmers' Fields, Farmers' Fields Rye, Single Cask : Far North Rye, Single Cask : Frey Ranch Nevada Wheat Wheat Whiskey, Single Cask : Santa Fe Spirits New Mexico Single Malt, Single Cask : Ironroot Republic Double Barrel Texas Bourbon Anniversary Release, Single Cask : Cedar Ridge Iowa, Single Cask : Warfield Distilling Idaho Single Malt, Single Cask : Triple Eight Peated Massachusetts Single Malt, Single Cask : Triple Eight Massachusetts Single Malt 10 Years, Single Cask : Triple Eight Sauternes Cask Aged Massachusetts Single Malt 11 Year, Single Cask : McCarthy's Peated Oregon Single Malt 10 Year, Single Cask : Starlight Distillery Straight Bourbon Finished in a Honey Cask, Single Cask : Watershed Distillery Ohio Straight Bourbon Finished in a Nocino Cask, Single Cask : Finger Lakes Distilling Straight Rye Finished in a Pommeau Cask, Single Cask : Frey Ranch Nevada, Single Cask : Whiskey Acres, Single Cask : Frey Ranch Rye, Single Cask : Boulder Spirits Colorado Single Malt, Single Cask : Day's Defile Idaho, Single Cask : Montgomery Distillery Montana, Single Cask Dread River Distilling Co. Alabama, Single Cask : Fiddler Soloist Georgia, Single Cask : Broad Branch Distillery North Carolina Rye, Single Cask New Riff Distilling Rye, American Vatted Malt Edition No. 1 Single Malt, American Vatted Malt Remix (AVM-2), Blend Series: Far-Flung Bourbon 100, Blend Series: Far-Flung Bourbon II, Blend Series: Far-Flung Bourbon III, Blend Series: Far-Flung Bourbon IV, Blend Series: Far Flung, Brooklyn Bakery, Far-Flung Rye, Flame Single Malt, Mountain Meadow St. George Spirits California Single Malt, Shadow Single Malt, Single Cask Balcones Distilling, Single Cask : New York Distilling Co. Rye, Single Distillery Series: Balcones Distilling Gentle Giant Single Malt, Single Distillery Series: Mississippi Memory, Single Distillery Series: Whiskey Del Bac Desert Dessert Single Malt, Single Distillery Series: Whiskey Del Bac Mega Mesquite Single Malt, Soaring Spice, United States of, United States of Bourbon 1776 Edition, United States of Bourbon Cask Strength
 - **Jack Daniel's** (25): 14 Year, American Single Malt Oloroso Sherry Cask, Bonded Rye, Coy Hill Barrelhouse 8 Special Release Single Barrel, Distillery Series Twice Barreled Tennessee Rye, Distillery Series : High Angel's Share, Distillery Series Toasted Maple Barrel Rye, Distillery Series Selection Pecan Wood Finish, Distillery Series Selection Oloroso Sherry Finish, Distillery Series Selection High Toast Maple Finish Rye, Distillery Series Selection Sweet Mash Tennessee, Distillery Series Selection Tennessee Rye Whiskey Finished in Table Syrup Barrels, ★ Single Barrel Barrel Proof Rye, Single Barrel Coy Hill High Proof, ★ Single Barrel Heritage Barrel, Single Barrel Rye, ★ Single Barrel Select, Single Barrel Special Release Barrel Proof Rye, Single Barrel Special Release Tanyard Hill Rye, Small Batch Special Release Coy Hill High Proof, Special Release Small Batch Rye, Tennessee Rye, Triple Mash Blended, Twice Barreled Special Release American Single Malt Finished in Oloroso Sherry Casks, Twice Barreled Special Release Heritage Barrel Rye
-- **Penelope** (25): 17 Year American Light, 18 Year American Light, 9 Year Private Select, Architect Build No. 3, Architects of Golf Hole 2, Barrel Strength Toasted, Barrel Strength, Cigar Sessions, Classic Series, Classic Series Rye, Cooper Series Riviera, Estate Collection: 9 Year Private Select, Estate Collection: Private Select 10 Year, Estate Collection: Single Barrel, F*ck Cancer, Founders Reserve: 13 Year American Light, Founders Reserve: 15 Year American Light, Rio, Rio (24-901), Rio (25-901), Rosé Cask Finish, Toasted Rye, Tokaji Cask Finish Rye, Valencia, Wheated
-- **Pinhook** (23): Bohemian Bourbon High Proof, Country Cask Strength, N Rye, War Vertical Series - 10 Year, War Vertical Series - 4 Year, War Vertical Series - 5 Year, War Vertical Series - 6 Year, War Vertical Series - 7 Year, War Vertical Series - 8 Year, War Vertical Series - 9 Year, Bourbondini, Cask Strength Bourbon “Bourbon Breeze”, Collaboration Series No. 2 “Garrett Oliver”, Collaboration Series No. 4 “Neal Bodenheimer” Rye, Munny Rye, Rye'd On, Tiz Rye Time Vertical Series - 10 Year, Tiz Rye Time Vertical Series - 4 Year, Tiz Rye Time Vertical Series - 5 Year, Tiz Rye Time Vertical Series - 6 Year, Tiz Rye Time Vertical Series - 7 Year, Tiz Rye Time Vertical Series - 8 Year, Tiz Rye Time Vertical Series - 9 Year
+- **Penelope** (25): 17 Year American Light, 18 Year American Light, 9 Year Private Select, Architect Build No. 3, Architects of Golf Hole 2, Barrel Strength Toasted, Barrel Strength, Cigar Sessions, Classic Series, Classic Series Rye, Cooper Series Riviera, Estate Collection: 9 Year Private Select, Estate Collection: Private Select 10 Year, Estate Collection: Single Barrel, F*ck Cancer, Founders Reserve: 13 Year American Light, Founders Reserve: 15 Year American Light, Rio, Rio (24-901), Rio (25-901), Rosé Cask Finish, Toasted Rye, Tokaji Cask Finish Rye, Valencia, Wheated Bourbon
+- **Pinhook** (23): Bohemian Bourbon High Proof, Country Cask Strength, N Rye, War Vertical Series - 10 Year, War Vertical Series - 4 Year, War Vertical Series - 5 Year, War Vertical Series - 6 Year, War Vertical Series - 7 Year, War Vertical Series - 8 Year, War Vertical Series - 9 Year, Bourbondini, Cask Strength Bourbon Bourbon Breeze, Collaboration Series No. 2 Garrett Oliver, Collaboration Series No. 4 Neal Bodenheimer Rye, Munny Rye, Rye'd On, Tiz Rye Time Vertical Series - 10 Year, Tiz Rye Time Vertical Series - 4 Year, Tiz Rye Time Vertical Series - 5 Year, Tiz Rye Time Vertical Series - 6 Year, Tiz Rye Time Vertical Series - 7 Year, Tiz Rye Time Vertical Series - 8 Year, Tiz Rye Time Vertical Series - 9 Year
 - **Chattanooga Whiskey** (20): Islay Scotch Cask Finish, Silver Oak Cabernet Cask Oak Finished Single Malt, 111 Cask, 91, 99 Rye, Bottled in Bond Bourbon Vintage Series, Experimental : Triple Peat, Experimental : Centenary Cask, Experimental : Pre Prohibition Style, Experimental : Single Pot Still Single Malt, Founder's 10th Anniversary Blend, Founder's 12th Anniversary Blend, Founder's 13th Anniversary Blend, Founder's 14th Anniversary Blend, Maple Syrup Cask Finished, Moldovan Ice Wine Cask, Russian River Pinot Cask Finished, Tawny Port Cask Finish, Triple Islay Cask Finished, White Port Cask Finish
 - **Starlight** (20): Carl T. Huber's Bloody Butcher, ★ Carl T. Huber's Double Oaked, ★ Carl T. Huber's Single Barrel Bourbon Finished in Honey Barrels, ★ Carl T. Huber's Single Barrel Rye Finished in Honey Barrels, ★ Carl T. Huber's Small Batch, Distillery 10 Year Reserve, Distillery 9.5 Year Single Barrel, ★ Distillery Bottled in Bond, ★ Distillery Bottled in Bond Rye, ★ Distillery Carl. T. Huber's Bourbon Finished in Madeira Casks, Distillery Carl T. Huber's Cigar Batch, Distillery Dana Huber Reserve Bottled in Bond, Distillery Honey Reserve, Distillery Mizunara Finished, ★ Huber's Rickhouse Select Single Barrel, ★ Old Rickhouse Double Oaked Rye, ★ Old Rickhouse Rye Whiskey Finished in Sherry Barrels, ★ Old Rickhouse Rye, ★ Single Barrel Rye Finished in Triple Sec Barrels, Distillery 10 Year Indiana Uplands American Single Malt
 - **Westward** (20): American Single Malt Chardonnay Cask, American Single Malt Stout Cask, American Single Malt Cask Strength, American Single Malt Pinot Noir Cask, American Single Malt, American Single Malt Elements: High Desert to Klamath Basin, American Two Malts Bridgeport Brewing Co. Single Malt, Bottled In Bond American Single Malt, Cognac Casks Single Malt, Double Dark Single Malt, Grand Cru Sauternes Cask Single Malt, Milestone Edition No. 2 Single Malt, Milestone Single Malt, Oloroso Sherry Cask Single Malt, PX Sherry Cask Single Malt, Reserve Pinot Noir Cask Single Malt, Two Malts, Vienna Malt Single Malt, Vintner's Cuvée Single Malt, x Fort George Brewery Stout Cask Single Malt
 - **Hard Truth** (19): 7 Year, 7 Year Sweet Mash Rye, 7 Year Wheated, American Odd, Barrel Finish Reserve: Double Oaked Rye, Barrel Finish Reserve: French Oak, Barrel Finish Reserve: Mizunara Finished Wheated, Barrel Finish Reserve: Double Oaked Sweet Mash Rye, Caramel Malt Rye, Chocolate Malt Sweet Mash Rye, Farmer's Reserve, French Oak Harvest Rye, Malted Rye, Maple Brulee Rye, Master Distiller's Reserve Blend Sweet Mash Rye, Master Distiller's Reserve Caramel Malt Sweet Mash Rye (RW-4), Chocolate Malt Rye, Sweet Mash Rye, Sweet Master Distiller's Reserve Malted Rye Sweet Mash Rye (RW-6)
 - **Three Chord** (18): Amplify Rye, Backstage Series: Atreyu, Backstage Series: Black Stone Cherry, Backstage Series: Dinosaur Jr., Backstage Series: Fu Manchu, Backstage Series: Halestorm, Backstage Series: Michael Ray, Backstage Series: Taking Back Sunday, Backstage Series: The Allman Brothers Band, Backstage Series: Underoath, RIOT Double Bonded Rye, Strange Collab Pinot Noir Finished, Flipside Triplewood, Hard Pressed Tennessee, Honey Toasted, Finished in Amburana and Cherry Bounce Barrels Rye, Strange Collaboration, Twelve Bar Reserve Barrel Proof
-- **Woodford Reserve** (17): Baccarat Edition, Blended Rye, Chocolate Malt Whisper, ★ Distiller's Select Rye, Distillery Series: Chocolate Whisper Redux, Distillery Series: Honey Barrel Finish, Distillery Series: Tawny Port Finish, Distillery Series: Toasted Oak Four Grain, Master's Collection: Batch Proof, Master's Collection Cherry Wood Smoked Barley, Master's Collection: Chocolate Malted, Master's Collection: Historic Barrel Entry, Master's Collection: Sonoma-Cutrer Pinot Noir Finish, Straight Malt Single Malt, Toasted Oak Oat Grain, Toasted Oak Rye, Wheat Wheat Whiskey
+- **Woodford Reserve** (17): Baccarat Edition, Blended Rye, Chocolate Malt Whisper, ★ Distiller's Select Rye, Distillery Series: Chocolate Whisper Redux, Distillery Series: Honey Barrel Finish, Distillery Series: Tawny Port Finish, Distillery Series: Toasted Oak Four Grain, Master's Collection: Batch Proof, Master's Collection Cherry Wood Smoked Barley, Master's Collection: Chocolate Malted, Master's Collection: Historic Barrel Entry, Master's Collection: Sonoma-Cutrer Pinot Noir Finish, Straight Malt Single Malt, Toasted Oak Oat Grain, Toasted Oak Rye, Wheat Whiskey
 - **Bardstown Bourbon Company** (15): Discovery, Bottled in Bond, Collaboration Series: Blackberry Farm, Collaborative Series: Carter Cellars, Collaborative Series: Ferrand II, Collaborative Series - Founders Brewing KBS Stout Finish, Collaborative Series: Goose Island Bourbon County, Collaborative Series: Silver Oak, Discovery Series, Distillery Reserve: Cascadia Garryana Oak Barrel Finish, Distillery Reserve: Cathedral French Oak, Distillery Reserve: Hokkaido Mizunara Oak Barrel Finish, Lochs of Jura Barrel Finish Single Malt, Small Batch Stave Finish, The Prisoner
 - **Fireside** (15): 8 Year, Bottled in Bond, Bottled in Bond Rye, Bottled in Bond Wheated, Barrel Finish Series: Pinot Noir, Rye-Barrel Finish, Single Barrel Bourbon Port Barrel Finish, Single Barrel Hazmat Proof, Single Barrel (5 Year), Single Barrel (7 Year), Single Barrel (8 Years), Single Barrel, Straight Malt Single Malt, Single Barrel Rye, Wheated Bourbon Single Barrel
 - **Heaven Hill** (15): 27 Year Barrel Proof, 7 Year Bottled in Bond, 90th Anniversary, Bottled-in-Bond Double Mash, Deatsville 13 Year, Grain to Glass Rye, Grain to Glass Specialty Barrel Series: Chinquapin Oak, Grain to Glass Specialty Barrel Series: Chinquapin Oak Rye, Grain to Glass Specialty Barrel Series: Chinquapin Oak Wheated, Heritage Collection 17 Year Barrel Proof, Heritage Collection 18 Year, Heritage Collection: ​​19 Year Kentucky Straight Wheat Wheat Whiskey, Heritage Collection: 2nd Edition Kentucky Straight Corn, Master Distillers Unity, ★ Select Stock Cognac Finished
 - **High West** (14): 14 Year Light, A Midwinter Nights Dram Act 2.1 Rye, Bourye, Campfire, Cask Strength, Double Rye!, Double Rye Campfire Finish, Double Rye Manhattan Finish, Double Rye, High Country American Single Malt, Rendezvous Rye, Rocky Mountain Rye 16 Year, Rocky Mountain Rye 21 Year, Son of Bourye
-- **Wyoming Whiskey** (14): 10 Year Anniversary Edition, Barrel Strength, Buffalo Bill Cody, Double Cask Limited Edition, National Parks: Acadia Edition, National Parks Limited Edition, National Parks Limited Edition No. 2, National Parks Limited Edition No. 3, National Parks No. 4, National Parks No. 5, Outryder Limited Edition, Outryder, Single Barrel, Small Batch
+- **Wyoming Whiskey** (14): 10 Year Anniversary Edition, Barrel Strength, Buffalo Bill Cody, Double Cask Limited Edition, National Parks: Acadia Edition, National Parks Limited Edition, National Parks Limited Edition No. 2, National Parks Limited Edition No. 3, National Parks No. 4, National Parks No. 5, Outryder Limited Edition, Outryder Whiskey, Single Barrel, Small Batch
 - **Copperworks** (13): Amaro Cask America Single Malt, Color Cask American Single Malt, Craft Malt Month American Single Malt, Distilling Single Cask No. 160-2 Single Malt, Farmsmith American Single Malt, Kilt Lifter, Maltsmith American Single Malt, Peatsmith American Single Malt, Port Cask Finish Single Malt, Scotch Cask American Single Malt, Special Release Pondera Cabernet Cask Single Malt, Special Release Red Wine Cask Single Malt, Special Release: Single Cask No. 440 Single Malt
 - **Parker's Heritage** (13): Collection: 10 Year Heavy Char, Collection: 11 Year Heavy Char Wheat Wheat Whiskey, Collection: 11 Year Single Barrel, Collection: 24 Year Bottled in Bond, Collection: Bourbon Finished in Orange Curaçao Barrels, Collection: Cask Strength Rye, Collection Double Barreled Blend, Collection: Heavy Char Barrels Rye, Collection: Kentucky Straight American, Collection: Malt Finished in Reconstructed Heavy Toast Cognac Barrels, Collection: Malt Single Malt, Collection: Promise of Hope, Collection: Wheat Wheat Whiskey
 - **Barrell** (12): 12 Year Finished in Toasted American Oak, 12 Year French Oak Cask Finish, Cask Finish Series: Amburana, Cask Finish Series: Armagnac, Cask Finish Series: Ice Wine, Cask Finish Series: Mizunara, Cask Finish Series: P.X. Sherry, Foundation Double Barrel, Rye, 18 Year Finished in Cabernet Sauvignon and Sauternes Barrels, (flagship), Whiskey: Infinite Barrel Project - February 12
 - **Knob Creek** (12): ★ 10 Year Rye, 15 Year, 21 Year, 25th Anniversary, Blender's Edition 01, x, Cask Strength Rye, ★ Single Barrel, ★ Small Batch 9 Year, ★ Small Batch, ★ Rye, Twice Barreled Rye
-- **Old Forester** (12): The 117 Series: Extra Old, The 117 Series: Extra Extra Old, The 117 Series: Scotch Cask Finish, The 117 Series: Warehouse I, 150th Anniversary, Classic, President's Choice Rye, Rye, The 117 Series - Whiskey Row Fire, The 117 Series: Bottled in Bond Rye, The 117 Series: Prohibition Era Still Proof, The 117 Series: Triple Char
-- **World Whiskey Society** (12): 10 Year Bourbon Finished in Cognac Cask, 12 Year Kentucky Straight Bourbon Finished in Amontillado Casks, 12 Year Kentucky Straight Bourbon Finished in Armagnac Barrels, 12 Year Kentucky Straight Bourbon Finished in Oloroso Sherry Casks, 12 Year Single Barrel Rye Finished in Awamori Cask, Finished in Mizunara Shochu Barrels, Classic Collection: 10 Year Bourbon Finished in a Port Cask, Couture Collection: 10 Year Bourbon Finished in Sherry Madeira Barrels, Couture Collection 6 Year Straight Bourbon Finished in Sherry Oloroso Barrels, Family Reserve 17 Year, Reserve Collection 9 Year, Wyatt Earp “HAZMAT” 13 Year American
-- **Elijah Craig** (11): ★ 12 Year, 15 Year Single Barrel, 21 Year, 23 Year, Barrel Proof - "M.W. Charity" Single Barrel, Barrel Proof Rye, Beer Barrel Finish, European Oak, Rye, Toasted Barrel Finish, Toasted Rye
-- **Heaven's Door** (11): Bootleg Series, Bootleg Series, Bootleg Vol. V, Decade Series Release Rye, Double Barrel, Highway 61 Blend, Homesick Blues Minnesota Wheated, Redbreast: Master Blenders' Edition, Finished in Vosges Oak Barrels Rye, Tennessee Bourbon 10 Year, Tennessee
-- **Pursuit United** (11): Blended, Blended Rye, (flagship), The Oak Collection, Double Oaked Rye, Kodam Mizunara, Triple Mash Barrel Proof, Triple Mash Barrel Proof Rye (Batch10CF), Triple Mash Barrel Proof Rye, Triple Mash, Triple Mash Rye
-- **Two Souls** (11): Featuring Rush Creek Distilling “Bold Rush”, Double Barreled Bourbon Featuring Watershed Distillery, Double Barreled Bourbon “Professional Bear Rasslin”, Double Barreled Pumpernickel Rye Featuring Middle West Spirits "O-H-Rye-O", J. Henry & Sons 8 Year Bourbon “Road's End”, Minnesota American Single Malt “Rich Mahogany”, Minnesota Straight Bourbon “Give ‘Em the Wheater”, Minnesota Straight Wheat Whiskey “Packin' Wheat”, New York Rye, South Carolina Straight Bourbon “Notorious C.O.B.”, South Dakota Straight Bourbon “The Black Queen”
-- **Blue Run** (10): 13.5 Year Single Barrel Cask Strength, 13 Year, 14 Year Small Batch, Ember, Emerald Rye, Flight Series II: Joshua Tree Sunrise, High Rye, Reflection II, Spirits Golden Rye, Trifecta
-- **Maker's Mark** (10): ★ 46, 46 Cask Strength, Private Select Gift Shop, RC6, SE4 x PR5, Wood Finishing Series Limited Release: FAE-01, Wood Finishing Series Limited Release: FAE-02, Wood Finishing Series Limited Release: BEP, Wood Finishing Series: “The Keepers Release”, Wood Finishing Series: “The Stewards Release”
-- **Old Elk** (10): 10 Year, 10 Year Wheated, Blended, Cognac Cask Finish, Cognac Cask Finish Wheat Wheat Whiskey, Four Grain, Infinity, Infinity Blend, Master's Blend Series: Double Wheat, Slow Cut Blended
-- **Still Austin** (10): Blue Corn Bottled in Bond, Bottled in Bond, Bottled in Bond High Rye, Bottled in Bond Red Corn, Bottled in Bond Rye, Cask Strength, Cask Strength Rye, Tanager Cigar Blend, “The Artist” Rye, “The Musician”
-- **Seelbach's** (9): Private Reserve 9 Year, Private Reserve Amburana Finished, Private Reserve Toasted French Oak & Maple Finished, Private Reserve “Classic”, Private Reserve Finished, Private Reserve “Laborer's Blend”, Private Reserve Straight Bourbon Finished in Triple Sec and Sparkling Wine Barrels, Private Reserve “The Beekeeper”, Private Reserve "Wheated"
-- **Bulleit** (8): 10 Year, 95 Rye 10 Year, 95 Rye 12 Year, 95 Rye, American Single Malt, Bottled in Bond, Mesquite Smoked Malt, 12 Year Rye
-- **Chicken Cock** (8): 160th Anniversary, Barrel Proof 15 Year, Chanticleer, Cotton Club, Double Oak, Rye, Small Batch, Wheated
+- **Old Forester** (12): The 117 Series: 1910 Extra Old, The 117 Series: Extra Extra Old, The 117 Series: Scotch Cask Finish, The 117 Series: Warehouse I, 150th Anniversary, Classic Bourbon, President's Choice Rye, Rye, The 117 Series - Whiskey Row Fire, The 117 Series: Bottled in Bond Rye, The 117 Series: Prohibition Era Still Proof, The 117 Series: Triple Char
+- **World Whiskey Society** (12): 10 Year Bourbon Finished in Cognac Cask, 12 Year Kentucky Straight Bourbon Finished in Amontillado Casks, 12 Year Kentucky Straight Bourbon Finished in Armagnac Barrels, 12 Year Kentucky Straight Bourbon Finished in Oloroso Sherry Casks, 12 Year Single Barrel Rye Finished in Awamori Cask, Finished in Mizunara Shochu Barrels, Classic Collection: 10 Year Bourbon Finished in a Port Cask, Couture Collection: 10 Year Bourbon Finished in Sherry Madeira Barrels, Couture Collection 6 Year Straight Bourbon Finished in Sherry Oloroso Barrels, Family Reserve 17 Year, Reserve Collection 9 Year, Wyatt Earp HAZMAT 13 Year American
+- **Elijah Craig** (11): ★ 12 Year, 15 Year Single Barrel, 21 Year, 23 Year, Barrel Proof - M.W. Charity Single Barrel, Barrel Proof Rye, Beer Barrel Finish, European Oak, Rye, Toasted Barrel Finish, Toasted Rye
+- **Heaven's Door** (11): Bootleg Series, Bootleg Series, Bootleg Vol. V, Decade Series Release Rye, Double Barrel, Highway 61 Blend, Homesick Blues Minnesota Wheated, Redbreast: Master Blenders' Edition, Finished in Vosges Oak Barrels Rye, Tennessee Bourbon 10 Year, Tennessee Bourbon
+- **Pursuit United** (11): Blended Bourbon, Blended Rye, (flagship), The Oak Collection, Double Oaked Rye, Kodam Mizunara, Triple Mash Barrel Proof, Triple Mash Barrel Proof Rye (Batch10CF), Triple Mash Barrel Proof Rye, Triple Mash, Triple Mash Rye
+- **Two Souls** (11): Featuring Rush Creek Distilling Bold Rush, Double Barreled Bourbon Featuring Watershed Distillery, Double Barreled Bourbon Professional Bear Rasslin, Double Barreled Pumpernickel Rye Featuring Middle West Spirits O-H-Rye-O, J. Henry & Sons 8 Year Bourbon Road's End, Minnesota American Single Malt Rich Mahogany, Minnesota Straight Bourbon Give ‘Em the Wheater, Minnesota Straight Wheat Whiskey Packin' Wheat, New York Rye, South Carolina Straight Bourbon Notorious C.O.B., South Dakota Straight Bourbon The Black Queen
+- **Blue Run** (10): 13.5 Year Single Barrel Cask Strength, 13 Year, 14 Year Small Batch, Ember Bourbon, Emerald Rye, Flight Series II: Joshua Tree Sunrise, High Rye, Reflection II, Spirits Golden Rye, Trifecta
+- **Old Elk** (10): 10 Year Bourbon, 10 Year Wheated, Blended Bourbon, Cognac Cask Finish, Cognac Cask Finish Wheat Wheat Whiskey, Four Grain, Infinity, Infinity Blend, Master's Blend Series: Double Wheat, Slow Cut Blended
+- **Still Austin** (10): Blue Corn Bottled in Bond, Bottled in Bond, Bottled in Bond High Rye, Bottled in Bond Red Corn, Bottled in Bond Rye, Cask Strength, Cask Strength Rye, Tanager Cigar Blend, The Artist Rye, The Musician
+- **Seelbach's** (9): Private Reserve 9 Year, Private Reserve Amburana Finished, Private Reserve Toasted French Oak & Maple Finished, Private Reserve Classic, Private Reserve Finished, Private Reserve Laborer's Blend, Private Reserve Straight Bourbon Finished in Triple Sec and Sparkling Wine Barrels, Private Reserve The Beekeeper, Private Reserve Wheated
+- **Bulleit** (8): 10 Year, 95 Rye 10 Year, 95 Rye 12 Year, 95 Whiskey Rye, American Single Malt, Bottled in Bond, Mesquite Smoked Malt, 12 Year Rye
+- **Chicken Cock** (8): 160th Anniversary, Barrel Proof 15 Year, Chanticleer, Cotton Club, Double Oak, Rye, Small Batch, Wheated Bourbon
 - **Frey Ranch** (8): 100% Malted Corn, American Single Malt Smoked, Farm Strength Uncut Rye, Five Grain Single Barrel, Harvester Series: 10th Anniversary American, Harvester Series: Second Harvest, Quad Malt, Single Grain Series 100% Barley
-- **Green River** (8): 1885, Distillery Select: Toasted Double Oak, Distilling Straight, Honey Finished, Rye, U.S. Army 250th Anniversary, Wheated Bourbon Single Barrel, Wheated Full Proof
+- **Green River** (8): 1885 Bourbon, Distillery Select: Toasted Double Oak, Distilling Straight, Honey Finished, Rye, U.S. Army 250th Anniversary, Wheated Bourbon Single Barrel, Wheated Full Proof
+- **Maker's Mark** (8): ★ 46 Bourbon, 46 Cask Strength, Private Select Gift Shop, RC6, SE4 x PR5, Wood Finishing Series Limited Release: FAE-01, Wood Finishing Series Limited Release: FAE-02, Wood Finishing Series Limited Release: BEP
 - **Old Potrero** (8): Christmas Spirit, Bottled in Bond 16 Year, California Cellar Series Rye, California Cellar Series Gundlach Bundschu Gewurztraminer Finish Rye, California Cellar Series Almanac Beer Co. Imperial Stout Oak Finish Rye, Hotaling's 13 Year Bottled in Bond, Single Malt Rye, Toasted Barrel 6 Year
-- **Two Souls Spirits** (8): “Son of Ghost Barrel”, Light Whiskey “Red Light Green Light”, New York Rye Finished in a Used Honey Spirit Barrel “Five Golden Grains”, New York, Watershed Distillery, Wisconsin Rye “Shortstack”, Wisconsin Straight Rye Whiskey Featuring Wollersheim Distillery “Wisconsin Waffles”, Wisconsin Rye
+- **Two Souls Spirits** (8): Son of Ghost Barrel, Light Whiskey Red Light Green Light, New York Rye Finished in a Used Honey Spirit Barrel Five Golden Grains, New York, Watershed Distillery, Wisconsin Rye Shortstack, Wisconsin Straight Rye Whiskey Featuring Wollersheim Distillery Wisconsin Waffles, Wisconsin Rye
 - **Wild Turkey** (8): 101 8 Year, Austin Nichols Archives: Gold Foil Edition, ★ (flagship), Master's Keep Cornerstone Rye, Master's Keep Decades, Master's Keep Revival, Master's Keep Unforgotten, Rare Breed Rye
 - **Woodinville** (8): 100% Rye 8 Year, 6 Year, Sauternes Finish, Founder's Find, Port Finished, 9 Year, ★ Finished in Port Casks, 8 Year
 - **15 Stars** (7): Artisan Collection, First West Fine Aged Rye, Founder's Reserve Fine Aged Rye, Platinum Fine Aged, Three Ports Fine-Aged, Timeless Reserve, Vino De Naranja
-- **Blue Note** (7): Honey Bourbon Cask, Honey Cask Rye, Honey Rye Cask, Las Notas, Rye, Single Barrel Rye, Wheated
+- **Blue Note** (7): Honey Bourbon Cask, Honey Cask Rye, Honey Rye Cask, Las Notas, Rye, Single Barrel Rye, Wheated Bourbon
 - **Broken Barrel** (7): Americana, California Oak, Cask Strength, Heresy Rye, Honey Smoke Reserva American, Small Batch, x Los Angeles Distillery Collaboration
-- **Bushwood** (7): Back 9 Bottled in Bond 11 Year, Long Ball Gold Label Single Barrel Barrel Proof, Long Ball Gold Label Single Barrel, Longball Gold Label Single Barrel Wheated, Stillwater Gold Label Single Barrel Rye, Stillwater Perennial Cask Strength 9 Year Rye, Wheated
+- **Bushwood** (7): Back 9 Bottled in Bond 11 Year, Long Ball Gold Label Single Barrel Barrel Proof, Long Ball Gold Label Single Barrel, Longball Gold Label Single Barrel Wheated, Stillwater Gold Label Single Barrel Rye, Stillwater Perennial Cask Strength 9 Year Rye, Wheated Bourbon
 - **Doc Holliday** (7): 10 Year Special Edition Collector's Case, 15 Year Single Barrel, 16 Year Cigar Blend, 7 Year Single Barrel, Bottled in Bond, 6 Year Single Barrel, 8 Year
 - **Garrison Brothers** (7): Balmorhea Single Barrel Cask Strength, Bottled in Bond, Cask Strength Single Barrel Laguna Madre, Laguna Madre, Ranch Reserve Oloroso, Ranch Reserve PX, Sonora
 - **Remus** (7): (flagship), Babe Ruth Reserve, Gatsby Reserve, Lou Gehrig Reserve, Master Distiller Experimental Series: No. 2 Straight Wheat Wheat Whiskey, Repeal Reserve Series IX, Repeal Reserve Series V
-- **Hardin's Creek** (7): Colonel James B. Beam, Kentucky Series: Boston, Kentucky Series: Clermont, Kentucky Series: Frankfort, Warehouse Series: Warehouse G "The Owl", Warehouse Series: Warehouse R "The Mushroom", Warehouse Series: Warehouse W "The Beaver"
-- **Lucky Seven** (7): 12 Year Single Barrel “The Proprietor”, "The Hold Up", "The Jokester", The New Yorker, “The Proprietor” 14 Year, “The Proprietor” 15 Year, "The Proprietor" 6 Year
-- **Oregon Spirit** (7): Bottled in Bond Rye, Distillers, Distillers Single Barrel Bottled In Bond, Distillers Single Barrel Bottled In Bond Wheat Wheat Whiskey, Distillers Rye, Straight American Malt, Straight American Wheat Wheat Whiskey
+- **Hardin's Creek** (7): Colonel James B. Beam, Kentucky Series: Boston, Kentucky Series: Clermont, Kentucky Series: Frankfort, Warehouse Series: Warehouse G The Owl, Warehouse Series: Warehouse R The Mushroom, Warehouse Series: Warehouse W The Beaver
+- **Lucky Seven** (7): 12 Year Single Barrel The Proprietor, The Hold Up, The Jokester, The New Yorker, The Proprietor 14 Year, The Proprietor 15 Year, The Proprietor 6 Year
+- **Oregon Spirit** (7): Bottled in Bond Rye, Distillers Bourbon, Distillers Single Barrel Bottled In Bond, Distillers Single Barrel Bottled In Bond Wheat Wheat Whiskey, Distillers Rye, Straight American Malt, Straight American Wheat Wheat Whiskey
 - **Thomas S. Moore** (7): Finished in Cabernet Sauvignon Casks, Finished in Chardonnay Casks, Finished in Port Casks, Finished in Cognac Casks, Finished in Madeira Casks, Finished in Merlot Casks, Finished in Sherry Casks
-- **WhistlePig** (7): CampStock Wheat Wheat Whiskey, PiggyBack Legends Series: Big Papi Barrel Rye, PiggyBack Rye, RoadStock Rye, Snout-to-Tail Bourbon - 10 Year, The Boss Hog The Spirit of Mortimer Rye, The Boss Hog XIII: The Golden Pharaoh Rye
-- **291** (6): All Rye 100% Rye Malt Colorado, Bad Guy Colorado, E Colorado Whiskey “The American Single Malt”, HR, M Colorado, XII Colorado
-- **Balcones** (6): “1” Texas Single Malt, Lineage Single Malt, Mirador Single Malt, Texas Pot Still, Texas Rye, Tres Hombres
+- **WhistlePig** (7): CampStock Wheat Wheat Whiskey, PiggyBack Legends Series: Big Papi Barrel Rye, PiggyBack Rye, RoadStock Whiskey Rye, Snout-to-Tail Bourbon - 10 Year, The Boss Hog The Spirit of Mortimer Rye, The Boss Hog XIII: The Golden Pharaoh Rye
+- **291** (6): All Rye 100% Rye Malt Colorado, Bad Guy Colorado, E Colorado Whiskey The American Single Malt, HR Bourbon, M Colorado, XII Colorado
+- **Balcones** (6): 1 Texas Single Malt, Lineage Single Malt, Mirador Single Malt, Texas Pot Still, Texas Rye, Tres Hombres
 - **Basil Hayden** (6): Cognac Cask Reserve, Golden Rye, Malted Rye, Subtle Smoke, 10 Year Rye, Two by Two
-- **Benchmark** (6): ★ Bonded, ★ Full Proof, Old No. 8 Brand, ★ Single Barrel, ★ Small Batch, ★ Top Floor
-- **Evan Williams** (6): ★ 12 Year, ★ 1783 Small Batch, ★ 23 Year, ★ “Black Label”, ★ Bottled in Bond, ★ Master Blend
+- **Benchmark** (6): ★ Bonded Bourbon, ★ Full Proof, Old No. 8 Brand, ★ Single Barrel, ★ Small Batch, ★ Top Floor
+- **Evan Williams** (6): ★ 12 Year, ★ 1783 Small Batch, ★ 23 Year, ★ Black Label, ★ Bottled in Bond, ★ Master Blend
 - **Frank August** (6): Case Study: 01 Mizunara Japanese Oak, Case Study: 05 Wheated Reserve, Case Study: 06 Legacy Reserve, Single Barrel, Small Batch, Small Batch Rye
 - **George Dickel** (6): 15 Year Single Barrel, Bottled In Bond, (flagship), Rye, Superior No. 12, x Leopold Bros. Collaboration Blend Rye
-- **Hidden Barn** (6): Double Barreled, Finished in Madeira Casks “Perfect Harmony”, Series Two, Series One, Organic Wheated, Series One Small Batch “Slow Fade”
+- **Hidden Barn** (6): Double Barreled, Finished in Madeira Casks Perfect Harmony, Series Two, Series One, Organic Wheated, Series One Small Batch Slow Fade
 - **Jim Beam** (6): ★ Black XA Extra Aged, ★ Double Oak, Lineage, Sunshine Blend, ★ White Label, Winter Reserve
-- **Peerless** (6): High Rye, Absinthe Barrel Finished Rye, Small Batch Barrel Proof, 2 Year Rye, Toasted, Toasted Rye
+- **Peerless** (6): High Rye, Absinthe Barrel Finished Rye, Small Batch Barrel Proof, 2 Year Rye, Toasted Bourbon, Toasted Rye
 - **Kentucky Senator** (6): (flagship), John G. Carlisle, John Sherman Cooper, John Brown, John Edwards, Jim Bunning
-- **Michter's** (6): Toasted Finish, US*1, US*1 Original Sour Mash, US*1 Single Barrel Rye, US*1 Toasted Barrel Finish Sour Mash, US*1 Toasted Barrel Finish Rye
+- **Michter's** (6): Toasted Finish, US*1 Bourbon, US*1 Original Sour Mash, US*1 Single Barrel Rye, US*1 Toasted Barrel Finish Sour Mash, US*1 Toasted Barrel Finish Rye
 - **Middle West** (6): Spirits Cask Strength Straight Wheated, Spirits Dark Pumpernickel Cask Strength Rye, Spirits Double Cask Collection: Napoleon Calvados Cask-Finished, Spirits Double Cask Collection: Sherry Cask-Finished, Spirits Straight Wheat Whiskey Cask Strength, Spirits Vino De Naranja
 - **Mythology** (6): Best Friend Bourbon Cask Strength, Best Friend, Hell Bear Whiskey Cask Strength, Hell Bear, Syrah Finished, Thunder Hoof Rye
 - **Uncle Nearest** (6): (flagship), 1884 Small Batch, Master Blend Edition, Single Barrel, Rye, Uncut/Unfiltered Rye
 - **Old Dominick** (6): 8 Year Reserve, All the Cookies, Bottled-in-Bond, Huling Station Blend, Huling Station, (flagship)
 - **Old Overholt** (6): 11 Year Rye, ★ Rye, ★ Bottled in Bond Rye, Cask Strength 10 Year Rye, Cask Strength 11 Year Rye, Cask Strength 12 Year Rye
-- **Rebel** (6): 10 Year Single Barrel, 100 Childress Vineyards Cabernet Franc Barrel Finish, Kyle Busch 108 Single Barrel, Yell 10 Year Single Barrel, Yell 100, Yell
+- **Rebel** (6): 10 Year Single Barrel, 100 Childress Vineyards Cabernet Franc Barrel Finish, Kyle Busch 108 Single Barrel, Yell 10 Year Single Barrel, Yell 100, Yell Bourbon
 - **Rock Town** (6): Bottled in Bond, Column Still Collection Single Barrel Cask Strength, ★ Column Still Collection Small Batch, ★ Column Still Collection Toasted French Oak Barrel Finish, Four Grain Sour Mash, Winners Circle
 - **Russell's Reserve** (6): 13 Year, 15 Year, (flagship), ★ 6 Year Rye, ★ Single Barrel Rye, Single Rockhouse Camp Nelson E
 - **Talnua** (6): Bottled in Bond, Cask & Stave Series, Continuum Cask, Heritage Selection, Olde Saint's Keep, Peated Cask
 - **Westland** (6): Distillery Solum Edition 2 Single Malt, Distillery Solum Edition 3 Single Malt, Garryana 10th Edition American Single Malt, Garryana Edition 7 Single Malt, Garryana Edition 8 Single Malt, Garryana Edition 9 Single Malt
 - **Wheel Horse** (6): Barrel Master Select, Barrel Master Select Rye, Cigar Blend, Finished in Baltic Porter Beer Barrels, Double Oak Bourbon Release, Rye
 - **1792** (5): Cognac Cask Finish, High Rye, Rye, Port Finish, XV
-- **Breuckelen** (5): 77 Whiskey Bonded Rye, 77 Whiskey Distilled from Local Rye & Corn, 77 Whiskey - Distilled from New York Wheat Wheat Whiskey, 77 Whiskey 100% Corn, Brownstone Single Malt
-- **Bradshaw** (5): 12 Year Single Barrel, Flagship, Single Barrel, (flagship), Rye
+- **Breuckelen** (5): 77 Whiskey Bonded Rye, 77 Whiskey Distilled from Local Rye & Corn, 77 Whiskey - Distilled from New York Wheat Wheat Whiskey, 77 Whiskey 100% Corn, Brownstone Whiskey Single Malt
+- **Bradshaw** (5): 12 Year Single Barrel, Flagship Bourbon, Single Barrel, (flagship), Rye
 - **Buffalo Trace** (5): Experimental Collection: Low Entry Proof Wheated, Kosher Rye Recipe, Kosher Wheat Recipe, Organic Six Grain, Single Oak Rye
-- **Buzzard's Roost** (5): American, Bottled in Bond, Cigar Rye, Double Oak Cigar Blend, Double Oak Four Grain
+- **Buzzard's Roost** (5): American Whiskey, Bottled in Bond, Cigar Rye, Double Oak Cigar Blend, Double Oak Four Grain
 - **Copper &** (5): Cask Cigar Blend, Cask Double Oak, Cask Double Oaked, Cask Limited Edition Small Batch Series Release, Cask Small Batch Series
-- **Dark Arts** (5): Barely Legal, French Oak Stave Finished Small Batch, House Blunt Blend Rye, House Single Barrel, House Straight Bourbon Finished in Red Port & White Port Wine Casks “The Empyrean II”
+- **Dark Arts** (5): Barely Legal, French Oak Stave Finished Small Batch, House Blunt Blend Rye, House Single Barrel, House Straight Bourbon Finished in Red Port & White Port Wine Casks The Empyrean II
 - **Filmland** (5): Spirits Moonlight Mayhem! 2: The White Port Wolf, Spirits Presents Ryes of the Robots Extended Cut, Spirits Presents Town at the End of Tomorrow, Spirits Quadraforce, Spirits The Crimson Cask
-- **Four Roses** (5): Small Batch 130th Anniversary Edition, Experimental Series 001: Mizunara Finish, Private Selection “Medicinal Whiskey”, ★ Super Premium, ★ Yellow Label
-- **Hooten Young** (5): 12 Year Barrel Proof, American Whiskey 12 Year, Bottled in Bond, Operation Gothic Serpent Rye, Single Barrel Select “Norm Hooten Pick”
-- **K.Luke** (5): Blended, Small Batch Barrel Strength, Small Batch Barrel Strength Rye, Small Batch, Toasted Barrel Barrel Strength
-- **Kings County** (5): Barrel Strength, Barrel Strength Empire Rye, Distillery Bottled in Bond, Empire Rye, Wheat Wheat Whiskey
+- **Four Roses** (5): Small Batch 130th Anniversary Edition, Experimental Series 001: Mizunara Finish, Private Selection Medicinal Whiskey, ★ Super Premium, ★ Yellow Label
+- **Hooten Young** (5): 12 Year Barrel Proof, American Whiskey 12 Year, Bottled in Bond, Operation Gothic Serpent Rye, Single Barrel Select Norm Hooten Pick
+- **K.Luke** (5): Blended Bourbon, Small Batch Barrel Strength, Small Batch Barrel Strength Rye, Small Batch, Toasted Barrel Barrel Strength
+- **Kings County** (5): Barrel Strength, Barrel Strength Empire Rye, Distillery Bottled in Bond, Empire Rye, Wheat Whiskey
 - **Larrikin** (5): Bottled in Bond, Cigar Lounge, Decade Rye Cognac Cask, Rosewater, Small Batch
-- **Little Book** (5): (flagship), (flagship), Infinite Edition II, "The Easy", The Infinite: Edition 1
+- **Little Book** (5): (flagship), (flagship), Infinite Edition II, The Easy, The Infinite: Edition 1
 - **McKenzie** (5): Bottled in Bond, Bottled in Bond Rye, (flagship), Pure Pot Still, Rye
 - **Milam & Greene** (5): Single Barrel, Provisions, Finished in Port Wine Casks Rye, The Castle Hill Series, Triple Cask
-- **New Riff** (5): Backsetter, Backsetter Rye, Balboa Rye Bottled in Bond, Maltster Bourbon Made with Malted, Sour Mash Single Malt
+- **New Riff** (5): Backsetter Bourbon, Backsetter Rye, Balboa Rye Bottled in Bond, Maltster Bourbon Made with Malted, Sour Mash Single Malt
 - **Oaklore** (5): Four Grain, Story Series: Old Fashioned Cask Finish Four Grain, Story Series: Oloroso Sherry Cask Finished Four Grain, Story Series: Port Cask Finish Rye, Story Series Port Finished
-- **Old Grand-Dad** (5): 114 Single Barrel 7 Year, 16 Year, 7 Year Bottled in Bond, ★ Bonded, ★ (flagship)
+- **Old Grand-Dad** (5): 114 Single Barrel 7 Year, 16 Year, 7 Year Bottled in Bond, ★ Bonded Bourbon, ★ (flagship)
 - **Old Pepper** (5): Bottled in Bond, Bottled in Bond Rye, Single Barrel, Single Barrel Rye, Small Batch Single Malt
-- **Onyx & Amber** (5): 20 Year American Light Whiskey "A Little Bit of Lightning", American Light Whiskey “Copper Buffalo”, Guest Blender Series: Blend No. 1 Ryan Negley, Owl of Oz, Single Barrel Rye
+- **Onyx & Amber** (5): 20 Year American Light Whiskey A Little Bit of Lightning, American Light Whiskey Copper Buffalo, Guest Blender Series: Blend No. 1 Ryan Negley, Owl of Oz, Single Barrel Rye
 - **Redwood Empire** (5): Emerald Giant Rye, Grizzly Beast Bottled in Bond, Lost Monarch, Pipe Dream, Rocket Top Bottled in Bond Rye
 - **Roaming Man** (5): 10 Year Rye, Special Edition Tennessee Whiskey Cask Strength, Cask Strength Rye, Tennessee Cask Strength Rye, Tennessee Rye
 - **Sagamore** (5): 10 Year Rye, High Rye, Cask Strength Rye, Double Oak Rye, Small Batch Rye
-- **Stoll & Wolfe** (5): Pennsylvania Rye, Pure Rye, Rosen Rye 4 Year, Straight American Whiskey Blend, x West Overton Keystone Rye
+- **Stoll & Wolfe** (5): Pennsylvania Whiskey Rye, Pure Rye, Rosen Rye 4 Year, Straight American Whiskey Blend, x West Overton Keystone Rye
 - **Town Branch** (5): ★ 6 Year Wheated, ★ 7 Year Kentucky Single Malt, Bottled-in-Bond Kentucky Single Malt Archive Series, Imperium MMXXV, Maple Barrel Stout Finished
 - **Widow Jane** (5): 10 Year Single Barrel, 10 Year, Black Opal 20 Year, Paradigm Rye, The Vaults
 - **Baker's** (4): 13 Year Single Barrel, ★ 7 Year, High Rye, Single Barrel Exclusive Selection
-- **Black Button** (4): Empire Rye, Four Grain, Four Grain Double Barrel, Single Barrel Straight Port Cask Finished
-- **Blanton's** (4): ★ Gold Edition, Single Barrel “Medicinal Whiskey Charity” Private Selection, ★ Special Reserve, ★ Straight From the Barrel
+- **Black Button** (4): Empire Whiskey Rye, Four Grain, Four Grain Double Barrel, Single Barrel Straight Port Cask Finished
+- **Blanton's** (4): ★ Gold Edition, Single Barrel Medicinal Whiskey Charity Private Selection, ★ Special Reserve, ★ Straight From the Barrel
 - **Blood Oath** (4): Pact No. 10, Pact No. 12, Pact No 6, Pact No. 7
 - **Bluegrass Distillers** (4): 7 Year High Rye Blue Corn, Blue Corn Bottled-In-Bond, Straight Blue Corn Single Barrel Cask Strength, Wheated Bottled-in-Bond
 - **Booker's** (4): 25th Anniversary, Rye, Single Barrel, The Reserves
 - **Brothers Wright** (4): Coal Mine Aged Four Grain Single Barrel Bourbon Barrel Proof, Coal Mine Aged High Rye, Coal Mine Aged Wheated Single Barrel, Reserve Four Grain
 - **Bull Run** (4): American Whiskey 11 Year, American Whiskey 13 Year, Barrel Strength, Single Malt Whiskey 6 Year
-- **Colonel E.H. Taylor** (4): Bottled-In-Bond, Jr. Amaranth Grain of the Gods, Jr. Rye, Seasoned Wood
+- **Colonel E.H. Taylor** (4): Bottled-In-Bond Bourbon, Amaranth Grain of the Gods, Rye, Seasoned Wood
 - **Espy House** (4): George 1794 Edition, Rye, Small Batch Wheated, Washington's Reserve
 - **Hirsch** (4): The Bivouac, The Cask Strength, The Horizon, The Single Barrel Silver
 - **J. Mattingly 1845** (4): Classic Double Staved, The Greatest Two Ounces in, The Greatest Two Ounces in Light, The Greatest Two Ounces in Rye
-- **Jefferson's** (4): Founder's Reserve 20 Year, Ocean Aged at Sea: Voyage 15 "Special Wheated Mash Bill", Ocean Aged At Sea Voyage 2, Ocean Aged At Sea Voyage 3
 - **Kentucky Owl** (4): St. Patrick's Edition, Mardi Gras XO Cask Limited Edition Rye, Rye, Takumi Edition
-- **Liberty Pole** (4): Spirits Mesquite Smoked Malt Rye, Spirits Old Monongahela Full Proof Rye, Spirits Peated Rye Whiskey Barrel Proof, Spirits Single Barrel Rye “The Lily” (BRL 469)
+- **Liberty Pole** (4): Spirits Mesquite Smoked Malt Rye, Spirits Old Monongahela Full Proof Rye, Spirits Peated Rye Whiskey Barrel Proof, Spirits Single Barrel Rye The Lily (BRL 469)
 - **McCarthy's** (4): 3 Year Oregon Single Malt, 6 Year Oregon Single Malt Oloroso Cask Finished, 6 Year Oregon Single Malt PX Sherry Cask Finished, 6 Year Oregon Single Malt
-- **O.H. Ingram River** (4): Aged Flagship, Aged Rye, Aged, Aged
+- **O.H. Ingram River** (4): Aged Flagship, Aged Rye, Aged Bourbon, Aged Whiskey
 - **Shortbarrel** (4): Four Grain, Sapsquatch, The Afterswarm II: Meadowfoam Rye, Tokaji Cask Finish Rye
 - **Stellum** (4): Black Rye Fibonacci Blend, Black Rye, Equinox Blend, Rye
 - **Weller** (4): C.Y.P.B., Millennium, Single Barrel, ★ Special Reserve
 - **Watershed** (4): Barrel Strength Ohio Rye, Distillery Nocino Finished, Fall Finishing Series: Maple Syrup Finish, Uncut Unfiltered
 - **Whiskey War** (4): Barrel Proof, Double Double Oaked, Double Oaked, (flagship)
 - **Willett** (4): Exploratory Cask Finish Version 1.0 Rye, Family Estate Bottled 4 Year Rye, ★ Family Estate Small Batch 4 Year, 2 Year Rye
-- **Yellowstone** (4): American Single Malt, Small Batch 107, Limited Edition, Recollection
+- **Yellowstone** (4): American Single Malt, Small Batch 107, Limited Edition, Recollection Bourbon
 - **2XO** (3): Oak Series: White Oak Rye, Rapper's Delight - The Hip-Hop Blend, The Sneakerhead Blend
 - **A.M. Scott's** (3): Cigar Batch Rye, Single Barrel, Small Batch
 - **Angel's Envy** (3): Bottled in Bond Cask Strength, Port Finish, Triple Oak
 - **Austin** (3): 101 Light, 111 Light, 121 Light
 - **Brush Creek** (3): (flagship), Railroad Rye (Boxcar ), Rye
-- **Catoctin Creek** (3): Roundstone Rye Cask Proof Single Barrel, Roundstone Rye “Distiller's Edition”, Roundstone Rye
-- **Conviction** (3): Amarone Cask, Double Oak, Single Barrel Cask Strength
+- **Catoctin Creek** (3): Roundstone Rye Cask Proof Single Barrel, Roundstone Rye Distiller's Edition, Roundstone Rye
+- **Conviction** (3): Amarone Cask, Double Oak 1929, Single Barrel Cask Strength
 - **Coppercraft** (3): Blend of Straight Bourbon Whiskies, Rye, Small Batch
-- **Echo Spirits** (3): Distilling Co. Engineer Series Bourbon “Porch Cigars”, Distilling Co. Engineer Series Bourbon “The Woodsman”, Engineer Series Bourbon “Trail Mix”
-- **Fathertime** (3): Precious Batch Bourbon Empty Nester Strength “Fourth & Long”, Precious Batch Bourbon Empty Nester Strength “The Caboose”, Precious Batch Bourbon “The Caboose”
-- **High N' Wicked** (3): Cask Strength, Cask Strength Rye, No. 8 “The Jury” Cask Strength
-- **Hinterhaus** (3): American Single Malt “Discovery”, Calaveras Finish, Single Malt “Discovery”
+- **Echo Spirits** (3): Distilling Co. Engineer Series Bourbon Porch Cigars, Distilling Co. Engineer Series Bourbon The Woodsman, Engineer Series Bourbon Trail Mix
+- **Fathertime** (3): Precious Batch Bourbon Empty Nester Strength Fourth & Long, Precious Batch Bourbon Empty Nester Strength The Caboose, Precious Batch Bourbon The Caboose
+- **High N' Wicked** (3): Cask Strength, Cask Strength Rye, No. 8 The Jury Cask Strength
+- **Hinterhaus** (3): American Single Malt Discovery, Calaveras Finish, Single Malt Discovery
 - **Kooper Family** (3): Runaway Rye, (flagship), Single Barrel
 - **Leopold Bros.** (3): 8 Year Cask Strength Three Chamber Finished, Three Chamber Rye, Three Chambers Rye Holiday Edition
 - **MB Roland** (3): (flagship), Dark Fired, Rye
 - **Minden Mill** (3): American Single Malt, (flagship), Rye
 - **Nashville Barrel Company** (3): Small Batch Rye, Single Barrel, The Compromise
-- **Old Bardstown** (3): Bottled in Bond, ★ Estate Bottled, Estate
+- **Old Bardstown** (3): Bottled in Bond, ★ Estate Bottled, Estate Bourbon
 - **Old Fitzgerald** (3): Bottled-in-Bond 13 Year Release, Bottled in Bond 9 Year Release, Bottled in Bond Edition
 - **Orphan Barrel** (3): Copper Tongue, Indigo's Hour, Scarlet Shade Rye
 - **Phyllis & Her** (3): Walk In The Woods Rye Whiskey Double Oaked, Walk In The Woods Rye Whiskey Port Cask Finished, Walk In The Woods Tokaji Cask Finished Rye
-- **Rabbit Hole** (3): Boxergrail Rye, Founder's Collection Cask Strength Boxergrail Rye, Raceking
+- **Rabbit Hole** (3): Boxergrail Rye, Founder's Collection Cask Strength Boxergrail Rye, Raceking Bourbon
 - **Rare Character** (3): Single Barrel Series Bourbon Selected by Founder's Choice, Single Barrel Series: Selected by Bar Keeper, Single Barrel Series: Selected by K&L Wine Merchants Rye
 - **RD One** (3): Finished with Brazilian Amburana Wood, Finished with French Oak, Finished with Japanese Mizunara and French Oak
 - **Red Line** (3): Finished in X.O. Cognac Casks, Single Barrel Toasted Barrel Finish, Single Barrel Toasted Barrel Finish Rye
 - **Rough Rider** (3): 8 Year The Old Lion, The Big Stick Rye, The Happy Warrior
-- **S.N. Pike's Magnolia** (3): Barrel Proof, Bottled in Bond, Wheated
+- **S.N. Pike's Magnolia** (3): Barrel Proof, Bottled in Bond, Wheated Bourbon
 - **Samuel Maverick** (3): Barrel Proof, (flagship), Private Reserve Texas
 - **Sazerac** (3): 18 Year Rye, ★ Rye, Full Proof Rye
 - **Southern** (3): Star Bottled in Bond Rye, Star Bourbon Finished in Honey Barrels, Star Paragon Bottled in Bond Wheated
 - **Spirit Hound** (3): Cask Strength Straight Malt Single Malt, Honey Aged Straight Malt Single Malt, Straight Malt Single Malt
-- **The** (3): American Whiskey Barrel Strength, American, Original Santa Fe Whiskey Original Mesquite Single Malt
-- **Tincup** (3): 10 Year American, American, Rye
+- **The** (3): American Whiskey Barrel Strength, American Whiskey, Original Santa Fe Whiskey Original Mesquite Single Malt
+- **Tincup** (3): 10 Year American, American Whiskey, Rye
 - **Traverse City** (3): Co. Cab Franc Barrel Finish Rye, Co. Port Barrel Finish, Co. Sherry Barrel Finish
 - **Unbendt Unblended** (3): Bottled in Bond, Bottled-In-Bond Rye, Straight Wheat Whiskey Bottled-in-Bond
 - **Very Olde St.** (3): Nick Ancient Cask Rye: Faith + Conviction, Nick Immaculata Ancient Cask, Nick Winter Maple
@@ -564,20 +619,20 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Wheeler's Raid** (3): Original Blend, Original Blend Rye 04, No. 3 French Oak Finish
 - **Whiskey Del Bac** (3): Frontera Single Malt, Frontera, Normandie Single Malt
 - **Whiskey Row** (3): Bottled in Bond, Triple Wood, Cask Strength
-- **2bar** (2): Bottled in Bond, Single Barrel
-- **Adventurous Stills** (2): Peralta, Quinoa
+- **2Bar** (2): Bottled in Bond, Single Barrel
+- **Adventurous Stills** (2): Peralta Bourbon, Quinoa Whiskey
 - **Augusta** (2): Buckner's Single Barrel 10 Year, Old Route 8 Single Barrel 8 Year
 - **Augusta Distillery** (2): Small Batch, Wheated Single Barrel
 - **Axe and the Oak** (2): Colorado Mountain, Incline Rye
 - **Bare Knuckle** (2): Single Barrel Cask Strength Rye, Single Barrel Cask Strength Wheat Wheat Whiskey
-- **Beer** (2): Barrel, Barrel Rye
+- **Beer** (2): Barrel Bourbon, Barrel Rye
 - **Belle Meade** (2): Honey Cask Finish, (flagship)
 - **Ben Holladay** (2): Bottled in Bond Missouri, Soft Red Wheat Bottled in Bond
-- **Bend & Steal** (2): American Whiskey Finished in Madeira Casks, American
+- **Bend & Steal** (2): American Whiskey Finished in Madeira Casks, American Whiskey
 - **Bernheim** (2): Original Barrel Proof Wheat Wheat Whiskey, Original 20th Anniversary Wheat Whiskey
 - **Bird Creek** (2): Francin Single Cask Single Malt, Single Malt American Whiskey Baronesse & Full Pint
 - **Black Band** (2): Four Grain, Straight Wheat Wheat Whiskey
-- **Black Frost** (2): Blended, Blended Rye Malt
+- **Black Frost** (2): Blended Bourbon, Blended Rye Malt
 - **Black** (2): Maple Hill Oregon Rye (Green Label), Maple Hill
 - **Blackened** (2): x Wes Henderson, x Willett Straight Rye Finished in Madeira Casks
 - **Blade and Bow** (2): 12 Year Solera Reserve, 22 Year
@@ -591,23 +646,24 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Crater Lake** (2): Reserve Rye, Rye
 - **Dark Arts Whiskey House** (2): Amburana Oak Stave Finished, Small Batch Rye, Ripple Rye II
 - **Doc Swinson's** (2): 5 Year Session Blend, Exploratory Cask Pineau des Charentes
-- **Fathertime Bourbon** (2): Empty Nester Strength “Middle Child Mystery”, Santa's Reward
+- **Fathertime Bourbon** (2): Empty Nester Strength Middle Child Mystery, Santa's Reward
 - **FEW** (2): Bottled in Bond, (flagship)
 - **Filibuster** (2): Single Estate Single Barrel Wheated, Finished in French Oak Barrels
 - **Fireside Triple** (2): Single Barrel Rye, 6 Year Single Barrel Rye
 - **Flag Hill** (2): 10 Year Bourbon Barrel, American Single Malt
 - **Hudson** (2): Bright Lights, Big, Do The Rye Thing
 - **Huling Station** (2): Single Barrel Straight Wheat, Straight Wheat Wheat Whiskey
+- **Jefferson's** (2): Founder's Reserve 20 Year, Ocean Aged at Sea: Special Wheated Mash Bill
 - **Jeptha Creed** (2): 6 Year Wheated, Red, White & Blue
 - **Koopers** (2): 10 Year Rye Finished in a Buffalo Trace Barrel, Sweetheart of the Rodeo
 - **Locke** (2): + Co. Aspen Aged Rye, + Co Big Blaze
 - **Louisiana Tradition** (2): (flagship), Copper Tear
 - **Lux Row** (2): Distillers Double Barrel, Small Batch Albariño Cask Finish
 - **Mad River Distillers** (2): Summit Single Malt, Founders Reserve 10 Year Rye
-- **Manifest** (2): 100% Rye, Rye
-- **McLaughlin Distillery** (2): 3799, Cask Strength Baby Barrel
+- **Manifest** (2): 100% Whiskey Rye, Rye
+- **McLaughlin Distillery** (2): 3799 Bourbon, Cask Strength Baby Barrel
 - **Mt. Pleasant Club** (2): Rye, Brown Street
-- **Nelson Brothers** (2): Classic, Reserve
+- **Nelson Brothers** (2): Classic Bourbon, Reserve Bourbon
 - **Never Say Die** (2): Rye, Small Batch
 - **New England Barrel Company** (2): Single Barrel Rye (Gordan's Fine Wine Select), Small Batch Select
 - **O.K.I.** (2): 10 Year, Reserve
@@ -620,7 +676,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Puncher's Chance** (2): The Undisputed Single Barrel, The Unified Belt
 - **Pure Antique** (2): 18 Year, 20 Year
 - **Purple Toad** (2): 7 Year Single Barrel, Double Oaked 11 Year
-- **Purple Toad Blackberry** (2): Peach, (flagship)
+- **Purple Toad Blackberry** (2): Peach Whiskey, (flagship)
 - **Resilient** (2): 14 Year Single Barrel, Rye
 - **Romulan Stellum** (2): Cask Strength, Rye
 - **Rossville Union** (2): Rye, Barrel Proof Rye
@@ -628,24 +684,24 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Smooth Ambler** (2): Contradiction Rye, Old Scout 7 Year
 - **Square** (2): 6 High-Rye, 6 Wheated
 - **Starward** (2): Nova Single Malt, Two-Fold Double Grain Australian
-- **Stranahan's** (2): Blue Peak Single Malt, Colorado
+- **Stranahan's** (2): Blue Peak Single Malt, Colorado Whiskey
 - **Templeton** (2): 10 Year Reserve Rye, Midnight Rye
 - **The Wolves** (2): Project - Vol. One Rye, Project - Vol. One, Batch One Rye
-- **Thirteenth Colony** (2): Southern, Southern Rye
+- **Thirteenth Colony** (2): Southern Bourbon, Southern Whiskey Rye
 - **Traveller** (2): Full Proof, (flagship)
-- **True Story** (2): Finished, Finished Rye
+- **True Story** (2): Finished Bourbon, Finished Rye
 - **Very Olde St. Nick** (2): the O.G. Year 17 Old, Winter Rye
 - **Walleye Run Malted** (2): Very Small Batch Double Barrel Rye, Rye
 - **Watch Hill** (2): Exceptional Series, Chef Series Rye
 - **West Fork** (2): Co. Cask Strength Small Batch, Co. Wheated Bottled in Bond
 - **Wiggly Bridge** (2): Bottled in Bond, Small Barrel
 - **Wonderland** (2): Blend of Straight Whiskeys Cask Strength, Blend of Straight Whiskeys
-- **Woody Creek** (2): Distillers, William H. Macy Reserve Rye Third Edition
+- **Woody Creek** (2): Distillers Bourbon, William H. Macy Reserve Rye Third Edition
 - **Wyatt Earp** (2): Barrel Proof American Single Malt, Small Batch American Single Malt
 - **Zeppelin Bend** (2): American Single Malt Sherry Cask Finish, Single Barrel Single Malt
 - **117º West Spirits** (1): Rye
 - **13th Colony** (1): Cask Strength Southern
-- **45th Parallel** (1): Border
+- **45th Parallel** (1): Border Bourbon
 - **503 Distilling** (1): Single Barrel Bourbon Private Reserve
 - **A.M. Scott** (1): Barrel Proof
 - **A Midwinter Night's** (1): Dram Act 10 Scene 6 Rye
@@ -679,7 +735,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Big Easy** (1): (flagship)
 - **Blackfork** (1): Farms Gordon W. Legacy Series Edition III
 - **Asheville Distilling** (1): Blonde Whiskey 8 Year
-- **Bluebird** (1): Days
+- **Bluebird** (1): Days Whiskey
 - **Boom Boom** (1): Reserve Edition
 - **Borchetta** (1): Small Batch
 - **Borrowed Page** (1): American Whiskey Volume
@@ -688,15 +744,15 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Bourbon de Luxe** (1): (flagship)
 - **Branch &** (1): Barrel Flagship
 - **Branch & Barrel** (1): High Rye
-- **Bruce's** (1): Blue
+- **Bruce's** (1): Blue Bourbon
 - **Burnside** (1): Casked
-- **Burnside Goose Hollow** (1): RSV
+- **Burnside Goose Hollow** (1): RSV Bourbon
 - **Burnt Tavern** (1): (flagship)
 - **Burton James** (1): (flagship)
 - **Burton James Five-Tool** (1): Player
 - **Buzzard's Roost Ambuzzador's** (1): Select Single Barrel Rye
 - **Buzzard's Roost French** (1): Oak
-- **Buzzard's Roost Kindred** (1): Collaboration
+- **Buzzard's Roost Kindred** (1): Collaboration Bourbon
 - **Buzzard's Roost Signature** (1): Double Oak
 - **Buzzard's Roost Very** (1): Small Batch Rye
 - **Bywater** (1): Four Grain
@@ -712,24 +768,24 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Conviction Naranja** (1): Cask
 - **Cooper's Daughter** (1): Finished in Black Walnut Syrup Barrels
 - **Copper Fox** (1): Single Malt
-- **Copper Sky** (1): Wheated
+- **Copper Sky** (1): Wheated Bourbon
 - **Coppersea** (1): Bonticou Crag Straight Rye Malt
 - **Corner Creek** (1): 10 Year
 - **Courage & Conviction** (1): Batch: Dr. George G. Moore
 - **Crown Royal Noble** (1): Collection Rye 16 Year
 - **Crown Royal** (1): Single Malt Canadian
 - **Cumberland Falls** (1): (flagship)
-- **Daddy Rack** (1): Tennessee
+- **Daddy Rack** (1): Tennessee Whiskey
 - **Dad's Hat** (1): x Liberty Pole Spirits Pennsylvania Rye
-- **Daniel Weller Emmer** (1): Wheat
-- **David Nicholson** (1): Reserve
+- **Daniel Weller Emmer** (1): Wheat Bourbon
+- **David Nicholson** (1): Reserve Bourbon
 - **Daviess County** (1): Finished in Missouri White Oak Casks
 - **Dead** (1): Man's Hand
 - **Derby Town** (1): Barrel Proof
 - **Devil's River Coffee** (1): (flagship)
-- **Distillery 291** (1): “M” Colorado Rye
+- **Distillery 291** (1): M Colorado Rye
 - **Dragon Con** (1): (flagship)
-- **Dragon's Milk** (1): Bottled-in-Bond
+- **Dragon's Milk** (1): Bottled-in-Bond Bourbon
 - **Dread River** (1): Master Series Veteran's Edition
 - **Drumlin Champlain Valley** (1): Rye
 - **Dry Fly** (1): 101
@@ -743,26 +799,26 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Ella Jones Colorado** (1): (flagship)
 - **Elvis** (1): The King Rye
 - **Elvis Tiger Man** (1): (flagship)
-- **Eric LeGrand Scarlet** (1): Knights
+- **Eric LeGrand Scarlet** (1): Knights Bourbon
 - **Eric LeGrand** (1): Single Barrel
 - **Ezra B** (1): ★ 12 Year Single Barrel
-- **Ezra Brooks** (1): 99
+- **Ezra Brooks** (1): 99 Bourbon
 - **Fable & Folly** (1): (flagship)
 - **Fighting Cock** (1): ★ (flagship)
 - **Finger Lakes** (1): Distilling Mac's American
 - **Fireside High** (1): (flagship)
 - **Fireside Peated** (1): Single Malt
-- **First West Extra** (1): Aged
+- **First West Extra** (1): Aged Bourbon
 - **First West** (1): Toasted Oak
 - **Five & 20** (1): (flagship)
 - **Five Brothers** (1): (flagship)
-- **Five Trail** (1): Blended
+- **Five Trail** (1): Blended Whiskey
 - **Forged Oak** (1): (flagship)
-- **Fort Mosé** (1): 1738
+- **Fort Mosé** (1): 1738 Bourbon
 - **Fortuna** (1): (flagship)
 - **Fortune's Fool** (1): The Prelude Rye
 - **Four Branches** (1): Founders Blend
-- **Four Gate** (1): “River Kelvin Rye”
+- **Four Gate** (1): River Kelvin Rye
 - **Full Ryde** (1): (flagship)
 - **Further** (1): Rye
 - **Gold Bar** (1): Black Double Cask
@@ -786,7 +842,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Jack Daniels Distillery** (1): Series Selection : Toasted Barrel Finished Rye
 - **Jacob's Pardon** (1): Small Batch Recipe
 - **Jimmy** (1): Red Double Oak
-- **John Lee Hooker Legacy Spirits** (1): Boogie Chillen' Bourbon “ ”
+- **John Lee Hooker Legacy Spirits** (1): Boogie Chillen' Bourbon 1948
 - **Kentucky Gentleman** (1): ★ (flagship)
 - **Kentucky** (1): Green Code
 - **King of Kentucky** (1): Small Batch
@@ -795,12 +851,12 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Kooper's** (1): Barrel Reserve
 - **Kooper's Family** (1): The Prodigal Son
 - **Koopers Whiskey** (1): Father's Office Cigar Blend
-- **Last Drop Distillers** (1): XIX
+- **Last Drop Distillers** (1): XIX: 1980
 - **Lost Prophet** (1): (flagship)
 - **Louisiana Senator** (1): Huey P. Long
 - **Maltyverse No Pressure** (1): (flagship)
 - **Maltyverse Wreck in** (1): Kentucky
-- **McTavish** (1): Bottled-in-Bond Bourbon “The Warchief”
+- **McTavish** (1): Bottled-in-Bond Bourbon The Warchief
 - **Mellow Corn** (1): ★ (flagship)
 - **Mellwood** (1): Bottled in Bond
 - **Milam & Green** (1): Bottled in Bond
@@ -811,7 +867,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Nashtucky** (1): 8 Year Single Barrel
 - **Nelson's Green Brier** (1): (flagship)
 - **New Dawn** (1): (flagship)
-- **New Era** (1): “Dark Wonders At Mammoth Cave”
+- **New Era** (1): Dark Wonders At Mammoth Cave
 - **New Liberty** (1): Bloody Butcher
 - **Nulu** (1): Single Barrel
 - **O.H. Ingram Flagship** (1): (flagship)
@@ -820,7 +876,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Old Blowhard** (1): (flagship)
 - **Old Crow** (1): ★ (flagship)
 - **Old Ezra** (1): 7 Year
-- **Old Fourth Distillery:** (1): Nique's Batch “The Rookie”
+- **Old Fourth Distillery:** (1): Nique's Batch The Rookie
 - **Old Hamer** (1): Cask Strength
 - **Old Hillside** (1): The Harlem Hellfighters
 - **Old Medley** (1): 12 Year
@@ -839,9 +895,9 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Quality House** (1): ★ Old Style
 - **R6** (1): Single Malt
 - **Ragged** (1): Branch Double Oaked Wheated Bourbon Steak Single Barrel
-- **Ranger Creek** (1): .44
+- **Ranger Creek** (1): .44 Whiskey
 - **Rare Perfection** (1): 10 Year Bourbon Vintage
-- **Rattle & Snap** (1): Tennessee
+- **Rattle & Snap** (1): Tennessee Whiskey
 - **Rectified** (1): (flagship)
 - **Redemption** (1): Sur Lee Rye
 - **Rhetoric** (1): 20 Year
@@ -876,15 +932,14 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **Silverbelly** (1): AJ's Birthday
 - **Smokeye Hill** (1): (flagship)
 - **Southern Cross High-Proof** (1): (flagship)
-- **Split Rock** (1): Organic
+- **Split Rock** (1): Organic Bourbon
 - **St. Elmo** (1): (flagship)
-- **Stagg** (1): Jr.
 - **Stanahan's Diamond Peak** (1): (flagship)
 - **Standard** (1): Proof Whiskey Co. Rye
 - **Star Hill Farm** (1): Wheat Whiskey
 - **Stauning** (1): Danish Whisky Floor Malted Rye
 - **Stave &** (1): Barrel Single Barrel - Barrel Strength
-- **Stillhouse** (1): Original
+- **Stillhouse** (1): Original Whiskey
 - **Stillman's Sonder** (1): 10 Year
 - **Taylor Garrett** (1): (flagship)
 - **Ten High** (1): ★ Sour Mash
@@ -914,7 +969,7 @@ Baker's 7 Year, Benchmark Bonded, Benchmark Full Proof, Benchmark Single Barrel,
 - **West Island** (1): Single Malt
 - **Whiskey Jypsi** (1): Tribute Double Barreled
 - **Whiskey Tree High** (1): (flagship)
-- **Whiskey Tree** (1): Wheated
+- **Whiskey Tree** (1): Wheated Bourbon
 - **Wigle** (1): Quaker Strength Single Malt
 - **Wilderness Trail** (1): ★ High Rye Bourbon Bottled in Bond
 - **William Heavenhill 5th** (1): Edition

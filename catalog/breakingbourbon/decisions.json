@@ -60,7 +60,7 @@
  "https://breakingbourbon.com/review/jeffersons-tropics-aged-in-humidity": "dbb3e8ac-c82c-4c2b-9d93-8660785a5f11",
  "https://breakingbourbon.com/review/jeptha-creed-4-grain-corn-bourbon": "d885bd48-5bbe-44da-a33e-d74bfb1b6dfc",
  "https://breakingbourbon.com/review/jeptha-creed-bottled-in-bond-rye-heavy-bourbon": "new",
- "https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb": "new",
+ "https://breakingbourbon.com/review/joseph-magnus-cigar-blend-bourbon-batch-24-the-fruit-bomb": "76352a08-c464-4888-bae6-97a3c4e9ce8b",
  "https://breakingbourbon.com/review/kentucky-owl-confiscated": "37b939dd-272e-451d-9226-d3f790ca3491",
  "https://breakingbourbon.com/review/kings-county-barrel-strength-6-year-blenders-reserve-bourbon": "new",
  "https://breakingbourbon.com/review/knob-creek-quarter-oak-bourbon": "new",
@@ -85,7 +85,12 @@
  "https://breakingbourbon.com/review/penelope-four-grain-bourbon": "new",
  "https://breakingbourbon.com/review/rabbit-hole-cavehill-4-grain-bourbon": "d269dfc1-a6cc-4b4a-9432-79c0d806720d",
  "https://breakingbourbon.com/review/ranger-creek-36-texas-bourbon": "73edc471-48af-45c3-8d8c-c8d84a6e41df",
- "https://breakingbourbon.com/review/rd-one-small-batch-kentucky-straight-bourbon-double-finished-oak-and-maple": "new",
+ "https://breakingbourbon.com/review/rd-one-small-batch-kentucky-straight-bourbon-double-finished-oak-and-maple": {
+  "action": "482b4502-53a0-4cdb-b2af-91149b964749",
+  "proof": 111.3,
+  "expression": "Smoked Oak & Maple Wood",
+  "name": "RD One Smoked Oak & Maple Wood"
+ },
  "https://breakingbourbon.com/review/stagg-bourbon-batch-25b": "59e959c5-3a90-4580-b6b6-b2e575c7b116",
  "https://breakingbourbon.com/review/starlight-carl-t-hubers-bottled-in-bond-bourbon": "new",
  "https://breakingbourbon.com/review/tommyrotter-napa-valley-heritance-cask-batch-no-4": "6bf990c5-c8dc-46c4-b7ff-51ac49088e7f",
