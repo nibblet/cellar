@@ -415,7 +415,16 @@ def main():
     for c in candidates:
         f = c["facts"]
         if not f["sourced"] and not f["maker_id"] and f["distillery"]:
-            new_makers.setdefault(maker_key(f["distillery"]), {"name": f["distillery"], "owner": f["company"], "count": 0})["count"] += 1
+            m = new_makers.setdefault(maker_key(f["distillery"]), {"name": f["distillery"], "companies": Counter(), "count": 0})
+            m["count"] += 1
+            if f["company"]: m["companies"][f["company"]] += 1
+    for m in new_makers.values():
+        # BB's Company is the brand owner, which for sourced/bottled whiskey isn't the distillery's owner.
+        # Keep it only when it shares a name with the distillery; otherwise leave owner unknown.
+        dwords = set(maker_key(m["name"]).split())
+        owner = next((co for co, _ in m["companies"].most_common() if dwords & set(maker_key(co).split())), None)
+        m["owner"] = owner if owner and maker_key(owner) != maker_key(m["name"]) else None
+        del m["companies"]
 
     out = {"matched": matched, "proposed": proposed, "new": new, "excluded": excluded, "flagged_families": flagged,
            "new_makers": sorted(new_makers.values(), key=lambda m: -m["count"])}

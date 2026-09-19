@@ -98,23 +98,27 @@ def main():
         L.append(f"update cellar.products set {', '.join(sets)} where id = {q(m['product_id'])}::uuid and facts_verified_at is null;")
         n_upd += 1
 
-    # new rows
+    # new rows: batched VALUES, guarded by the unique index's key
     L += ["", "-- New expressions (drafts; core range from makers already on the shelf is included)"]
-    n_new = 0
+    COLS = ["name", "brand_family", "expression", "producer", "producer_id", *FACT_FIELDS, "nas", "catalog_included", "aliases", "source_url"]
+    rows = []
     for c in o["new"]:
         f = c["facts"]
-        cols = {
-            "type": "'bourbon'", "name": q(c["name"]), "brand_family": q(c["family"]), "expression": q(c["expression"]),
-            "producer": q(f["maker_name"] or (None if f["sourced"] else f["distillery"])), "producer_id": maker_sql(f),
-            **{k: q(f.get(k), k) for k in FACT_FIELDS},
-            "nas": q(f["age_years"] is None), "rarity": "null",
-            "catalog_included": q(c["catalog_included"]), "status": "'draft'", "source": "'seed'",
-            "aliases": q(c["aliases"]) if c["aliases"] else "null", "source_url": q(c["canonical_url"]), "specs": "'{}'::jsonb",
-        }
-        guard = (f"where not exists (select 1 from cellar.products where type = 'bourbon' and merged_into is null "
-                 f"and coalesce(brand_family,'') = coalesce({q(c['family'])},'') and coalesce(expression,'') = coalesce({q(c['expression'])},'') and coalesce(release_label,'') = '')")
-        L.append(f"insert into cellar.products ({', '.join(cols)}) select {', '.join(cols.values())} {guard};")
-        n_new += 1
+        rows.append("(" + ", ".join([
+            q(c["name"]), q(c["family"]), q(c["expression"]),
+            q(f["maker_name"] or (None if f["sourced"] else f["distillery"])), maker_sql(f),
+            *[q(f.get(k)) for k in FACT_FIELDS],
+            q(f["age_years"] is None), q(c["catalog_included"]),
+            q(c["aliases"]) if c["aliases"] else "null::text[]", q(c["canonical_url"]),
+        ]) + ")")
+    n_new = len(rows)
+    for k in range(0, len(rows), 100):
+        L.append(
+            f"insert into cellar.products (type, status, source, specs, rarity, {', '.join(COLS)})\n"
+            f"select 'bourbon', 'draft', 'seed', '{{}}'::jsonb, null, " + ", ".join(f"v.{c}::{ENUM[c]}" if c in ENUM else f"v.{c}" for c in COLS) + " from (values\n" + ",\n".join(rows[k:k+100]) + f"\n) as v({', '.join(COLS)})\n"
+            "where not exists (select 1 from cellar.products p where p.type = 'bourbon' and p.merged_into is null\n"
+            "  and coalesce(p.brand_family,'') = coalesce(v.brand_family,'') and coalesce(p.expression,'') = coalesce(v.expression,'') and coalesce(p.release_label,'') = '');"
+        )
     L += ["", f"-- {n_upd} updates, {n_new} inserts, {len(o['new_makers'])} makers; {len(o['proposed'])} proposed matches left for decisions.json"]
     (HERE / "import.sql").write_text("\n".join(L))
     print(L[-1])
