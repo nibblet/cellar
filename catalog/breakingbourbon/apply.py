@@ -76,7 +76,8 @@ def main():
     maker_ref = {slug(m["name"]): f"(select id from cellar.makers where slug = {q(slug(m['name']))})" for m in o["new_makers"]}
     def maker_sql(f):
         if f["maker_id"]: return q(f["maker_id"]) + "::uuid"
-        if not f["sourced"] and f["distillery"] and slug(f["distillery"]) in maker_ref: return maker_ref[slug(f["distillery"])]
+        clean = re.sub(r"\s*\(.*?\)", "", f["distillery"] or "").strip()
+        if not f["sourced"] and clean and slug(clean) in maker_ref: return maker_ref[slug(clean)]
         return "null"
 
     # matched updates

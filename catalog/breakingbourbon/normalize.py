@@ -218,8 +218,7 @@ def facts_for(rec, family, expression, release, makers_by_key, family_style=None
 
     distillery = spec.get("Distillery", "")
     company = spec.get("Company", "")
-    sourced = bool(re.match(r"sourced|undisclosed|unknown", distillery, re.I))
-    maker = None if sourced else makers_by_key.get(maker_key(distillery)) or makers_by_key.get(maker_key(company))
+    maker, sourced = resolve_maker(distillery, company, makers_by_key)
     if re.search(r"four[ -]?grain|4[ -]grain", title, re.I): style = "four_grain"
     if style is None and re.search(r"\bwheat", title, re.I) and st != "rye": style = "wheated"
     if style is None and st == "rye": style = "rye"
@@ -273,10 +272,36 @@ def diff_for(p, c):
     return diff
 
 def maker_key(name: str | None) -> str:
-    n = norm(name)
-    n = re.sub(r"\b(distillery|distilling|distillers|distilling company|distilling co|company|co|inc|llc|spirits|brands|group)\b", " ", n)
-    n = re.sub(r"\(.*?\)", " ", n)
+    n = re.sub(r"\(.*?\)", " ", name or "")
+    n = norm(n)
+    n = re.sub(r"\b(distillery|distilleries|distilling|distillers|distiller|company|co|inc|llc|ltd|spirits|whiskey|whisky|craft|brands|group|the)\b", " ", n)
     return re.sub(r"\s+", " ", n).strip()
+
+MULTI_DISTILLERY = re.compile(r",|\band\b|&|/|sourced|undisclosed|unconfirmed|unknown|various|multiple", re.I)
+# BB's distillery names for makers the catalog already knows by another name.
+MAKER_ALIASES = {
+    "jack daniel": "Jack Daniel's", "george t stagg": "Buffalo Trace", "brown forman shively": "Brown-Forman",
+    "nearest green": "Uncle Nearest", "cascade hollow": "George Dickel", "louisville": "Angel's Envy",
+    "kentucky peerless": "Peerless", "bernheim": "Heaven Hill", "frey ranch estate": "Frey Ranch",
+    "sagamore": "Sagamore Spirit", "stanahan s": "Stranahan's", "stranahan s": "Stranahan's", "mile high spirit": "Mile High Spirits",
+    "new holland": "New Holland Brewing Company", "hotaling potrero hill": "Hotaling & Co. Distillery", "dad s hat pennsylvania rye": "Dad's Hat",
+    "corsair artisan": "Corsair", "kentuck bourbon": "Kentucky Bourbon Distillers", "old 55": "Old 55 Distillery",
+}
+
+def resolve_maker(distillery: str, company: str, makers_by_key: dict):
+    """→ (maker or None, sourced). Blends across distilleries and sourced whiskey have no maker."""
+    if not distillery or MULTI_DISTILLERY.search(distillery):
+        return None, True
+    paren = re.search(r"\((.*?)\)", distillery)
+    for candidate in (distillery, paren.group(1) if paren else None, company):
+        k = maker_key(candidate)
+        if not k: continue
+        k = maker_key(MAKER_ALIASES.get(k, k))
+        if k in makers_by_key: return makers_by_key[k], False
+        # "kentucky peerless" → "peerless"; "still austin whiskey co" → "still austin"
+        for mk, m in makers_by_key.items():
+            if len(mk.split()) >= 2 and (k.endswith(" " + mk) or mk.endswith(" " + k)): return m, False
+    return None, False
 
 # ---------------------------------------------------------------- main
 
@@ -415,7 +440,9 @@ def main():
     for c in candidates:
         f = c["facts"]
         if not f["sourced"] and not f["maker_id"] and f["distillery"]:
-            m = new_makers.setdefault(maker_key(f["distillery"]), {"name": f["distillery"], "companies": Counter(), "count": 0})
+            clean = re.sub(r"\s*\(.*?\)", "", f["distillery"]).strip()
+            clean = MAKER_ALIASES.get(maker_key(clean), clean)
+            m = new_makers.setdefault(maker_key(clean), {"name": clean, "companies": Counter(), "count": 0})
             m["count"] += 1
             if f["company"]: m["companies"][f["company"]] += 1
     for m in new_makers.values():
