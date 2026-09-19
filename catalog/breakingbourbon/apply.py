@@ -119,7 +119,7 @@ def main():
     for k in range(0, len(rows), 100):
         L.append(
             f"insert into cellar.products (type, status, source, specs, rarity, {', '.join(COLS)})\n"
-            f"select 'bourbon', 'draft', 'seed', '{{}}'::jsonb, null, " + ", ".join(f"v.{c}::{ENUM[c]}" if c in ENUM else f"v.{c}" for c in COLS) + " from (values\n" + ",\n".join(rows[k:k+100]) + f"\n) as v({', '.join(COLS)})\n"
+            f"select 'bourbon', 'draft', 'seed', '{{}}'::jsonb, null, " + ", ".join(f"v.{c}::{ENUM[c]}" if c in ENUM else ("coalesce(v.aliases, '{}'::text[])" if c == "aliases" else f"v.{c}") for c in COLS) + " from (values\n" + ",\n".join(rows[k:k+100]) + f"\n) as v({', '.join(COLS)})\n"
             "where not exists (select 1 from cellar.products p where p.type = 'bourbon' and p.merged_into is null\n"
             "  and coalesce(p.brand_family,'') = coalesce(v.brand_family,'') and coalesce(p.expression,'') = coalesce(v.expression,'') and coalesce(p.release_label,'') = '');"
         )
