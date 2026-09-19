@@ -77,7 +77,7 @@ RELEASE_PATTERNS = [
     r"#\s*\d+[a-z]?\b",
 ]
 PROOF_IN_TITLE = re.compile(r"\(?\b\d{2,3}(?:\.\d+)?\s*proof\)?", re.I)
-GENERIC_SUFFIX = re.compile(r"\s*\b(kentucky\s+)?(straight\s+)?(bourbon|rye|tennessee|whiskey|whisky)(\s+whiskey)?\s*$", re.I)
+GENERIC_SUFFIX = re.compile(r"\s*(?<!high )(?<!sweet )\b(kentucky\s+)?(straight\s+)?(bourbon|rye|tennessee|whiskey|whisky)(\s+whiskey)?\s*$", re.I)
 
 STOP_GUESS = re.compile(r"^(\d+|year|yr|single|small|barrel|bottled|cask|straight|bourbon|rye|whiskey|whisky|tennessee|kentucky|wheated|wheat|four|toasted|double|reserve|special|limited|private|select|edition|batch|proof|finished?|blend(ed)?|american|light|malt|organic|amarone|port|sherry|cognac|rum|maple|cabernet|honey|cigar|gold|black|white|red|blue|green|silver|premium|original|old|the|&|and)\b", re.I)
 
@@ -89,6 +89,7 @@ def split_title(title: str, families: list[str], company: str | None = None):
             releases.append(m.group(0).strip("() "))
         t = re.sub(pat, " ", t, flags=re.I)
     t = PROOF_IN_TITLE.sub(" ", t)
+    t = re.sub(r"\b\d+\s*(?:&|and|,)\s*\d+\s*-?\s*(?:year|yr)s?(?:\s+old)?\b", " ", t, flags=re.I)
     t = re.sub(r"\(\s*\)", " ", t)
     t = re.sub(r"\s+", " ", t).strip(" ,-–—:")
 
@@ -118,6 +119,13 @@ def split_title(title: str, families: list[str], company: str | None = None):
     rest = re.sub(r"^'s\b\s*", "", rest)
     family = FAMILY_ALIASES.get(family, family)
     rest = GENERIC_SUFFIX.sub("", rest).strip(" ,-–—")
+    # "Aged Twelve Years" → "12 Year", so the same age reads the same way everywhere.
+    words = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+             "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20}
+    rest = re.sub(r"\b(?:aged\s+)?(" + "|".join(words) + r")[ -]?(?:years?|yrs?)(?:\s+old)?\b",
+                  lambda m: f"{words[m.group(1).lower()]} Year", rest, flags=re.I)
+    rest = re.sub(r"\baged\s+(\d+)[ -]?(?:years?|yrs?)(?:\s+old)?\b", r"\1 Year", rest, flags=re.I)
+    rest = re.sub(r"\b(\d+)[ -]?(?:years?|yrs?)[ -]old\b", r"\1 Year", rest, flags=re.I).strip(" ,-–—")
     # A lone "Bourbon"/"Whiskey" left over means the flagship.
     rest = re.sub(r"^(kentucky\s+)?(straight\s+)?(bourbon whiskey|bourbon|whiskey|rye whiskey|rye)\s+(?=\S)", "", rest, flags=re.I).strip(" ,-–—:")
     expression = rest if rest and norm(rest) not in {"bourbon", "whiskey", "rye whiskey", "rye", "straight bourbon", "batch", "bourbon batch"} else None
@@ -222,6 +230,28 @@ def facts_for(rec, family, expression, release, makers_by_key, family_style=None
         "maker_name": maker["name"] if maker else None,
     }
 
+def diff_for(p, c):
+    """Field-by-field: same / fill / replace / blocked, under the import rules. Shared with apply.py."""
+    diff = []
+    for f in ["proof", "age_years", "mash_style", "expression_type", "spirit_type", "bottled_in_bond", "barrel_proof", "finish", "mash_bill", "msrp_usd", "is_core_range"]:
+        cur, bb = p.get(f), c["facts"].get(f)
+        if isinstance(cur, str) and f in ("proof", "age_years", "msrp_usd"): cur = float(cur)
+        if bb is None or bb == "unknown" or bb == cur or (f == "spirit_type" and bb == "other"): action = "same"
+        elif f in ("is_core_range", "bottled_in_bond", "barrel_proof") and bb is False: action = "same"
+        elif f == "finish" and cur: action = "same"
+        elif f == "mash_bill" and norm(cur) == norm(bb): action = "same"
+        elif cur is None or cur == "unknown": action = "fill"
+        elif p["verified"]: action = "blocked"
+        else: action = "replace"
+        if action != "same": diff.append({"field": f, "catalog": cur, "bb": bb, "action": action})
+    if c["facts"]["maker_id"] and c["facts"]["maker_id"] != p["producer_id"]:
+        diff.append({"field": "producer_id", "catalog": p["producer_id"], "bb": c["facts"]["maker_id"], "action": "fill" if not p["producer_id"] else "replace"})
+    # A decided proposal often names an expression the catalog row lacks ("15 Stars" → "Private Stock").
+    if not p.get("expression") and c["expression"] and not p["verified"]:
+        diff.append({"field": "expression", "catalog": None, "bb": c["expression"], "action": "fill"})
+        diff.append({"field": "name", "catalog": p["name"], "bb": c["name"], "action": "fill"})
+    return diff
+
 def maker_key(name: str | None) -> str:
     n = norm(name)
     n = re.sub(r"\b(distillery|distilling|distillers|distilling company|distilling co|company|co|inc|llc|spirits|brands|group)\b", " ", n)
@@ -320,13 +350,15 @@ def main():
     used = set()
     catalog_strings = {p["id"]: key(f"{p['brand_family'] or ''} {catalog_expression(p) or ''}") for p in products}
     def exactness(c): return 0 if exact_target(c) else 1
+    def propose(c, pid, score, note=None):
+        proposed.append({"candidate": c["name"], "url": c["canonical_url"], "product": by_id[pid]["name"], "product_id": pid,
+                         "score": score, "note": note, "data": c})
     for c in sorted(candidates, key=exactness):
         pids = set()
         for u in c["urls"]:
             pids |= link_to_product.get(u.replace("https://www.", "https://").rstrip("/"), set())
-        pids = {pid for pid in pids if pid in by_id}
+        pids = {pid for pid in pids if pid in by_id and compatible(pid, c)}
         target, how = exact_target(c), "exact name"
-        pids = {pid for pid in pids if compatible(pid, c)}
         def link_sim(pid):
             p = by_id[pid]
             if key(p["brand_family"]) == key(c["family"]):
@@ -339,37 +371,22 @@ def main():
             if sim >= 0.7:
                 target, how = best, f"review link (name sim {sim:.2f})" + (" ambiguous" if len(pids) > 1 else "")
             else:
-                proposed.append({"candidate": c["name"], "url": c["canonical_url"], "product": by_id[best]["name"], "product_id": best,
-                                 "score": round(sim, 3), "note": "existing review link, but names disagree"})
+                propose(c, best, round(sim, 3), "existing review link, but names disagree")
                 continue
-        if not target: how = None
         if not target:
+            how = None
             scored = sorted(((difflib.SequenceMatcher(None, s, key(c["name"])).ratio(), pid) for pid, s in catalog_strings.items() if compatible(pid, c)), reverse=True)
             def same_numbers(pid): return set(re.findall(r"\d+", catalog_strings[pid])) == set(re.findall(r"\d+", key(c["name"])))
             scored = [x for x in scored if same_numbers(x[1])]
             if scored and scored[0][0] >= 0.9:
-                proposed.append({"candidate": c["name"], "url": c["canonical_url"], "product": by_id[scored[0][1]]["name"], "product_id": scored[0][1], "score": round(scored[0][0], 3)})
+                propose(c, scored[0][1], round(scored[0][0], 3))
                 continue
         if target and target not in used:
             used.add(target)
             p = by_id[target]
-            diff = []
-            for f in ["proof", "age_years", "mash_style", "expression_type", "spirit_type", "bottled_in_bond", "barrel_proof", "finish", "mash_bill", "msrp_usd", "is_core_range"]:
-                cur, bb = p.get(f), c["facts"].get(f)
-                if isinstance(cur, str) and f in ("proof", "age_years", "msrp_usd"): cur = float(cur)
-                if bb is None or bb == "unknown" or bb == cur or (f == "spirit_type" and bb == "other"): action = "same"
-                elif f in ("is_core_range", "bottled_in_bond", "barrel_proof") and bb is False: action = "same"
-                elif f == "finish" and cur: action = "same"
-                elif f == "mash_bill" and norm(cur) == norm(bb): action = "same"
-                elif cur is None or cur == "unknown": action = "fill"
-                elif p["verified"]: action = "blocked"
-                else: action = "replace"
-                if action != "same": diff.append({"field": f, "catalog": cur, "bb": bb, "action": action})
-            if c["facts"]["maker_id"] and c["facts"]["maker_id"] != p["producer_id"]:
-                diff.append({"field": "producer_id", "catalog": p["producer_id"], "bb": c["facts"]["maker_id"], "action": "fill" if not p["producer_id"] else "replace"})
-            matched.append({"product_id": target, "product": p["name"], "how": how, "verified": p["verified"], "candidate": c, "diff": diff})
+            matched.append({"product_id": target, "product": p["name"], "how": how, "verified": p["verified"], "candidate": c, "diff": diff_for(p, c)})
         elif target in used:
-            proposed.append({"candidate": c["name"], "url": c["canonical_url"], "product": by_id[target]["name"], "product_id": target, "score": None, "note": "product already matched by another candidate"})
+            propose(c, target, None, "product already matched by another candidate")
         else:
             include = c["facts"]["is_core_range"] and c["facts"]["maker_id"] in makers_with_included
             new.append({**c, "catalog_included": include})
