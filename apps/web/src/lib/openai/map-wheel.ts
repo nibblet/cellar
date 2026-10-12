@@ -37,9 +37,11 @@ Rules:
  */
 function buildResponseSchema(type: ProductType) {
   const wheel = getWheel(type);
-  const properties: Record<string, { type: string; minimum: number; maximum: number }> = {};
+  // Every property is required in strict mode, so each leaf must be nullable: a plain integer forces a 1-5 score on all
+  // 39 leaves (4 of the 5 member tastings with a wheel came out flat), where the prompt asks for 3-7. sparsify() drops nulls.
+  const properties: Record<string, { type: string[]; minimum: number; maximum: number }> = {};
   for (const leaf of wheel.leaves) {
-    properties[leaf.id] = { type: "integer", minimum: 1, maximum: 5 };
+    properties[leaf.id] = { type: ["integer", "null"], minimum: 1, maximum: 5 };
   }
 
   // Strict mode requires every property to be listed in `required`. We get

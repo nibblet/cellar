@@ -39,9 +39,11 @@ export type WheelEnrichDeps = {
 
 function buildResponseSchema(type: ProductType) {
   const wheel = getWheel(type);
-  const properties: Record<string, { type: string; minimum: number; maximum: number }> = {};
+  // Strict mode makes every property required, so each leaf must be nullable: a non-null integer forces the model to
+  // score all 39 leaves (a flat 1-5 wheel for every product) instead of the sparse map the prompt asks for.
+  const properties: Record<string, { type: string[]; minimum: number; maximum: number }> = {};
   for (const leaf of wheel.leaves) {
-    properties[leaf.id] = { type: "integer", minimum: 1, maximum: 5 };
+    properties[leaf.id] = { type: ["integer", "null"], minimum: 1, maximum: 5 };
   }
 
   return {

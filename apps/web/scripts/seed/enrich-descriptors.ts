@@ -13,12 +13,21 @@ import { dirname, resolve } from "node:path";
 import OpenAI from "openai";
 import { extractAndMergeWheelVector } from "@/lib/enrich/wheel-enrich";
 import type { WheelVector } from "@/lib/wheel";
-import { adminClient } from "./lib/supabase-admin";
+import { createClient } from "@supabase/supabase-js";
+
+// The shared seed client has no schema, so it reads and writes the stale public.products; the live catalog is cellar.products.
+function adminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY");
+  return createClient(url, key, { db: { schema: "cellar" }, auth: { autoRefreshToken: false, persistSession: false } });
+}
 
 type Args = {
   type: "bourbon" | "cigar";
   limit: number;
   dryRun: boolean;
+  shard: [number, number]; // --shard i/n: take every n-th candidate starting at i, so n runs can share the work
 };
 
 type ProductRow = {
@@ -43,6 +52,7 @@ function parseArgs(argv: string[]): Args {
     type,
     limit: Number(arg("limit") ?? 500),
     dryRun: argv.includes("--dry-run"),
+    shard: (arg("shard") ?? "0/1").split("/").map(Number) as [number, number],
   };
 }
 
@@ -60,14 +70,20 @@ async function fetchCandidates(type: "bourbon" | "cigar"): Promise<ProductRow[]>
   const supa = adminClient();
   const out: ProductRow[] = [];
 
-  for (let from = 0; ; from += 500) {
-    const { data, error } = await supa
+  // Keyset pages on id with the empty-wheel filter on the server: offset pages ordered by name (not unique) skipped and
+  // repeated rows, so a run saw 38 of 152 candidates.
+  for (let after: string | null = null; ; ) {
+    let q = supa
       .from("products")
       .select("id, type, name, brand, wheel_vector, specs, product_reviews!inner(id)")
       .eq("type", type)
       .eq("status", "confirmed")
-      .order("name", { ascending: true })
-      .range(from, from + 499);
+      .is("merged_into", null)
+      .or("wheel_vector.is.null,wheel_vector.eq.{}")
+      .order("id", { ascending: true })
+      .limit(200);
+    if (after) q = q.gt("id", after);
+    const { data, error } = await q;
 
     if (error) throw error;
     if (!data?.length) break;
@@ -75,6 +91,7 @@ async function fetchCandidates(type: "bourbon" | "cigar"): Promise<ProductRow[]>
     for (const row of data as ProductRow[]) {
       if (isEmptyWheel(row.wheel_vector)) out.push(row);
     }
+    after = (data[data.length - 1] as ProductRow).id;
   }
 
   return out;
@@ -102,7 +119,8 @@ async function main() {
   mkdirSync(dirname(audit), { recursive: true });
 
   const candidates = await fetchCandidates(args.type);
-  const batch = candidates.slice(0, args.limit);
+  const [shardIndex, shardCount] = args.shard;
+  const batch = candidates.filter((_, i) => i % shardCount === shardIndex).slice(0, args.limit);
 
   console.log(
     `[enrich-descriptors] type=${args.type} candidates=${candidates.length} running=${batch.length} dryRun=${args.dryRun}`,
